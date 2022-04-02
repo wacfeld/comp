@@ -194,13 +194,13 @@ void mark_esc(char *src, char *esc)
     then once we have determined string/char literals, we can search again for stray backslashes
   */
   i = 0;
-  while(i < len);
+  while(i < len)
   {
     if(src[i] == '\\')
     {
-      // the thing afterward is skipped, as it might be a backslash again
       esc[i] = 1;
       esc[i+1] = 1;
+      // the thing afterward is skipped, as it might be a backslash again
       i += 2;
     }
     else
@@ -209,39 +209,67 @@ void mark_esc(char *src, char *esc)
 }
 
 
-// it is important to mark string literals first so that we know what not to take literally
-/* void mark_lit(char *src, char *marks) */
-/* { */
-/*   int i; */
-/*   int len = strlen(src); */
-/*   for(i = 0; i < len; i++) // clear marks */
-/*   { */
-/*     marks[i] = 0; */
-/*   } */
+// it is important to mark string/char literals first so that we know what not to take literally
+void mark_quot(char *src, char *esc, char *quot)
+{
+  int i;
+  int len = strlen(src);
+  for(i = 0; i < len; i++) // clear quot
+  {
+    quot[i] = 0;
+  }
 
-/*   int instr = 0; */
-/*   for(i = 0; i < len; i++) */
-/*   { */
-/*     if(src[i] == '"') */
-/*     { */
-/*       if(instr == 0) // entering string */
-/*     } */
-/*   } */
-/* } */
+  char curquot = 0; // either 0, single quote, or double quote
+  for(i = 0; i < len; i++)
+  {
+    quot[i] = curquot;
+
+    if((src[i] == '"' || src[i] == '\'') && !esc[i]) // non-escaped quote
+    {
+      if(curquot == 0) // entering string
+      {
+        curquot = src[i];
+      }
+      else if(curquot == src[i]) // same quote type, exiting string
+      {
+        curquot = 0;
+        quot[i] = 0;
+      }
+      // else different quote type, ignore
+    }
+  }
+}
 
 int main()
 {
   int c;
   int i = 0;
-  char src[1000];
+  char src[1000], quot[1000], esc[1000];
   while((c = getchar()) != EOF)
   {
     src[i++] = c;
   }
-
+  src[i] = 0;
 
   fold(src);
+  mark_esc(src, esc);
+  mark_quot(src, esc, quot);
   /* unesc(src); */
   printf("%s", src);
+  for(i = 0; i < strlen(src); i++)
+  {
+    if(esc[i]) putchar('e');
+    else putchar('.');
+  }
+  puts("");
+  for(i = 0; i < strlen(src); i++)
+  {
+    if(quot[i] == 0)
+    {
+      putchar('.');
+    }
+    else
+      putchar(quot[i]);
+  }
 
 }
