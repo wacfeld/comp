@@ -1,0 +1,36 @@
+
+tokens
+- identifiers
+- keywords
+- constants
+- string literals
+- operators
+- separators
+
+whitespace separates tokens
+the next token is the longest string that could constitute a token
+
+
+identifiers
+- [a-zA-Z_][a-zA-Z0-9_]*
+- at least 31 characters of an identifier are significant
+- externally linked identifiers have at least 6 characters significant
+
+keywords
+- reserved
+- see k&r 169
+  
+constants
+- integer constant
+- character constant
+- floating point constant
+- enumeration constant
+  
+integers
+- starting with 0 -> octal
+- 0x or 0X -> hexadecimal [a-fA-F0-9]
+- suffix u or U -> unsigned
+- suffix l or L -> long
+
+
+/* */ are comments (replace with a single whitespace)
