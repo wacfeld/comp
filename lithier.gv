@@ -1,0 +1,10 @@
+digraph G {
+	graph [layout=dot rankdir=TB]
+
+  squote -> everything
+  dquote -> everything
+  squote -> dquote
+  dquote -> squote
+  bslash -> {bslash squote dquote}
+
+}

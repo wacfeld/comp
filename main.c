@@ -178,25 +178,56 @@ void unesc(char *src)
   src[c] = 0;
 }
 
-// it is important to mark string literals first so that we know what not to take literally
-void mark_strlit(char *src, char *marks)
+// mark backslash escape sequences
+void mark_esc(char *src, char *esc)
 {
   int i;
   int len = strlen(src);
-  for(i = 0; i < len; i++) // clear marks
+  for(i = 0; i < len; i++) // clear esc
   {
-    marks[i] = 0;
+    esc[i] = 0;
   }
 
-  int instr = 0;
-  for(i = 0; i < len; i++)
+  /*
+    following fold(), the only backslashes must be in char/string literals
+    we can mark these, so that we know which single/double quotes to ignore later
+    then once we have determined string/char literals, we can search again for stray backslashes
+  */
+  i = 0;
+  while(i < len);
   {
-    if(src[i] == '"')
+    if(src[i] == '\\')
     {
-      
+      // the thing afterward is skipped, as it might be a backslash again
+      esc[i] = 1;
+      esc[i+1] = 1;
+      i += 2;
     }
+    else
+      i++;
   }
 }
+
+
+// it is important to mark string literals first so that we know what not to take literally
+/* void mark_lit(char *src, char *marks) */
+/* { */
+/*   int i; */
+/*   int len = strlen(src); */
+/*   for(i = 0; i < len; i++) // clear marks */
+/*   { */
+/*     marks[i] = 0; */
+/*   } */
+
+/*   int instr = 0; */
+/*   for(i = 0; i < len; i++) */
+/*   { */
+/*     if(src[i] == '"') */
+/*     { */
+/*       if(instr == 0) // entering string */
+/*     } */
+/*   } */
+/* } */
 
 int main()
 {
@@ -207,6 +238,7 @@ int main()
   {
     src[i++] = c;
   }
+
 
   fold(src);
   /* unesc(src); */

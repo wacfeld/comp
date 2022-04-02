@@ -4,11 +4,15 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-dcl	/home/wacfeld/Dropbox/matrix/comp/dcl/main.c	/^void dcl(char *str)$/;"	f
-main	/home/wacfeld/Dropbox/matrix/comp/dcl/main.c	/^int main()$/;"	f
-main	/home/wacfeld/mat/comp/dcl/main.c	/^int main()$/;"	f
-main	/home/wacfeld/mat/comp/main.c	/^int main()$/;"	f
-putd	/home/wacfeld/Dropbox/matrix/comp/dcl/main.c	16;"	d	file:
-putd	/home/wacfeld/mat/comp/dcl/main.c	16;"	d	file:
-putd	/home/wacfeld/mat/comp/main.c	16;"	d	file:
-wrapper	/home/wacfeld/Dropbox/matrix/comp/dcl/main.c	/^void wrapper(char *str)$/;"	f
+CHAR_MAX	main.c	18;"	d	file:
+dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
+decomment	main.c	/^void decomment(char *src)$/;"	f
+fold	main.c	/^void fold(char *src)$/;"	f
+main	dcl/main.c	/^int main()$/;"	f
+main	main.c	/^int main()$/;"	f
+mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
+putd	dcl/main.c	16;"	d	file:
+putd	main.c	16;"	d	file:
+unesc	main.c	/^void unesc(char *src)$/;"	f
+wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+xtod	main.c	/^int xtod(char c)$/;"	f
