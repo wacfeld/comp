@@ -1,10 +1,29 @@
 digraph G {
 	graph [layout=dot rankdir=TB]
 
+label="C literal hierarchy";
+labelloc="t";
+squote[label="'",shape="box"];
+dquote[label="\"",shape="box"];
+bslash[label="\\",shape="box"];
+comment[label="/* */",shape="box"];
+everything[shape="box"];
   squote -> everything
   dquote -> everything
   squote -> dquote
   dquote -> squote
   bslash -> {bslash squote dquote}
+  comment -> dquote
+  dquote -> comment
+  comment -> everything
+  comment -> squote
+  squote -> comment
+  comment -> bslash
+  comment -> comment
+  
+/* lol */
 
+    {rank=same; comment}
+    {rank=same; squote, dquote}
+    
 }

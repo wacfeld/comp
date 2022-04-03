@@ -252,18 +252,41 @@ void stray_backslash(char *src, char *esc, char *quot)
 
 void rem_comments(char *src, char *esc, char *quot)
 {
-  int i, c = 0;
+  int i = 0, c = 0;
   int incomment = 0;
-  for(i = 0; src[i+1]; i++)
+  while(src[i])
   {
-    if(src[i] == '/' && src[i+1] == '*' && !quot[i] && !quot[i+1])
+    if(src[i] == '/' && src[i+1] == '*' && !quot[i] && !quot[i+1]) // comment not in quotations
     {
-      
+      incomment = 1;
+      i += 2; // avoid /*/ occurrences which are not comments
     }
+    else if(incomment && src[i] == '*' && src[i+1] == '/') // comment close
+    {
+      incomment = 0;
+      src[c] = ' '; // replace whole comment with space
+      esc[c] = 0;
+      quot[c] = 0;
+      i += 2;
+      c++;
+    }
+
+    else if(!incomment) // not in comment, copy over
+    {
+      src[c] = src[i];
+      quot[c] = quot[i];
+      esc[c] = esc[i];
+      c++;
+      i++;
+    }
+    else // don't copy anything
+      i++;
   }
+
+  assert(!incomment); // no unterminated comments
+  src[c] = 0; // null terminate
   
 }
-
 
 int main()
 {
@@ -282,9 +305,9 @@ int main()
   mark_esc(src, esc); // mark backslash escape sequences
   mark_quot(src, esc, quot); // mark single and double quoted regions
 
-  stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
+  rem_comments(src, esc, quot); // replace multiline comments with single space
 
-  // replace multiline comments with single space
+  stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
 
   printf("%s", src);
   for(i = 0; i < strlen(src); i++)
