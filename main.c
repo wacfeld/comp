@@ -290,7 +290,20 @@ void rem_comments(char *src, char *esc, char *quot)
 }
 
 
+int **toplevel(char *src, char *esc, char *quot)
+{
+  int start = 0, end; // statement start and end
+  int paren_dep = 0, brace_dep = 0; // depth of parens and braces
 
+  int i = 0;
+  while(src[i])
+  {
+    if(src[i] == ';' && !paren_dep && !brace_dep) // end of top level statement
+    {
+      end = i+1;
+    }
+  }
+}
 
 
 int main()
