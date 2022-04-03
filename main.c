@@ -33,9 +33,9 @@ void decomment(char *src)
 // replaces backslash + newline with nothing
 void fold(char *src)
 {
-  int len = strlen(src);
+  /* int len = strlen(src); */
   int c = 0, i = 0;
-  while(i < len)
+  while(src[i])
   {
     if(src[i] == '\\' && src[i+1] == '\n')
     {
@@ -71,10 +71,10 @@ int xtod(char c)
 // literalizes escape sequences
 void unesc(char *src)
 {
-  int len = strlen(src);
+  /* int len = strlen(src); */
   int c = 0;
   int i = 0;
-  while(i < len)
+  while(src[i])
   {
     if(src[i] == '\\')
     {
@@ -182,8 +182,8 @@ void unesc(char *src)
 void mark_esc(char *src, char *esc)
 {
   int i;
-  int len = strlen(src);
-  for(i = 0; i < len; i++) // clear esc
+  /* int len = strlen(src); */
+  for(i = 0; src[i]; i++) // clear esc
   {
     esc[i] = 0;
   }
@@ -194,7 +194,7 @@ void mark_esc(char *src, char *esc)
     then once we have determined string/char literals, we can search again for stray backslashes
   */
   i = 0;
-  while(i < len)
+  while(src[i])
   {
     if(src[i] == '\\')
     {
@@ -213,14 +213,14 @@ void mark_esc(char *src, char *esc)
 void mark_quot(char *src, char *esc, char *quot)
 {
   int i;
-  int len = strlen(src);
-  for(i = 0; i < len; i++) // clear quot
+  /* int len = strlen(src); */
+  for(i = 0; src[i]; i++) // clear quot
   {
     quot[i] = 0;
   }
 
   char curquot = 0; // either 0, single quote, or double quote
-  for(i = 0; i < len; i++)
+  for(i = 0; src[i]; i++)
   {
     quot[i] = curquot;
 
@@ -240,21 +240,52 @@ void mark_quot(char *src, char *esc, char *quot)
   }
 }
 
+
+void stray_backslash(char *src, char *esc, char *quot)
+{
+  for(int i = 0; src[i]; i++)
+  {
+    assert(src[i] != '\\' || quot[i]);
+  }
+}
+
+
+void rem_comments(char *src, char *esc, char *quot)
+{
+  int i, c = 0;
+  int incomment = 0;
+  for(i = 0; src[i+1]; i++)
+  {
+    if(src[i] == '/' && src[i+1] == '*' && !quot[i] && !quot[i+1])
+    {
+      
+    }
+  }
+  
+}
+
+
 int main()
 {
   int c;
   int i = 0;
   char src[1000], quot[1000], esc[1000];
-  while((c = getchar()) != EOF)
+
+  while((c = getchar()) != EOF) // read in src
   {
     src[i++] = c;
   }
-  src[i] = 0;
+  src[i] = 0; // null terminate
 
-  fold(src);
-  mark_esc(src, esc);
-  mark_quot(src, esc, quot);
-  /* unesc(src); */
+  fold(src); // delete backslash + newline combinations
+
+  mark_esc(src, esc); // mark backslash escape sequences
+  mark_quot(src, esc, quot); // mark single and double quoted regions
+
+  stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
+
+  // replace multiline comments with single space
+
   printf("%s", src);
   for(i = 0; i < strlen(src); i++)
   {
