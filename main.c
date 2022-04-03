@@ -14,6 +14,7 @@
 #include <string.h>
 // #include <time.h>
 #define putd(x) printf(#x ": %d\n", x)
+#define newl() puts("")
 
 #define CHAR_MAX 255
 
@@ -31,7 +32,7 @@ void decomment(char *src)
 
 
 // replaces backslash + newline with nothing
-void fold(char *src)
+void splice(char *src)
 {
   /* int len = strlen(src); */
   int c = 0, i = 0;
@@ -189,7 +190,7 @@ void mark_esc(char *src, char *esc)
   }
 
   /*
-    following fold(), the only backslashes must be in char/string literals
+    following splice(), the only backslashes must be in char/string literals
     we can mark these, so that we know which single/double quotes to ignore later
     then once we have determined string/char literals, we can search again for stray backslashes
   */
@@ -288,6 +289,10 @@ void rem_comments(char *src, char *esc, char *quot)
   
 }
 
+
+
+
+
 int main()
 {
   int c;
@@ -300,7 +305,7 @@ int main()
   }
   src[i] = 0; // null terminate
 
-  fold(src); // delete backslash + newline combinations
+  splice(src); // delete backslash + newline combinations
 
   mark_esc(src, esc); // mark backslash escape sequences
   mark_quot(src, esc, quot); // mark single and double quoted regions
@@ -308,6 +313,8 @@ int main()
   rem_comments(src, esc, quot); // replace multiline comments with single space
 
   stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
+
+  // get all top level statements
 
   printf("%s", src);
   for(i = 0; i < strlen(src); i++)
