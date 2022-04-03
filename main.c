@@ -292,15 +292,43 @@ void rem_comments(char *src, char *esc, char *quot)
 
 int **toplevel(char *src, char *esc, char *quot)
 {
+  int size = 100;
+  int count = 0;
+  int (*statements)[2] = malloc(size*sizeof(int [2]));
   int start = 0, end; // statement start and end
   int paren_dep = 0, brace_dep = 0; // depth of parens and braces
 
-  int i = 0;
-  while(src[i])
+  int i;
+  for(i = 0; src[i]; i++)
   {
-    if(src[i] == ';' && !paren_dep && !brace_dep) // end of top level statement
+    // update depths of parens/braces
+    if(src[i] == '{')
+      brace_dep++;
+    if(src[i] == '}')
+      brace_dep--;
+    if(src[i] == '(')
+      paren_dep++;
+    if(src[i] == ')')
+      paren_dep--;
+    
+    if((src[i] == ';' && !paren_dep && !brace_dep)) // end of top level statement
     {
       end = i+1;
+      statements[count][0] = start;
+      statements[count][1] = end;
+
+      start = i + 1;
+
+      count++;
+    }
+
+    else if(src[i] == '}' && !paren_dep && !brace_dep) // possibly end of top level compound statement
+    {
+      end = i+1;
+      statements[count][0] = start;
+      statements[count][1] = end;
+
+      start = i+1;
     }
   }
 }
