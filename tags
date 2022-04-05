@@ -4,18 +4,21 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-CHAR	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+CHAR	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 CHAR_MAX	main.c	19;"	d	file:
-ERRTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
-IDENTIFIER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
-KEYWORD	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
-NOTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
-STRLIT	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+ERRTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+FLOATING	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+IDENTIFIER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+INTEGER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+KEYWORD	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+NOTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+STRLIT	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+UNCERTAIN	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 data	main.c	/^  void *data;$/;"	m	struct:tok	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
-decomment	main.c	/^void decomment(char *src)$/;"	f
 iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
+issuffix	main.c	/^int issuffix(char c) \/\/ is integer or floating point suffix$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
@@ -30,7 +33,7 @@ splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 tok	main.c	/^typedef struct tok$/;"	s	file:
 tok	main.c	/^} tok;$/;"	t	typeref:struct:tok	file:
-tok_type	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	g	file:
+tok_type	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	g	file:
 tok_type	main.c	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type	file:
 type	main.c	/^  tok_type type; \/\/ char, string lit, cast, etc.$/;"	m	struct:tok	file:
 unesc	main.c	/^void unesc(char *src)$/;"	f

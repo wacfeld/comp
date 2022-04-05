@@ -10,7 +10,7 @@
 // #include <signal.h>
 // #include <stdarg.h>
 // #include <stddef.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 // #include <time.h>
 #define putd(x) printf(#x ": %d\n", x)
@@ -19,16 +19,16 @@
 #define CHAR_MAX 255
 
 
-void decomment(char *src)
-{
-  int len = strlen(src);
-  // don't nest
-  // ignore in string literals
-  // ignore in character literals
-  // must terminate before EOF
+// void decomment(char *src)
+// {
+//   int len = strlen(src);
+//   // don't nest
+//   // ignore in string literals
+//   // ignore in character literals
+//   // must terminate before EOF
   
   
-}
+// }
 
 
 // replaces backslash + newline with nothing
@@ -335,7 +335,7 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 
-enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};
 typedef enum tok_type tok_type;
 
 typedef struct tok
@@ -402,7 +402,7 @@ int iskeyword(char *s)
 
   for(int i = 0; i < len; i++)
   {
-    if(!strcmp(keywords[i]), s)
+    if(!strcmp(keywords[i], s))
     {
       return 1;
     }
@@ -418,17 +418,24 @@ int iskeyword(char *s)
 // }
 
 
+int issuffix(char c) // is integer or floating point suffix
+{
+  return c == 'l' || c == 'L' || c == 'u' || c == 'U' || c == 'f' || c == 'F';
+}
+
+
+
 tok nexttok(char *src, char *esc, char *quot)
 {
   static int i = 0;
+
+  tok t;
   if(src == NULL) // reset i
   {
     i = 0;
     // doesn't actually matter what we return
     return t;
   }
-
-  tok t;
 
   while(isspace(src[i])) i++; // skip leading whitespace
 
@@ -443,6 +450,8 @@ tok nexttok(char *src, char *esc, char *quot)
     int size = 10;
     int c = 0;
     char *str = malloc(size * sizeof(char));
+
+    // get the certain tokens out of the way
 
     // write identifier/keyword into str
     while(isletter(src[i]) || isdigit(src[i]))
@@ -472,6 +481,88 @@ tok nexttok(char *src, char *esc, char *quot)
   }
   if(isdigit(src[i])) // integer or float constant
   {
+    int size = 10;
+    char *str = malloc(size * sizeof(char));
+    int c = 0;
+
+    str[c++] = src[i++]; // first digit
+
+    assert(isdigit(src[i]) || src[i] == 'x' || src[i] == 'X'); // digit or hex indicator
+
+    str[c++] = src[i++]; // second digit
+
+    while(isxdigit(src[i])) // rest of digits
+    {
+      str[c++] = src[i++];
+    }
+
+    /*
+operators/delimiters:
+      !%&()*+,-./:;<=>?[]^{|}~
+quotes:
+      "'
+banned:
+      #$@\`
+digits:
+      0123456789
+letters:
+      ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_
+whitespace:
+
+       */
+
+    // see above list for process-of-elimination reasoning below
+    if(issuffix(src[i]) || !isletter(src[i])) // integer
+    {
+      assert(src[i] != 'f' && src[i] != 'F'); // invalid integer suffix
+      char suf = 0;
+
+      if(issuffix(src[i]))
+      {
+        suf = src[i];
+        i++;
+      }
+
+      t.type = INTEGER;
+      // TODO
+    }
+    else if(src[i] == '.') // float constant
+    {
+      str[c++] = src[i++];
+
+      while(isxdigit(src[i])) // fractional part
+      {
+        str[c++] = src[i++];
+      }
+
+      if(src[i] == 'e' || src[i] == 'E') // exponent
+      {
+        str[c++] = src[i++]; // write exponent
+        if(src[i] == '+' || src[i] == '-') // sign
+        {
+          str[c++] = src[i++]; // write sign
+        }
+
+        assert(isdigit(src[i])); // digits must follow, regardless of sign
+        while(isdigit(src[i]))
+        {
+          str[c++] = src[i++];
+        }
+      }
+      
+      char suf = 0;
+      if(issuffix(src[i]) && src[i] != 'u' && src[i] != 'U') // valid float suffix
+      {
+        suf = src[i];
+        i++;
+      }
+      else assert(!isletter(src[i])); // if no suffix, must not be letter
+
+      t.type = FLOATING;
+      // TODO
+    }
+
+    assert(!"invalid suffix");
   }
   if(src[i] == '"') // string literal
   {
@@ -548,15 +639,20 @@ tok nexttok(char *src, char *esc, char *quot)
 
 int main()
 {
-  int k = 0;
-  for(int k = 0; k < 256; k++)
-  {
-    if(isprint(k) && !isspace(k))
-      putchar(k);
-  }
-  newl();
-  float f = -0.5;
-  printf("%f\n", f);
+  // int $hello = 5;
+  // putd($hello);
+  // float x = 1.;
+  // printf("%f\n", x);
+  // int k = 0;
+  // for(int k = 0; k < 256; k++)
+  // {
+  //   if(isprint(k) && !isspace(k))
+  //     putchar(k);
+  // }
+  // newl();
+  // float f = -0.5;
+  // printf("%f\n", f);
+
   int c;
   int i = 0;
   char src[1000], quot[1000], esc[1000];
@@ -575,6 +671,8 @@ int main()
   rem_comments(src, esc, quot); // replace multiline comments with single space
 
   stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
+
+  // TODO get rid of stray: #, $, @, \, `
 
   // get all top level statements
 
