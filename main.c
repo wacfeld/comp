@@ -290,52 +290,273 @@ void rem_comments(char *src, char *esc, char *quot)
 }
 
 
-int **toplevel(char *src, char *esc, char *quot)
-{
-  int size = 100;
-  int count = 0;
-  int (*statements)[2] = malloc(size*sizeof(int [2]));
-  int start = 0, end; // statement start and end
-  int paren_dep = 0, brace_dep = 0; // depth of parens and braces
+// int **toplevel(char *src, char *esc, char *quot)
+// {
+//   int size = 100;
+//   int count = 0;
+//   int (*statements)[2] = malloc(size*sizeof(int [2]));
+//   int start = 0, end; // statement start and end
+//   int paren_dep = 0, brace_dep = 0; // depth of parens and braces
 
-  int i;
-  for(i = 0; src[i]; i++)
-  {
-    // update depths of parens/braces
-    if(src[i] == '{')
-      brace_dep++;
-    if(src[i] == '}')
-      brace_dep--;
-    if(src[i] == '(')
-      paren_dep++;
-    if(src[i] == ')')
-      paren_dep--;
+//   int i;
+//   for(i = 0; src[i]; i++)
+//   {
+//     // update depths of parens/braces
+//     if(src[i] == '{')
+//       brace_dep++;
+//     if(src[i] == '}')
+//       brace_dep--;
+//     if(src[i] == '(')
+//       paren_dep++;
+//     if(src[i] == ')')
+//       paren_dep--;
     
-    if((src[i] == ';' && !paren_dep && !brace_dep)) // end of top level statement
+//     if((src[i] == ';' && !paren_dep && !brace_dep)) // end of top level statement
+//     {
+//       end = i+1;
+//       statements[count][0] = start;
+//       statements[count][1] = end;
+
+//       start = i + 1;
+
+//       count++;
+//     }
+
+//     else if(src[i] == '}' && !paren_dep && !brace_dep) // possibly end of top level compound statement
+//     {
+//       end = i+1;
+//       statements[count][0] = start;
+//       statements[count][1] = end;
+
+//       start = i+1;
+//     }
+//   }
+// }
+
+
+
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};
+typedef enum tok_type tok_type;
+
+typedef struct tok
+{
+  // TODO
+  tok_type type; // char, string lit, cast, etc.
+  // union {/* TODO */} data;
+  void *data;
+
+  /* modifiers (e.x. long, short, etc.) */
+
+} tok;
+
+// gets next (toplevel) statement from string & tokenizes
+// these two steps must be done simultaneously, as far as i can tell
+// otherwise it's very difficult to tell when a statement ends
+tok *nextstat(char *src, char *esc, char *quot)
+{
+}
+
+
+int isletter(char c)
+{
+  return (isalpha(c) || c == '_'); // identifier letters can be [a-zA-Z] or underscore
+}
+
+int iskeyword(char *s)
+{
+  static char *keywords[] =
+  {
+    "auto",
+    "break",
+    "case",
+    "char",
+    "const",
+    "continue",
+    "default",
+    "do",
+    "double",
+    "else",
+    "enum",
+    "extern",
+    "float",
+    "for",
+    "goto",
+    "if",
+    "int",
+    "long",
+    "register",
+    "return",
+    "short",
+    "signed",
+    "sizeof",
+    "static",
+    "struct",
+    "switch",
+    "typedef",
+    "union",
+    "unsigned",
+    "void",
+    "volatile",
+    "while"};
+  static int len = sizeof(keywords) / sizeof(char *);
+
+  for(int i = 0; i < len; i++)
+  {
+    if(!strcmp(keywords[i]), s)
     {
-      end = i+1;
-      statements[count][0] = start;
-      statements[count][1] = end;
-
-      start = i + 1;
-
-      count++;
-    }
-
-    else if(src[i] == '}' && !paren_dep && !brace_dep) // possibly end of top level compound statement
-    {
-      end = i+1;
-      statements[count][0] = start;
-      statements[count][1] = end;
-
-      start = i+1;
+      return 1;
     }
   }
+  return 0;
 }
+
+
+// int isoperator(char c)
+// {
+//   static char operators[] = "!%&*+
+  
+// }
+
+
+tok nexttok(char *src, char *esc, char *quot)
+{
+  static int i = 0;
+  if(src == NULL) // reset i
+  {
+    i = 0;
+    // doesn't actually matter what we return
+    return t;
+  }
+
+  tok t;
+
+  while(isspace(src[i])) i++; // skip leading whitespace
+
+  if(!src[i]) // end of src
+  {
+    t.type = NOTOK;
+    return t; // signal no token to caller
+  }
+  
+  if(isletter(src[i])) // identifier or keyword or enum constant
+  {
+    int size = 10;
+    int c = 0;
+    char *str = malloc(size * sizeof(char));
+
+    // write identifier/keyword into str
+    while(isletter(src[i]) || isdigit(src[i]))
+    {
+      str[c++] = src[i];
+      if(c >= size)
+      {
+        str = realloc(str, size*2);
+        size *= 2;
+      }
+
+    }
+    str[c] = 0;
+
+    if(iskeyword(str)) // keyword
+    {
+      t.type = KEYWORD;
+      t.data = str;
+    }
+    else // identifier
+    {
+      t.type = IDENTIFIER;
+      t.data = str;
+    }
+
+    return t;
+  }
+  if(isdigit(src[i])) // integer or float constant
+  {
+  }
+  if(src[i] == '"') // string literal
+  {
+    i++; // skip quotation mark
+
+    int size = 10;
+    char *str = malloc(size * sizeof(char));
+    int c = 0;
+
+    // write string into str
+    while(quot[i])
+    {
+      str[c++] = src[i];
+      if(c > size)
+      {
+        str = realloc(str, size*2);
+        size *= 2;
+      }
+    }
+    str[c] = 0;
+    i++; // skip closing quotation mark
+
+    unesc(str); // convert escape sequences into the real deal
+    
+    t.type = STRLIT;
+    t.data = str;
+
+    return t;
+  }
+  if(src[i] == '\'') // character constant
+  {
+    i++; // skip quote
+
+    int size = 10;
+    char *str = malloc(size * sizeof(char));
+    int c = 0;
+
+    // write string into str
+    while(quot[i])
+    {
+      str[c++] = src[i];
+      if(c > size)
+      {
+        str = realloc(str, size*2);
+        size *= 2;
+      }
+    }
+    str[c] = 0;
+    i++; // skip closing quotation mark
+
+    unesc(str); // convert escape sequences into the real deal
+    assert(strlen(str) == 1); // the final literalized character should be unaccompanied
+
+    char *chr = malloc(sizeof(char) * 1);
+    *chr = str[0];
+    
+    t.type = CHAR;
+    t.data = chr;
+
+    return t;
+  }
+  /*
+  floats can start with dots
+  colons can be for labels
+  parens/braces can be many things
+  ternary operators
+  minus sign can be arrow operator
+     */
+
+
+}
+
 
 
 int main()
 {
+  int k = 0;
+  for(int k = 0; k < 256; k++)
+  {
+    if(isprint(k) && !isspace(k))
+      putchar(k);
+  }
+  newl();
+  float f = -0.5;
+  printf("%f\n", f);
   int c;
   int i = 0;
   char src[1000], quot[1000], esc[1000];

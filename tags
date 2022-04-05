@@ -4,20 +4,35 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CHAR	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
 CHAR_MAX	main.c	19;"	d	file:
+ERRTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+IDENTIFIER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+KEYWORD	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+NOTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+STRLIT	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	e	enum:tok_type	file:
+data	main.c	/^  void *data;$/;"	m	struct:tok	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 decomment	main.c	/^void decomment(char *src)$/;"	f
+iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
+isletter	main.c	/^int isletter(char c)$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 newl	main.c	17;"	d	file:
+nextstat	main.c	/^tok *nextstat(char *src, char *esc, char *quot)$/;"	f
+nexttok	main.c	/^tok nexttok(char *src, char *esc, char *quot)$/;"	f
 putd	dcl/main.c	16;"	d	file:
 putd	main.c	16;"	d	file:
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
-toplevel	main.c	/^int **toplevel(char *src, char *esc, char *quot)$/;"	f
+tok	main.c	/^typedef struct tok$/;"	s	file:
+tok	main.c	/^} tok;$/;"	t	typeref:struct:tok	file:
+tok_type	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR};$/;"	g	file:
+tok_type	main.c	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type	file:
+type	main.c	/^  tok_type type; \/\/ char, string lit, cast, etc.$/;"	m	struct:tok	file:
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 xtod	main.c	/^int xtod(char c)$/;"	f
