@@ -77,9 +77,12 @@ UNMIN	main.c	/^enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC
 UNPLUS	main.c	/^enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};$/;"	e	enum:op_type	file:
 UNSIGNED	main.c	/^int UNSIGNED = 2;$/;"	v
 XOREQ	main.c	/^enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};$/;"	e	enum:op_type	file:
+check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 data	main.c	/^  void *data;$/;"	m	struct:tok	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 flags	main.c	/^  int flags;$/;"	m	struct:tok	file:
+hrop	main.c	/^char *hrop[100] = {$/;"	v
+hrtok	main.c	/^char *hrtok[100] = {$/;"	v
 int_len	main.c	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len	file:
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
@@ -87,6 +90,7 @@ iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
+main	test.c	/^int main()$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 newl	main.c	17;"	d	file:
@@ -96,7 +100,7 @@ op_type	main.c	/^enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, D
 putd	dcl/main.c	16;"	d	file:
 putd	main.c	16;"	d	file:
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
-resize	main.c	443;"	d	file:
+resize	main.c	453;"	d	file:
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 tok	main.c	/^typedef struct tok$/;"	s	file:

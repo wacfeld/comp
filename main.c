@@ -336,7 +336,17 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR, COMMASEP, COLON, QUESTION};
+
 enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
+
+
+// human readable
+char *hrtok[100] = {
+[NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [OPERATOR]="OPERATOR", [COMMASEP]="COMMASEP", [COLON]="COLON", [QUESTION]="QUESTION"};
+
+char *hrop[100] = {
+  [FCALL]="FCALL",
+[ARRIND]="ARRIND", [ARROW]="ARROW", [DOT]="DOT", [LOGNOT]="LOGNOT", [BITNOT]="BITNOT", [INC]="INC", [DEC]="DEC", [UNPLUS]="UNPLUS", [UNMIN]="UNMIN", [DEREF]="DEREF", [CAST]="CAST", [SIZEOF]="SIZEOF", [TIMES]="TIMES", [DIV]="DIV", [MOD]="MOD", [BINPLUS]="BINPLUS", [BINMIN]="BINMIN", [SHL]="SHL", [SHR]="SHR", [LESS]="LESS", [LEQ]="LEQ", [GREAT]="GREAT", [GEQ]="GEQ", [EQEQ]="EQEQ", [NOTEQ]="NOTEQ", [BITAND]="BITAND", [BITXOR]="BITXOR", [BITOR]="BITOR", [LOGAND]="LOGAND", [LOGOR]="LOGOR", [TERNARY]="TERNARY", [TERNARYQUEST]="TERNARYQUEST", [EQ]="EQ", [PLUSEQ]="PLUSEQ", [MINEQ]="MINEQ", [TIMESEQ]="TIMESEQ", [DIVEQ]="DIVEQ", [MODEQ]="MODEQ", [ANDEQ]="ANDEQ", [XOREQ]="XOREQ", [OREQ]="OREQ", [SHLEQ]="SHLEQ", [SHREQ]="SHREQ", [COMMA]="COMMA", [PLUS]="PLUS", [MIN]="MIN", [STAR]="STAR"};
 
 // flags
 int LONG = 1;
@@ -1050,7 +1060,14 @@ leaddot:
 
 }
 
-
+void check_stray(char *src, char *esc, char *quot, char *banned)
+{
+  int i;
+  for(i = 0; src[i]; i++)
+  {
+    assert(strchr(banned, src[i]) == NULL || quot[i]);
+  }
+}
 
 int main()
 {
@@ -1087,26 +1104,27 @@ int main()
 
   rem_comments(src, esc, quot); // replace multiline comments with single space
 
-  stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
-  // TODO get rid of stray: #, $, @, \, `
+  // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
+  check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+
 
   // get all top level statements
 
-  printf("%s", src);
-  for(i = 0; i < strlen(src); i++)
-  {
-    if(esc[i]) putchar('e');
-    else putchar('.');
-  }
-  puts("");
-  for(i = 0; i < strlen(src); i++)
-  {
-    if(quot[i] == 0)
-    {
-      putchar('.');
-    }
-    else
-      putchar(quot[i]);
-  }
+  // printf("%s", src);
+  // for(i = 0; i < strlen(src); i++)
+  // {
+  //   if(esc[i]) putchar('e');
+  //   else putchar('.');
+  // }
+  // puts("");
+  // for(i = 0; i < strlen(src); i++)
+  // {
+  //   if(quot[i] == 0)
+  //   {
+  //     putchar('.');
+  //   }
+  //   else
+  //     putchar(quot[i]);
+  // }
 
 }
