@@ -99,8 +99,9 @@ nexttok	main.c	/^tok nexttok(char *src, char *esc, char *quot)$/;"	f
 op_type	main.c	/^enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};$/;"	g	file:
 putd	dcl/main.c	16;"	d	file:
 putd	main.c	16;"	d	file:
+puttok	main.c	/^void puttok(tok t)$/;"	f
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
-resize	main.c	453;"	d	file:
+resize	main.c	463;"	d	file:
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 tok	main.c	/^typedef struct tok$/;"	s	file:
