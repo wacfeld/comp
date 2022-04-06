@@ -335,8 +335,8 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 
-enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR};
-enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR, COMMASEP, COLON, QUESTION};
+enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
 
 // flags
 int LONG = 1;
@@ -907,10 +907,16 @@ leaddot:
       t.flags = DIV;
   }
 
-  else if(src[i] == '%')
+  else if(src[i] == '%') // % %=
   {
     i++;
-    t.flags = MOD;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = MODEQ;
+    }
+    else
+      t.flags = MOD;
   }
 
   else if(src[i] == '<') // < << <<= <=
@@ -958,7 +964,81 @@ leaddot:
     else
       t.flags = GREAT;
   }
+
+  else if(src[i] == '=') // = ==
+  {
+    i++;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = EQEQ;
+    }
+    else
+      t.flags = EQ;
+  }
+
+  else if(src[i] == '&') // & && &=
+  {
+    i++;
+    if(src[i] == '&')
+    {
+      i++;
+      t.flags = LOGAND;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags = ANDEQ;
+    }
+    else
+      t.flags = BITAND;
+  }
+
+  else if(src[i] == '|') // | || |=
+  {
+    i++;
+    if(src[i] == '|')
+    {
+      i++;
+      t.flags = LOGOR;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags = OREQ;
+    }
+    else
+      t.flags = BITOR;
+  }
+
+  else if(src[i] == '^')
+  {
+    i++;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = XOREQ;
+    }
+    else
+      t.flags = BITXOR;
+  }
+
+  else if(src[i] == ',') // can be separator or operator. assume separator for now
+  {
+    t.type = COMMASEP;
+  }
+
+  else if(src[i] == ':') // can be part of label or part of ternary
+  {
+    t.type = COLON;
+  }
+
+  else if(src[i] == '?') // part of ternary (incomplete, must complete later)
+  {
+    t.flags = TERNARYQUEST;
+  }
   
+  return t;
   /*
   floats can start with dots
   colons can be for labels
