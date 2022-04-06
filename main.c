@@ -438,6 +438,8 @@ int isfloatsuffix(char c)
 
 tok nexttok(char *src, char *esc, char *quot)
 {
+  // lots of this might be doable with regex, but i'm not sure
+
   static int i = 0;
 
   tok t;
@@ -561,37 +563,41 @@ whitespace:
           assert(!"invalid integer suffix");
       }
 
+      // we either don't check for overflows or do so later
       u_int64_t *num = malloc(1*sizeof(u_int64_t)); // store in 64 bits regardless of actual size
       *num = 0;
 
-      char *cop_str = str; // copy string
-
+      int i = 0; // for indexing string soon
       // determine base
       int base = 10;
       if(str[0] == 0 && (str[1] == 'x' || str[1] == 'X'))
       {
         base = 16;
-        str += 2;
+        i += 2;
       }
       else if(str[0] == 0) // 0 on its own can also be seen as octal
         base = 8;
 
       // read str into num
-      while(*str)
+      while(str[i])
       {
-        *num += xtod(*str); // xtod works on octal and decimal numbers too
+        *num += xtod(str[i]); // xtod works on octal and decimal numbers too
         *num *= base;
+        i++;
       }
 
       free(str); // no memory leaks to be found here, maybe
 
       t.data = num;
+
+      return t;
     }
     else if(src[i] == '.') // float constant
     {
-      str[c++] = src[i++];
+      str[c++] = src[i++]; // write the dot
+      t.type = FLOATING;
 
-      while(isxdigit(src[i])) // fractional part
+      while(isxdigit(src[i])) // write the fractional part
       {
         str[c++] = src[i++];
       }
@@ -605,21 +611,20 @@ whitespace:
         }
 
         assert(isdigit(src[i])); // digits must follow, regardless of sign
-        while(isdigit(src[i]))
+        while(isdigit(src[i])) // write digits
         {
           str[c++] = src[i++];
         }
       }
       
-      char suf = 0;
-      if(isfloatsuffix(src[i]) && src[i] != 'u' && src[i] != 'U') // valid float suffix
+      if(isfloatsuffix(src[i]))
       {
+        // parse suffix
         suf = src[i];
         i++;
       }
       else assert(!isletter(src[i])); // if no suffix, must not be letter
 
-      t.type = FLOATING;
       // TODO
     }
 
