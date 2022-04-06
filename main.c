@@ -335,7 +335,8 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 
-enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR};
+enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA};
 
 // flags
 int LONG = 1;
@@ -471,7 +472,7 @@ tok nexttok(char *src, char *esc, char *quot)
   {
     goto leaddot; // here be raptors
   }
-  if(isletter(src[i])) // identifier or keyword or enum constant
+  else if(isletter(src[i])) // identifier or keyword or enum constant
   {
     // int size = 10;
     // int c = 0;
@@ -500,13 +501,14 @@ tok nexttok(char *src, char *esc, char *quot)
     }
     else // identifier
     {
-      t.type = IDENTIFIER;
+      t.type = IDENT;
       t.data = str;
     }
 
     return t;
   }
-  if(isdigit(src[i])) // integer or float constant
+
+  else if(isdigit(src[i])) // integer or float constant
   {
     // int size = 10;
     // char *str = malloc(size * sizeof(char));
@@ -562,18 +564,18 @@ whitespace:
         {
           char s2 = tolower(src[i+1]);
           assert((s1 == 'u' && s2 == 'l') || (s1 == 'l' && s2 == 'u')); // only combinations of two int suffixes, hardcoded to save trouble
-          t.flags += FLONG + FUNSIGNED;
+          t.flags += LONG + UNSIGNED;
 
           i += 2;
         }
         else if(s1 == 'u')
         {
-          t.flags = FUNSIGNED;
+          t.flags = UNSIGNED;
           i++;
         }
         else if(s1 == 'l')
         {
-          t.flags = FLONG;
+          t.flags = LONG;
           i++;
         }
         else
@@ -609,6 +611,7 @@ whitespace:
 
       return t;
     }
+
     else if(src[i] == '.') // float constant
     {
 leaddot:
@@ -687,7 +690,8 @@ leaddot:
 
     assert(!"this assert should never run");
   }
-  if(src[i] == '"') // string literal
+
+  else if(src[i] == '"') // string literal
   {
     i++; // skip quotation mark
 
@@ -717,7 +721,8 @@ leaddot:
 
     return t;
   }
-  if(src[i] == '\'') // character constant
+
+  else if(src[i] == '\'') // character constant
   {
     i++; // skip quote
 
@@ -751,6 +756,73 @@ leaddot:
 
     return t;
   }
+
+  else if(src[i] == ';') // semicolon, easiest case
+  {
+    t.type = SEMICOLON;
+    i++;
+    return t;
+  }
+
+  // separators
+  else if(src[i] == '(') // also sometimes part of operator
+  {
+    t.type = PARENOP;
+    i++;
+    return t;
+  }
+  else if(src[i] == ')') // also sometimes part of operator
+  {
+    t.type == PARENCL;
+    i++;
+    return t;
+  }
+  else if(src[i] == '{')
+  {
+    t.type == BRACEOP;
+    i++;
+    return t;
+  }
+  else if(src[i] == '}')
+  {
+    t.type == BRACECL;
+    i++;
+    return t;
+  }
+  else if(src[i] == '[')
+  {
+    t.type == BRACKOP;
+    i++;
+    return t;
+  }
+  else if(src[i] == ']')
+  {
+    t.type == BRACKCL;
+    i++;
+    return t;
+  }
+
+  // now for operators
+  // sometimes operators do not appear whole
+  // e.x. function calls and casts
+  // we mark all parens as just parens and leave it to later logic to sort out what's actually going on
+  
+  t.type = OPERATOR; // process of elimination
+  // we use t.flags to store the operator subtype because bad practice
+
+  // note that there are identical unary and binary operators
+  // those are determined by later context
+  
+  if(src[i] == '-') // - -- ->
+  {
+    i++;
+    if(src[i] == '>')
+    {
+      i++;
+      t.flags = 
+    }
+  }
+  
   /*
   floats can start with dots
   colons can be for labels
@@ -799,7 +871,6 @@ int main()
   rem_comments(src, esc, quot); // replace multiline comments with single space
 
   stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
-
   // TODO get rid of stray: #, $, @, \, `
 
   // get all top level statements
