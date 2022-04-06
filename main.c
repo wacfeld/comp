@@ -438,6 +438,8 @@ int isfloatsuffix(char c)
   return c == 'l' || c == 'L' || c == 'f' || c == 'F';
 }
 
+// use realloc when necessary to expand a dynamically allocated array
+#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s);}
 
 tok nexttok(char *src, char *esc, char *quot)
 {
@@ -461,11 +463,19 @@ tok nexttok(char *src, char *esc, char *quot)
     return t; // signal no token to caller
   }
   
+  int size = 10;
+  int c = 0;
+  char *str = malloc(size * sizeof(char));
+
+  if(src[i] == '.' && isdigit(src[i+1])) // leading dot floating point
+  {
+    goto leaddot; // here be raptors
+  }
   if(isletter(src[i])) // identifier or keyword or enum constant
   {
-    int size = 10;
-    int c = 0;
-    char *str = malloc(size * sizeof(char));
+    // int size = 10;
+    // int c = 0;
+    // char *str = malloc(size * sizeof(char));
 
     // get the certain tokens out of the way
 
@@ -473,11 +483,12 @@ tok nexttok(char *src, char *esc, char *quot)
     while(isletter(src[i]) || isdigit(src[i]))
     {
       str[c++] = src[i];
-      if(c >= size)
-      {
-        str = realloc(str, size*2);
-        size *= 2;
-      }
+      // if(c >= size)
+      // {
+      //   str = realloc(str, size*2);
+      //   size *= 2;
+      // }
+      resize(str, c, size);
 
     }
     str[c] = 0;
@@ -497,24 +508,27 @@ tok nexttok(char *src, char *esc, char *quot)
   }
   if(isdigit(src[i])) // integer or float constant
   {
-    int size = 10;
-    char *str = malloc(size * sizeof(char));
-    int c = 0;
+    // int size = 10;
+    // char *str = malloc(size * sizeof(char));
+    // int c = 0;
 
     str[c++] = src[i++]; // first digit
+    resize(str, c, size);
 
     assert(isdigit(src[i]) || src[i] == 'x' || src[i] == 'X'); // digit or hex indicator
 
     str[c++] = src[i++]; // second digit
+    resize(str, c, size);
 
     while(isxdigit(src[i])) // rest of digits
     {
       str[c++] = src[i++];
-      if(c >= size)
-      {
-        str = realloc(str, size*2);
-        size *= 2;
-      }
+      // if(c >= size)
+      // {
+      //   str = realloc(str, size*2);
+      //   size *= 2;
+      // }
+      resize(str, c, size);
     }
 
     /*
@@ -597,26 +611,34 @@ whitespace:
     }
     else if(src[i] == '.') // float constant
     {
+leaddot:
       str[c++] = src[i++]; // write the dot
+      resize(str, c, size);
+
       t.type = FLOATING;
 
       while(isxdigit(src[i])) // write the fractional part
       {
         str[c++] = src[i++];
+        resize(str, c, size);
       }
 
       if(src[i] == 'e' || src[i] == 'E') // exponent
       {
         str[c++] = src[i++]; // write exponent
+        resize(str, c, size);
+
         if(src[i] == '+' || src[i] == '-') // sign
         {
           str[c++] = src[i++]; // write sign
+          resize(str, c, size);
         }
 
         assert(isdigit(src[i])); // digits must follow, regardless of sign
         while(isdigit(src[i])) // write digits
         {
           str[c++] = src[i++];
+          resize(str, c, size);
         }
       }
 
@@ -657,6 +679,8 @@ whitespace:
 
         t.flags = 0;
       }
+
+      free(str); // no longer needed
       
       return t;
     }
@@ -667,14 +691,16 @@ whitespace:
   {
     i++; // skip quotation mark
 
-    int size = 10;
-    char *str = malloc(size * sizeof(char));
-    int c = 0;
+    // int size = 10;
+    // char *str = malloc(size * sizeof(char));
+    // int c = 0;
 
     // write string into str
     while(quot[i])
     {
       str[c++] = src[i];
+      resize(str, c, size);
+
       if(c > size)
       {
         str = realloc(str, size*2);
@@ -695,14 +721,16 @@ whitespace:
   {
     i++; // skip quote
 
-    int size = 10;
-    char *str = malloc(size * sizeof(char));
-    int c = 0;
+    // int size = 10;
+    // char *str = malloc(size * sizeof(char));
+    // int c = 0;
 
     // write string into str
     while(quot[i])
     {
       str[c++] = src[i];
+      resize(str, c, size);
+
       if(c > size)
       {
         str = realloc(str, size*2);
