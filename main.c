@@ -336,7 +336,7 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR};
-enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA};
+enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
 
 // flags
 int LONG = 1;
@@ -813,14 +813,67 @@ leaddot:
   // note that there are identical unary and binary operators
   // those are determined by later context
   
-  if(src[i] == '-') // - -- ->
+  if(src[i] == '-') // - -- -> -=
   {
     i++;
     if(src[i] == '>')
     {
       i++;
-      t.flags = 
+      t.flags = ARROW;
     }
+    else if(src[i] == '-')
+    {
+      i++;
+      t.flags = DEC;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags = MINEQ;
+    }
+    else
+      t.flags = MIN; // MIN is not a final operator, it's a placeholder before we know if it's unary or binary
+  }
+
+  else if(src[i] == '.') // guaranteed now not to be float
+  {
+    i++;
+    t.flags = DOT;
+  }
+
+  else if(src[i] == '!') // ! !=
+  {
+    i++;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = NOTEQ;
+    }
+    else
+      t.flags = LOGNOT;
+  }
+
+  else if(src[i] == '~')
+  {
+    i++;
+    t.flags = BITNOT;
+  }
+
+  else if(src[i] == '+') // + += ++
+  {
+    i++;
+    if(src[i] == '+')
+    {
+      i++;
+      t.flags == INC;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags == PLUSEQ;
+    }
+    else
+      t.flags == PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
   }
   
   /*
@@ -838,6 +891,7 @@ leaddot:
 
 int main()
 {
+  int x;
   // int hellonumber = 5UL;
   // int $hello = 5;
   // putd($hello);
