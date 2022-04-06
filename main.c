@@ -472,7 +472,7 @@ tok nexttok(char *src, char *esc, char *quot)
   {
     goto leaddot; // here be raptors
   }
-  else if(isletter(src[i])) // identifier or keyword or enum constant
+  else if(isletter(src[i])) // identifier or keyword or enum constant (or sizeof)
   {
     // int size = 10;
     // int c = 0;
@@ -493,6 +493,13 @@ tok nexttok(char *src, char *esc, char *quot)
 
     }
     str[c] = 0;
+
+    if(!strcmp(str, "sizeof")) // special case, sizeof is an operator
+    {
+      t.type = OPERATOR;
+      t.flags = SIZEOF;
+      return t;
+    }
 
     if(iskeyword(str)) // keyword
     {
@@ -874,6 +881,82 @@ leaddot:
     }
     else
       t.flags == PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
+  }
+
+  else if(src[i] == '*') // * *=
+  {
+    i++;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = TIMESEQ;
+    }
+    else
+      t.flags = STAR; // STAR is not a final operator, it's a placeholder before we know if it's unary or binary
+  }
+
+  else if(src[i] == '/') // / /*
+  {
+    i++;
+    if(src[i] == '=')
+    {
+      i++;
+      t.flags = DIVEQ;
+    }
+    else
+      t.flags = DIV;
+  }
+
+  else if(src[i] == '%')
+  {
+    i++;
+    t.flags = MOD;
+  }
+
+  else if(src[i] == '<') // < << <<= <=
+  {
+    i++;
+    if(src[i] == '<')
+    {
+      i++;
+      if(src[i] == '=')
+      {
+        i++;
+        t.flags = SHLEQ;
+      }
+      else
+        t.flags = SHL;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags = LEQ;
+    }
+    else
+      t.flags = LESS;
+  }
+
+  else if(src[i] == '>') // > >> >>= >=
+  {
+    i++;
+    if(src[i] == '>')
+    {
+      i++;
+      if(src[i] == '=')
+      {
+        i++;
+        t.flags = SHREQ;
+      }
+      else
+        t.flags = SHR;
+    }
+    else if(src[i] == '=')
+    {
+      i++;
+      t.flags = GEQ;
+    }
+    else
+      t.flags = GREAT;
   }
   
   /*
