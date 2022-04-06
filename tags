@@ -7,15 +7,17 @@
 CHAR	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 CHAR_MAX	main.c	19;"	d	file:
 ERRTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+FLOAT	main.c	/^int FLOAT = 2;$/;"	v
 FLOATING	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
-FLONG	main.c	/^int FLONG = 1;$/;"	v
-FUNSIGNED	main.c	/^int FUNSIGNED = 2;$/;"	v
 IDENTIFIER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 INTEGER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 KEYWORD	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+LONG	main.c	/^int LONG = 1;$/;"	v
+LONGDOUBLE	main.c	/^int LONGDOUBLE = 1;$/;"	v
 NOTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 STRLIT	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 UNCERTAIN	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+UNSIGNED	main.c	/^int UNSIGNED = 2;$/;"	v
 data	main.c	/^  void *data;$/;"	m	struct:tok	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 flags	main.c	/^  int flags;$/;"	m	struct:tok	file:

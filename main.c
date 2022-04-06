@@ -338,8 +338,11 @@ void rem_comments(char *src, char *esc, char *quot)
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};
 
 // flags
-int FLONG = 1;
-int FUNSIGNED = 2;
+int LONG = 1;
+int UNSIGNED = 2;
+
+int LONGDOUBLE = 1;
+int FLOAT = 2;
 
 typedef enum tok_type tok_type;
 typedef enum int_len int_len;
@@ -551,12 +554,12 @@ whitespace:
         }
         else if(s1 == 'u')
         {
-          t.flags = FUNSIGNED
+          t.flags = FUNSIGNED;
           i++;
         }
         else if(s1 == 'l')
         {
-          t.flags = FLONG
+          t.flags = FLONG;
           i++;
         }
         else
@@ -616,19 +619,49 @@ whitespace:
           str[c++] = src[i++];
         }
       }
+
+      str[c] = 0; // null terminate
       
+      char suf = 0;
       if(isfloatsuffix(src[i]))
       {
         // parse suffix
-        suf = src[i];
+        suf = tolower(src[i]);
         i++;
       }
       else assert(!isletter(src[i])); // if no suffix, must not be letter
 
-      // TODO
+      // get c stdlib to do this for me because i'm lazy
+      // therefore, stupidly, the sizes for floating points will depend on what compiler this compiler is compiled in
+      if(suf == 'f') // float
+      {
+        float *num = malloc(sizeof(float)*1);
+        sscanf(str, "%f", num);
+        t.data = num;
+
+        t.flags = FLOAT;
+      }
+      else if(suf == 'l') // long double
+      {
+        long double *num = malloc(sizeof(long double)*1);
+        sscanf(str, "%Lf", num);
+        t.data = num;
+
+        t.flags = LONGDOUBLE;
+      }
+      else // double
+      {
+        double *num = malloc(sizeof(double)*1);
+        sscanf(str, "%lf", num);
+        t.data = num;
+
+        t.flags = 0;
+      }
+      
+      return t;
     }
 
-    assert(!"invalid suffix");
+    assert(!"this assert should never run");
   }
   if(src[i] == '"') // string literal
   {
