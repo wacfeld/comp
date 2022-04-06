@@ -376,6 +376,10 @@ void puttok(tok t)
     printf("%s ", (char *)t.data);
   if(t.type == CHAR)
     printf("%c ", *(char *)t.data);
+  if(t.type == INTEGER)
+  {
+    printf("%ld ", *(long *)t.data);
+  }
   newl();
 }
 
@@ -626,19 +630,19 @@ whitespace:
       int i = 0; // for indexing string soon
       // determine base
       int base = 10;
-      if(str[0] == 0 && (str[1] == 'x' || str[1] == 'X'))
+      if(str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
       {
         base = 16;
         i += 2;
       }
-      else if(str[0] == 0) // 0 on its own can also be seen as octal
+      else if(str[0] == '0') // 0 on its own can also be seen as octal
         base = 8;
 
       // read str into num
       while(str[i])
       {
-        *num += xtod(str[i]); // xtod works on octal and decimal numbers too
         *num *= base;
+        *num += xtod(str[i]); // xtod works on octal and decimal numbers too
         i++;
       }
 
