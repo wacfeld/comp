@@ -8,6 +8,8 @@ CHAR	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, U
 CHAR_MAX	main.c	19;"	d	file:
 ERRTOK	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 FLOATING	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
+FLONG	main.c	/^int FLONG = 1;$/;"	v
+FUNSIGNED	main.c	/^int FUNSIGNED = 2;$/;"	v
 IDENTIFIER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 INTEGER	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 KEYWORD	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
@@ -16,9 +18,12 @@ STRLIT	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR,
 UNCERTAIN	main.c	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};$/;"	e	enum:tok_type	file:
 data	main.c	/^  void *data;$/;"	m	struct:tok	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
+flags	main.c	/^  int flags;$/;"	m	struct:tok	file:
+int_len	main.c	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len	file:
+isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
+isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
-issuffix	main.c	/^int issuffix(char c) \/\/ is integer or floating point suffix$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f

@@ -336,7 +336,13 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENTIFIER, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING};
+
+// flags
+int FLONG = 1;
+int FUNSIGNED = 2;
+
 typedef enum tok_type tok_type;
+typedef enum int_len int_len;
 
 typedef struct tok
 {
@@ -344,6 +350,7 @@ typedef struct tok
   tok_type type; // char, string lit, cast, etc.
   // union {/* TODO */} data;
   void *data;
+  int flags;
 
   /* modifiers (e.x. long, short, etc.) */
 
@@ -418,11 +425,15 @@ int iskeyword(char *s)
 // }
 
 
-int issuffix(char c) // is integer or floating point suffix
+int isintsuffix(char c)
 {
-  return c == 'l' || c == 'L' || c == 'u' || c == 'U' || c == 'f' || c == 'F';
+  return c == 'l' || c == 'L' || c == 'u' || c == 'U';
 }
 
+int isfloatsuffix(char c)
+{
+  return c == 'l' || c == 'L' || c == 'f' || c == 'F';
+}
 
 
 tok nexttok(char *src, char *esc, char *quot)
@@ -494,6 +505,11 @@ tok nexttok(char *src, char *esc, char *quot)
     while(isxdigit(src[i])) // rest of digits
     {
       str[c++] = src[i++];
+      if(c >= size)
+      {
+        str = realloc(str, size*2);
+        size *= 2;
+      }
     }
 
     /*
@@ -512,19 +528,64 @@ whitespace:
        */
 
     // see above list for process-of-elimination reasoning below
-    if(issuffix(src[i]) || !isletter(src[i])) // integer
+    // if(isintsuffix(src[i]) || !isletter(src[i])) // integer
+    if(src[i] != '.') // no decimal point, therefore integer
     {
-      assert(src[i] != 'f' && src[i] != 'F'); // invalid integer suffix
-      char suf = 0;
-
-      if(issuffix(src[i]))
-      {
-        suf = src[i];
-        i++;
-      }
+      str[c] = 0; // null terminate
 
       t.type = INTEGER;
-      // TODO
+      t.flags = 0;
+
+      if(isletter(src[i])) // suffix time
+      {
+        char s1 = tolower(src[i]);
+        if(isletter(src[i+1])) // two suffixes!
+        {
+          char s2 = tolower(src[i+1]);
+          assert((s1 == 'u' && s2 == 'l') || (s1 == 'l' && s2 == 'u')); // only combinations of two int suffixes, hardcoded to save trouble
+          t.flags += FLONG + FUNSIGNED;
+
+          i += 2;
+        }
+        else if(s1 == 'u')
+        {
+          t.flags = FUNSIGNED
+          i++;
+        }
+        else if(s1 == 'l')
+        {
+          t.flags = FLONG
+          i++;
+        }
+        else
+          assert(!"invalid integer suffix");
+      }
+
+      u_int64_t *num = malloc(1*sizeof(u_int64_t)); // store in 64 bits regardless of actual size
+      *num = 0;
+
+      char *cop_str = str; // copy string
+
+      // determine base
+      int base = 10;
+      if(str[0] == 0 && (str[1] == 'x' || str[1] == 'X'))
+      {
+        base = 16;
+        str += 2;
+      }
+      else if(str[0] == 0) // 0 on its own can also be seen as octal
+        base = 8;
+
+      // read str into num
+      while(*str)
+      {
+        *num += xtod(*str); // xtod works on octal and decimal numbers too
+        *num *= base;
+      }
+
+      free(str); // no memory leaks to be found here, maybe
+
+      t.data = num;
     }
     else if(src[i] == '.') // float constant
     {
@@ -551,7 +612,7 @@ whitespace:
       }
       
       char suf = 0;
-      if(issuffix(src[i]) && src[i] != 'u' && src[i] != 'U') // valid float suffix
+      if(isfloatsuffix(src[i]) && src[i] != 'u' && src[i] != 'U') // valid float suffix
       {
         suf = src[i];
         i++;
@@ -639,6 +700,7 @@ whitespace:
 
 int main()
 {
+  // int hellonumber = 5UL;
   // int $hello = 5;
   // putd($hello);
   // float x = 1.;
