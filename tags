@@ -101,7 +101,7 @@ putd	dcl/main.c	16;"	d	file:
 putd	main.c	16;"	d	file:
 puttok	main.c	/^void puttok(tok t)$/;"	f
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
-resize	main.c	463;"	d	file:
+resize	main.c	470;"	d	file:
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 tok	main.c	/^typedef struct tok$/;"	s	file:

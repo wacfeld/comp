@@ -1,5 +1,5 @@
 int main()
 {
-  int x = 0;
+label: char *s = "reallyreallyreallylongstringwow";
 }
 

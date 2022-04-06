@@ -367,8 +367,15 @@ void puttok(tok t)
   printf("%s ", hrtok[t.type]);
   if(t.type == OPERATOR)
   {
-    printf("%s", hrop[t.flags]);
+    printf("%s ", hrop[t.flags]);
   }
+  printf("%d ", t.flags);
+  if(t.type == FLOATING)
+    printf("%f ", *((double*) t.data));
+  if(t.type == STRLIT)
+    printf("%s ", (char *)t.data);
+  if(t.type == CHAR)
+    printf("%c ", *(char *)t.data);
   newl();
 }
 
@@ -649,8 +656,9 @@ leaddot:
       resize(str, c, size);
 
       t.type = FLOATING;
+      t.flags = 0;
 
-      while(isxdigit(src[i])) // write the fractional part
+      while(isdigit(src[i])) // write the fractional part
       {
         str[c++] = src[i++];
         resize(str, c, size);
@@ -732,7 +740,7 @@ leaddot:
     // write string into str
     while(quot[i])
     {
-      str[c++] = src[i];
+      str[c++] = src[i++];
       resize(str, c, size);
 
       if(c > size)
@@ -763,7 +771,7 @@ leaddot:
     // write string into str
     while(quot[i])
     {
-      str[c++] = src[i];
+      str[c++] = src[i++];
       resize(str, c, size);
 
       if(c > size)
@@ -895,15 +903,15 @@ leaddot:
     if(src[i] == '+')
     {
       i++;
-      t.flags == INC;
+      t.flags = INC;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags == PLUSEQ;
+      t.flags = PLUSEQ;
     }
     else
-      t.flags == PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
+      t.flags = PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '*') // * *=
@@ -1048,16 +1056,19 @@ leaddot:
 
   else if(src[i] == ',') // can be separator or operator. assume separator for now
   {
+    i++;
     t.type = COMMASEP;
   }
 
   else if(src[i] == ':') // can be part of label or part of ternary
   {
+    i++;
     t.type = COLON;
   }
 
   else if(src[i] == '?') // part of ternary (incomplete, must complete later)
   {
+    i++;
     t.flags = TERNARYQUEST;
   }
   
