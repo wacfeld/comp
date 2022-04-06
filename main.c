@@ -627,6 +627,7 @@ whitespace:
       u_int64_t *num = malloc(1*sizeof(u_int64_t)); // store in 64 bits regardless of actual size
       *num = 0;
 
+      assert(tolower(str[1]) != 'x' || str[2] != 0);
       int i = 0; // for indexing string soon
       // determine base
       int base = 10;
