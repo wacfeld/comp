@@ -372,7 +372,7 @@ void puttok(tok t)
   printf("%d ", t.flags);
   if(t.type == FLOATING)
     printf("%f ", *((double*) t.data));
-  if(t.type == STRLIT)
+  if(t.type == STRLIT || t.type == IDENT || t.type == KEYWORD)
     printf("%s ", (char *)t.data);
   if(t.type == CHAR)
     printf("%c ", *(char *)t.data);
@@ -624,7 +624,7 @@ whitespace:
       }
 
       // we either don't check for overflows or do so later
-      u_int64_t *num = malloc(1*sizeof(u_int64_t)); // store in 64 bits regardless of actual size
+      u_int32_t *num = malloc(1*sizeof(u_int32_t));
       *num = 0;
 
       assert(tolower(str[1]) != 'x' || str[2] != 0);
@@ -701,6 +701,7 @@ leaddot:
 
       // get c stdlib to do this for me because i'm lazy
       // therefore, stupidly, the sizes for floating points will depend on what compiler this compiler is compiled in
+
       if(suf == 'f') // float
       {
         float *num = malloc(sizeof(float)*1);
@@ -711,16 +712,16 @@ leaddot:
       }
       else if(suf == 'l') // long double
       {
-        long double *num = malloc(sizeof(long double)*1);
-        sscanf(str, "%Lf", num);
+        float *num = malloc(sizeof(float)*1);
+        sscanf(str, "%f", num);
         t.data = num;
 
         t.flags = LONGDOUBLE;
       }
       else // double
       {
-        double *num = malloc(sizeof(double)*1);
-        sscanf(str, "%lf", num);
+        float *num = malloc(sizeof(float)*1);
+        sscanf(str, "%f", num);
         t.data = num;
 
         t.flags = 0;
@@ -1100,7 +1101,9 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 
 int main()
 {
-  int x;
+  // int x;
+  // (x) = 5;
+  // putd(x);
   // int hellonumber = 5UL;
   // int $hello = 5;
   // putd($hello);
