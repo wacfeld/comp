@@ -16,8 +16,11 @@
 #define putd(x) printf(#x ": %d\n", x)
 #define newl() puts("")
 
+// use realloc when necessary to expand a dynamically allocated array
+#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s);}
 
 #define allocstr(str, size, c) int size = 10; int c = 0; char *str = malloc(size);
+#define read(str, size, c, src, i) str[c++] = src[i++]; resize(str, c, size);
 
 #define CHAR_MAX 255
 #define CHAR_SIZE 1
@@ -591,8 +594,6 @@ int isfloatsuffix(char c)
   return c == 'l' || c == 'L' || c == 'f' || c == 'F';
 }
 
-// use realloc when necessary to expand a dynamically allocated array
-#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s);}
 
 tok nexttok(char *src, char *esc, char *quot)
 {
@@ -616,9 +617,10 @@ tok nexttok(char *src, char *esc, char *quot)
     return t; // signal no token to caller
   }
   
-  int size = 10;
-  int c = 0;
-  char *str = malloc(size * sizeof(char));
+  // int size = 10;
+  // int c = 0;
+  // char *str = malloc(size * sizeof(char));
+  allocstr(str, size, c);
 
   if(src[i] == '.' && isdigit(src[i+1])) // leading dot floating point
   {
