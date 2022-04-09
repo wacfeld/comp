@@ -1,6 +1,15 @@
 int main()
 {
-        *num *= base;
-        *num += xtod(str[i]); // xtod works on octal and decimal numbers too
+  case 1: ;
+  switch(1)
+  {
+case 1: ;
+  }
+
+}
+
+
+int f()
+{
 }
 

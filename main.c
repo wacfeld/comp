@@ -16,11 +16,13 @@
 #define putd(x) printf(#x ": %d\n", x)
 #define newl() puts("")
 
+
+#define allocstr(str, size, c) int size = 10; int c = 0; char *str = malloc(size);
+
 #define CHAR_MAX 255
 #define CHAR_SIZE 1
 #define FLOAT_SIZE 4
 #define INT_SIZE 4
-
 
 // void decomment(char *src)
 // {
@@ -338,60 +340,210 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 
-enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, ATOM, COMMASEP, COLON, QUESTION};
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};
 
-enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
+enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};
 
 typedef enum tok_type tok_type;
 typedef enum int_len int_len;
 
-typedef struct tok
-{
-  // TODO
-  tok_type type; // char, string lit, cast, etc.
-  // union {/* TODO */} data;
-  void *data;
-  int flags;
+// replaced by union of structs
+// typedef struct tok
+// {
+//   // TODO
+//   tok_type type; // char, string lit, cast, etc.
+//   // union {/* TODO */} data;
+//   void *data;
+//   int flags;
 
-  /* modifiers (e.x. long, short, etc.) */
+//   /* modifiers (e.x. long, short, etc.) */
+
+// } tok;
+
+typedef union
+{
+  struct 
+  {
+    tok_type type;
+  } gen;
+
+  struct
+  {
+    tok_type type;
+    int cont;
+  } keyword;
+
+  struct
+  {
+    tok_type type;
+    char *cont;
+  } ident;
+
+  struct
+  {
+    tok_type type;
+    char *cont;
+  } strlit;
+
+  struct
+  {
+    tok_type type;
+    char cont;
+  } character; // char is reserved
+
+  struct
+  {
+    tok_type type;
+    u_int32_t cont;
+    int islong;
+    int isunsigned;
+  } integer;
+
+  struct
+  {
+    tok_type type;
+    float cont;
+    int islong;
+    int isshort;
+  } floating;
+
+  struct
+  {
+    tok_type type;
+    enum atom_type cont;
+  } atom;
 
 } tok;
 
 // human readable, for debugging purposes only
 char *hrtok[100] = {
-[NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [ATOM]="ATOM", [COMMASEP]="COMMASEP", [COLON]="COLON", [QUESTION]="QUESTION"};
+[NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [ATOM]="ATOM"};
 
-char *hrop[100] = {
+char *hrat[100] = {
   [FCALL]="FCALL",
-[ARRIND]="ARRIND", [ARROW]="ARROW", [DOT]="DOT", [LOGNOT]="LOGNOT", [BITNOT]="BITNOT", [INC]="INC", [DEC]="DEC", [UNPLUS]="UNPLUS", [UNMIN]="UNMIN", [DEREF]="DEREF", [CAST]="CAST", [SIZEOF]="SIZEOF", [TIMES]="TIMES", [DIV]="DIV", [MOD]="MOD", [BINPLUS]="BINPLUS", [BINMIN]="BINMIN", [SHL]="SHL", [SHR]="SHR", [LESS]="LESS", [LEQ]="LEQ", [GREAT]="GREAT", [GEQ]="GEQ", [EQEQ]="EQEQ", [NOTEQ]="NOTEQ", [BITAND]="BITAND", [BITXOR]="BITXOR", [BITOR]="BITOR", [LOGAND]="LOGAND", [LOGOR]="LOGOR", [TERNARY]="TERNARY", [TERNARYQUEST]="TERNARYQUEST", [EQ]="EQ", [PLUSEQ]="PLUSEQ", [MINEQ]="MINEQ", [TIMESEQ]="TIMESEQ", [DIVEQ]="DIVEQ", [MODEQ]="MODEQ", [ANDEQ]="ANDEQ", [XOREQ]="XOREQ", [OREQ]="OREQ", [SHLEQ]="SHLEQ", [SHREQ]="SHREQ", [COMMA]="COMMA", [PLUS]="PLUS", [MIN]="MIN", [STAR]="STAR"};
+[ARRIND]="ARRIND",
+[ARROW]="ARROW",
+[DOT]="DOT",
+[LOGNOT]="LOGNOT",
+[BITNOT]="BITNOT",
+[INC]="INC",
+[DEC]="DEC",
+[UNPLUS]="UNPLUS",
+[UNMIN]="UNMIN",
+[DEREF]="DEREF",
+[CAST]="CAST",
+[SIZEOF]="SIZEOF",
+[TIMES]="TIMES",
+[DIV]="DIV",
+[MOD]="MOD",
+[BINPLUS]="BINPLUS",
+[BINMIN]="BINMIN",
+[SHL]="SHL",
+[SHR]="SHR",
+[LESS]="LESS",
+[LEQ]="LEQ",
+[GREAT]="GREAT",
+[GEQ]="GEQ",
+[EQEQ]="EQEQ",
+[NOTEQ]="NOTEQ",
+[BITAND]="BITAND",
+[BITXOR]="BITXOR",
+[BITOR]="BITOR",
+[LOGAND]="LOGAND",
+[LOGOR]="LOGOR",
+[TERNARY]="TERNARY",
+[QUESTION]="QUESTION",
+[EQ]="EQ",
+[PLUSEQ]="PLUSEQ",
+[MINEQ]="MINEQ",
+[TIMESEQ]="TIMESEQ",
+[DIVEQ]="DIVEQ",
+[MODEQ]="MODEQ",
+[ANDEQ]="ANDEQ",
+[XOREQ]="XOREQ",
+[OREQ]="OREQ",
+[SHLEQ]="SHLEQ",
+[SHREQ]="SHREQ",
+[COMMA]="COMMA",
+[COLON]="COLON",
+[PLUS]="PLUS",
+[MIN]="MIN",
+[STAR]="STAR",
+[SEMICOLON]="SEMICOLON",
+[PARENOP]="PARENOP",
+[PARENCL]="PARENCL",
+[BRACEOP]="BRACEOP",
+[BRACECL]="BRACECL",
+[BRACKOP]="BRACKOP",
+[BRACKCL]="BRACKCL",
+};
+
+enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; // sizeof not here because it's an operator
+char *keywords[] =
+{
+  [K_AUTO]="auto",
+  [K_BREAK]="break",
+  [K_CASE]="case",
+  [K_CHAR]="char",
+  [K_CONST]="const",
+  [K_CONTINUE]="continue",
+  [K_DEFAULT]="default",
+  [K_DO]="do",
+  [K_DOUBLE]="double",
+  [K_ELSE]="else",
+  [K_ENUM]="enum",
+  [K_EXTERN]="extern",
+  [K_FLOAT]="float",
+  [K_FOR]="for",
+  [K_GOTO]="goto",
+  [K_IF]="if",
+  [K_INT]="int",
+  [K_LONG]="long",
+  [K_REGISTER]="register",
+  [K_RETURN]="return",
+  [K_SHORT]="short",
+  [K_SIGNED]="signed",
+  [K_STATIC]="static",
+  [K_STRUCT]="struct",
+  [K_SWITCH]="switch",
+  [K_TYPEDEF]="typedef",
+  [K_UNION]="union",
+  [K_UNSIGNED]="unsigned",
+  [K_VOID]="void",
+  [K_VOLATILE]="volatile",
+  [K_WHILE]="while"};
+
 
 void puttok(tok t)
 {
-  printf("%s ", hrtok[t.type]);
-  if(t.type == ATOM)
+  printf("%s ", hrtok[t.gen.type]);
+  if(t.gen.type == ATOM)
   {
-    printf("%s ", hrop[t.flags]);
+    printf("%s ", hrat[t.atom.cont]);
   }
-  printf("%d ", t.flags);
-  if(t.type == FLOATING)
-    printf("%f ", *((double*) t.data));
-  if(t.type == STRLIT || t.type == IDENT || t.type == KEYWORD)
-    printf("%s ", (char *)t.data);
-  if(t.type == CHAR)
-    printf("%c ", *(char *)t.data);
-  if(t.type == INTEGER)
+  if(t.gen.type == FLOATING)
+    printf("%f ", t.floating.cont);
+  if(t.gen.type == STRLIT || t.gen.type == IDENT)
+    printf("%s ", t.strlit.cont);
+  if(t.gen.type == KEYWORD)
   {
-    printf("%ld ", *(long *)t.data);
+    printf("%s ", keywords[t.keyword.cont]);
+  }
+  if(t.gen.type == CHAR)
+    printf("%c ", t.character.cont);
+  if(t.gen.type == INTEGER)
+  {
+    printf("%d ", t.integer.cont);
   }
   newl();
 }
 
-// flags
-int LONG = 1;
-int UNSIGNED = 2;
+// flags (no longer in use, replaced by individual variables
+// int LONG = 1;
+// int UNSIGNED = 2;
 
-int LONGDOUBLE = 1;
-int FLOAT = 2;
+// int LONGDOUBLE = 1;
+// int FLOAT = 2;
 
 
 // gets next (toplevel) statement from string & tokenizes
@@ -409,50 +561,16 @@ int isletter(char c)
 
 int iskeyword(char *s)
 {
-  static char *keywords[] =
-  {
-    "auto",
-    "break",
-    "case",
-    "char",
-    "const",
-    "continue",
-    "default",
-    "do",
-    "double",
-    "else",
-    "enum",
-    "extern",
-    "float",
-    "for",
-    "goto",
-    "if",
-    "int",
-    "long",
-    "register",
-    "return",
-    "short",
-    "signed",
-    "sizeof",
-    "static",
-    "struct",
-    "switch",
-    "typedef",
-    "union",
-    "unsigned",
-    "void",
-    "volatile",
-    "while"};
   static int len = sizeof(keywords) / sizeof(char *);
 
   for(int i = 0; i < len; i++)
   {
     if(!strcmp(keywords[i], s))
     {
-      return 1;
+      return i;
     }
   }
-  return 0;
+  return -1;
 }
 
 
@@ -494,7 +612,7 @@ tok nexttok(char *src, char *esc, char *quot)
 
   if(!src[i]) // end of src
   {
-    t.type = NOTOK;
+    t.gen.type = NOTOK;
     return t; // signal no token to caller
   }
   
@@ -530,20 +648,21 @@ tok nexttok(char *src, char *esc, char *quot)
 
     if(!strcmp(str, "sizeof")) // special case, sizeof is an operator
     {
-      t.type = ATOM;
-      t.flags = SIZEOF;
+      t.gen.type = ATOM;
+      t.atom.cont = SIZEOF;
       return t;
     }
 
-    if(iskeyword(str)) // keyword
+    int k;
+    if((k = iskeyword(str)) != -1) // keyword
     {
-      t.type = KEYWORD;
-      t.data = str;
+      t.gen.type = KEYWORD;
+      t.keyword.cont = k;
     }
     else // identifier
     {
-      t.type = IDENT;
-      t.data = str;
+      t.gen.type = IDENT;
+      t.ident.cont = str;
     }
 
     return t;
@@ -598,8 +717,9 @@ whitespace:
     {
       str[c] = 0; // null terminate
 
-      t.type = INTEGER;
-      t.flags = 0;
+      t.gen.type = INTEGER;
+      t.integer.isunsigned = 0;
+      t.integer.islong = 0;
 
       if(isletter(src[i])) // suffix time
       {
@@ -608,18 +728,19 @@ whitespace:
         {
           char s2 = tolower(src[i+1]);
           assert((s1 == 'u' && s2 == 'l') || (s1 == 'l' && s2 == 'u')); // only combinations of two int suffixes, hardcoded to save trouble
-          t.flags += LONG + UNSIGNED;
+          t.integer.isunsigned = 1;
+          t.integer.islong = 1;
 
           i += 2;
         }
         else if(s1 == 'u')
         {
-          t.flags = UNSIGNED;
+          t.integer.isunsigned = 1;
           i++;
         }
         else if(s1 == 'l')
         {
-          t.flags = LONG;
+          t.integer.islong = 1;
           i++;
         }
         else
@@ -627,8 +748,7 @@ whitespace:
       }
 
       // we either don't check for overflows or do so later
-      u_int32_t *num = malloc(1*sizeof(u_int32_t));
-      *num = 0;
+      u_int32_t num = 0;
 
       assert(tolower(str[1]) != 'x' || str[2] != 0);
       int i = 0; // for indexing string soon
@@ -645,14 +765,14 @@ whitespace:
       // read str into num
       while(str[i])
       {
-        *num *= base;
-        *num += xtod(str[i]); // xtod works on octal and decimal numbers too
+        num *= base;
+        num += xtod(str[i]); // xtod works on octal and decimal numbers too
         i++;
       }
 
       free(str); // no memory leaks to be found here, maybe
 
-      t.data = num;
+      t.integer.cont = num;
 
       return t;
     }
@@ -663,8 +783,9 @@ leaddot:
       str[c++] = src[i++]; // write the dot
       resize(str, c, size);
 
-      t.type = FLOATING;
-      t.flags = 0;
+      t.gen.type = FLOATING;
+      t.floating.isshort = 0;
+      t.floating.islong = 0;
 
       while(isdigit(src[i])) // write the fractional part
       {
@@ -705,29 +826,25 @@ leaddot:
       // get c stdlib to do this for me because i'm lazy
       // all floating points are the same size, for convenience (the standard allows this)
 
+      float num;
       if(suf == 'f') // float
       {
-        float *num = malloc(sizeof(float)*1);
-        sscanf(str, "%f", num);
-        t.data = num;
+        sscanf(str, "%f", &num);
+        t.floating.cont = num;
 
-        t.flags = FLOAT;
+        t.floating.isshort = 1;
       }
       else if(suf == 'l') // long double
       {
-        float *num = malloc(sizeof(float)*1);
-        sscanf(str, "%f", num);
-        t.data = num;
+        sscanf(str, "%f", &num);
+        t.floating.cont = num;
 
-        t.flags = LONGDOUBLE;
+        t.floating.islong = 1;
       }
       else // double
       {
-        float *num = malloc(sizeof(float)*1);
-        sscanf(str, "%f", num);
-        t.data = num;
-
-        t.flags = 0;
+        sscanf(str, "%f", &num);
+        t.floating.cont = num;
       }
 
       free(str); // no longer needed
@@ -763,8 +880,8 @@ leaddot:
 
     unesc(str); // convert escape sequences into the real deal
     
-    t.type = STRLIT;
-    t.data = str;
+    t.gen.type = STRLIT;
+    t.strlit.cont = str;
 
     return t;
   }
@@ -795,18 +912,19 @@ leaddot:
     unesc(str); // convert escape sequences into the real deal
     assert(strlen(str) == 1); // the final literalized character should be unaccompanied
 
-    char *chr = malloc(sizeof(char) * 1);
-    *chr = str[0];
+    char chr;
+    chr = str[0];
     
-    t.type = CHAR;
-    t.data = chr;
+    t.gen.type = CHAR;
+    t.character.cont = chr;
 
     return t;
   }
 
   else if(src[i] == ';') // semicolon, easiest case
   {
-    t.type = SEMICOLON;
+    t.gen.type = ATOM;
+    t.atom.cont = SEMICOLON;
     i++;
     return t;
   }
@@ -814,37 +932,43 @@ leaddot:
   // separators
   else if(src[i] == '(') // also sometimes part of operator
   {
-    t.type = PARENOP;
+    t.gen.type = ATOM;
+    t.atom.cont = PARENOP;
     i++;
     return t;
   }
   else if(src[i] == ')') // also sometimes part of operator
   {
-    t.type = PARENCL;
+    t.gen.type = ATOM;
+      t.atom.cont = PARENCL;
     i++;
     return t;
   }
   else if(src[i] == '{')
   {
-    t.type = BRACEOP;
+    t.gen.type = ATOM;
+    t.atom.cont = BRACEOP;
     i++;
     return t;
   }
   else if(src[i] == '}')
   {
-    t.type = BRACECL;
+    t.gen.type = ATOM;
+    t.atom.cont = BRACECL;
     i++;
     return t;
   }
   else if(src[i] == '[')
   {
-    t.type = BRACKOP;
+    t.gen.type = ATOM;
+    t.atom.cont = BRACKOP;
     i++;
     return t;
   }
   else if(src[i] == ']')
   {
-    t.type = BRACKCL;
+    t.gen.type = ATOM;
+    t.atom.cont = BRACKCL;
     i++;
     return t;
   }
@@ -854,8 +978,7 @@ leaddot:
   // e.x. function calls and casts
   // we mark all parens as just parens and leave it to later logic to sort out what's actually going on
   
-  t.type = ATOM; // process of elimination
-  // we use t.flags to store the operator subtype because bad practice
+  t.gen.type = ATOM; // process of elimination
 
   // note that there are identical unary and binary operators
   // those are determined by later context
@@ -866,26 +989,26 @@ leaddot:
     if(src[i] == '>')
     {
       i++;
-      t.flags = ARROW;
+      t.atom.cont = ARROW;
     }
     else if(src[i] == '-')
     {
       i++;
-      t.flags = DEC;
+      t.atom.cont = DEC;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = MINEQ;
+      t.atom.cont = MINEQ;
     }
     else
-      t.flags = MIN; // MIN is not a final operator, it's a placeholder before we know if it's unary or binary
+      t.atom.cont = MIN; // MIN is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '.') // guaranteed now not to be float
   {
     i++;
-    t.flags = DOT;
+    t.atom.cont = DOT;
   }
 
   else if(src[i] == '!') // ! !=
@@ -894,16 +1017,16 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = NOTEQ;
+      t.atom.cont = NOTEQ;
     }
     else
-      t.flags = LOGNOT;
+      t.atom.cont = LOGNOT;
   }
 
   else if(src[i] == '~')
   {
     i++;
-    t.flags = BITNOT;
+    t.atom.cont = BITNOT;
   }
 
   else if(src[i] == '+') // + += ++
@@ -912,15 +1035,15 @@ leaddot:
     if(src[i] == '+')
     {
       i++;
-      t.flags = INC;
+      t.atom.cont = INC;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = PLUSEQ;
+      t.atom.cont = PLUSEQ;
     }
     else
-      t.flags = PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
+      t.atom.cont = PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '*') // * *=
@@ -929,10 +1052,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = TIMESEQ;
+      t.atom.cont = TIMESEQ;
     }
     else
-      t.flags = STAR; // STAR is not a final operator, it's a placeholder before we know if it's unary or binary
+      t.atom.cont = STAR; // STAR is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '/') // / /*
@@ -941,10 +1064,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = DIVEQ;
+      t.atom.cont = DIVEQ;
     }
     else
-      t.flags = DIV;
+      t.atom.cont = DIV;
   }
 
   else if(src[i] == '%') // % %=
@@ -953,10 +1076,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = MODEQ;
+      t.atom.cont = MODEQ;
     }
     else
-      t.flags = MOD;
+      t.atom.cont = MOD;
   }
 
   else if(src[i] == '<') // < << <<= <=
@@ -968,18 +1091,18 @@ leaddot:
       if(src[i] == '=')
       {
         i++;
-        t.flags = SHLEQ;
+        t.atom.cont = SHLEQ;
       }
       else
-        t.flags = SHL;
+        t.atom.cont = SHL;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = LEQ;
+      t.atom.cont = LEQ;
     }
     else
-      t.flags = LESS;
+      t.atom.cont = LESS;
   }
 
   else if(src[i] == '>') // > >> >>= >=
@@ -991,18 +1114,18 @@ leaddot:
       if(src[i] == '=')
       {
         i++;
-        t.flags = SHREQ;
+        t.atom.cont = SHREQ;
       }
       else
-        t.flags = SHR;
+        t.atom.cont = SHR;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = GEQ;
+      t.atom.cont = GEQ;
     }
     else
-      t.flags = GREAT;
+      t.atom.cont = GREAT;
   }
 
   else if(src[i] == '=') // = ==
@@ -1011,10 +1134,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = EQEQ;
+      t.atom.cont = EQEQ;
     }
     else
-      t.flags = EQ;
+      t.atom.cont = EQ;
   }
 
   else if(src[i] == '&') // & && &=
@@ -1023,15 +1146,15 @@ leaddot:
     if(src[i] == '&')
     {
       i++;
-      t.flags = LOGAND;
+      t.atom.cont = LOGAND;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = ANDEQ;
+      t.atom.cont = ANDEQ;
     }
     else
-      t.flags = BITAND;
+      t.atom.cont = BITAND;
   }
 
   else if(src[i] == '|') // | || |=
@@ -1040,15 +1163,15 @@ leaddot:
     if(src[i] == '|')
     {
       i++;
-      t.flags = LOGOR;
+      t.atom.cont = LOGOR;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.flags = OREQ;
+      t.atom.cont = OREQ;
     }
     else
-      t.flags = BITOR;
+      t.atom.cont = BITOR;
   }
 
   else if(src[i] == '^')
@@ -1057,28 +1180,28 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.flags = XOREQ;
+      t.atom.cont = XOREQ;
     }
     else
-      t.flags = BITXOR;
+      t.atom.cont = BITXOR;
   }
 
   else if(src[i] == ',') // can be separator or operator. assume separator for now
   {
     i++;
-    t.type = COMMASEP;
+    t.atom.cont = COMMA;
   }
 
   else if(src[i] == ':') // can be part of label or part of ternary
   {
     i++;
-    t.type = COLON;
+    t.atom.cont = COLON;
   }
 
   else if(src[i] == '?') // part of ternary (incomplete, must complete later)
   {
     i++;
-    t.flags = TERNARYQUEST;
+    t.atom.cont = QUESTION;
   }
   
   return t;
@@ -1145,7 +1268,7 @@ int main()
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
   tok t;
-  while((t = nexttok(src, esc, quot)).type != NOTOK)
+  while((t = nexttok(src, esc, quot)).gen.type != NOTOK)
     puttok(t);
 
 

@@ -1,5 +1,7 @@
 all: main.c
 	cc main.c -o main -g
+test: test.c
+	gcc test.c -o test -ansi -pedantic -Wextra -Wall
 debug:
 	make all
 	gdb main
