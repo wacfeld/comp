@@ -17,6 +17,9 @@
 #define newl() puts("")
 
 #define CHAR_MAX 255
+#define CHAR_SIZE 1
+#define FLOAT_SIZE 4
+#define INT_SIZE 4
 
 
 // void decomment(char *src)
@@ -335,7 +338,7 @@ void rem_comments(char *src, char *esc, char *quot)
 
 
 
-enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, OPERATOR, COMMASEP, COLON, QUESTION};
+enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL, ATOM, COMMASEP, COLON, QUESTION};
 
 enum op_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR};
 
@@ -354,9 +357,9 @@ typedef struct tok
 
 } tok;
 
-// human readable
+// human readable, for debugging purposes only
 char *hrtok[100] = {
-[NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [OPERATOR]="OPERATOR", [COMMASEP]="COMMASEP", [COLON]="COLON", [QUESTION]="QUESTION"};
+[NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [ATOM]="ATOM", [COMMASEP]="COMMASEP", [COLON]="COLON", [QUESTION]="QUESTION"};
 
 char *hrop[100] = {
   [FCALL]="FCALL",
@@ -365,7 +368,7 @@ char *hrop[100] = {
 void puttok(tok t)
 {
   printf("%s ", hrtok[t.type]);
-  if(t.type == OPERATOR)
+  if(t.type == ATOM)
   {
     printf("%s ", hrop[t.flags]);
   }
@@ -527,7 +530,7 @@ tok nexttok(char *src, char *esc, char *quot)
 
     if(!strcmp(str, "sizeof")) // special case, sizeof is an operator
     {
-      t.type = OPERATOR;
+      t.type = ATOM;
       t.flags = SIZEOF;
       return t;
     }
@@ -700,7 +703,7 @@ leaddot:
       else assert(!isletter(src[i])); // if no suffix, must not be letter
 
       // get c stdlib to do this for me because i'm lazy
-      // therefore, stupidly, the sizes for floating points will depend on what compiler this compiler is compiled in
+      // all floating points are the same size, for convenience (the standard allows this)
 
       if(suf == 'f') // float
       {
@@ -851,7 +854,7 @@ leaddot:
   // e.x. function calls and casts
   // we mark all parens as just parens and leave it to later logic to sort out what's actually going on
   
-  t.type = OPERATOR; // process of elimination
+  t.type = ATOM; // process of elimination
   // we use t.flags to store the operator subtype because bad practice
 
   // note that there are identical unary and binary operators
@@ -1118,6 +1121,8 @@ int main()
   // newl();
   // float f = -0.5;
   // printf("%f\n", f);
+  
+  assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
   int c;
   int i = 0;
