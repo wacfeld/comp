@@ -986,64 +986,71 @@ int main()
       tok_chain[i].cont.tok = toks+i;
   }
 
-  link ** decls = calloc(tcount, sizeof(link *) ); // declarations, a list of linked lists
-  int numdecl = 0;
-  int bracedepth = 0; // used to tell when a declaration is ending
-  link *cur_l = tok_chain;
-  do
-  {
-    if(!decls[numdecl]) // start of new declaration
-    {
-      decls[numdecl] = cur_l;
-      // puttok(*cur_l->cont.tok);
-      cur_l->left = NULL; // start of linked list for declaration
-    }
 
-    link *right = cur_l->right; // may be overwritten soon if declaration ends
 
-    token *cur_tok = cur_l->cont.tok;
 
-    if(isatom(cur_tok, BRACEOP))
-      bracedepth++;
-    if(isatom(cur_tok, BRACECL))
-    {
-      bracedepth--;
-      if(bracedepth == 0) // must be end of statement
-      {
-        if(right && isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
-        {
-          cur_l = right->right;
-          right->right = NULL;
+  // link ** decls = calloc(tcount, sizeof(link *) ); // declarations, a list of linked lists
+  // int numdecl = 0;
+  // int bracedepth = 0; // used to tell when a declaration is ending
+  // link *cur_l = tok_chain;
+  // do
+  // {
+  //   if(!decls[numdecl]) // start of new declaration
+  //   {
+  //     decls[numdecl] = cur_l;
+  //     // puttok(*cur_l->cont.tok);
+  //     cur_l->left = NULL; // start of linked list for declaration
+  //   }
 
-          numdecl++;
-          continue;
-        }
-        else // presume end of function
-        {
-          cur_l->right = NULL;
-          cur_l = right;
+  //   link *right = cur_l->right; // may be overwritten soon if declaration ends
 
-          numdecl++;
-          continue;
-        }
-      }
-    }
+  //   token *cur_tok = cur_l->cont.tok;
 
-    if(isatom(cur_l->cont.tok, SEMICOLON) && bracedepth == 0) // end of declaration
-    {
-      numdecl++;
-      cur_l->right = NULL;
-    }
+  //   if(isatom(cur_tok, BRACEOP))
+  //     bracedepth++;
+  //   if(isatom(cur_tok, BRACECL))
+  //   {
+  //     bracedepth--;
+  //     if(bracedepth == 0) // must be end of statement
+  //     {
+  //       if(right && isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
+  //       {
+  //         cur_l = right->right;
+  //         right->right = NULL;
 
-    cur_l = right;
-  } while(cur_l);
+  //         numdecl++;
+  //         continue;
+  //       }
+  //       else // presume end of function
+  //       {
+  //         cur_l->right = NULL;
+  //         cur_l = right;
 
-  assert(decls[numdecl] == NULL); // otherwise we have an unfinished declaration
+  //         numdecl++;
+  //         continue;
+  //       }
+  //     }
+  //   }
 
-  for(i = 0; i < numdecl; i++)
-  {
-    puttok(*decls[i]->cont.tok);
-  }
+  //   if(isatom(cur_l->cont.tok, SEMICOLON) && bracedepth == 0) // end of declaration
+  //   {
+  //     numdecl++;
+  //     cur_l->right = NULL;
+  //   }
+
+  //   cur_l = right;
+  // } while(cur_l);
+
+  // assert(decls[numdecl] == NULL); // otherwise we have an unfinished declaration
+
+  // for(i = 0; i < numdecl; i++)
+  // {
+  //   puttok(*decls[i]->cont.tok);
+  // }
+
+
+
+
 
 
   // separate top-level declarations
