@@ -41,6 +41,7 @@ EQEQ	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DE
 EQUAL_E	defs.h	/^  EQUAL_E,$/;"	e	enum:expr_type
 ERRTOK	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 EXPR	defs.h	/^  EXPR,$/;"	e	enum:expr_type
+EXPR_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 FCALL	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 FLOATING	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 FLOAT_SIZE	defs.h	31;"	d
@@ -119,6 +120,7 @@ TERNARY	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC,
 TERNARYQUEST	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 TIMES	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 TIMESEQ	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
+TOK_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 UNAR_E	defs.h	/^  UNAR_E,$/;"	e	enum:expr_type
 UNCERTAIN	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 UNMIN	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -126,6 +128,7 @@ UNPLUS	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, 
 XOREQ	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 alloc	defs.h	25;"	d
+args	defs.h	/^  struct expression *args;$/;"	m	struct:expression	typeref:struct:expression::expression
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
 atom_type	defs.h	/^enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, TERNARYQUEST, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
@@ -137,9 +140,13 @@ cont	defs.h	/^    enum atom_type cont;$/;"	m	struct:__anon1::__anon9	typeref:enu
 cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
 cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
+cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon10
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
-expr_type	defs.h	/^enum expr_type$/;"	g
-expression	defs.h	/^} expression;$/;"	t	typeref:struct:__anon10
+expr	defs.h	/^    expression *expr;$/;"	m	union:link::__anon10
+expr_type	defs.h	/^typedef enum expr_type$/;"	g
+expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+expression	defs.h	/^typedef struct expression$/;"	s
+expression	defs.h	/^} expression;$/;"	t	typeref:struct:expression
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
@@ -162,6 +169,7 @@ keywords	defs.h	/^char *keywords[] =$/;"	v
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
+link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
@@ -170,11 +178,11 @@ main	test2.s	/^main:$/;"	l
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 newl	defs.h	20;"	d
-nextstat	main.c	/^tok *nextstat(char *src, char *esc, char *quot)$/;"	f
-nexttok	main.c	/^void nexttok(char *src, char *esc, char *quot, tok *t)$/;"	f
+nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
+nexttok	main.c	/^void nexttok(char *src, char *esc, char *quot, token *t)$/;"	f
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	19;"	d
-puttok	main.c	/^void puttok(tok t)$/;"	f
+puttok	main.c	/^void puttok(token t)$/;"	f
 read	defs.h	27;"	d
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 resize	defs.h	23;"	d
@@ -182,10 +190,10 @@ right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
-t	defs.h	/^  tok *t;$/;"	m	struct:link
-tok	defs.h	/^} tok;$/;"	t	typeref:union:__anon1
+tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon10
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	defs.h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
+token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon2
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon3
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon4
@@ -194,6 +202,8 @@ type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon6
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon7
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon8
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon9
+type	defs.h	/^  enum link_type type;$/;"	m	struct:link	typeref:enum:link::link_type
+type	defs.h	/^  expr_type type;$/;"	m	struct:expression
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 xtod	main.c	/^int xtod(char c)$/;"	f

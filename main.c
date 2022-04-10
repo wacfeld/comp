@@ -253,9 +253,12 @@ void rem_comments(char *src, char *esc, char *quot)
 }
 
 
-void puttok(tok t)
+void puttok(token t)
 {
-  printf("%s ", hrtok[t.gen.type]);
+  if(t.gen.type == NOTOK)
+  {
+    printf("%s ", hrtok[t.gen.type]);
+  }
   if(t.gen.type == ATOM)
   {
     printf("%s ", hrat[t.atom.cont]);
@@ -281,7 +284,7 @@ void puttok(tok t)
 // gets next (toplevel) statement from string & tokenizes
 // these two steps must be done simultaneously, as far as i can tell
 // otherwise it's very difficult to tell when a statement ends
-tok *nextstat(char *src, char *esc, char *quot)
+token *nextstat(char *src, char *esc, char *quot)
 {
 }
 
@@ -317,7 +320,7 @@ int isfloatsuffix(char c)
 }
 
 
-void nexttok(char *src, char *esc, char *quot, tok *t)
+void nexttok(char *src, char *esc, char *quot, token *t)
 {
   // lots of this might be doable with regex, but i'm not sure
 
@@ -945,7 +948,9 @@ int main()
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
-  alloc(tok, toks, tsize, tcount);
+  alloc(token, toks, tsize, tcount);
+  alloc(link, tok_chain, lsize, lcount);
+  link *prevl = NULL;
   i = 0;
 
   do
@@ -953,9 +958,18 @@ int main()
     nexttok(src, esc, quot, toks+i);
     resize(toks, tsize, tcount);
     puttok(toks[i]);
+
+    tok_chain[i].left = prevl;
+    tok_chain[i].right = NULL;
+    if(prevl != NULL)
+    {
+      prevl->right = tok_chain+i;
+    }
+
+    tok_chain[i].type = TOK_L;
+    tok_chain[i].cont.tok = toks+i;
   }
   while(toks[i++].gen.type != NOTOK);
-
 
 
   // print escape and quote markers

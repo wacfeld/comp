@@ -92,7 +92,7 @@ typedef union
     enum atom_type cont;
   } atom;
 
-} tok;
+} token;
 
 // human readable, for debugging purposes only
 char *hrtok[100] = {
@@ -193,7 +193,7 @@ char *keywords[] =
   [K_WHILE]="while"
 };
 
-enum expr_type
+typedef enum expr_type
 {
   EXPR,
   PRIM_E,
@@ -214,20 +214,28 @@ enum expr_type
   ASGN_E,
   COMMA_E,
   CONST_E,
-};
+} expr_type;
 
-typedef struct
+typedef struct expression
 {
-  
+  expr_type type;
+  struct expression *args;
 } expression;
 
+enum link_type {EXPR_L, TOK_L};
 
 // for making linked lists of tokens
 typedef struct link
 {
-  tok *t;
   struct link *left;
   struct link *right;
+
+  enum link_type type;
+  union
+  {
+    token *tok;
+    expression *expr;
+  } cont;
 } link;
 
 
