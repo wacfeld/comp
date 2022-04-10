@@ -338,7 +338,7 @@ void nexttok(char *src, char *esc, char *quot, tok *t)
     return; // signal no token to caller
   }
   
-  allocstr(str, size, c);
+  alloc(char, str, size, c);
 
   if(src[i] == '.' && isdigit(src[i+1])) // leading dot floating point
   {
@@ -353,7 +353,7 @@ void nexttok(char *src, char *esc, char *quot, tok *t)
     while(isletter(src[i]) || isdigit(src[i]))
     {
       str[c++] = src[i++];
-      resize(str, c, size);
+      resize(str, size, c);
 
     }
     str[c] = 0;
@@ -383,20 +383,20 @@ void nexttok(char *src, char *esc, char *quot, tok *t)
   else if(isdigit(src[i])) // integer or float constant
   {
     str[c++] = src[i++]; // first digit
-    resize(str, c, size);
+    resize(str, size, c);
 
     // assert(isdigit(src[i]) || src[i] == 'x' || src[i] == 'X'); // digit or hex indicator
 
     if(isdigit(src[i]) || src[i] == 'x' || src[i] == 'X') // digit or hex indicator
     {
       str[c++] = src[i++]; // second digit
-      resize(str, c, size);
+      resize(str, size, c);
     }
 
     while(isxdigit(src[i])) // rest of digits
     {
       str[c++] = src[i++];
-      resize(str, c, size);
+      resize(str, size, c);
     }
 
     /*
@@ -484,7 +484,7 @@ whitespace:
     {
 leaddot:
       str[c++] = src[i++]; // write the dot
-      resize(str, c, size);
+      resize(str, size, c);
 
       t->gen.type = FLOATING;
       t->floating.isshort = 0;
@@ -493,25 +493,25 @@ leaddot:
       while(isdigit(src[i])) // write the fractional part
       {
         str[c++] = src[i++];
-        resize(str, c, size);
+        resize(str, size, c);
       }
 
       if(src[i] == 'e' || src[i] == 'E') // exponent
       {
         str[c++] = src[i++]; // write exponent
-        resize(str, c, size);
+        resize(str, size, c);
 
         if(src[i] == '+' || src[i] == '-') // sign
         {
           str[c++] = src[i++]; // write sign
-          resize(str, c, size);
+          resize(str, size, c);
         }
 
         assert(isdigit(src[i])); // digits must follow, regardless of sign
         while(isdigit(src[i])) // write digits
         {
           str[c++] = src[i++];
-          resize(str, c, size);
+          resize(str, size, c);
         }
       }
 
@@ -566,7 +566,7 @@ leaddot:
     while(quot[i])
     {
       str[c++] = src[i++];
-      resize(str, c, size);
+      resize(str, size, c);
 
       if(c > size)
       {
@@ -593,7 +593,7 @@ leaddot:
     while(quot[i])
     {
       str[c++] = src[i++];
-      resize(str, c, size);
+      resize(str, size, c);
 
       if(c > size)
       {
@@ -945,11 +945,16 @@ int main()
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
-  tok *toks = malloc(sizeof(tok) * 1000);
+  alloc(tok, toks, tsize, tcount);
   i = 0;
 
-  while(nexttok(src, esc, quot, toks+i), toks[i].gen.type != NOTOK)
+  do
+  {
+    nexttok(src, esc, quot, toks+i);
+    resize(toks, tsize, tcount);
     puttok(toks[i]);
+  }
+  while(toks[i++].gen.type != NOTOK);
 
 
 

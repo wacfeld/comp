@@ -20,9 +20,10 @@
 #define newl() puts("")
 
 // use realloc when necessary to expand a dynamically allocated array
-#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s*sizeof(*p));}
+#define resize(p, s, c) if(c >= s) {s *= 2; p = realloc(p, s*sizeof(*p));}
 
-#define allocstr(str, size, c) int size = 10; int c = 0; char *str = malloc(size);
+#define alloc(type, str, size, c) int size = 10; int c = 0; type *str = malloc(size*sizeof(type));
+// #define alloctok(str, size, c) int size = 10; int c = 0; tok *str = malloc(size*sizeof(tok));
 #define read(str, size, c, src, i) str[c++] = src[i++]; resize(str, c, size);
 
 #define CHAR_MAX 255
