@@ -963,10 +963,11 @@ int main()
   {
     resize(toks, tsize, tcount);
     nexttok(src, esc, quot, toks+tcount);
-    puttok(toks[tcount]);
+    // puttok(toks[tcount]);
 
   }
   while(toks[tcount++].gen.type != NOTOK);
+  tcount--; // exclude NOTOK
 
   // turn tokens into linked list
   link *tok_chain = malloc(sizeof(link) * tcount);
@@ -994,6 +995,7 @@ int main()
     if(!decls[numdecl]) // start of new declaration
     {
       decls[numdecl] = cur_l;
+      // puttok(*cur_l->cont.tok);
       cur_l->left = NULL; // start of linked list for declaration
     }
 
@@ -1008,7 +1010,7 @@ int main()
       bracedepth--;
       if(bracedepth == 0) // must be end of statement
       {
-        if(isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
+        if(right && isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
         {
           cur_l = right->right;
           right->right = NULL;
@@ -1037,8 +1039,6 @@ int main()
   } while(cur_l);
 
   assert(decls[numdecl] == NULL); // otherwise we have an unfinished declaration
-
-  newl();
 
   for(i = 0; i < numdecl; i++)
   {
