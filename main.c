@@ -928,6 +928,30 @@ int isatom(token *t, enum atom_type a)
   return t->gen.type == ATOM && t->atom.cont == a;
 }
 
+
+int istypspec(enum keyword k) // is type specifier
+{
+  return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == LONG || k == FLOAT || k == DOUBLE || k == SIGNED || k == UNSIGNED;
+
+  // TODO struct/union specifiers, enum specifiers, typedef names
+}
+
+int istypqual(enum keyword k) // is type qualifier
+{
+  return k == K_VOLATILE || k == K_CONST;
+}
+
+int isstorspec(enum keyword k) // is storage class specifier
+{
+  return k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF;
+}
+
+int isdeclspec(enum keyword k) // is declaration specifier
+{
+  return istypspec(k) || istypqual(k) || isstorspec(k);
+}
+
+
 int main()
 {
   
@@ -967,24 +991,28 @@ int main()
 
   }
   while(toks[tcount++].gen.type != NOTOK);
+
   tcount--; // exclude NOTOK
 
-  // turn tokens into linked list
-  link *tok_chain = malloc(sizeof(link) * tcount);
-  link *prevl = NULL; // previous link
-  for(i = 0; i < tcount; i++)
-  {
-      tok_chain[i].left = prevl;
-      tok_chain[i].right = NULL;
-      if(prevl != NULL)
-      {
-        prevl->right = tok_chain+i;
-      }
-      prevl = tok_chain+i;
+  
+  
 
-      tok_chain[i].type = TOK_L;
-      tok_chain[i].cont.tok = toks+i;
-  }
+  // turn tokens into linked list
+  // link *tok_chain = malloc(sizeof(link) * tcount);
+  // link *prevl = NULL; // previous link
+  // for(i = 0; i < tcount; i++)
+  // {
+  //     tok_chain[i].left = prevl;
+  //     tok_chain[i].right = NULL;
+  //     if(prevl != NULL)
+  //     {
+  //       prevl->right = tok_chain+i;
+  //     }
+  //     prevl = tok_chain+i;
+
+  //     tok_chain[i].type = TOK_L;
+  //     tok_chain[i].cont.tok = toks+i;
+  // }
 
 
 
