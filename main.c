@@ -1,16 +1,4 @@
-
 #include "defs.h"
-
-// void decomment(char *src)
-// {
-//   int len = strlen(src);
-//   // don't nest
-//   // ignore in string literals
-//   // ignore in character literals
-//   // must terminate before EOF
-  
-  
-// }
 
 
 // replaces backslash + newline with nothing
@@ -34,14 +22,6 @@ void splice(char *src)
   src[c] = 0;
 }
 
-// need to figure out what is a string taking into account \" and \'
-
-
-// already exists
-/* int ishexdigit(char c) */
-/* { */
-/*   return isdigit(c) || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f'); */
-/* } */
 
 int xtod(char c)
 {
@@ -50,6 +30,7 @@ int xtod(char c)
 
   return tolower(c) - 'a' + 10;
 }
+
 
 // literalizes escape sequences
 void unesc(char *src)
@@ -272,67 +253,6 @@ void rem_comments(char *src, char *esc, char *quot)
 }
 
 
-// int **toplevel(char *src, char *esc, char *quot)
-// {
-//   int size = 100;
-//   int count = 0;
-//   int (*statements)[2] = malloc(size*sizeof(int [2]));
-//   int start = 0, end; // statement start and end
-//   int paren_dep = 0, brace_dep = 0; // depth of parens and braces
-
-//   int i;
-//   for(i = 0; src[i]; i++)
-//   {
-//     // update depths of parens/braces
-//     if(src[i] == '{')
-//       brace_dep++;
-//     if(src[i] == '}')
-//       brace_dep--;
-//     if(src[i] == '(')
-//       paren_dep++;
-//     if(src[i] == ')')
-//       paren_dep--;
-    
-//     if((src[i] == ';' && !paren_dep && !brace_dep)) // end of top level statement
-//     {
-//       end = i+1;
-//       statements[count][0] = start;
-//       statements[count][1] = end;
-
-//       start = i + 1;
-
-//       count++;
-//     }
-
-//     else if(src[i] == '}' && !paren_dep && !brace_dep) // possibly end of top level compound statement
-//     {
-//       end = i+1;
-//       statements[count][0] = start;
-//       statements[count][1] = end;
-
-//       start = i+1;
-//     }
-//   }
-// }
-
-
-
-
-// replaced by union of structs
-// typedef struct tok
-// {
-//   // TODO
-//   tok_type type; // char, string lit, cast, etc.
-//   // union {/* TODO */} data;
-//   void *data;
-//   int flags;
-
-//   /* modifiers (e.x. long, short, etc.) */
-
-// } tok;
-
-
-
 void puttok(tok t)
 {
   printf("%s ", hrtok[t.gen.type]);
@@ -356,13 +276,6 @@ void puttok(tok t)
   }
   newl();
 }
-
-// flags (no longer in use, replaced by individual variables
-// int LONG = 1;
-// int UNSIGNED = 2;
-
-// int LONGDOUBLE = 1;
-// int FLOAT = 2;
 
 
 // gets next (toplevel) statement from string & tokenizes
@@ -391,13 +304,6 @@ int iskeyword(char *s)
   }
   return -1;
 }
-
-
-// int isoperator(char c)
-// {
-//   static char operators[] = "!%&*+
-  
-// }
 
 
 int isintsuffix(char c)
@@ -433,9 +339,6 @@ tok nexttok(char *src, char *esc, char *quot)
     return t; // signal no token to caller
   }
   
-  // int size = 10;
-  // int c = 0;
-  // char *str = malloc(size * sizeof(char));
   allocstr(str, size, c);
 
   if(src[i] == '.' && isdigit(src[i+1])) // leading dot floating point
@@ -444,9 +347,6 @@ tok nexttok(char *src, char *esc, char *quot)
   }
   else if(isletter(src[i])) // identifier or keyword or enum constant (or sizeof)
   {
-    // int size = 10;
-    // int c = 0;
-    // char *str = malloc(size * sizeof(char));
 
     // get the certain tokens out of the way
 
@@ -454,11 +354,6 @@ tok nexttok(char *src, char *esc, char *quot)
     while(isletter(src[i]) || isdigit(src[i]))
     {
       str[c++] = src[i++];
-      // if(c >= size)
-      // {
-      //   str = realloc(str, size*2);
-      //   size *= 2;
-      // }
       resize(str, c, size);
 
     }
@@ -488,10 +383,6 @@ tok nexttok(char *src, char *esc, char *quot)
 
   else if(isdigit(src[i])) // integer or float constant
   {
-    // int size = 10;
-    // char *str = malloc(size * sizeof(char));
-    // int c = 0;
-
     str[c++] = src[i++]; // first digit
     resize(str, c, size);
 
@@ -506,11 +397,6 @@ tok nexttok(char *src, char *esc, char *quot)
     while(isxdigit(src[i])) // rest of digits
     {
       str[c++] = src[i++];
-      // if(c >= size)
-      // {
-      //   str = realloc(str, size*2);
-      //   size *= 2;
-      // }
       resize(str, c, size);
     }
 
@@ -677,10 +563,6 @@ leaddot:
   {
     i++; // skip quotation mark
 
-    // int size = 10;
-    // char *str = malloc(size * sizeof(char));
-    // int c = 0;
-
     // write string into str
     while(quot[i])
     {
@@ -707,10 +589,6 @@ leaddot:
   else if(src[i] == '\'') // character constant
   {
     i++; // skip quote
-
-    // int size = 10;
-    // char *str = malloc(size * sizeof(char));
-    // int c = 0;
 
     // write string into str
     while(quot[i])
@@ -1045,23 +923,6 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 
 int main()
 {
-  // int x;
-  // (x) = 5;
-  // putd(x);
-  // int hellonumber = 5UL;
-  // int $hello = 5;
-  // putd($hello);
-  // float x = 1.;
-  // printf("%f\n", x);
-  // int k = 0;
-  // for(int k = 0; k < 256; k++)
-  // {
-  //   if(isprint(k) && !isspace(k))
-  //     putchar(k);
-  // }
-  // newl();
-  // float f = -0.5;
-  // printf("%f\n", f);
   
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
@@ -1090,8 +951,8 @@ int main()
     puttok(t);
 
 
-  // get all top level statements
 
+  // print escape and quote markers
   // printf("%s", src);
   // for(i = 0; i < strlen(src); i++)
   // {

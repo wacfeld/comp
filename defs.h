@@ -189,4 +189,5 @@ char *keywords[] =
   [K_UNSIGNED]="unsigned",
   [K_VOID]="void",
   [K_VOLATILE]="volatile",
-  [K_WHILE]="while"};
+  [K_WHILE]="while"
+};
