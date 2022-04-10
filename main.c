@@ -317,26 +317,25 @@ int isfloatsuffix(char c)
 }
 
 
-tok nexttok(char *src, char *esc, char *quot)
+void nexttok(char *src, char *esc, char *quot, tok *t)
 {
   // lots of this might be doable with regex, but i'm not sure
 
   static int i = 0;
 
-  tok t;
   if(src == NULL) // reset i
   {
     i = 0;
     // doesn't actually matter what we return
-    return t;
+    return;
   }
 
   while(isspace(src[i])) i++; // skip leading whitespace
 
   if(!src[i]) // end of src
   {
-    t.gen.type = NOTOK;
-    return t; // signal no token to caller
+    t->gen.type = NOTOK;
+    return; // signal no token to caller
   }
   
   allocstr(str, size, c);
@@ -361,24 +360,24 @@ tok nexttok(char *src, char *esc, char *quot)
 
     if(!strcmp(str, "sizeof")) // special case, sizeof is an operator
     {
-      t.gen.type = ATOM;
-      t.atom.cont = SIZEOF;
-      return t;
+      t->gen.type = ATOM;
+      t->atom.cont = SIZEOF;
+      return;
     }
 
     int k;
     if((k = iskeyword(str)) != -1) // keyword
     {
-      t.gen.type = KEYWORD;
-      t.keyword.cont = k;
+      t->gen.type = KEYWORD;
+      t->keyword.cont = k;
     }
     else // identifier
     {
-      t.gen.type = IDENT;
-      t.ident.cont = str;
+      t->gen.type = IDENT;
+      t->ident.cont = str;
     }
 
-    return t;
+    return;
   }
 
   else if(isdigit(src[i])) // integer or float constant
@@ -421,9 +420,9 @@ whitespace:
     {
       str[c] = 0; // null terminate
 
-      t.gen.type = INTEGER;
-      t.integer.isunsigned = 0;
-      t.integer.islong = 0;
+      t->gen.type = INTEGER;
+      t->integer.isunsigned = 0;
+      t->integer.islong = 0;
 
       if(isletter(src[i])) // suffix time
       {
@@ -432,19 +431,19 @@ whitespace:
         {
           char s2 = tolower(src[i+1]);
           assert((s1 == 'u' && s2 == 'l') || (s1 == 'l' && s2 == 'u')); // only combinations of two int suffixes, hardcoded to save trouble
-          t.integer.isunsigned = 1;
-          t.integer.islong = 1;
+          t->integer.isunsigned = 1;
+          t->integer.islong = 1;
 
           i += 2;
         }
         else if(s1 == 'u')
         {
-          t.integer.isunsigned = 1;
+          t->integer.isunsigned = 1;
           i++;
         }
         else if(s1 == 'l')
         {
-          t.integer.islong = 1;
+          t->integer.islong = 1;
           i++;
         }
         else
@@ -476,9 +475,9 @@ whitespace:
 
       free(str); // no memory leaks to be found here, maybe
 
-      t.integer.cont = num;
+      t->integer.cont = num;
 
-      return t;
+      return;
     }
 
     else if(src[i] == '.') // float constant
@@ -487,9 +486,9 @@ leaddot:
       str[c++] = src[i++]; // write the dot
       resize(str, c, size);
 
-      t.gen.type = FLOATING;
-      t.floating.isshort = 0;
-      t.floating.islong = 0;
+      t->gen.type = FLOATING;
+      t->floating.isshort = 0;
+      t->floating.islong = 0;
 
       while(isdigit(src[i])) // write the fractional part
       {
@@ -534,26 +533,26 @@ leaddot:
       if(suf == 'f') // float
       {
         sscanf(str, "%f", &num);
-        t.floating.cont = num;
+        t->floating.cont = num;
 
-        t.floating.isshort = 1;
+        t->floating.isshort = 1;
       }
       else if(suf == 'l') // long double
       {
         sscanf(str, "%f", &num);
-        t.floating.cont = num;
+        t->floating.cont = num;
 
-        t.floating.islong = 1;
+        t->floating.islong = 1;
       }
       else // double
       {
         sscanf(str, "%f", &num);
-        t.floating.cont = num;
+        t->floating.cont = num;
       }
 
       free(str); // no longer needed
       
-      return t;
+      return;
     }
 
     assert(!"this assert should never run");
@@ -580,10 +579,10 @@ leaddot:
 
     unesc(str); // convert escape sequences into the real deal
     
-    t.gen.type = STRLIT;
-    t.strlit.cont = str;
+    t->gen.type = STRLIT;
+    t->strlit.cont = str;
 
-    return t;
+    return;
   }
 
   else if(src[i] == '\'') // character constant
@@ -611,62 +610,62 @@ leaddot:
     char chr;
     chr = str[0];
     
-    t.gen.type = CHAR;
-    t.character.cont = chr;
+    t->gen.type = CHAR;
+    t->character.cont = chr;
 
-    return t;
+    return;
   }
 
   else if(src[i] == ';') // semicolon, easiest case
   {
-    t.gen.type = ATOM;
-    t.atom.cont = SEMICOLON;
+    t->gen.type = ATOM;
+    t->atom.cont = SEMICOLON;
     i++;
-    return t;
+    return;
   }
 
   // separators
   else if(src[i] == '(') // also sometimes part of operator
   {
-    t.gen.type = ATOM;
-    t.atom.cont = PARENOP;
+    t->gen.type = ATOM;
+    t->atom.cont = PARENOP;
     i++;
-    return t;
+    return;
   }
   else if(src[i] == ')') // also sometimes part of operator
   {
-    t.gen.type = ATOM;
-      t.atom.cont = PARENCL;
+    t->gen.type = ATOM;
+    t->atom.cont = PARENCL;
     i++;
-    return t;
+    return;
   }
   else if(src[i] == '{')
   {
-    t.gen.type = ATOM;
-    t.atom.cont = BRACEOP;
+    t->gen.type = ATOM;
+    t->atom.cont = BRACEOP;
     i++;
-    return t;
+    return;
   }
   else if(src[i] == '}')
   {
-    t.gen.type = ATOM;
-    t.atom.cont = BRACECL;
+    t->gen.type = ATOM;
+    t->atom.cont = BRACECL;
     i++;
-    return t;
+    return;
   }
   else if(src[i] == '[')
   {
-    t.gen.type = ATOM;
-    t.atom.cont = BRACKOP;
+    t->gen.type = ATOM;
+    t->atom.cont = BRACKOP;
     i++;
-    return t;
+    return;
   }
   else if(src[i] == ']')
   {
-    t.gen.type = ATOM;
-    t.atom.cont = BRACKCL;
+    t->gen.type = ATOM;
+    t->atom.cont = BRACKCL;
     i++;
-    return t;
+    return;
   }
 
   // now for operators
@@ -674,7 +673,7 @@ leaddot:
   // e.x. function calls and casts
   // we mark all parens as just parens and leave it to later logic to sort out what's actually going on
   
-  t.gen.type = ATOM; // process of elimination
+  t->gen.type = ATOM; // process of elimination
 
   // note that there are identical unary and binary operators
   // those are determined by later context
@@ -685,26 +684,26 @@ leaddot:
     if(src[i] == '>')
     {
       i++;
-      t.atom.cont = ARROW;
+      t->atom.cont = ARROW;
     }
     else if(src[i] == '-')
     {
       i++;
-      t.atom.cont = DEC;
+      t->atom.cont = DEC;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = MINEQ;
+      t->atom.cont = MINEQ;
     }
     else
-      t.atom.cont = MIN; // MIN is not a final operator, it's a placeholder before we know if it's unary or binary
+      t->atom.cont = MIN; // MIN is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '.') // guaranteed now not to be float
   {
     i++;
-    t.atom.cont = DOT;
+    t->atom.cont = DOT;
   }
 
   else if(src[i] == '!') // ! !=
@@ -713,16 +712,16 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = NOTEQ;
+      t->atom.cont = NOTEQ;
     }
     else
-      t.atom.cont = LOGNOT;
+      t->atom.cont = LOGNOT;
   }
 
   else if(src[i] == '~')
   {
     i++;
-    t.atom.cont = BITNOT;
+    t->atom.cont = BITNOT;
   }
 
   else if(src[i] == '+') // + += ++
@@ -731,15 +730,15 @@ leaddot:
     if(src[i] == '+')
     {
       i++;
-      t.atom.cont = INC;
+      t->atom.cont = INC;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = PLUSEQ;
+      t->atom.cont = PLUSEQ;
     }
     else
-      t.atom.cont = PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
+      t->atom.cont = PLUS; // PLUS is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '*') // * *=
@@ -748,10 +747,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = TIMESEQ;
+      t->atom.cont = TIMESEQ;
     }
     else
-      t.atom.cont = STAR; // STAR is not a final operator, it's a placeholder before we know if it's unary or binary
+      t->atom.cont = STAR; // STAR is not a final operator, it's a placeholder before we know if it's unary or binary
   }
 
   else if(src[i] == '/') // / /*
@@ -760,10 +759,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = DIVEQ;
+      t->atom.cont = DIVEQ;
     }
     else
-      t.atom.cont = DIV;
+      t->atom.cont = DIV;
   }
 
   else if(src[i] == '%') // % %=
@@ -772,10 +771,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = MODEQ;
+      t->atom.cont = MODEQ;
     }
     else
-      t.atom.cont = MOD;
+      t->atom.cont = MOD;
   }
 
   else if(src[i] == '<') // < << <<= <=
@@ -787,18 +786,18 @@ leaddot:
       if(src[i] == '=')
       {
         i++;
-        t.atom.cont = SHLEQ;
+        t->atom.cont = SHLEQ;
       }
       else
-        t.atom.cont = SHL;
+        t->atom.cont = SHL;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = LEQ;
+      t->atom.cont = LEQ;
     }
     else
-      t.atom.cont = LESS;
+      t->atom.cont = LESS;
   }
 
   else if(src[i] == '>') // > >> >>= >=
@@ -810,18 +809,18 @@ leaddot:
       if(src[i] == '=')
       {
         i++;
-        t.atom.cont = SHREQ;
+        t->atom.cont = SHREQ;
       }
       else
-        t.atom.cont = SHR;
+        t->atom.cont = SHR;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = GEQ;
+      t->atom.cont = GEQ;
     }
     else
-      t.atom.cont = GREAT;
+      t->atom.cont = GREAT;
   }
 
   else if(src[i] == '=') // = ==
@@ -830,10 +829,10 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = EQEQ;
+      t->atom.cont = EQEQ;
     }
     else
-      t.atom.cont = EQ;
+      t->atom.cont = EQ;
   }
 
   else if(src[i] == '&') // & && &=
@@ -842,15 +841,15 @@ leaddot:
     if(src[i] == '&')
     {
       i++;
-      t.atom.cont = LOGAND;
+      t->atom.cont = LOGAND;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = ANDEQ;
+      t->atom.cont = ANDEQ;
     }
     else
-      t.atom.cont = BITAND;
+      t->atom.cont = BITAND;
   }
 
   else if(src[i] == '|') // | || |=
@@ -859,15 +858,15 @@ leaddot:
     if(src[i] == '|')
     {
       i++;
-      t.atom.cont = LOGOR;
+      t->atom.cont = LOGOR;
     }
     else if(src[i] == '=')
     {
       i++;
-      t.atom.cont = OREQ;
+      t->atom.cont = OREQ;
     }
     else
-      t.atom.cont = BITOR;
+      t->atom.cont = BITOR;
   }
 
   else if(src[i] == '^')
@@ -876,31 +875,31 @@ leaddot:
     if(src[i] == '=')
     {
       i++;
-      t.atom.cont = XOREQ;
+      t->atom.cont = XOREQ;
     }
     else
-      t.atom.cont = BITXOR;
+      t->atom.cont = BITXOR;
   }
 
   else if(src[i] == ',') // can be separator or operator. assume separator for now
   {
     i++;
-    t.atom.cont = COMMA;
+    t->atom.cont = COMMA;
   }
 
   else if(src[i] == ':') // can be part of label or part of ternary
   {
     i++;
-    t.atom.cont = COLON;
+    t->atom.cont = COLON;
   }
 
   else if(src[i] == '?') // part of ternary (incomplete, must complete later)
   {
     i++;
-    t.atom.cont = QUESTION;
+    t->atom.cont = QUESTION;
   }
   
-  return t;
+  return;
   /*
   floats can start with dots
   colons can be for labels
@@ -946,9 +945,11 @@ int main()
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
-  tok t;
-  while((t = nexttok(src, esc, quot)).gen.type != NOTOK)
-    puttok(t);
+  tok *toks = malloc(sizeof(tok) * 1000);
+  i = 0;
+
+  while(nexttok(src, esc, quot, toks+i), toks[i].gen.type != NOTOK)
+    puttok(toks[i]);
 
 
 

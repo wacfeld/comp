@@ -20,7 +20,7 @@
 #define newl() puts("")
 
 // use realloc when necessary to expand a dynamically allocated array
-#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s);}
+#define resize(p, c, s) if(c >= s) {s *= 2; p = realloc(p, s*sizeof(*p));}
 
 #define allocstr(str, size, c) int size = 10; int c = 0; char *str = malloc(size);
 #define read(str, size, c, src, i) str[c++] = src[i++]; resize(str, c, size);
@@ -192,7 +192,8 @@ char *keywords[] =
   [K_WHILE]="while"
 };
 
-enum expr_type = {
+enum expr_type
+{
   EXPR,
   PRIM_E,
   POST_E,
@@ -220,9 +221,12 @@ typedef struct
 } expression;
 
 
-typedef struct
+// for making linked lists of tokens
+typedef struct link
 {
-  
+  tok *t;
+  struct link *left;
+  struct link *right;
 } link;
 
 
