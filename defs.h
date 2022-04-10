@@ -191,3 +191,39 @@ char *keywords[] =
   [K_VOLATILE]="volatile",
   [K_WHILE]="while"
 };
+
+enum expr_type = {
+  EXPR,
+  PRIM_E,
+  POST_E,
+  UNAR_E,
+  CAST_E,
+  MULT_E,
+  ADD_E,
+  SHIFT_E,
+  RELAT_E,
+  EQUAL_E,
+  AND_E,
+  XOR_E,
+  OR_E,
+  LAND_E,
+  LOR_E,
+  COND_E,
+  ASGN_E,
+  COMMA_E,
+  CONST_E,
+};
+
+typedef struct
+{
+  
+} expression;
+
+
+typedef struct
+{
+  
+} link;
+
+
+// linked lists seem like a good way to represent expressions

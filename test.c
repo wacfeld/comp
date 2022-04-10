@@ -1,9 +1,8 @@
-
+#include <stdio.h>
 
 int i;
 int main()
 {
-  extern int i;
- i = 0;
+  puts("hi");
 
 }

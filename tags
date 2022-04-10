@@ -119,6 +119,7 @@ cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
 cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
+expression	defs.h	/^} expression;$/;"	t	typeref:struct:__anon10
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
@@ -138,6 +139,7 @@ isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon3
 keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keywords	defs.h	/^char *keywords[] =$/;"	v
+link	defs.h	/^} link;$/;"	t	typeref:struct:__anon11
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
