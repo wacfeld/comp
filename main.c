@@ -923,6 +923,11 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
   }
 }
 
+int isatom(token *t, enum atom_type a)
+{
+  return t->gen.type == ATOM && t->atom.cont == a;
+}
+
 int main()
 {
   
@@ -952,7 +957,6 @@ int main()
 
   // tokenize
   alloc(token, toks, tsize, tcount);
-  link *prevl = NULL; // previous link
 
   // turn text into tokens
   do
@@ -964,19 +968,82 @@ int main()
   }
   while(toks[tcount++].gen.type != NOTOK);
 
+  // turn tokens into linked list
+  link *tok_chain = malloc(sizeof(link) * tcount);
+  link *prevl = NULL; // previous link
+  for(i = 0; i < tcount; i++)
+  {
+      tok_chain[i].left = prevl;
+      tok_chain[i].right = NULL;
+      if(prevl != NULL)
+      {
+        prevl->right = tok_chain+i;
+      }
+      prevl = tok_chain+i;
 
-  // for(i = 0; i < tcount; i++)
-  // {
-  //     tok_chain[tcount].left = prevl;
-  //     tok_chain[tcount].right = NULL;
-  //     if(prevl != NULL)
-  //     {
-  //       prevl->right = tok_chain+i;
-  //     }
+      tok_chain[i].type = TOK_L;
+      tok_chain[i].cont.tok = toks+i;
+  }
 
-  //     tok_chain[tcount].type = TOK_L;
-  //     tok_chain[tcount].cont.tok = toks+i;
-  // }
+  link ** decls = calloc(tcount, sizeof(link *) ); // declarations, a list of linked lists
+  int numdecl = 0;
+  int bracedepth = 0; // used to tell when a declaration is ending
+  link *cur_l = tok_chain;
+  do
+  {
+    if(!decls[numdecl]) // start of new declaration
+    {
+      decls[numdecl] = cur_l;
+      cur_l->left = NULL; // start of linked list for declaration
+    }
+
+    link *right = cur_l->right; // may be overwritten soon if declaration ends
+
+    token *cur_tok = cur_l->cont.tok;
+
+    if(isatom(cur_tok, BRACEOP))
+      bracedepth++;
+    if(isatom(cur_tok, BRACECL))
+    {
+      bracedepth--;
+      if(bracedepth == 0) // must be end of statement
+      {
+        if(isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
+        {
+          cur_l = right->right;
+          right->right = NULL;
+
+          numdecl++;
+          continue;
+        }
+        else // presume end of function
+        {
+          cur_l->right = NULL;
+          cur_l = right;
+
+          numdecl++;
+          continue;
+        }
+      }
+    }
+
+    if(isatom(cur_l->cont.tok, SEMICOLON) && bracedepth == 0) // end of declaration
+    {
+      numdecl++;
+      cur_l->right = NULL;
+    }
+
+    cur_l = right;
+  } while(cur_l);
+
+  assert(decls[numdecl] == NULL); // otherwise we have an unfinished declaration
+
+  newl();
+
+  for(i = 0; i < numdecl; i++)
+  {
+    puttok(*decls[i]->cont.tok);
+  }
 
 
   // separate top-level declarations
