@@ -1,15 +1,10 @@
+#include <stdio.h>
+#define putd(x) printf(#x ": %d\n", x)
+
+struct k;
+union k;
+
 int main()
 {
-  case 1: ;
-  switch(1)
-  {
-case 1: ;
-  }
 
 }
-
-
-int f()
-{
-}
-

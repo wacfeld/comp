@@ -119,7 +119,7 @@ cont	main.c	/^    float cont;$/;"	m	struct:__anon1::__anon8	file:
 cont	main.c	/^    int cont;$/;"	m	struct:__anon1::__anon3	file:
 cont	main.c	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7	file:
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
-f	test.c	/^int f()$/;"	f
+f	test.s	/^f:$/;"	l
 floating	main.c	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8	file:
 gen	main.c	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2	file:
 hrat	main.c	/^char *hrat[100] = {$/;"	v
@@ -141,6 +141,7 @@ keywords	main.c	/^char *keywords[] =$/;"	v
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
+main	test.s	/^main:$/;"	l
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 newl	main.c	17;"	d	file:
@@ -148,6 +149,7 @@ nextstat	main.c	/^tok *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^tok nexttok(char *src, char *esc, char *quot)$/;"	f
 putd	dcl/main.c	16;"	d	file:
 putd	main.c	16;"	d	file:
+putd	test.c	2;"	d	file:
 puttok	main.c	/^void puttok(tok t)$/;"	f
 read	main.c	23;"	d	file:
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
