@@ -1,8 +1,6 @@
-/* #include <stdio.h>*/
+#include <stdio.h>
 
-int i;
 int main()
 {
-  puts("hi");
 
 }

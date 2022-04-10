@@ -571,11 +571,11 @@ leaddot:
       str[c++] = src[i++];
       resize(str, size, c);
 
-      if(c > size)
-      {
-        str = realloc(str, size*2);
-        size *= 2;
-      }
+      // if(c > size)
+      // {
+      //   str = realloc(str, size*2);
+      //   size *= 2;
+      // }
     }
     str[c] = 0;
     i++; // skip closing quotation mark
@@ -598,11 +598,11 @@ leaddot:
       str[c++] = src[i++];
       resize(str, size, c);
 
-      if(c > size)
-      {
-        str = realloc(str, size*2);
-        size *= 2;
-      }
+      // if(c > size)
+      // {
+      //   str = realloc(str, size*2);
+      //   size *= 2;
+      // }
     }
     str[c] = 0;
     i++; // skip closing quotation mark
@@ -928,9 +928,11 @@ int main()
   
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
+  // for marking quoted and escaped sections
+  char src[1000], quot[1000], esc[1000];
+
   int c;
   int i = 0;
-  char src[1000], quot[1000], esc[1000];
 
   while((c = getchar()) != EOF) // read in src
   {
@@ -948,29 +950,38 @@ int main()
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
+  // tokenize
   alloc(token, toks, tsize, tcount);
-  alloc(link, tok_chain, lsize, lcount);
-  link *prevl = NULL;
-  i = 0;
+  link *prevl = NULL; // previous link
 
+  // turn text into tokens
   do
   {
-    nexttok(src, esc, quot, toks+i);
     resize(toks, tsize, tcount);
-    puttok(toks[i]);
+    nexttok(src, esc, quot, toks+tcount);
+    puttok(toks[tcount]);
 
-    tok_chain[i].left = prevl;
-    tok_chain[i].right = NULL;
-    if(prevl != NULL)
-    {
-      prevl->right = tok_chain+i;
-    }
-
-    tok_chain[i].type = TOK_L;
-    tok_chain[i].cont.tok = toks+i;
   }
-  while(toks[i++].gen.type != NOTOK);
+  while(toks[tcount++].gen.type != NOTOK);
 
+
+  // for(i = 0; i < tcount; i++)
+  // {
+  //     tok_chain[tcount].left = prevl;
+  //     tok_chain[tcount].right = NULL;
+  //     if(prevl != NULL)
+  //     {
+  //       prevl->right = tok_chain+i;
+  //     }
+
+  //     tok_chain[tcount].type = TOK_L;
+  //     tok_chain[tcount].cont.tok = toks+i;
+  // }
+
+
+  // separate top-level declarations
+  // link *trans_unit = malloc(;
+  
 
   // print escape and quote markers
   // printf("%s", src);

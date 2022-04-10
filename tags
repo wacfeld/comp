@@ -151,7 +151,6 @@ floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__an
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
-i	test.c	/^int i;$/;"	v
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
