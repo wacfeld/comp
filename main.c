@@ -929,33 +929,90 @@ int isatom(token *t, enum atom_type a)
 }
 
 
-int istypspec(enum keyword k) // is type specifier
+int istypespec(token t) // is type specifier
 {
-  return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED;
+  if(t.gen.type == KEYWORD)
+  {
+    return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED;
+  }
+  // TODO user-defined specifiers, can be identifiers
+  else return 0;
 
-  // TODO struct/union specifiers, enum specifiers, typedef names
 }
 
-int istypqual(enum keyword k) // is type qualifier
+int istypequal(token t) // is type qualifier
 {
+  if(t.gen.type != KEYWORD) return 0;
+  enum keyword k = t.keyword.cont;
   return k == K_VOLATILE || k == K_CONST;
 }
 
-int isstorspec(enum keyword k) // is storage class specifier
+int isstorespec(token t) // is storage class specifier
 {
+  if(t.gen.type != KEYWORD) return 0;
+  enum keyword k = t.keyword.cont;
   return k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF;
 }
 
-int isdeclspec(enum keyword k) // is declaration specifier
+int isdeclspec(token t) // is declaration specifier
 {
-  return istypspec(k) || istypqual(k) || isstorspec(k);
+  return istypespec(t) || istypequal(t) || isstorespec(t);
+}
+
+int gettypespec(token t)
+{
+  return t.keyword.cont; // TODO identifiers too
+}
+
+int getstorespec(token t)
+{
+  return t.keyword.cont;
+}
+
+int gettypequal(token t)
+{
+  return t.keyword.cont;
 }
 
 
 // get external declaration from translation unit
-int getdecl(token *trans_unit)
+void getdecl(token *trans_unit, declaration *decl)
 {
   static int i = 0;
+  if(!trans_unit) // reset
+  {
+    i = 0;
+  }
+
+  int n = i;
+  // count declaration specifiers
+  while(isdeclspec(trans_unit[n])) n++;
+  n -= i;
+  
+  // allocate arrays accordingly
+  decl.typespecs  = malloc((n+1)*sizeof(int));
+  decl.typequals  = malloc((n+1)*sizeof(int));
+  decl.storespecs = malloc((n+1)*sizeof(int));
+
+  token t;
+  // read declaration specifiers
+  while(isdeclspec((t = trans_unit[i])))
+  {
+    if(istypespec(t))
+    {
+      decl.typespecs[tsi++] = gettypespec(t);
+    }
+    else if(isstorespec(t))
+    {
+      decl.storespecs[ssi++] = getstorespec(t);
+    }
+    else if(istypequal(t))
+    {
+      decl.typequals[tqi++] = gettypequal(t);
+    }
+    i++;
+  }
+
 }
 
 
