@@ -149,6 +149,7 @@ expression	defs.h	/^typedef struct expression$/;"	s
 expression	defs.h	/^} expression;$/;"	t	typeref:struct:expression
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
+getdecl	main.c	/^int getdecl(token *trans_unit)$/;"	f
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4

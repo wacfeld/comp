@@ -931,7 +931,7 @@ int isatom(token *t, enum atom_type a)
 
 int istypspec(enum keyword k) // is type specifier
 {
-  return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == LONG || k == FLOAT || k == DOUBLE || k == SIGNED || k == UNSIGNED;
+  return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED;
 
   // TODO struct/union specifiers, enum specifiers, typedef names
 }
@@ -952,22 +952,33 @@ int isdeclspec(enum keyword k) // is declaration specifier
 }
 
 
+// get external declaration from translation unit
+int getdecl(token *trans_unit)
+{
+  static int i = 0;
+}
+
+
 int main()
 {
   
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
   // for marking quoted and escaped sections
-  char src[1000], quot[1000], esc[1000];
+  // char src[1000], quot[1000], esc[1000];
+  alloc(char, src, srcsize, i);
 
   int c;
-  int i = 0;
 
   while((c = getchar()) != EOF) // read in src
   {
     src[i++] = c;
+    resize(src, srcsize, i);
   }
   src[i] = 0; // null terminate
+
+  char *quot = malloc(i);
+  char *esc = malloc(i);
 
   splice(src); // delete backslash + newline combinations
 
@@ -980,25 +991,22 @@ int main()
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
   // tokenize
-  alloc(token, toks, tsize, tcount);
+  alloc(token, trans_unit, tsize, tcount);
 
   // turn text into tokens
   do
   {
-    resize(toks, tsize, tcount);
-    nexttok(src, esc, quot, toks+tcount);
-    // puttok(toks[tcount]);
+    resize(trans_unit, tsize, tcount);
+    nexttok(src, esc, quot, trans_unit+tcount);
+    puttok(trans_unit[tcount]);
 
   }
-  while(toks[tcount++].gen.type != NOTOK);
+  while(trans_unit[tcount++].gen.type != NOTOK);
 
-  tcount--; // exclude NOTOK
+  // tcount--; // exclude NOTOK
 
-  
-  
-
-  // turn tokens into linked list
-  // link *tok_chain = malloc(sizeof(link) * tcount);
+  // turn tokens into linked list (translation unit)
+  // link *trans_unit = malloc(sizeof(link) * tcount);
   // link *prevl = NULL; // previous link
   // for(i = 0; i < tcount; i++)
   // {
@@ -1013,6 +1021,7 @@ int main()
   //     tok_chain[i].type = TOK_L;
   //     tok_chain[i].cont.tok = toks+i;
   // }
+
 
 
 
