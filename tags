@@ -141,6 +141,7 @@ cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
 cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
 cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon10
+cont	set.h	/^  int *cont;$/;"	m	struct:__anon1
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 declaration	defs.h	/^} declaration;$/;"	t	typeref:struct:__anon11
 expr	defs.h	/^    expression *expr;$/;"	m	union:link::__anon10
@@ -150,17 +151,17 @@ expression	defs.h	/^typedef struct expression$/;"	s
 expression	defs.h	/^} expression;$/;"	t	typeref:struct:expression
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
-getdecl	main.c	/^void getdecl(token *trans_unit, declaration *decl)$/;"	f
-getstorespec	main.c	/^int getstorespec(token t)$/;"	f
-gettypequal	main.c	/^int gettypequal(token t)$/;"	f
-gettypespec	main.c	/^int gettypespec(token t)$/;"	f
+getdecl	main.c	/^declaration *getdecl(token *trans_unit)$/;"	f
+getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
+gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
+gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
+inset	set.c	/^int inset(set *s, int m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
-isdeclspec	main.c	/^int isdeclspec(token t) \/\/ is declaration specifier$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
@@ -168,9 +169,6 @@ isletter	main.c	/^int isletter(char c)$/;"	f
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon7
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
-isstorespec	main.c	/^int isstorespec(token t) \/\/ is storage class specifier$/;"	f
-istypequal	main.c	/^int istypequal(token t) \/\/ is type qualifier$/;"	f
-istypespec	main.c	/^int istypespec(token t) \/\/ is type specifier$/;"	f
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon3
 keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
@@ -181,11 +179,13 @@ link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
-main	test.c	/^int main()$/;"	f
+main	test.c	/^ int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	test2.s	/^main:$/;"	l
+makeset	set.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
+n	set.h	/^  int n;$/;"	m	struct:__anon1
 newl	defs.h	20;"	d
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^void nexttok(char *src, char *esc, char *quot, token *t)$/;"	f
@@ -196,6 +196,9 @@ read	defs.h	27;"	d
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 resize	defs.h	23;"	d
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
+set	set.h	/^} set;$/;"	t	typeref:struct:__anon1
+setins	set.c	/^int setins(set *s, int m) \/\/ set insert, returns 1 if already in set$/;"	f
+size	set.h	/^  int size;$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
 ssi	defs.h	/^  int tsi, tqi, ssi; \/\/ indices$/;"	m	struct:__anon11
 storespecs	defs.h	/^  int *storespecs; \/\/ similar$/;"	m	struct:__anon11
@@ -221,4 +224,5 @@ typequals	defs.h	/^  int *typequals; \/\/ similar$/;"	m	struct:__anon11
 typespecs	defs.h	/^  int *typespecs; \/\/ array of ints (mix of enum keywords and user-defined types, but all ints)$/;"	m	struct:__anon11
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+x	test.c	/^volatile volatile const volatile int x;$/;"	v
 xtod	main.c	/^int xtod(char c)$/;"	f

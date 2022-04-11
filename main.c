@@ -1,4 +1,5 @@
 #include "defs.h"
+#include "set.h"
 
 
 // replaces backslash + newline with nothing
@@ -929,96 +930,117 @@ int isatom(token *t, enum atom_type a)
 }
 
 
-int istypespec(token t) // is type specifier
+int gettypespec(token t) // get type specifier
 {
   if(t.gen.type == KEYWORD)
   {
-    return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED;
+    enum keyword k = t.keyword.cont;
+    if(k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED)
+    {
+      return k;
+    }
+    else return -1;
   }
   // TODO user-defined specifiers, can be identifiers
-  else return 0;
+  else return -1;
 
 }
 
-int istypequal(token t) // is type qualifier
+int gettypequal(token t) // get type qualifier
 {
-  if(t.gen.type != KEYWORD) return 0;
-  enum keyword k = t.keyword.cont;
-  return k == K_VOLATILE || k == K_CONST;
+  if(t.gen.type == KEYWORD)
+  {
+    enum keyword k = t.keyword.cont;
+    if(k == K_VOLATILE || k == K_CONST)
+    {
+      return k;
+    }
+    else return -1;
+  }
+  return -1;
 }
 
-int isstorespec(token t) // is storage class specifier
+int getstorespec(token t) // get storage class specifier
 {
-  if(t.gen.type != KEYWORD) return 0;
-  enum keyword k = t.keyword.cont;
-  return k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF;
+  if(t.gen.type == KEYWORD)
+  {
+    enum keyword k = t.keyword.cont;
+    if(k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF)
+    {
+      return k;
+    }
+    return -1;
+  }
+  return -1;
 }
 
-int isdeclspec(token t) // is declaration specifier
-{
-  return istypespec(t) || istypequal(t) || isstorespec(t);
-}
-
-int gettypespec(token t)
-{
-  return t.keyword.cont; // TODO identifiers too
-}
-
-int getstorespec(token t)
-{
-  return t.keyword.cont;
-}
-
-int gettypequal(token t)
-{
-  return t.keyword.cont;
-}
-
+// not needed
+// int isdeclspec(token t) // get declaration specifier, -1 if it's not that
+// {
+//   int x;
+//   if((x = gettypespec(t)) != -1)
+//   {
+//     return x;
+//   }
+//   if((x = getstorespec(t)) != -1)
+//   {
+//     return x;
+//   }
+//   return gettypequal(t);
+// }
 
 // get external declaration from translation unit
-void getdecl(token *trans_unit, declaration *decl)
+declaration *getdecl(token *trans_unit)
 {
+  declaration *decl = malloc(sizeof(decl));
+  
+  // allocate sets
+  decl->typespecs  = makeset(10);
+  decl->typequals  = makeset(10);
+  decl->storespecs = makeset(10);
+
   static int i = 0;
-  if(!trans_unit) // reset
+  if(!trans_unit) // reset if passed NULL
   {
     i = 0;
   }
 
-  int n = i;
-  // count declaration specifiers
-  while(isdeclspec(trans_unit[n])) n++;
-  n -= i;
-  
-  // allocate arrays accordingly
-  decl.typespecs  = malloc((n+1)*sizeof(int));
-  decl.typequals  = malloc((n+1)*sizeof(int));
-  decl.storespecs = malloc((n+1)*sizeof(int));
-
   token t;
+  int spec;
   // read declaration specifiers
-  while(isdeclspec((t = trans_unit[i])))
+  for(;; i++)
   {
-    if(istypespec(t))
+    t = trans_unit[i];
+    if((spec = gettypespec(t)) != -1)
     {
-      decl.typespecs[tsi++] = gettypespec(t);
+      // insert
+      assert(!setins(decl->typespecs, spec)) // no duplicate type specifiers allowed
     }
-    else if(isstorespec(t))
+    else if((spec = gettypequal(t)) != -1)
     {
-      decl.storespecs[ssi++] = getstorespec(t);
+      setins(decl->typequals, spec); // duplicate type quals are ignored
     }
-    else if(istypequal(t))
+    else if((spec = getstorespec(t)) != -1)
     {
-      decl.typequals[tqi++] = gettypequal(t);
+      assert(!setins(decl->storespecs, spec)); // no duplicate storage classes allowed
     }
-    i++;
+    else break; // end of declaration specifiers
   }
+  
+  // TODO perform checks on the specifiers to make sure they're allowed
 
+  // now we figure out what the declarator is
+  if(inset(decl->storespecs, K_TYPEDEF))
+  {
+    // TODO
+  }
+  
 }
 
 
 int main()
 {
-  
+
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
   // for marking quoted and escaped sections
