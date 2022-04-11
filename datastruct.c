@@ -1,4 +1,5 @@
-#include "set.h"
+#include "datastruct.h"
+#include "defs.h"
 
 set *makeset(int size)
 {

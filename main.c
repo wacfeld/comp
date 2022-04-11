@@ -1,5 +1,5 @@
 #include "defs.h"
-#include "set.h"
+#include "datastruct.h"
 
 
 // replaces backslash + newline with nothing
@@ -989,8 +989,8 @@ int getstorespec(token t) // get storage class specifier
 //   return gettypequal(t);
 // }
 
-// get external declaration from translation unit
-declaration *getdecl(token *trans_unit)
+// read first declaration from array of tokens
+declaration *getdecl(token *toks)
 {
   declaration *decl = malloc(sizeof(decl));
   
@@ -1000,17 +1000,18 @@ declaration *getdecl(token *trans_unit)
   decl->storespecs = makeset(10);
 
   static int i = 0;
-  if(!trans_unit) // reset if passed NULL
+  if(!toks) // reset if passed NULL
   {
     i = 0;
   }
 
+  int n = i; // save starting point for future reference (e.x. checking typedef)
   token t;
   int spec;
   // read declaration specifiers
   for(;; i++)
   {
-    t = trans_unit[i];
+    t =toks[i];
     if((spec = gettypespec(t)) != -1)
     {
       // insert
@@ -1028,12 +1029,31 @@ declaration *getdecl(token *trans_unit)
   }
   
   // TODO perform checks on the specifiers to make sure they're allowed
+  /*
+    auto and register only in functions
+    conflicting type specifiers
+    only one storage class allowed
+    typedef must be at beginning of declaration
+    functions inside a function are extern, functions declared outside are static with external linkage
+    etc.
+    static objects/arrays must be initialized with constant expressions
+    technically, list members must be constant expressions even if auto or register
+     */
 
-  // now we figure out what the declarator is
-  if(inset(decl->storespecs, K_TYPEDEF))
+  if(inset(decl->storespecs, K_TYPEDEF)) // special case
   {
     // TODO
   }
+
+  // in the case of enum, struct, or union, the type is not done:
+
+  // else if(struct or union specifier) TODO
+
+  // else if(enum specifier) TODO
+
+  // we now are left with a declarator-initialier list, or a function declarator along with its definition
+
+
   
 }
 

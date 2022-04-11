@@ -151,13 +151,14 @@ expression	defs.h	/^typedef struct expression$/;"	s
 expression	defs.h	/^} expression;$/;"	t	typeref:struct:expression
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
-getdecl	main.c	/^declaration *getdecl(token *trans_unit)$/;"	f
+getdecl	main.c	/^declaration *getdecl(token *toks)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
+inset	datastruct.c	/^int inset(set *s, int m)$/;"	f
 inset	set.c	/^int inset(set *s, int m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
@@ -182,6 +183,7 @@ main	main.c	/^int main()$/;"	f
 main	test.c	/^ int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	test2.s	/^main:$/;"	l
+makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 makeset	set.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
@@ -197,6 +199,7 @@ rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 resize	defs.h	23;"	d
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 set	set.h	/^} set;$/;"	t	typeref:struct:__anon1
+setins	datastruct.c	/^int setins(set *s, int m) \/\/ set insert, returns 1 if already in set$/;"	f
 setins	set.c	/^int setins(set *s, int m) \/\/ set insert, returns 1 if already in set$/;"	f
 size	set.h	/^  int size;$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
@@ -224,5 +227,4 @@ typequals	defs.h	/^  int *typequals; \/\/ similar$/;"	m	struct:__anon11
 typespecs	defs.h	/^  int *typespecs; \/\/ array of ints (mix of enum keywords and user-defined types, but all ints)$/;"	m	struct:__anon11
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^volatile volatile const volatile int x;$/;"	v
 xtod	main.c	/^int xtod(char c)$/;"	f
