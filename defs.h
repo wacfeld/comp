@@ -17,6 +17,7 @@
 #include <string.h>
 // #include <time.h>
 
+#include "datastruct.h"
 
 
 #define putd(x) printf(#x ": %d\n", x)
@@ -292,5 +293,15 @@ typedef union
 
 // typemod type
 enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
+
+
+typedef struct
+{
+  set *typespecs;
+  set *typequals;
+  set *storespecs;
+
+  list *typemods;
+} ctype; // "type" is used everywhere so i call it ctype
 
 #endif

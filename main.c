@@ -922,6 +922,10 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
   int i;
   for(i = 0; src[i]; i++)
   {
+    if(quot[i])
+      putchar(toupper(src[i]));
+    else
+      putchar(src[i]);
     assert(strchr(banned, src[i]) == NULL || quot[i]);
   }
 }
@@ -1209,21 +1213,28 @@ void puttypemod(typemod ts)
 
 
 // read first declaration from array of tokens, and do things about it
-void parsedecl(token *toks)
+// returns 0 if runs into NOTOK
+int parsedecl(token *toks)
 {
   // declaration *decl = malloc(sizeof(decl));
+  
+  static int i = 0;
+
+  if(!toks) // reset if passed NULL
+  {
+    i = 0;
+    return 1; // return value doesn't matter
+  }
+
+  if(toks[i].gen.type == NOTOK) // end of token stream
+  {
+    return 0;
+  }
   
   // allocate sets
   set *typespecs  = makeset(sizeof(int));
   set *typequals  = makeset(sizeof(int));
   set *storespecs = makeset(sizeof(int));
-
-  static int i = 0;
-  if(!toks) // reset if passed NULL
-  {
-    i = 0;
-    return;
-  }
 
   int n = i; // save starting point for future reference (e.x. checking typedef)
   token t;
@@ -1273,18 +1284,17 @@ void parsedecl(token *toks)
   // else if(enum specifier) TODO
 
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
-  list *l = makelist(sizeof(typemod));
-  gettypemods(toks, i, -1, l); // parse one declarator
 
+  list *l = makelist(sizeof(typemod));
+  i = gettypemods(toks, i, -1, l); // parse one declarator
   reverse(l); // typemods are parsed from the outside in, so now we flip that
+
   typemod *tms = (typemod *) l->cont;
   int tmlen = l->n;
-  
   for(int j = 0; j < tmlen; j++)
   {
     puttypemod(tms[j]);
   }
-
   int *tss = (int *) typespecs->cont;
   int tslen = typespecs->n;
   for(int j = 0; j < tslen; j++)
@@ -1292,6 +1302,38 @@ void parsedecl(token *toks)
     printf("%s ", keywords[tss[j]]);
   }
   newl();
+
+
+  ctype ct = {typespecs, typequals, storespecs, l};
+
+  // TODO comma-separated declarations
+
+  // only after first and only declarator: function definition
+  if(isatom(toks+i, BRACEOP))
+  {
+    // TODO
+    // check if valid function declarator
+    puts("(function definition)");
+    int bracedep = 0;
+    do
+    {
+      if(isatom(toks+i, BRACEOP)) bracedep++;
+      if(isatom(toks+i, BRACECL)) bracedep--;
+      i++;
+    } while(bracedep);
+  }
+
+  else if(isatom(toks+i, EQ)) // initialization
+  {
+    // TODO
+    puts("(initialization)");
+    while(!isatom(toks+i, SEMICOLON)) i++;
+  }
+
+  else assert(isatom(toks+i, SEMICOLON));
+  i++; // move over semicolon
+
+  return 1; // success
 }
 
 
@@ -1324,8 +1366,31 @@ int main()
 
   rem_comments(src, esc, quot); // replace multiline comments with single space
 
+  // mark AGAIN now that comments are gone (stray quotes will break things
+  mark_esc(src, esc); // mark backslash escape sequences
+  mark_quot(src, esc, quot); // mark single and double quoted regions
+
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+
+
+  // printf("%s", src);
+  // for(i = 0; i < strlen(src); i++)
+  // {
+  //   if(esc[i]) putchar('e');
+  //   else putchar('.');
+  // }
+  // puts("");
+  // for(i = 0; i < strlen(src); i++)
+  // {
+  //   if(quot[i] == 0)
+  //   {
+  //     putchar('.');
+  //   }
+  //   else
+  //     putchar(quot[i]);
+  // }
+
 
   // tokenize
   // alloc(token, trans_unit, tsize, tcount);
@@ -1347,7 +1412,7 @@ int main()
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
   puts("------------------");
-  parsedecl((token *)trans_unit->cont);
+  while(parsedecl((token *)trans_unit->cont)); // parse until NOTOK
 
   // tcount--; // exclude NOTOK
 
