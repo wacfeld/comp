@@ -158,11 +158,12 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon12
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
-gettypemods	main.c	/^char * gettypemods(token *toks, int lo, int hi, list *l)$/;"	f
+gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
+ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon11	typeref:struct:__anon11::__anon16
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
@@ -199,6 +200,7 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+name	defs.h	/^    char *name;$/;"	m	struct:__anon11::__anon16
 newl	defs.h	23;"	d
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -226,6 +228,7 @@ type	defs.h	/^    int type;$/;"	m	struct:__anon11::__anon12
 type	defs.h	/^    int type;$/;"	m	struct:__anon11::__anon13
 type	defs.h	/^    int type;$/;"	m	struct:__anon11::__anon14
 type	defs.h	/^    int type;$/;"	m	struct:__anon11::__anon15
+type	defs.h	/^    int type;$/;"	m	struct:__anon11::__anon16
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon2
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon3
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon4

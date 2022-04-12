@@ -261,25 +261,36 @@ typedef union
   {
     int type;
   } gen;
+
   struct
   {
     int type;
     int isconst;
     int isvolatile;
   } ptr;
+
   struct
   {
     int type;
     int len;
   } arr;
+
   struct
   {
     int type;
     // TODO parameters
   } func;
+
+  struct
+  {
+    int type;
+    char *name;
+  } ident; // we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)
+  // note thate this means that checking equality of types will require checking for possible identifiers
+
 } typemod; // type modifier
 
 // typemod type
-enum tmt = {PTR, ARR, FUNC};
+enum tmt = {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
 
 #endif

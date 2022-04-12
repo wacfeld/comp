@@ -996,8 +996,8 @@ int getstorespec(token t) // get storage class specifier
 // }
 
 // recursive function that interprets a declarator by getting the type modifiers in order
-// returns identifier name
-char * gettypemods(token *toks, int lo, int hi, list *l)
+// returns hi + 1 (where to pick up next)
+int gettypemods(token *toks, int lo, int hi, list *l)
 {
   // initial recursive call, must find right side of declarator
   // we also verify that parentheses are balanced here, just because we can
@@ -1048,6 +1048,7 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
         {
           if(isatom(toks+hi, BRACKOP)) brackdep++;
           if(isatom(toks+hi, BRACKCL)) brackdep--;
+          assert(parendep >= 0 && toks[hi].gen.type != NOTOK);
           hi++;
         } while(!brackdep);
 
@@ -1062,6 +1063,7 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
         {
           if(isatom(toks+hi, PARENOP)) parendep++;
           if(isatom(toks+hi, BRACKCL)) parendep--;
+          assert(parendep >= 0 && toks[hi].gen.type != NOTOK);
           hi++;
         } while(curdep != parendep);
 
@@ -1080,8 +1082,8 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
     tmod->gen.type = PTR;
 
     // look for qualifiers
-    i++;
-    for(;; i++)
+    lo++;
+    for(;; lo++)
     {
       if(iskeyword(toks[k], K_VOLATILE))
       {
@@ -1096,10 +1098,28 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
     }
 
     append(l, tmod);
-    return gettypemods(toks, i, l);
+    free(tmod);
+    gettypemods(toks, lo, hi, l);
+
+    return hi+1;
   }
   
-  if(isatom(toks[i], PARENOP)) // direct declarator time, must look from other side
+  if(isatom(toks[lo], PARENOP) || toks[lo].gen.type == IDENT) // direct declarator time, must look from other side
+  {
+    if(isatom(toks[hi], PARENCL)) // either function or just parenthesis
+    {
+      // find matching paren to figure out
+      int parendep = 0;
+      int i = hi; // hello
+      do
+      {
+        if(isatom(toks[i], PARENCL)) parendep++;
+        if(isatom(toks[i], PARENOP)) parendep--;
+        assert(parendep >= 0 && i >= 0);
+        i--;
+      } while(parendep != 0);
+    }
+  }
 }
 
 
