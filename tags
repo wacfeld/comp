@@ -158,7 +158,7 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon12
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
-gettypemods	main.c	/^typemod *gettypemods()$/;"	f
+gettypemods	main.c	/^char * gettypemods(token *toks, int lo, int hi, list *l)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
@@ -171,7 +171,7 @@ isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon11::__anon13
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
-iskeyword	main.c	/^int iskeyword(char *s)$/;"	f
+iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon7
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
@@ -202,6 +202,7 @@ n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
 newl	defs.h	23;"	d
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
+parsedecl	main.c	/^void parsedecl(token *toks)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon13
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	22;"	d
@@ -215,6 +216,7 @@ setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if 
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
+striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon10
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g

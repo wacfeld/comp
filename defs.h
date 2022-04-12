@@ -279,4 +279,7 @@ typedef union
   } func;
 } typemod; // type modifier
 
+// typemod type
+enum tmt = {PTR, ARR, FUNC};
+
 #endif

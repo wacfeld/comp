@@ -295,7 +295,8 @@ int isletter(char c)
   return (isalpha(c) || c == '_'); // identifier letters can be [a-zA-Z] or underscore
 }
 
-int iskeyword(char *s)
+
+int striskeyword(char *s)
 {
   static int len = sizeof(keywords) / sizeof(char *);
 
@@ -371,7 +372,7 @@ token * nexttok(char *src, char *esc, char *quot)
     }
 
     int k;
-    if((k = iskeyword(str)) != -1) // keyword
+    if((k = striskeyword(str)) != -1) // keyword
     {
       t->gen.type = KEYWORD;
       t->keyword.cont = k;
@@ -925,6 +926,10 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
   }
 }
 
+int iskeyword(token *t, enum keyword k)
+{
+  return t->gen.type == KEYWORD && t.keyword.cont == k);
+}
 int isatom(token *t, enum atom_type a)
 {
   return t->gen.type == ATOM && t->atom.cont == a;
@@ -990,84 +995,152 @@ int getstorespec(token t) // get storage class specifier
 //   return gettypequal(t);
 // }
 
-typemod *gettypemods()
+// recursive function that interprets a declarator by getting the type modifiers in order
+// returns identifier name
+char * gettypemods(token *toks, int lo, int hi, list *l)
 {
+  // initial recursive call, must find right side of declarator
+  // we also verify that parentheses are balanced here, just because we can
+  if(hi == -1)
+  {
+    hi = lo; // start from here
+    int parendepth = 0;
+    
+    for(;; hi++) // possible tokens: ( * const volatile
+    {
+      if(isatom(toks+hi, STAR))
+      {
+        continue;
+      }
+      if(isatom(toks+hi, PARENOP)) // if (, remember it
+      {
+        parendepth++;
+        continue;
+      }
+      if(iskeyword(toks+hi, K_VOLATILE) || iskeyword(toks+hi, K_CONST))
+      {
+        continue;
+      }
 
+      // reached identifier
+      break;
+    }
+    assert(toks[hi].gen.type == IDENT); // assert identifier
+    hi++; // pass identifier
+
+    // possible things: [constant-expression_opt] (parameter-type-list) )
+    for(;;) // all incrementing is now done manually, because it's more complex
+    {
+      if(isatom(toks+hi), PARENCL)
+      {
+        parendepth--;
+      }
+    }
+  }
+
+  typemod *tmod = malloc(sizeof(typemod));
+
+  if(isatom(toks[i], STAR)) // pointer time
+  {
+    tmod->gen.type = PTR;
+
+    // look for qualifiers
+    i++;
+    for(;; i++)
+    {
+      if(iskeyword(toks[k], K_VOLATILE))
+      {
+        tmod->ptr.isvolatile = 1;
+      }
+      else if(iskeyword(toks[k], K_CONST))
+      {
+        tmod->ptr.isconst = 1;
+      }
+      else // end of qualifiers
+        break;
+    }
+
+    append(l, tmod);
+    return gettypemods(toks, i, l);
+  }
+  
+  if(isatom(toks[i], PARENOP)) // direct declarator time, must look from other side
 }
 
 
 // read first declaration from array of tokens, and do things about it
-// void parsedecl(token *toks)
-// {
-//   // declaration *decl = malloc(sizeof(decl));
+void parsedecl(token *toks)
+{
+  // declaration *decl = malloc(sizeof(decl));
   
-//   // allocate sets
-//   set *typespecs  = makeset(sizeof(int));
-//   set *typequals  = makeset(sizeof(int));
-//   set *storespecs = makeset(sizeof(int));
+  // allocate sets
+  set *typespecs  = makeset(sizeof(int));
+  set *typequals  = makeset(sizeof(int));
+  set *storespecs = makeset(sizeof(int));
 
-//   static int i = 0;
-//   if(!toks) // reset if passed NULL
-//   {
-//     i = 0;
-//     return;
-//   }
+  static int i = 0;
+  if(!toks) // reset if passed NULL
+  {
+    i = 0;
+    return;
+  }
 
-//   int n = i; // save starting point for future reference (e.x. checking typedef)
-//   token t;
-//   int spec;
-//   // read declaration specifiers
-//   for(;; i++)
-//   {
-//     t =toks[i];
-//     if((spec = gettypespec(t)) != -1)
-//     {
-//       // insert
-//       assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
-//     }
-//     else if((spec = gettypequal(t)) != -1)
-//     {
-//       setins(typequals, spec); // duplicate type quals are ignored
-//     }
-//     else if((spec = getstorespec(t)) != -1)
-//     {
-//       assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
-//     }
-//     else break; // end of declaration specifiers
-//   }
+  int n = i; // save starting point for future reference (e.x. checking typedef)
+  token t;
+  int spec;
+  // read declaration specifiers
+  for(;; i++)
+  {
+    t =toks[i];
+    if((spec = gettypespec(t)) != -1)
+    {
+      // insert
+      assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
+    }
+    else if((spec = gettypequal(t)) != -1)
+    {
+      setins(typequals, spec); // duplicate type quals are ignored
+    }
+    else if((spec = getstorespec(t)) != -1)
+    {
+      assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
+    }
+    else break; // end of declaration specifiers
+  }
   
-//   // TODO perform checks on the specifiers to make sure they're allowed
-//   /*
-//     auto and register only in functions
-//     conflicting type specifiers
-//     only one storage class allowed
-//     typedef must be at beginning of declaration
-//     functions inside a function are extern, functions declared outside are static with external linkage
-//     etc.
-//     static objects/arrays must be initialized with constant expressions
-//     technically, list members must be constant expressions even if auto or register
-//      */
+  // TODO perform checks on the specifiers to make sure they're allowed
+  /*
+    auto and register only in functions
+    conflicting type specifiers
+    only one storage class allowed
+    typedef must be at beginning of declaration
+    functions inside a function are extern, functions declared outside are static with external linkage
+    etc.
+    static objects/arrays must be initialized with constant expressions
+    technically, list members must be constant expressions even if auto or register
+     */
 
-//   if(inset(storespecs, K_TYPEDEF)) // special case
-//   {
-//     // TODO
-//   }
+  if(inset(storespecs, K_TYPEDEF)) // special case
+  {
+    // TODO
+  }
 
-//   // in the case of enum, struct, or union, the type is not done:
+  // in the case of enum, struct, or union, the type is not done:
 
-//   // else if(struct or union specifier) TODO
+  // else if(struct or union specifier) TODO
 
-//   // else if(enum specifier) TODO
+  // else if(enum specifier) TODO
 
-//   // we now are left with a declarator-initialier list, or a function declarator along with its definition
+  // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
   
   
-// }
+}
 
 
 int main()
 {
+  // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
 
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
