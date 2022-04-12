@@ -989,20 +989,27 @@ int getstorespec(token t) // get storage class specifier
 //   return gettypequal(t);
 // }
 
+typemod *gettypemods()
+{
+
+}
+
+
 // read first declaration from array of tokens, and do things about it
 void parsedecl(token *toks)
 {
   // declaration *decl = malloc(sizeof(decl));
   
   // allocate sets
-  typespecs  = makeset(10);
-  typequals  = makeset(10);
-  storespecs = makeset(10);
+  set *typespecs  = makeset(10);
+  set *typequals  = makeset(10);
+  set *storespecs = makeset(10);
 
   static int i = 0;
   if(!toks) // reset if passed NULL
   {
     i = 0;
+    return;
   }
 
   int n = i; // save starting point for future reference (e.x. checking typedef)
@@ -1053,7 +1060,7 @@ void parsedecl(token *toks)
 
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
-
+  
   
 }
 

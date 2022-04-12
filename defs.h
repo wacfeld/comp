@@ -242,15 +242,15 @@ typedef struct link
 // linked lists seem like a good way to represent expressions
 
 
-typedef struct
-{
-  int *typespecs; // array of ints (mix of enum keywords and user-defined types, but all ints)
-  int *typequals; // similar
-  int *storespecs; // similar
+// typedef struct
+// {
+//   int *typespecs; // array of ints (mix of enum keywords and user-defined types, but all ints)
+//   int *typequals; // similar
+//   int *storespecs; // similar
 
-  // TODO the rest
+//   // TODO the rest
 
-} declaration;
+// } declaration;
 
 typedef union
 {
