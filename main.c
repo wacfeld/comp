@@ -1027,6 +1027,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
     }
     assert(toks[hi].gen.type == IDENT); // assert identifier
     hi++; // pass identifier
+    // putd(1);
 
     // possible things: [constant-expression_opt] (parameter-type-list) )
     for(;;) // all incrementing is now done manually, because it's more complex
@@ -1062,7 +1063,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
         do
         {
           if(isatom(toks+hi, PARENOP)) parendep++;
-          if(isatom(toks+hi, BRACKCL)) parendep--;
+          if(isatom(toks+hi, PARENCL)) parendep--;
           assert(parendep >= 0 && toks[hi].gen.type != NOTOK);
           hi++;
         } while(curdep != parendep);
@@ -1072,6 +1073,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
 
       assert(parendep == 0); // must be depth 0, then the declarator is done
       hi--; // step back onto end of declarator
+      break;
     }
   }
 
@@ -1188,7 +1190,7 @@ void puttypemod(typemod ts)
   if(type == TM_PTR)
   {
     if(ts.ptr.isconst)
-      printf("contsant ");
+      printf("constant ");
     if(ts.ptr.isvolatile)
       printf("volatile ");
     printf("pointer to ");
@@ -1341,6 +1343,8 @@ int main()
 
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
+
+  puts("------------------");
   parsedecl((token *)trans_unit->cont);
 
   // tcount--; // exclude NOTOK
