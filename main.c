@@ -321,17 +321,18 @@ int isfloatsuffix(char c)
 }
 
 
-void nexttok(char *src, char *esc, char *quot, token *t)
+token * nexttok(char *src, char *esc, char *quot)
 {
   // lots of this might be doable with regex, but i'm not sure
 
+  token *t = malloc(sizeof(token));
   static int i = 0;
 
   if(src == NULL) // reset i
   {
     i = 0;
     // doesn't actually matter what we return
-    return;
+    return t;
   }
 
   while(isspace(src[i])) i++; // skip leading whitespace
@@ -339,7 +340,7 @@ void nexttok(char *src, char *esc, char *quot, token *t)
   if(!src[i]) // end of src
   {
     t->gen.type = NOTOK;
-    return; // signal no token to caller
+    return t; // signal no token to caller
   }
   
   alloc(char, str, size, c);
@@ -366,7 +367,7 @@ void nexttok(char *src, char *esc, char *quot, token *t)
     {
       t->gen.type = ATOM;
       t->atom.cont = SIZEOF;
-      return;
+      return t;
     }
 
     int k;
@@ -381,7 +382,7 @@ void nexttok(char *src, char *esc, char *quot, token *t)
       t->ident.cont = str;
     }
 
-    return;
+    return t;
   }
 
   else if(isdigit(src[i])) // integer or float constant
@@ -481,7 +482,7 @@ whitespace:
 
       t->integer.cont = num;
 
-      return;
+      return t;
     }
 
     else if(src[i] == '.') // float constant
@@ -556,7 +557,7 @@ leaddot:
 
       free(str); // no longer needed
       
-      return;
+      return t;
     }
 
     assert(!"this assert should never run");
@@ -586,7 +587,7 @@ leaddot:
     t->gen.type = STRLIT;
     t->strlit.cont = str;
 
-    return;
+    return t;
   }
 
   else if(src[i] == '\'') // character constant
@@ -617,7 +618,7 @@ leaddot:
     t->gen.type = CHAR;
     t->character.cont = chr;
 
-    return;
+    return t;
   }
 
   else if(src[i] == ';') // semicolon, easiest case
@@ -625,7 +626,7 @@ leaddot:
     t->gen.type = ATOM;
     t->atom.cont = SEMICOLON;
     i++;
-    return;
+    return t;
   }
 
   // separators
@@ -634,42 +635,42 @@ leaddot:
     t->gen.type = ATOM;
     t->atom.cont = PARENOP;
     i++;
-    return;
+    return t;
   }
   else if(src[i] == ')') // also sometimes part of operator
   {
     t->gen.type = ATOM;
     t->atom.cont = PARENCL;
     i++;
-    return;
+    return t;
   }
   else if(src[i] == '{')
   {
     t->gen.type = ATOM;
     t->atom.cont = BRACEOP;
     i++;
-    return;
+    return t;
   }
   else if(src[i] == '}')
   {
     t->gen.type = ATOM;
     t->atom.cont = BRACECL;
     i++;
-    return;
+    return t;
   }
   else if(src[i] == '[')
   {
     t->gen.type = ATOM;
     t->atom.cont = BRACKOP;
     i++;
-    return;
+    return t;
   }
   else if(src[i] == ']')
   {
     t->gen.type = ATOM;
     t->atom.cont = BRACKCL;
     i++;
-    return;
+    return t;
   }
 
   // now for operators
@@ -903,7 +904,7 @@ leaddot:
     t->atom.cont = QUESTION;
   }
   
-  return;
+  return t;
   /*
   floats can start with dots
   colons can be for labels
@@ -996,73 +997,73 @@ typemod *gettypemods()
 
 
 // read first declaration from array of tokens, and do things about it
-void parsedecl(token *toks)
-{
-  // declaration *decl = malloc(sizeof(decl));
+// void parsedecl(token *toks)
+// {
+//   // declaration *decl = malloc(sizeof(decl));
   
-  // allocate sets
-  set *typespecs  = makeset(10);
-  set *typequals  = makeset(10);
-  set *storespecs = makeset(10);
+//   // allocate sets
+//   set *typespecs  = makeset(sizeof(int));
+//   set *typequals  = makeset(sizeof(int));
+//   set *storespecs = makeset(sizeof(int));
 
-  static int i = 0;
-  if(!toks) // reset if passed NULL
-  {
-    i = 0;
-    return;
-  }
+//   static int i = 0;
+//   if(!toks) // reset if passed NULL
+//   {
+//     i = 0;
+//     return;
+//   }
 
-  int n = i; // save starting point for future reference (e.x. checking typedef)
-  token t;
-  int spec;
-  // read declaration specifiers
-  for(;; i++)
-  {
-    t =toks[i];
-    if((spec = gettypespec(t)) != -1)
-    {
-      // insert
-      assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
-    }
-    else if((spec = gettypequal(t)) != -1)
-    {
-      setins(typequals, spec); // duplicate type quals are ignored
-    }
-    else if((spec = getstorespec(t)) != -1)
-    {
-      assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
-    }
-    else break; // end of declaration specifiers
-  }
+//   int n = i; // save starting point for future reference (e.x. checking typedef)
+//   token t;
+//   int spec;
+//   // read declaration specifiers
+//   for(;; i++)
+//   {
+//     t =toks[i];
+//     if((spec = gettypespec(t)) != -1)
+//     {
+//       // insert
+//       assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
+//     }
+//     else if((spec = gettypequal(t)) != -1)
+//     {
+//       setins(typequals, spec); // duplicate type quals are ignored
+//     }
+//     else if((spec = getstorespec(t)) != -1)
+//     {
+//       assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
+//     }
+//     else break; // end of declaration specifiers
+//   }
   
-  // TODO perform checks on the specifiers to make sure they're allowed
-  /*
-    auto and register only in functions
-    conflicting type specifiers
-    only one storage class allowed
-    typedef must be at beginning of declaration
-    functions inside a function are extern, functions declared outside are static with external linkage
-    etc.
-    static objects/arrays must be initialized with constant expressions
-    technically, list members must be constant expressions even if auto or register
-     */
+//   // TODO perform checks on the specifiers to make sure they're allowed
+//   /*
+//     auto and register only in functions
+//     conflicting type specifiers
+//     only one storage class allowed
+//     typedef must be at beginning of declaration
+//     functions inside a function are extern, functions declared outside are static with external linkage
+//     etc.
+//     static objects/arrays must be initialized with constant expressions
+//     technically, list members must be constant expressions even if auto or register
+//      */
 
-  if(inset(storespecs, K_TYPEDEF)) // special case
-  {
-    // TODO
-  }
+//   if(inset(storespecs, K_TYPEDEF)) // special case
+//   {
+//     // TODO
+//   }
 
-  // in the case of enum, struct, or union, the type is not done:
+//   // in the case of enum, struct, or union, the type is not done:
 
-  // else if(struct or union specifier) TODO
+//   // else if(struct or union specifier) TODO
 
-  // else if(enum specifier) TODO
+//   // else if(enum specifier) TODO
 
-  // we now are left with a declarator-initialier list, or a function declarator along with its definition
+//   // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
   
   
-}
+// }
 
 
 int main()
@@ -1097,17 +1098,23 @@ int main()
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
   // tokenize
-  alloc(token, trans_unit, tsize, tcount);
+  // alloc(token, trans_unit, tsize, tcount);
+
+  list *trans_unit = makelist(sizeof(token));
 
   // turn text into tokens
   do
   {
-    resize(trans_unit, tsize, tcount);
-    nexttok(src, esc, quot, trans_unit+tcount);
-    puttok(trans_unit[tcount]);
+    // resize(trans_unit, tsize, tcount);
+    token *t = nexttok(src, esc, quot);
+    append(trans_unit, t);
+    free(t);
+    // nexttok(src, esc, quot, trans_unit+tcount);
+    // puttok(trans_unit[tcount]);
+    puttok(*(token *)last(trans_unit));
 
   }
-  while(trans_unit[tcount++].gen.type != NOTOK);
+  while(((token *)last(trans_unit))->gen.type != NOTOK);
 
   // tcount--; // exclude NOTOK
 

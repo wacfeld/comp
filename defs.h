@@ -1,3 +1,6 @@
+#ifndef DEFS
+#define DEFS
+
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
@@ -275,3 +278,5 @@ typedef union
     // TODO parameters
   } func;
 } typemod; // type modifier
+
+#endif
