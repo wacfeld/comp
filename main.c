@@ -928,7 +928,7 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 
 int iskeyword(token *t, enum keyword k)
 {
-  return t->gen.type == KEYWORD && t.keyword.cont == k);
+  return t->gen.type == KEYWORD && t->keyword.cont == k;
 }
 int isatom(token *t, enum atom_type a)
 {
@@ -1035,7 +1035,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
       {
         parendep--;
         assert(parendep >= 0); // make sure we're not going under
-        i++;
+        hi++;
         continue;
       }
 
@@ -1077,19 +1077,19 @@ int gettypemods(token *toks, int lo, int hi, list *l)
 
   typemod *tmod = malloc(sizeof(typemod));
 
-  if(isatom(toks[i], STAR)) // pointer time
+  if(isatom(toks+lo, STAR)) // pointer time
   {
-    tmod->gen.type = PTR;
+    tmod->gen.type = TM_PTR;
 
     // look for qualifiers
     lo++;
     for(;; lo++)
     {
-      if(iskeyword(toks[k], K_VOLATILE))
+      if(iskeyword(toks+lo, K_VOLATILE))
       {
         tmod->ptr.isvolatile = 1;
       }
-      else if(iskeyword(toks[k], K_CONST))
+      else if(iskeyword(toks+lo, K_CONST))
       {
         tmod->ptr.isconst = 1;
       }
@@ -1104,17 +1104,17 @@ int gettypemods(token *toks, int lo, int hi, list *l)
     return hi+1;
   }
   
-  if(isatom(toks[lo], PARENOP) || toks[lo].gen.type == IDENT) // direct declarator time, must look from other side
+  if(isatom(toks+lo, PARENOP) || toks[lo].gen.type == IDENT) // direct declarator time, must look from other side
   {
-    if(isatom(toks[hi], PARENCL)) // either function or just parenthesis
+    if(isatom(toks+hi, PARENCL)) // either function or just parenthesis
     {
       // find matching paren to figure out
       int parendep = 0;
       int i = hi; // hello
       do
       {
-        if(isatom(toks[i], PARENCL)) parendep++;
-        if(isatom(toks[i], PARENOP)) parendep--;
+        if(isatom(toks+i, PARENCL)) parendep++;
+        if(isatom(toks+i, PARENOP)) parendep--;
         assert(parendep >= 0 && i >= 0);
         i--;
       } while(parendep != 0);
@@ -1131,7 +1131,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
 
       else // it's a function
       {
-        tmod.gen.type = TM_FUNC;
+        tmod->gen.type = TM_FUNC;
         // TODO store the parameter type list
         append(l, tmod);
         free(tmod);
@@ -1141,22 +1141,22 @@ int gettypemods(token *toks, int lo, int hi, list *l)
       }
     }
 
-    if(isatom(toks[hi], BRACKCL)) // array
+    if(isatom(toks+hi, BRACKCL)) // array
     {
       // find matching bracket
       int brackdep = 0;
       int i = hi;
       do
       {
-        if(isatom(toks[i], BRACKCL)) brackdep++;
-        if(isatom(toks[i], BRACKOP)) brackdep--;
+        if(isatom(toks+i, BRACKCL)) brackdep++;
+        if(isatom(toks+i, BRACKOP)) brackdep--;
         assert(brackdep >= 0 && i >= 0);
         i--;
       } while(brackdep != 0);
       i++; // back onto last [
 
       // TODO evaluate and store length (should be constant expression)
-      tmod.gen.type = TM_ARR;
+      tmod->gen.type = TM_ARR;
       append(l, tmod);
       free(tmod);
       gettypemods(toks, lo, i-1, l);
@@ -1168,13 +1168,38 @@ int gettypemods(token *toks, int lo, int hi, list *l)
     assert(lo == hi);
     assert(toks[lo].gen.type == IDENT);
 
-    tmod.type = TM_IDENT;
-    tmod.ident.name = toks[lo].ident.cont;
+    tmod->gen.type = TM_IDENT;
+    tmod->ident.name = toks[lo].ident.cont;
 
     append(l, tmod);
     free(tmod);
 
     return hi+1;
+  }
+}
+
+void puttypemod(typemod ts)
+{
+  enum tmt type = ts.gen.type;
+  if(type == TM_IDENT)
+  {
+    printf("%s is a ", ts.ident.name);
+  }
+  if(type == TM_PTR)
+  {
+    if(ts.ptr.isconst)
+      printf("contsant ");
+    if(ts.ptr.isvolatile)
+      printf("volatile ");
+    printf("pointer to ");
+  }
+  if(type == TM_ARR)
+  {
+    printf("array of ");
+  }
+  if(type == TM_FUNC)
+  {
+    printf("function returning ");
   }
 }
 
@@ -1206,15 +1231,15 @@ void parsedecl(token *toks)
     if((spec = gettypespec(t)) != -1)
     {
       // insert
-      assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
+      assert(!setins(typespecs, &spec)); // no duplicate type specifiers allowed
     }
     else if((spec = gettypequal(t)) != -1)
     {
-      setins(typequals, spec); // duplicate type quals are ignored
+      setins(typequals, &spec); // duplicate type quals are ignored
     }
     else if((spec = getstorespec(t)) != -1)
     {
-      assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
+      assert(!setins(storespecs, &spec)); // no duplicate storage classes allowed
     }
     else break; // end of declaration specifiers
   }
@@ -1231,7 +1256,8 @@ void parsedecl(token *toks)
     technically, list members must be constant expressions even if auto or register
      */
 
-  if(inset(storespecs, K_TYPEDEF)) // special case
+  int temp = K_TYPEDEF; // because of how sets are implemented we need an address
+  if(inset(storespecs, &temp)) // special case
   {
     // TODO
   }
@@ -1255,38 +1281,13 @@ void parsedecl(token *toks)
     puttypemod(tms[j]);
   }
 
-  int *tss = (int *) typespecs.cont;
+  int *tss = (int *) typespecs->cont;
   int tslen = typespecs->n;
   for(int j = 0; j < tslen; j++)
   {
     printf("%s ", keywords[tss[j]]);
   }
   newl();
-}
-
-void puttypemod(typemod ts)
-{
-  enum tmt type = ts.gen.type;
-  if(type == TM_IDENT)
-  {
-    printf("%s is a ", ts.ident.name);
-  }
-  if(type == TM_PTR)
-  {
-    if(ts.ptr.isconst)
-      printf("contsant ");
-    if(ts.ptr.isvolatile)
-      printf("volatile ");
-    printf("pointer to ");
-  }
-  if(type == TM_ARR)
-  {
-    printf("array of ");
-  }
-  if(type == TM_FUNC)
-  {
-    printf("function returning ");
-  }
 }
 
 
@@ -1340,6 +1341,7 @@ int main()
 
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
+  parsedecl((token *)trans_unit->cont);
 
   // tcount--; // exclude NOTOK
 

@@ -291,6 +291,6 @@ typedef union
 } typemod; // type modifier
 
 // typemod type
-enum tmt = {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
+enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
 
 #endif

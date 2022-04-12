@@ -100,7 +100,7 @@ void reverse(list *l)
   char *newcont = malloc(size * l->max);
   for(int i = 0; i < l->n; i++)
   {
-    memcpy(newcont+size*i, l->cont+size*(n-i-1), size);
+    memcpy(newcont+size*i, l->cont+size*(l->n-i-1), size);
   }
   free(l->cont);
   l->cont = newcont;
