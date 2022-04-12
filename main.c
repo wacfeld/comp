@@ -922,10 +922,10 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
   int i;
   for(i = 0; src[i]; i++)
   {
-    if(quot[i])
-      putchar(toupper(src[i]));
-    else
-      putchar(src[i]);
+    // if(quot[i])
+    //   putchar(toupper(src[i]));
+    // else
+    //   putchar(src[i]);
     assert(strchr(banned, src[i]) == NULL || quot[i]);
   }
 }
@@ -1330,8 +1330,11 @@ int parsedecl(token *toks)
     while(!isatom(toks+i, SEMICOLON)) i++;
   }
 
-  else assert(isatom(toks+i, SEMICOLON));
-  i++; // move over semicolon
+  else
+  {
+    assert(isatom(toks+i, SEMICOLON));
+    i++; // move over semicolon
+  }
 
   return 1; // success
 }
