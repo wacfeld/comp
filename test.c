@@ -1,5 +1,9 @@
 #include <stdio.h>
- int main()
+typedef int m;
+typedef int n;
+m x;
+n x;
+int main()
 {
-  const static int *();
+  return 0;
 }

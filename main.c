@@ -1243,9 +1243,50 @@ void parsedecl(token *toks)
   // else if(enum specifier) TODO
 
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
+  list *l = makelist(sizeof(typemod));
+  gettypemods(toks, i, -1, l); // parse one declarator
 
+  reverse(l); // typemods are parsed from the outside in, so now we flip that
+  typemod *tms = (typemod *) l->cont;
+  int tmlen = l->n;
   
-  
+  for(int j = 0; j < tmlen; j++)
+  {
+    puttypemod(tms[j]);
+  }
+
+  int *tss = (int *) typespecs.cont;
+  int tslen = typespecs->n;
+  for(int j = 0; j < tslen; j++)
+  {
+    printf("%s ", keywords[tss[j]]);
+  }
+  newl();
+}
+
+void puttypemod(typemod ts)
+{
+  enum tmt type = ts.gen.type;
+  if(type == TM_IDENT)
+  {
+    printf("%s is a ", ts.ident.name);
+  }
+  if(type == TM_PTR)
+  {
+    if(ts.ptr.isconst)
+      printf("contsant ");
+    if(ts.ptr.isvolatile)
+      printf("volatile ");
+    printf("pointer to ");
+  }
+  if(type == TM_ARR)
+  {
+    printf("array of ");
+  }
+  if(type == TM_FUNC)
+  {
+    printf("function returning ");
+  }
 }
 
 

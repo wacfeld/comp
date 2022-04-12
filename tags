@@ -188,9 +188,10 @@ link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
+m	test.c	/^typedef int m;$/;"	t	file:
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
-main	test.c	/^ int main()$/;"	f
+main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	test2.s	/^main:$/;"	l
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
@@ -199,6 +200,7 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+n	test.c	/^typedef int n;$/;"	t	file:
 name	defs.h	/^    char *name;$/;"	m	struct:__anon11::__anon16
 newl	defs.h	23;"	d
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
@@ -208,9 +210,11 @@ ptr	defs.h	/^  } ptr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon13
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	22;"	d
 puttok	main.c	/^void puttok(token t)$/;"	f
+puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
 read	defs.h	30;"	d
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 resize	defs.h	26;"	d
+reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
@@ -241,4 +245,6 @@ type	defs.h	/^  expr_type type;$/;"	m	struct:expression
 typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon11
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+x	test.c	/^m x;$/;"	v
+x	test.c	/^n x;$/;"	v
 xtod	main.c	/^int xtod(char c)$/;"	f

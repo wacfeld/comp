@@ -93,3 +93,15 @@ void *last(list *l)
 {
   return get(l, l->n-1);
 }
+
+void reverse(list *l)
+{
+  int size = l->size;
+  char *newcont = malloc(size * l->max);
+  for(int i = 0; i < l->n; i++)
+  {
+    memcpy(newcont+size*i, l->cont+size*(n-i-1), size);
+  }
+  free(l->cont);
+  l->cont = newcont;
+}
