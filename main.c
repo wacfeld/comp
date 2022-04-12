@@ -1118,7 +1118,63 @@ int gettypemods(token *toks, int lo, int hi, list *l)
         assert(parendep >= 0 && i >= 0);
         i--;
       } while(parendep != 0);
+      i++; // back onto last (
+
+      if(i == lo) // back where we started? then it's a regular paren
+      {
+        // recurse without the paren
+        free(tmod); // wasn't needed
+        gettypemods(toks, lo+1, hi-1, l);
+
+        return hi+1;
+      }
+
+      else // it's a function
+      {
+        tmod.gen.type = TM_FUNC;
+        // TODO store the parameter type list
+        append(l, tmod);
+        free(tmod);
+        gettypemods(toks, lo, i-1, l);
+        
+        return hi+1;
+      }
     }
+
+    if(isatom(toks[hi], BRACKCL)) // array
+    {
+      // find matching bracket
+      int brackdep = 0;
+      int i = hi;
+      do
+      {
+        if(isatom(toks[i], BRACKCL)) brackdep++;
+        if(isatom(toks[i], BRACKOP)) brackdep--;
+        assert(brackdep >= 0 && i >= 0);
+        i--;
+      } while(brackdep != 0);
+      i++; // back onto last [
+
+      // TODO evaluate and store length (should be constant expression)
+      tmod.gen.type = TM_ARR;
+      append(l, tmod);
+      free(tmod);
+      gettypemods(toks, lo, i-1, l);
+
+      return hi+1;
+    }
+
+    // else, we should have reached the identifier
+    assert(lo == hi);
+    assert(toks[lo].gen.type == IDENT);
+
+    tmod.type = TM_IDENT;
+    tmod.ident.name = toks[lo].ident.cont;
+
+    append(l, tmod);
+    free(tmod);
+
+    return hi+1;
   }
 }
 
