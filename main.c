@@ -1051,7 +1051,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
           if(isatom(toks+hi, BRACKCL)) brackdep--;
           assert(parendep >= 0 && toks[hi].gen.type != NOTOK);
           hi++;
-        } while(!brackdep);
+        } while(brackdep);
 
         continue;
       }
@@ -1167,6 +1167,8 @@ int gettypemods(token *toks, int lo, int hi, list *l)
     }
 
     // else, we should have reached the identifier
+    // putd(lo);
+    // putd(hi);
     assert(lo == hi);
     assert(toks[lo].gen.type == IDENT);
 
