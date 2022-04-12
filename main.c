@@ -1004,7 +1004,7 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
   if(hi == -1)
   {
     hi = lo; // start from here
-    int parendepth = 0;
+    int parendep = 0;
     
     for(;; hi++) // possible tokens: ( * const volatile
     {
@@ -1014,7 +1014,7 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
       }
       if(isatom(toks+hi, PARENOP)) // if (, remember it
       {
-        parendepth++;
+        parendep++;
         continue;
       }
       if(iskeyword(toks+hi, K_VOLATILE) || iskeyword(toks+hi, K_CONST))
@@ -1031,10 +1031,45 @@ char * gettypemods(token *toks, int lo, int hi, list *l)
     // possible things: [constant-expression_opt] (parameter-type-list) )
     for(;;) // all incrementing is now done manually, because it's more complex
     {
-      if(isatom(toks+hi), PARENCL)
+      if(isatom(toks+hi, PARENCL)) // )
       {
-        parendepth--;
+        parendep--;
+        assert(parendep >= 0); // make sure we're not going under
+        i++;
+        continue;
       }
+
+      if(isatom(toks+hi, BRACKOP)) // [
+      {
+        // find matching bracket
+        // i don't think brackets can appear in constant expressions, but we still have to accommodate every expression before checking later if it's constant
+        int brackdep = 0;
+        do
+        {
+          if(isatom(toks+hi, BRACKOP)) brackdep++;
+          if(isatom(toks+hi, BRACKCL)) brackdep--;
+          hi++;
+        } while(!brackdep);
+
+        continue;
+      }
+
+      if(isatom(toks+hi, PARENOP)) // (
+      {
+        // find matching paren
+        int curdep = parendep;
+        do
+        {
+          if(isatom(toks+hi, PARENOP)) parendep++;
+          if(isatom(toks+hi, BRACKCL)) parendep--;
+          hi++;
+        } while(curdep != parendep);
+
+        continue;
+      }
+
+      assert(parendep == 0); // must be depth 0, then the declarator is done
+      hi--; // step back onto end of declarator
     }
   }
 
