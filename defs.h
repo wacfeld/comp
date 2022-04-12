@@ -248,9 +248,30 @@ typedef struct
   int *typequals; // similar
   int *storespecs; // similar
 
-  int tsi, tqi, ssi; // indices
-
   // TODO the rest
 
 } declaration;
 
+typedef union
+{
+  struct
+  {
+    int type;
+  } gen;
+  struct
+  {
+    int type;
+    int isconst;
+    int isvolatile;
+  } ptr;
+  struct
+  {
+    int type;
+    int len;
+  } arr;
+  struct
+  {
+    int type;
+    // TODO parameters
+  } func;
+} typemod; // type modifier

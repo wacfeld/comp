@@ -989,15 +989,15 @@ int getstorespec(token t) // get storage class specifier
 //   return gettypequal(t);
 // }
 
-// read first declaration from array of tokens
-declaration *getdecl(token *toks)
+// read first declaration from array of tokens, and do things about it
+void parsedecl(token *toks)
 {
-  declaration *decl = malloc(sizeof(decl));
+  // declaration *decl = malloc(sizeof(decl));
   
   // allocate sets
-  decl->typespecs  = makeset(10);
-  decl->typequals  = makeset(10);
-  decl->storespecs = makeset(10);
+  typespecs  = makeset(10);
+  typequals  = makeset(10);
+  storespecs = makeset(10);
 
   static int i = 0;
   if(!toks) // reset if passed NULL
@@ -1015,15 +1015,15 @@ declaration *getdecl(token *toks)
     if((spec = gettypespec(t)) != -1)
     {
       // insert
-      assert(!setins(decl->typespecs, spec)) // no duplicate type specifiers allowed
+      assert(!setins(typespecs, spec)) // no duplicate type specifiers allowed
     }
     else if((spec = gettypequal(t)) != -1)
     {
-      setins(decl->typequals, spec); // duplicate type quals are ignored
+      setins(typequals, spec); // duplicate type quals are ignored
     }
     else if((spec = getstorespec(t)) != -1)
     {
-      assert(!setins(decl->storespecs, spec)); // no duplicate storage classes allowed
+      assert(!setins(storespecs, spec)); // no duplicate storage classes allowed
     }
     else break; // end of declaration specifiers
   }
@@ -1040,7 +1040,7 @@ declaration *getdecl(token *toks)
     technically, list members must be constant expressions even if auto or register
      */
 
-  if(inset(decl->storespecs, K_TYPEDEF)) // special case
+  if(inset(storespecs, K_TYPEDEF)) // special case
   {
     // TODO
   }
