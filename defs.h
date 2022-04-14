@@ -21,7 +21,7 @@
 
 
 #define putd(x) printf(#x ": %d\n", x)
-#define newl() puts("")
+#define nline() puts("")
 
 // use realloc when necessary to expand a dynamically allocated array
 #define resize(p, s, c) if(c >= s) {s *= 2; p = realloc(p, s*sizeof(p[0]));}
@@ -38,7 +38,7 @@
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};
 
-enum atom_type {FCALL, ARRIND, ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};
+enum atom_type {/*FCALL, ARRIND,*/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};
 
 typedef enum tok_type tok_type;
 typedef enum int_len int_len;
@@ -197,6 +197,85 @@ char *keywords[] =
   [K_WHILE]="while"
 };
 
+// operator types, "subtypes" of expressions
+// we could just borrow the duplicate atom names from above, but oh well
+enum optype
+{
+  // primary expressions
+  IDENT_O,
+  STRING_O,
+  // constants expressions
+  INT_O,
+  FLOAT_O,
+  CHAR_O,
+  ENUM_O,
+  
+  // postfix expressions
+  ARR_O,
+  FUN_O,
+  STRUCT_O,
+  PSTRUCT_O, // ->
+  INC_O,
+  DEC_O,
+  
+  // unary expressions
+  // duplicate INC_O and DEC_O
+  SIZEOF_O,
+
+  // cast expressions
+  CAST_O, // likely unnecessary
+  
+  // multiplicative expressions
+  MULT_O,
+  DIV_O,
+  MOD_O,
+
+  // additive expressions
+  ADD_O,
+  SUB_O,
+  
+  // shift expressions
+  SHL_O,
+  SHR_O,
+
+  // relational expressions
+  EQEQ_O,
+  NEQ_O,
+
+  // AND expressions
+  BAND_O,
+  
+  // exclusive OR expressions
+  XOR_O,
+
+  // inclusive OR expressions
+  BOR_O,
+
+  // logical AND
+  LAND_O,
+
+  // logical OR
+  LOR_O,
+  
+  // conditional expressions
+  TERN_O,
+
+  // assignment expressions
+  EQ_O,
+  TIMESEQ_O,
+  DIVEQ_O,
+  MODEQ_O,
+  PLUSEQ_O,
+  MINEQ_O,
+  SHLEQ_O,
+  SHR_O,
+  ANDEQ_O,
+  XOREQ_O,
+  OREQ_O,
+
+  COMMA_O
+};
+
 typedef enum expr_type
 {
   EXPR,
@@ -220,11 +299,13 @@ typedef enum expr_type
   CONST_E,
 } expr_type;
 
-typedef struct expression
+typedef struct expr
 {
   expr_type type;
-  struct expression *args;
-} expression;
+  int optype;
+  struct expr *args;
+  token *tok; // probably only for constants
+} expr;
 
 enum link_type {EXPR_L, TOK_L};
 
@@ -238,10 +319,9 @@ typedef struct link
   union
   {
     token *tok;
-    expression *expr;
+    expr *expr;
   } cont;
 } link;
-
 
 // linked lists seem like a good way to represent expressions
 
@@ -303,5 +383,7 @@ typedef struct
 
   list *typemods;
 } ctype; // "type" is used everywhere so i call it ctype
+
+enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 
 #endif

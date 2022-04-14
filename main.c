@@ -278,7 +278,7 @@ void puttok(token t)
   {
     printf("%d ", t.integer.cont);
   }
-  newl();
+  nline();
 }
 
 
@@ -939,6 +939,16 @@ int isatom(token *t, enum atom_type a)
   return t->gen.type == ATOM && t->atom.cont == a;
 }
 
+int lisatom(link *l, enum atom_type a)
+{
+  return l->type == TOK_L && isatom(l->cont.tok, a);
+}
+
+int listok(link *l, enum tok_type t)
+{
+  return l->type == TOK_L && l->cont.tok->type == t;
+}
+
 
 int gettypespec(token t) // get type specifier
 {
@@ -1301,7 +1311,7 @@ int parsedecl(token *toks)
   {
     printf("%s ", keywords[tss[j]]);
   }
-  newl();
+  nline();
 
 
   ctype ct = {typespecs, typequals, storespecs, l};
@@ -1328,6 +1338,7 @@ int parsedecl(token *toks)
     // TODO
     puts("(initialization)");
     while(!isatom(toks+i, SEMICOLON)) i++;
+    i++;
   }
 
   else
@@ -1340,8 +1351,132 @@ int parsedecl(token *toks)
 }
 
 
+// evaluate primary expressions
+link *parseprimexpr(link *chain)
+{
+  // chain is a linked list of tokens and expressions
+  // ultimately the goal is to turn everything into a single expression
+  link* curl = chain;
+
+  while(curl != NULL)
+  {
+    // (expression)
+    if(curl->type == TOK_L && lisatom(curl, PARENOP))
+    {
+      // find matching
+      int parendep = 1;
+      link *opl = curl->right; // opposite
+      while(parendep > 0 && opl != NULL) // find opposite
+      {
+        if(lisatom(opl, PARENOP)) parendep++;
+        if(lisatom(opl, PARENCL)) parendep--;
+        assert(parendep >= 0);
+        opl = opl->right;
+      }
+      opl = opl->left;
+
+      // disconnect
+      link *left = curl->left;
+      link *right = opl->right;
+      curl->left = NULL;
+      opl->right = NULL;
+
+      // evaluate
+      link *l = parseexpr(curl);
+
+      // write
+      // link *l = malloc(sizeof(link));
+      // l->type = EXPR_L;
+      // l->cont.expr = exp;
+
+      // reconnect
+      l->left = left;
+      l->right = right;
+      if(left) left->right = l;
+      if(right) right->left = l;
+      // TODO free all those tokens, either inside the recursive call, or here
+
+      // reposition
+      curl = l;
+    }
+
+    // constants
+    else if(listok(curl, INTEGER)) // integer constant
+    {
+      expr *e = malloc(sizeof(expr));
+      e->type = PRIM_E;
+      e->tok = curl->tok;
+
+      curl->type = EXPR_L;
+      curl->cont.expr = e;
+    }
+
+    else if(listok(curl, CHAR))
+    {
+      expr *e = malloc(sizeof(expr));
+      e->type = PRIM_E;
+      e->tok = curl->tok;
+
+      curl->type = EXPR_L;
+      curl->cont.expr = e;
+    }
+
+    else if(listok(curl, FLOATING))
+    {
+      expr *e = malloc(sizeof(expr));
+      e->type = PRIM_E;
+      e->tok = curl->tok;
+
+      curl->type = EXPR_L;
+      curl->cont.expr = e;
+    }
+
+    else if(listok(curl, STRLIT)) // string literal
+    {
+      expr *e = malloc(sizeof(expr));
+      e->type = PRIM_E;
+      e->tok = curl->tok;
+
+      curl->type = EXPR_L;
+      curl->cont.expr = e;
+    }
+
+    else if(listok(curl, IDENT)) // identifiers
+    {
+      expr *e = malloc(sizeof(expr));
+      e->type = PRIM_E;
+      e->tok = curl->tok;
+
+      curl->type = EXPR_L;
+      curl->cont.expr = e;
+    }
+    // otherwise it's not a primary expression
+
+    // move on to next link
+    curl = curl->right;
+  }
+
+  // find the leftmost link again, to return
+  // due to the recursive (expression) parsing, chain may no longer point to it
+  while(curl->left != NULL)
+  {
+    curl = curl->left;
+  }
+  return curl;
+}
+
+
+// postfix expression
+link *parsepostexpr(link *chain)
+{
+  // convert all primary expressions to postfix
+  
+}
+
 int main()
 {
+  // TODO fix the literary hierarchy, it's still broken
+  // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
 
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
