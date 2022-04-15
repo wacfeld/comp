@@ -204,11 +204,12 @@ enum optype
   // primary expressions
   IDENT_O,
   STRING_O,
-  // constants expressions
+  // constant expressions
   INT_O,
   FLOAT_O,
   CHAR_O,
   ENUM_O,
+  // ^^^ expressions that return their data as-is
   
   // postfix expressions
   ARR_O,
@@ -304,7 +305,7 @@ typedef struct expr
   expr_type type;
   int optype;
   struct expr *args;
-  token *tok; // probably only for constants
+  token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 } expr;
 
 enum link_type {EXPR_L, TOK_L};

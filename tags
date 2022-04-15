@@ -237,6 +237,7 @@ link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
+lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
 m	test.c	/^typedef int m;$/;"	t	file:
@@ -282,7 +283,7 @@ striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon10
-tok	defs.h	/^  token *tok; \/\/ probably only for constants$/;"	m	struct:expr
+tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	defs.h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon1

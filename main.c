@@ -932,21 +932,25 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 
 int iskeyword(token *t, enum keyword k)
 {
-  return t->gen.type == KEYWORD && t->keyword.cont == k;
+  return t != NULL && t->gen.type == KEYWORD && t->keyword.cont == k;
 }
 int isatom(token *t, enum atom_type a)
 {
-  return t->gen.type == ATOM && t->atom.cont == a;
+  return t != NULL && t->gen.type == ATOM && t->atom.cont == a;
 }
 
+int lisexpr(link *l, expr_type e)
+{
+  return l != NULL && l->type == EXPR_L && l->cont.expr->type == e;
+}
 int lisatom(link *l, enum atom_type a)
 {
-  return l->type == TOK_L && isatom(l->cont.tok, a);
+  return l != NULL && l->type == TOK_L && isatom(l->cont.tok, a);
 }
 
 int listok(link *l, enum tok_type t)
 {
-  return l->type == TOK_L && l->cont.tok->type == t;
+  return l != NULL && l->type == TOK_L && l->cont.tok->type == t;
 }
 
 
@@ -1361,7 +1365,7 @@ link *parseprimexpr(link *chain)
   while(curl != NULL)
   {
     // (expression)
-    if(curl->type == TOK_L && lisatom(curl, PARENOP))
+    if(lisatom(curl, PARENOP))
     {
       // find matching
       int parendep = 1;
@@ -1373,9 +1377,10 @@ link *parseprimexpr(link *chain)
         assert(parendep >= 0);
         opl = opl->right;
       }
-      opl = opl->left;
+      opl = opl->left->left; // move inside paren
 
       // disconnect
+      curl = curl->right; // move inside paren
       link *left = curl->left;
       link *right = opl->right;
       curl->left = NULL;
@@ -1405,6 +1410,8 @@ link *parseprimexpr(link *chain)
     {
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
+      e->optype = INT_O;
+
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
@@ -1415,6 +1422,8 @@ link *parseprimexpr(link *chain)
     {
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
+      e->optype = CHAR_O;
+
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
@@ -1425,6 +1434,7 @@ link *parseprimexpr(link *chain)
     {
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
+      e->optype = FLOAT_O;
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
@@ -1435,6 +1445,7 @@ link *parseprimexpr(link *chain)
     {
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
+      e->optype = STRING_O;
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
@@ -1445,6 +1456,7 @@ link *parseprimexpr(link *chain)
     {
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
+      e->optype = IDENT_O;
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
@@ -1470,7 +1482,53 @@ link *parseprimexpr(link *chain)
 link *parsepostexpr(link *chain)
 {
   // convert all primary expressions to postfix
+  link *curl = chain;
+  while(curl != NULL)
+  {
+    if(lisexpr(curl, PRIM_E))
+    {
+      curl->cont.expr->type = POST_E;
+    }
+    curl = curl->right;
+  }
   
+  curl = chain; // back to start
+  int modified;
+  do // fold in post expressions until none left
+  {
+    modified = 0;
+    if(lisexpr(curl, POST_E) && lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
+    {
+      modified = 1; // indicate work is not done
+
+      link* indr = curl->right; // index right
+      link *indl = curl->right->right; // [
+      int brackdep = 1; // find matching
+      while(brackdep)
+      {
+        indr = indr->right;
+        if(lisatom(indr, BRACKOP)) brackdep++;
+        if(lisatom(indr, BRACKCL)) brackdep--;
+        assert(brackdep >= 0 && indr != NULL);
+      }
+      indr = indr->left // left of ]
+
+      link *outr = indr->right->right; // right of [
+      // detach
+      indr->right = NULL;
+      indl->left = NULL;
+
+      // parse index expression
+      indl = parseexpr(indl);
+      expr *e = indl->cont.expr; // extract expression from link
+      free(indl);
+
+      // make new expression from base and index
+      // expr *newe = malloc(
+          //LEH
+      
+    }
+  } while(modified);
 }
 
 int main()
