@@ -304,7 +304,7 @@ typedef struct expr
 {
   expr_type type;
   int optype;
-  struct expr *args;
+  struct expr *args; // each optype has a fixed argument count, so this works
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 } expr;
 

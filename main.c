@@ -1493,7 +1493,6 @@ link *parsepostexpr(link *chain)
   }
   
   curl = chain; // back to start
-  int modified;
   do // fold in post expressions until none left
   {
     modified = 0;
@@ -1513,7 +1512,7 @@ link *parsepostexpr(link *chain)
       }
       indr = indr->left // left of ]
 
-      link *outr = indr->right->right; // right of [
+      link *outr = indr->right->right; // right of ]
       // detach
       indr->right = NULL;
       indl->left = NULL;
@@ -1524,11 +1523,27 @@ link *parsepostexpr(link *chain)
       free(indl);
 
       // make new expression from base and index
-      // expr *newe = malloc(
-          //LEH
+      expr *newe = malloc(sizeof(expression));
+      newe->type = POST_E; // postfix
+      newe->optype = ARR_O; // array indexing
+      newe->args = malloc(sizeof(expression) * 2); // 2 args
+      newe->args[0] = curl->cont.expr; // base
+      newe->args[1] = e; // index
+
+      // replace with new expression
+      curl->cont.expr = newe;
+      // reattach
+      curl->right = outr;
+      outr->left = curl;
       
+      curl = chain; // restart since everything's been modified
+      // we can probably not restart from the beginning, due to how postfix works, but this also works fine
     }
-  } while(modified);
+    else
+    {
+      curl = curl->right; // move on
+    }
+  } while(curl != NULL);
 }
 
 int main()
