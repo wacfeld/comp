@@ -304,7 +304,8 @@ typedef struct expr
 {
   expr_type type;
   int optype;
-  struct expr *args; // each optype has a fixed argument count, so this works
+  struct expr *args;
+  int arglen; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 } expr;
 
@@ -320,7 +321,7 @@ typedef struct link
   union
   {
     token *tok;
-    expr *expr;
+    expr *exp;
   } cont;
 } link;
 

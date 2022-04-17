@@ -1,6 +1,8 @@
 #include "defs.h"
 #include "datastruct.h"
 
+// list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
+
 
 // replaces backslash + newline with nothing
 void splice(char *src)
@@ -1400,6 +1402,7 @@ link *parseprimexpr(link *chain)
       if(left) left->right = l;
       if(right) right->left = l;
       // TODO free all those tokens, either inside the recursive call, or here
+      // solution: free all at the end, from the translation unit. let them linger until then
 
       // reposition
       curl = l;
@@ -1415,7 +1418,7 @@ link *parseprimexpr(link *chain)
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
-      curl->cont.expr = e;
+      curl->cont.exp = e;
     }
 
     else if(listok(curl, CHAR))
@@ -1427,7 +1430,7 @@ link *parseprimexpr(link *chain)
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
-      curl->cont.expr = e;
+      curl->cont.exp = e;
     }
 
     else if(listok(curl, FLOATING))
@@ -1438,7 +1441,7 @@ link *parseprimexpr(link *chain)
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
-      curl->cont.expr = e;
+      curl->cont.exp = e;
     }
 
     else if(listok(curl, STRLIT)) // string literal
@@ -1449,7 +1452,7 @@ link *parseprimexpr(link *chain)
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
-      curl->cont.expr = e;
+      curl->cont.exp = e;
     }
 
     else if(listok(curl, IDENT)) // identifiers
@@ -1460,7 +1463,7 @@ link *parseprimexpr(link *chain)
       e->tok = curl->tok;
 
       curl->type = EXPR_L;
-      curl->cont.expr = e;
+      curl->cont.exp = e;
     }
     // otherwise it's not a primary expression
 
@@ -1487,7 +1490,7 @@ link *parsepostexpr(link *chain)
   {
     if(lisexpr(curl, PRIM_E))
     {
-      curl->cont.expr->type = POST_E;
+      curl->cont.exp->type = POST_E;
     }
     curl = curl->right;
   }
@@ -1495,14 +1498,12 @@ link *parsepostexpr(link *chain)
   curl = chain; // back to start
   do // fold in post expressions until none left
   {
-    modified = 0;
     if(lisexpr(curl, POST_E) && lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
     {
-      modified = 1; // indicate work is not done
-
       link* indr = curl->right; // index right
       link *indl = curl->right->right; // [
       int brackdep = 1; // find matching
+
       while(brackdep)
       {
         indr = indr->right;
@@ -1519,19 +1520,18 @@ link *parsepostexpr(link *chain)
 
       // parse index expression
       indl = parseexpr(indl);
-      expr *e = indl->cont.expr; // extract expression from link
-      free(indl);
+      expr *e = indl->cont.exp; // extract expression from link
 
       // make new expression from base and index
       expr *newe = malloc(sizeof(expression));
       newe->type = POST_E; // postfix
       newe->optype = ARR_O; // array indexing
       newe->args = malloc(sizeof(expression) * 2); // 2 args
-      newe->args[0] = curl->cont.expr; // base
+      newe->args[0] = curl->cont.exp; // base
       newe->args[1] = e; // index
 
       // replace with new expression
-      curl->cont.expr = newe;
+      curl->cont.exp = newe;
       // reattach
       curl->right = outr;
       outr->left = curl;
@@ -1539,6 +1539,62 @@ link *parsepostexpr(link *chain)
       curl = chain; // restart since everything's been modified
       // we can probably not restart from the beginning, due to how postfix works, but this also works fine
     }
+
+    else if(lisexpr(curl, POST_E) && lisatom(curl->right, PARENOP)) // postfix-expression(argument-expression-list_opt)
+    {
+      link *argl = curl->right->right // left of arguments
+      link *argr = curl->right->right;
+      
+      expr *newe = malloc(sizeof(expr));
+      newe->type = POST_E;
+      newe->optype = FUN_O;
+      newe->arglen = 0;
+      int size = 5;
+      newe->args = malloc(sizeof(expr) * size);
+
+      newe->args[0] = curl->cont.exp; // function name is the first thing
+      newe->arglen++;
+
+      int parendep = 1;
+      while(parendep) // while in argument parentheses
+      {
+        if(lisatom(argr, PARENOP)) parendep++;
+        if(lisatom(argr, PARENCL)) parendep--;
+        assert(parendep >= 0 && argr != NULL);
+
+        if((lisatom(argr, COMMA) && parendep == 1) || parendep == 0) // end of argument, evaluate
+        {
+          // detach
+          argr->left->right = NULL;
+          argl->left = NULL;
+
+          // parse assignment expression
+          argl = parseasgnexpr(argl);
+          expr *e = argl->cont.exp;
+
+          // append to argument list
+          resize(newe->args, size, newe->arglen);
+          newe->args[newe->arglen] = e;
+          newe->arglen++;
+          
+          // setup for next argument
+          argl = argr->right;
+          argr = argr->right;
+        }
+
+        else
+          argr = argr->right;
+
+      }
+
+      // wrap up, reattach
+      curl->cont.exp = newe;
+      curl->right = argr;
+      argr->left = curl;
+      
+      curl = chain; // restart
+    }
+
     else
     {
       curl = curl->right; // move on

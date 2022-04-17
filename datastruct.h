@@ -20,4 +20,5 @@ void *get(list *l, int i);
 void *last(list *l);
 list *makelist(int size);
 void reverse(list *l);
+void clear(list *l);
 #endif

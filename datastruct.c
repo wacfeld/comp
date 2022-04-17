@@ -105,3 +105,8 @@ void reverse(list *l)
   free(l->cont);
   l->cont = newcont;
 }
+
+void clear(list *l) // don't free() anything, just make length 0 again
+{
+  l->n = 0;
+}
