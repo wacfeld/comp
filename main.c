@@ -1595,11 +1595,34 @@ link *parsepostexpr(link *chain)
       curl = chain; // restart
     }
 
+    else if(lisexpr(curl, POST_E) && lisatom(curl->right, DOT))
+    {
+      assert(listok(curl->right->right, IDENT)); // struct members are always single identifiers
+
+      // create new expression
+      expr *newe = malloc(sizeof(expression));
+      newe->type = POST_E;
+      newe->optype = STRUCT_O;
+      newe->args = malloc(sizeof(expression) * 2);
+      newe->args[0] = curl->cont.expr;
+      newe->args[16 = curl->right->right->cont.expr;
+
+      // attach
+      curl->cont.expr = newe;
+      curl->right = curl->right->right->right;
+      curl->right->left = curl;
+
+      // go back to beginning
+      curl = chain;
+    }
+
     else
     {
       curl = curl->right; // move on
     }
   } while(curl != NULL);
+
+  
 }
 
 int main()

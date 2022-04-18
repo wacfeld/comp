@@ -214,7 +214,7 @@ enum optype
   // postfix expressions
   ARR_O,
   FUN_O,
-  STRUCT_O,
+  STRUCT_O, // .
   PSTRUCT_O, // ->
   INC_O,
   DEC_O,
