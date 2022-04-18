@@ -10,7 +10,10 @@ void puttok(token t);
 
 link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
 {
+  int len = 0;
+  while(!(tokl[len].gen.type == NOTOK)) len++;
   
+  link *ll = malloc(sizeof(
 }
 
 // replaces backslash + newline with nothing
