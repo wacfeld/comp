@@ -13,7 +13,23 @@ link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
   int len = 0;
   while(!(tokl[len].gen.type == NOTOK)) len++;
   
-  link *ll = malloc(sizeof(
+  link *ll = malloc(sizeof(link) * len);
+
+  for(int i = 0; i < len; i++)
+  {
+    ll[i].type = TOK_L;
+    ll[i].cont.tok = tokl+i;
+  }
+  
+  ll[0].left = NULL;
+  ll[len-1].right = NULL;
+  for(int i = 0; i < len-1; i++)
+  {
+    ll[i].right = ll+i+1;
+    ll[i+1].left = ll+i;
+  }
+
+  return ll;
 }
 
 // replaces backslash + newline with nothing
@@ -1392,6 +1408,15 @@ int parsedecl(token *toks)
 link *parseexpr(link *chain)
 {
   
+  link *l = malloc(sizeof(link));
+  l->type = EXPR_L;
+  expr *e = malloc(sizeof(expr));
+  e->type = EXPR;
+  l->cont.exp = e;
+  l->left = NULL;
+  l->right = NULL;
+  return l;
+
 }
 link *parseasgnexpr(link *chain)
 {
@@ -1526,6 +1551,8 @@ link *parseprimexpr(link *chain)
 // postfix expression
 link *parsepostexpr(link *chain)
 {
+  // parse primary expressions
+  chain = parseprimexpr(chain);
   // convert all primary expressions to postfix
   link *curl = chain;
   while(curl != NULL)
@@ -1799,8 +1826,14 @@ int main()
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
-  puts("------------------");
-  while(parsedecl((token *)trans_unit->cont)); // parse until NOTOK
+  link *chain = tokl2ll((token *)trans_unit->cont);
+  puts("-------------------");
+  chain = parsepostexpr(chain);
+  putll(chain);
+  
+
+  // puts("------------------");
+  // while(parsedecl((token *)trans_unit->cont)); // parse until NOTOK
 
   // tcount--; // exclude NOTOK
 
