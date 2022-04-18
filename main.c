@@ -3,6 +3,15 @@
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
+// attach two links, accounting for null
+#define attach(a, b) {if(a) a->right = b; if(b) b->left = a;}
+
+void puttok(token t);
+
+link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
+{
+  
+}
 
 // replaces backslash + newline with nothing
 void splice(char *src)
@@ -255,6 +264,26 @@ void rem_comments(char *src, char *esc, char *quot)
   
 }
 
+void putll(link *l) // put linked list
+{
+  while(l != NULL)
+  {
+    if(l->type == TOK_L)
+    {
+      printf("TOKEN: ");
+      puttok(*l->cont.tok);
+    }
+
+    if(l->type == EXPR_L)
+    {
+      printf("EXPR:  ");
+      
+      puts(hr_expr[l->cont.exp->type]);
+    }
+
+    l = l->right;
+  }
+}
 
 void puttok(token t)
 {
@@ -943,7 +972,7 @@ int isatom(token *t, enum atom_type a)
 
 int lisexpr(link *l, expr_type e)
 {
-  return l != NULL && l->type == EXPR_L && l->cont.expr->type == e;
+  return l != NULL && l->type == EXPR_L && l->cont.exp->type == e;
 }
 int lisatom(link *l, enum atom_type a)
 {
@@ -952,7 +981,7 @@ int lisatom(link *l, enum atom_type a)
 
 int listok(link *l, enum tok_type t)
 {
-  return l != NULL && l->type == TOK_L && l->cont.tok->type == t;
+  return l != NULL && l->type == TOK_L && l->cont.tok->gen.type == t;
 }
 
 
@@ -1357,6 +1386,14 @@ int parsedecl(token *toks)
 }
 
 
+link *parseexpr(link *chain)
+{
+  
+}
+link *parseasgnexpr(link *chain)
+{
+
+}
 // evaluate primary expressions
 link *parseprimexpr(link *chain)
 {
@@ -1394,13 +1431,15 @@ link *parseprimexpr(link *chain)
       // write
       // link *l = malloc(sizeof(link));
       // l->type = EXPR_L;
-      // l->cont.expr = exp;
+      // l->cont.exp = exp;
 
       // reconnect
-      l->left = left;
-      l->right = right;
-      if(left) left->right = l;
-      if(right) right->left = l;
+      attach(left, l);
+      attach(l, right);
+      // l->left = left;
+      // l->right = right;
+      // if(left) left->right = l;
+      // if(right) right->left = l;
       // TODO free all those tokens, either inside the recursive call, or here
       // solution: free all at the end, from the translation unit. let them linger until then
 
@@ -1415,7 +1454,7 @@ link *parseprimexpr(link *chain)
       e->type = PRIM_E;
       e->optype = INT_O;
 
-      e->tok = curl->tok;
+      e->tok = curl->cont.tok;
 
       curl->type = EXPR_L;
       curl->cont.exp = e;
@@ -1427,7 +1466,7 @@ link *parseprimexpr(link *chain)
       e->type = PRIM_E;
       e->optype = CHAR_O;
 
-      e->tok = curl->tok;
+      e->tok = curl->cont.tok;
 
       curl->type = EXPR_L;
       curl->cont.exp = e;
@@ -1438,7 +1477,7 @@ link *parseprimexpr(link *chain)
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = FLOAT_O;
-      e->tok = curl->tok;
+      e->tok = curl->cont.tok;
 
       curl->type = EXPR_L;
       curl->cont.exp = e;
@@ -1449,7 +1488,7 @@ link *parseprimexpr(link *chain)
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = STRING_O;
-      e->tok = curl->tok;
+      e->tok = curl->cont.tok;
 
       curl->type = EXPR_L;
       curl->cont.exp = e;
@@ -1460,7 +1499,7 @@ link *parseprimexpr(link *chain)
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = IDENT_O;
-      e->tok = curl->tok;
+      e->tok = curl->cont.tok;
 
       curl->type = EXPR_L;
       curl->cont.exp = e;
@@ -1498,7 +1537,12 @@ link *parsepostexpr(link *chain)
   curl = chain; // back to start
   do // fold in post expressions until none left
   {
-    if(lisexpr(curl, POST_E) && lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
+    if(!lisexpr(curl, POST_E)) // if not postfix expression, pass over
+    {
+      curl = curl->right;
+      continue;
+    }
+    if(lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
     {
       link* indr = curl->right; // index right
       link *indl = curl->right->right; // [
@@ -1511,7 +1555,7 @@ link *parsepostexpr(link *chain)
         if(lisatom(indr, BRACKCL)) brackdep--;
         assert(brackdep >= 0 && indr != NULL);
       }
-      indr = indr->left // left of ]
+      indr = indr->left; // left of ]
 
       link *outr = indr->right->right; // right of ]
       // detach
@@ -1523,26 +1567,27 @@ link *parsepostexpr(link *chain)
       expr *e = indl->cont.exp; // extract expression from link
 
       // make new expression from base and index
-      expr *newe = malloc(sizeof(expression));
+      expr *newe = malloc(sizeof(expr));
       newe->type = POST_E; // postfix
       newe->optype = ARR_O; // array indexing
-      newe->args = malloc(sizeof(expression) * 2); // 2 args
+      newe->args = malloc(sizeof(expr) * 2); // 2 args
       newe->args[0] = curl->cont.exp; // base
       newe->args[1] = e; // index
 
       // replace with new expression
       curl->cont.exp = newe;
       // reattach
-      curl->right = outr;
-      outr->left = curl;
+      // curl->right = outr;
+      // outr->left = curl;
+      attach(curl, outr);
       
       curl = chain; // restart since everything's been modified
       // we can probably not restart from the beginning, due to how postfix works, but this also works fine
     }
 
-    else if(lisexpr(curl, POST_E) && lisatom(curl->right, PARENOP)) // postfix-expression(argument-expression-list_opt)
+    else if(lisatom(curl->right, PARENOP)) // postfix-expression(argument-expression-list_opt)
     {
-      link *argl = curl->right->right // left of arguments
+      link *argl = curl->right->right; // left of arguments
       link *argr = curl->right->right;
       
       expr *newe = malloc(sizeof(expr));
@@ -1589,30 +1634,81 @@ link *parsepostexpr(link *chain)
 
       // wrap up, reattach
       curl->cont.exp = newe;
-      curl->right = argr;
-      argr->left = curl;
+      attach(curl, argr);
+      // curl->right = argr;
+      // argr->left = curl;
       
       curl = chain; // restart
     }
 
-    else if(lisexpr(curl, POST_E) && lisatom(curl->right, DOT))
+    else if(lisatom(curl->right, DOT))
     {
       assert(listok(curl->right->right, IDENT)); // struct members are always single identifiers
 
       // create new expression
-      expr *newe = malloc(sizeof(expression));
+      expr *newe = malloc(sizeof(expr));
       newe->type = POST_E;
       newe->optype = STRUCT_O;
-      newe->args = malloc(sizeof(expression) * 2);
-      newe->args[0] = curl->cont.expr;
-      newe->args[16 = curl->right->right->cont.expr;
+      newe->args = malloc(sizeof(expr) * 2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
 
       // attach
-      curl->cont.expr = newe;
-      curl->right = curl->right->right->right;
-      curl->right->left = curl;
+      curl->cont.exp = newe;
+      link *temp = curl->right->right->right;
+      attach(curl, temp);
+      // curl->right = curl->right->right->right;
+      // curl->right->left = curl;
 
       // go back to beginning
+      curl = chain;
+    }
+
+    else if(lisatom(curl->right, ARROW))
+    {
+      assert(listok(curl->right->right, IDENT));
+      
+      expr *newe = malloc(sizeof(expr));
+      newe->type = POST_E;
+      newe->optype = PSTRUCT_O;
+      newe->args = malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+      link *temp = curl->right->right->right;
+      attach(curl, temp);
+
+      curl = chain;
+    }
+
+    else if(lisatom(curl->right, INC))
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = POST_E;
+      newe->optype = POSTINC_O;
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = curl->cont.exp;
+
+      curl->cont.exp = newe;
+      link *temp = curl->right->right;
+      attach(curl, temp);
+
+      curl = chain;
+    }
+
+    else if(lisatom(curl->right, DEC))
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = POST_E;
+      newe->optype = POSTDEC_O;
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = curl->cont.exp;
+
+      curl->cont.exp = newe;
+      link *temp = curl->right->right;
+      attach(curl, temp);
+
       curl = chain;
     }
 
@@ -1622,7 +1718,6 @@ link *parsepostexpr(link *chain)
     }
   } while(curl != NULL);
 
-  
 }
 
 int main()

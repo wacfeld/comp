@@ -103,8 +103,8 @@ char *hrtok[100] = {
 [NOTOK]="NOTOK", [ERRTOK]="ERRTOK", [KEYWORD]="KEYWORD", [IDENT]="IDENT", [STRLIT]="STRLIT", [CHAR]="CHAR", [UNCERTAIN]="UNCERTAIN", [INTEGER]="INTEGER", [FLOATING]="FLOATING", [SEMICOLON]="SEMICOLON", [PARENOP]="PARENOP", [PARENCL]="PARENCL", [BRACEOP]="BRACEOP", [BRACECL]="BRACECL", [BRACKOP]="BRACKOP", [BRACKCL]="BRACKCL", [ATOM]="ATOM"};
 
 char *hrat[100] = {
-  [FCALL]="FCALL",
-[ARRIND]="ARRIND",
+  // [FCALL]="FCALL",
+// [ARRIND]="ARRIND",
 [ARROW]="ARROW",
 [DOT]="DOT",
 [LOGNOT]="LOGNOT",
@@ -216,12 +216,14 @@ enum optype
   FUN_O,
   STRUCT_O, // .
   PSTRUCT_O, // ->
-  INC_O,
-  DEC_O,
+  POSTINC_O,
+  POSTDEC_O,
   
   // unary expressions
-  // duplicate INC_O and DEC_O
   SIZEOF_O,
+  PREINC_O,
+  PREDEC_O,
+  // it's more convenient to just use expr.type for parsing, and just use expr.optype for evaluation. therefore we must differentiate between PRE/POST INC/DEC operators
 
   // cast expressions
   CAST_O, // likely unnecessary
@@ -269,7 +271,7 @@ enum optype
   PLUSEQ_O,
   MINEQ_O,
   SHLEQ_O,
-  SHR_O,
+  SHREQ_O,
   ANDEQ_O,
   XOREQ_O,
   OREQ_O,
@@ -300,11 +302,34 @@ typedef enum expr_type
   CONST_E,
 } expr_type;
 
+char *hr_expr[100] = 
+{
+  [EXPR]="EXPR",
+  [PRIM_E]="PRIM_E",
+  [POST_E]="POST_E",
+  [UNAR_E]="UNAR_E",
+  [CAST_E]="CAST_E",
+  [MULT_E]="MULT_E",
+  [ADD_E]="ADD_E",
+  [SHIFT_E]="SHIFT_E",
+  [RELAT_E]="RELAT_E",
+  [EQUAL_E]="EQUAL_E",
+  [AND_E]="AND_E",
+  [XOR_E]="XOR_E",
+  [OR_E]="OR_E",
+  [LAND_E]="LAND_E",
+  [LOR_E]="LOR_E",
+  [COND_E]="COND_E",
+  [ASGN_E]="ASGN_E",
+  [COMMA_E]="COMMA_E",
+  [CONST_E]="CONST_E",
+};
+
 typedef struct expr
 {
   expr_type type;
   int optype;
-  struct expr *args;
+  struct expr **args;
   int arglen; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 } expr;
