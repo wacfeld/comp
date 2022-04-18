@@ -1431,9 +1431,11 @@ link *parseprimexpr(link *chain)
 
   while(curl != NULL)
   {
+    // printf("%p\n", curl);
     // (expression)
     if(lisatom(curl, PARENOP))
     {
+      // putd(0);
       // find matching
       int parendep = 1;
       link *opl = curl->right; // opposite
@@ -1478,6 +1480,7 @@ link *parseprimexpr(link *chain)
     // constants
     else if(listok(curl, INTEGER)) // integer constant
     {
+    // putd(1);
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = INT_O;
@@ -1487,9 +1490,9 @@ link *parseprimexpr(link *chain)
       curl->type = EXPR_L;
       curl->cont.exp = e;
     }
-
     else if(listok(curl, CHAR))
     {
+// putd(2);
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = CHAR_O;
@@ -1499,9 +1502,9 @@ link *parseprimexpr(link *chain)
       curl->type = EXPR_L;
       curl->cont.exp = e;
     }
-
     else if(listok(curl, FLOATING))
     {
+// putd(3);
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = FLOAT_O;
@@ -1513,6 +1516,7 @@ link *parseprimexpr(link *chain)
 
     else if(listok(curl, STRLIT)) // string literal
     {
+    // putd(4);
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = STRING_O;
@@ -1524,6 +1528,7 @@ link *parseprimexpr(link *chain)
 
     else if(listok(curl, IDENT)) // identifiers
     {
+    // putd(5);
       expr *e = malloc(sizeof(expr));
       e->type = PRIM_E;
       e->optype = IDENT_O;
@@ -1534,7 +1539,9 @@ link *parseprimexpr(link *chain)
     }
     // otherwise it's not a primary expression
 
+    // else putd(6);
     // move on to next link
+    if(curl->right == NULL) break; // break preemptively, therefore this while loop could be a while(1) but anyway, it's so we don't get left with NULL
     curl = curl->right;
   }
 
@@ -1542,6 +1549,7 @@ link *parseprimexpr(link *chain)
   // due to the recursive (expression) parsing, chain may no longer point to it
   while(curl->left != NULL)
   {
+    // printf("%p\n", curl);
     curl = curl->left;
   }
   return curl;
@@ -1744,10 +1752,20 @@ link *parsepostexpr(link *chain)
 
     else
     {
+      if(curl->right == NULL) break; // break preemptively
       curl = curl->right; // move on
     }
   } while(curl != NULL);
 
+
+  // find start again
+  while(curl->left != NULL)
+  {
+    // printf("%p\n", curl);
+    curl = curl->left;
+  }
+  return curl;
+  
 }
 
 int main()
