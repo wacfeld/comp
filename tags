@@ -245,6 +245,7 @@ link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
 lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
+lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
 m	test.c	/^typedef int m;$/;"	t	file:
@@ -271,6 +272,7 @@ parsedecl	main.c	/^int parsedecl(token *toks)$/;"	f
 parseexpr	main.c	/^link *parseexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	main.c	/^link *parseprimexpr(link *chain)$/;"	f
+parseunaryexpr	main.c	/^link *parseunaryexpr(link *chain)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon13
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d

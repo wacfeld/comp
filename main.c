@@ -989,6 +989,10 @@ int isatom(token *t, enum atom_type a)
   return t != NULL && t->gen.type == ATOM && t->atom.cont == a;
 }
 
+int lisop(link *l, int o)
+{
+  return l != NULL && l->type == EXPR_L && l->cont.exp->optype == o;
+}
 int lisexpr(link *l, expr_type e)
 {
   return l != NULL && l->type == EXPR_L && l->cont.exp->type == e;
@@ -1561,7 +1565,7 @@ link *parsepostexpr(link *chain)
 {
   // parse primary expressions
   chain = parseprimexpr(chain);
-  // convert all primary expressions to postfix
+  // promote all primary expressions to postfix
   link *curl = chain;
   while(curl != NULL)
   {
@@ -1575,6 +1579,8 @@ link *parsepostexpr(link *chain)
   curl = chain; // back to start
   do // fold in post expressions until none left
   {
+    puts("----");
+    putll(curl);
     if(!lisexpr(curl, POST_E)) // if not postfix expression, pass over
     {
       curl = curl->right;
@@ -1619,7 +1625,7 @@ link *parsepostexpr(link *chain)
       // outr->left = curl;
       attach(curl, outr);
       
-      curl = chain; // restart since everything's been modified
+      // curl = chain; // restart since everything's been modified
       // we can probably not restart from the beginning, due to how postfix works, but this also works fine
     }
 
@@ -1676,7 +1682,7 @@ link *parsepostexpr(link *chain)
       // curl->right = argr;
       // argr->left = curl;
       
-      curl = chain; // restart
+      // curl = chain; // restart
     }
 
     else if(lisatom(curl->right, DOT))
@@ -1699,12 +1705,12 @@ link *parsepostexpr(link *chain)
       // curl->right->left = curl;
 
       // go back to beginning
-      curl = chain;
+      // curl = chain;
     }
 
     else if(lisatom(curl->right, ARROW))
     {
-      assert(listok(curl->right->right, IDENT));
+      assert(lisop(curl->right->right, IDENT_O));
       
       expr *newe = malloc(sizeof(expr));
       newe->type = POST_E;
@@ -1717,7 +1723,7 @@ link *parsepostexpr(link *chain)
       link *temp = curl->right->right->right;
       attach(curl, temp);
 
-      curl = chain;
+      // curl = chain;
     }
 
     else if(lisatom(curl->right, INC))
@@ -1732,7 +1738,7 @@ link *parsepostexpr(link *chain)
       link *temp = curl->right->right;
       attach(curl, temp);
 
-      curl = chain;
+      // curl = chain;
     }
 
     else if(lisatom(curl->right, DEC))
@@ -1747,7 +1753,7 @@ link *parsepostexpr(link *chain)
       link *temp = curl->right->right;
       attach(curl, temp);
 
-      curl = chain;
+      // curl = chain;
     }
 
     else
@@ -1766,6 +1772,97 @@ link *parsepostexpr(link *chain)
   }
   return curl;
   
+}
+
+link *parseunaryexpr(link *chain)
+{
+  // parse post
+  chain = parsepostexpr(chain);
+  
+  // promote post to unary
+  link *curl = chain;
+  while(curl != NULL)
+  {
+    if(lisexpr(curl, POST_E))
+    {
+      curl->cont.exp->type = UNAR_E;
+    }
+    curl = curl->right;
+  }
+
+  // navigate to end, because we're parsing right to left
+  while(curl->right != NULL)
+  {
+    curl = curl->right;
+  }
+  
+  do
+  {
+    if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->left, INC)) // ++ unary-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = UNAR_E;
+      newe->optype = PREINC_O;
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = curl->cont.exp;
+
+      curl->cont.exp = newe;
+      link *temp = curl->left->left;
+      attach(temp, curl);
+    }
+
+    if(lisatom(curl->left, DEC)) // -- unary-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = UNAR_E;
+      newe->optype = PREDEC_O;
+
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = curl->cont.exp;
+
+      curl->cont.exp = newe;
+      link *temp = curl->left->left;
+      attach(temp, curl);
+    }
+
+    if(lisatom(curl->left, PARENCL)) // (type-name) unary-expr
+    {
+      int parendep = 1;
+      link *opparen = curl->left;
+      while(parendep > 0 && opparen != NULL) // find matching
+      {
+        if(lisatom(opparen, PARENCL)) parendep++;
+        if(lisatom(opparen, PARENOP)) parendep--;
+        assert(parandep >= 0);
+        opparen = opparen->left;
+      }
+      link *outl = opparen;
+      opparen = opparen->right->right;
+
+      // detach
+      opparen->left = NULL;
+      curl->left->right = NULL;
+      
+      // evaluate
+      opparen = parsetypename(opparen);
+
+      // reattach
+      // TODO type names, special case, or no?
+    }
+
+    if(lisatom(curl->left, SIZEOF))
+    {
+      
+    }
+
+    if(
+  } while(curl != NULL);
 }
 
 int main()
@@ -1846,7 +1943,10 @@ int main()
 
   link *chain = tokl2ll((token *)trans_unit->cont);
   puts("-------------------");
+  putll(chain);
+  puts("-------------------");
   chain = parsepostexpr(chain);
+  puts("--");
   putll(chain);
   
 
