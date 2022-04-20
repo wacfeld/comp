@@ -211,6 +211,7 @@ func	defs.h	/^  } func;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon15
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon12
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
+getdeclspecs	main.c	/^ctype *getdeclspecs(token *toks, int *i)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f

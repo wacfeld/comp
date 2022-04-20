@@ -1279,6 +1279,12 @@ void puttypemod(typemod ts)
   }
 }
 
+// get storespecs, typequals, and typespecs from the front of a declaration
+ctype *getdeclspecs(token *toks, int *i)
+{
+  ctype *ct = malloc(sizeof(ctype));
+  
+}
 
 // read first declaration from array of tokens, and do things about it
 // returns 0 if runs into NOTOK
