@@ -1074,6 +1074,11 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
   // we also verify that parentheses are balanced here, just because we can
   if(hi == -1)
   {
+    if(toks[lo].gen.type == NOTOK) // no modifiers, abstract declarator
+    {
+      return lo;
+    }
+
     hi = lo; // start from here
     int parendep = 0;
     
@@ -1223,7 +1228,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
             fun = 1;
           }
 
-          if(isdeclspec(toks[lo+1])) // only possible start of parameter declaration
+          else if(isdeclspec(toks[lo+1])) // only possible start of parameter declaration
           {
             fun = 1;
           }
@@ -1247,7 +1252,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
         // TODO store the parameter type list
         append(l, tmod);
         free(tmod);
-        gettypemods(toks, lo, i-1, l, abs);
+        if(!abs || i != lo) gettypemods(toks, lo, i-1, l, abs); // must recurse further
         
         return hi+1;
       }
@@ -1271,12 +1276,13 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
       tmod->gen.type = TM_ARR;
       append(l, tmod);
       free(tmod);
-      gettypemods(toks, lo, i-1, l, abs);
+      // gettypemods(toks, lo, i-1, l, abs);
+      // no need to recurse; we're done because it's abstract and the [] was at the start
 
       return hi+1;
     }
 
-    // else, we should have reached the identifier, or emptiness
+    // else, we should have reached the identifier (should not be possible for abstract declarator to reach this part of the code)
     // putd(lo);
     // putd(hi);
     assert(lo == hi);
@@ -1287,6 +1293,33 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 
     append(l, tmod);
     free(tmod);
+
+    return hi+1;
+  }
+
+  else // then must be abstract declarator
+  {
+    // moreover, functions are dealt with above, so it must be an array
+    assert(abs);
+    assert(isatom(toks+lo), BRACKOP);
+
+    // find matching bracket
+    int brackdep = 0;
+    int i = lo;
+    do
+    {
+      if(isatom(toks+i, BRACKOP)) brackdep++;
+      if(isatom(toks+i, BRACKCL)) brackdep--;
+      assert(brackdep >= 0 && i >= 0);
+      i++;
+    } while(brackdep != 0);
+    i--; // back onto last ]
+
+    // TODO evaluate and store length (should be constant expression)
+    tmod->gen.type = TM_ARR;
+    append(l, tmod);
+    free(tmod);
+    // gettypemods(toks, lo, i-1, l, abs);
 
     return hi+1;
   }
