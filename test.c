@@ -1,10 +1,7 @@
 #include <stdio.h>
-typedef int m;
-typedef int n;
-m x;
-n x;
+#define putd(x) printf(#x ": %d\n", x)
 int main()
 {
-  sizeof((int));
+  putd(sizeof(int () ));
   return 0;
 }

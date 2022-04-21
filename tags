@@ -213,7 +213,7 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon12
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getdeclspecs	main.c	/^ctype *getdeclspecs(token *toks, int *i)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
-gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l)$/;"	f
+gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
@@ -226,6 +226,7 @@ int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon11::__anon13
+isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
@@ -249,7 +250,6 @@ lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
-m	test.c	/^typedef int m;$/;"	t	file:
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
@@ -261,7 +261,6 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
-n	test.c	/^typedef int n;$/;"	t	file:
 name	defs.h	/^    char *name;$/;"	m	struct:__anon11::__anon16
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -277,6 +276,7 @@ parseunaryexpr	main.c	/^link *parseunaryexpr(link *chain)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon13
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
+putd	test.c	2;"	d	file:
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
@@ -322,6 +322,4 @@ typequals	defs.h	/^  set *typequals;$/;"	m	struct:__anon17
 typespecs	defs.h	/^  set *typespecs;$/;"	m	struct:__anon17
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^m x;$/;"	v
-x	test.c	/^n x;$/;"	v
 xtod	main.c	/^int xtod(char c)$/;"	f

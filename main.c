@@ -1052,24 +1052,23 @@ int getstorespec(token t) // get storage class specifier
   return -1;
 }
 
-// not needed
-// int isdeclspec(token t) // get declaration specifier, -1 if it's not that
-// {
-//   int x;
-//   if((x = gettypespec(t)) != -1)
-//   {
-//     return x;
-//   }
-//   if((x = getstorespec(t)) != -1)
-//   {
-//     return x;
-//   }
-//   return gettypequal(t);
-// }
+int isdeclspec(token t) // get declaration specifier, -1 if it's not that
+{
+  int x;
+  if((x = gettypespec(t)) != -1)
+  {
+    return x;
+  }
+  if((x = getstorespec(t)) != -1)
+  {
+    return x;
+  }
+  return gettypequal(t);
+}
 
 // recursive function that interprets a declarator by getting the type modifiers in order
 // returns hi + 1 (where to pick up next)
-int gettypemods(token *toks, int lo, int hi, list *l)
+int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 {
   // initial recursive call, must find right side of declarator
   // we also verify that parentheses are balanced here, just because we can
@@ -1097,9 +1096,20 @@ int gettypemods(token *toks, int lo, int hi, list *l)
       // reached identifier
       break;
     }
-    assert(toks[hi].gen.type == IDENT); // assert identifier
-    hi++; // pass identifier
+    // assert(toks[hi].gen.type == IDENT); // assert identifier
+    // hi++; // pass identifier
+    // ^^ abstract declarators have no identifier
     // putd(1);
+
+    if(toks[hi].gen.type == IDENT) // not abstract, has identifier
+    {
+      abs = 0;
+      hi++; // pass over
+    }
+    else
+    {
+      abs = 1;
+    }
 
     // possible things: [constant-expression_opt] (parameter-type-list) )
     for(;;) // all incrementing is now done manually, because it's more complex
@@ -1149,6 +1159,7 @@ int gettypemods(token *toks, int lo, int hi, list *l)
     }
   }
 
+  // get one typemod then recurse
   typemod *tmod = malloc(sizeof(typemod));
 
   if(isatom(toks+lo, STAR)) // pointer time
@@ -1171,9 +1182,15 @@ int gettypemods(token *toks, int lo, int hi, list *l)
         break;
     }
 
-    append(l, tmod);
-    free(tmod);
-    gettypemods(toks, lo, hi, l);
+    append(l, tmod); // add to list of typemods
+    free(tmod); // append uses memcpy so this is no longer needed
+    
+    if(abs && toks[lo].gen.type == NOTOK) // if abstract, then there might be nothing after this; don't recurse in that case
+    {
+      return hi+1;
+    }
+
+    gettypemods(toks, lo, hi, l, abs);
 
     return hi+1;
   }
@@ -1194,22 +1211,43 @@ int gettypemods(token *toks, int lo, int hi, list *l)
       } while(parendep != 0);
       i++; // back onto last (
 
-      if(i == lo) // back where we started? then it's a regular paren
-      {
-        // recurse without the paren
-        free(tmod); // wasn't needed
-        gettypemods(toks, lo+1, hi-1, l);
+      // must determine whether enclosing parentheses or function parentheses
+      int fun = 1;
 
-        return hi+1;
+      if(i == lo) // back where we started
+      {
+        if(abs) // either enclosing parentheses or function parenthesis; must inspect contents to determine which
+        {
+          if(lo + 1 == hi) // empty parentheses, must be function
+          {
+            fun = 1;
+          }
+
+          if(isdeclspec(toks[lo+1])) // only possible start of parameter declaration
+          {
+            fun = 1;
+          }
+
+          else fun = 0; // otherwise must be enclosing
+        }
+
+        if(!fun) // enclosing
+        {
+          free(tmod); // wasn't needed
+          // recurse without the paren
+          gettypemods(toks, lo+1, hi-1, l, abs);
+
+          return hi+1;
+        }
       }
 
-      else // it's a function
+      if(fun) // it's a function
       {
         tmod->gen.type = TM_FUNC;
         // TODO store the parameter type list
         append(l, tmod);
         free(tmod);
-        gettypemods(toks, lo, i-1, l);
+        gettypemods(toks, lo, i-1, l, abs);
         
         return hi+1;
       }
@@ -1233,12 +1271,12 @@ int gettypemods(token *toks, int lo, int hi, list *l)
       tmod->gen.type = TM_ARR;
       append(l, tmod);
       free(tmod);
-      gettypemods(toks, lo, i-1, l);
+      gettypemods(toks, lo, i-1, l, abs);
 
       return hi+1;
     }
 
-    // else, we should have reached the identifier
+    // else, we should have reached the identifier, or emptiness
     // putd(lo);
     // putd(hi);
     assert(lo == hi);
@@ -1284,6 +1322,41 @@ ctype *getdeclspecs(token *toks, int *i)
 {
   ctype *ct = malloc(sizeof(ctype));
   
+  // allocate sets
+  set *typespecs  = makeset(sizeof(int));
+  set *typequals  = makeset(sizeof(int));
+  set *storespecs = makeset(sizeof(int));
+
+  // assign
+  ct->typespecs = typespecs;
+  ct->typequals = typequals;
+  ct->storespecs = storespecs;
+  ct->typemods = NULL;
+
+  int n = *i; // save starting point for future reference (e.x. checking typedef)
+  token t;
+  int spec;
+  // read declaration specifiers
+  for(;; (*i)++)
+  {
+    t =toks[*i];
+    if((spec = gettypespec(t)) != -1)
+    {
+      // insert
+      assert(!setins(typespecs, &spec)); // no duplicate type specifiers allowed
+    }
+    else if((spec = gettypequal(t)) != -1)
+    {
+      setins(typequals, &spec); // duplicate type quals are ignored
+    }
+    else if((spec = getstorespec(t)) != -1)
+    {
+      assert(!setins(storespecs, &spec)); // no duplicate storage classes allowed
+    }
+    else break; // end of declaration specifiers
+  }
+
+  return ct;
 }
 
 // read first declaration from array of tokens, and do things about it
@@ -1305,33 +1378,7 @@ int parsedecl(token *toks)
     return 0;
   }
   
-  // allocate sets
-  set *typespecs  = makeset(sizeof(int));
-  set *typequals  = makeset(sizeof(int));
-  set *storespecs = makeset(sizeof(int));
-
-  int n = i; // save starting point for future reference (e.x. checking typedef)
-  token t;
-  int spec;
-  // read declaration specifiers
-  for(;; i++)
-  {
-    t =toks[i];
-    if((spec = gettypespec(t)) != -1)
-    {
-      // insert
-      assert(!setins(typespecs, &spec)); // no duplicate type specifiers allowed
-    }
-    else if((spec = gettypequal(t)) != -1)
-    {
-      setins(typequals, &spec); // duplicate type quals are ignored
-    }
-    else if((spec = getstorespec(t)) != -1)
-    {
-      assert(!setins(storespecs, &spec)); // no duplicate storage classes allowed
-    }
-    else break; // end of declaration specifiers
-  }
+  ctype *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
   
   // TODO perform checks on the specifiers to make sure they're allowed
   /*
@@ -1360,7 +1407,7 @@ int parsedecl(token *toks)
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
   list *l = makelist(sizeof(typemod));
-  i = gettypemods(toks, i, -1, l); // parse one declarator
+  i = gettypemods(toks, i, -1, l, 0); // parse one declarator
   reverse(l); // typemods are parsed from the outside in, so now we flip that
 
   typemod *tms = (typemod *) l->cont;
