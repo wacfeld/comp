@@ -8,6 +8,41 @@
 
 void puttok(token t);
 
+tok *ll2tok(link *ll) // linked list to NOTOK-terminated token list
+{
+  link *start = ll; // save
+  int len = 0; // find length
+  while(ll)
+  {
+    len++;
+    ll = ll->right;
+  }
+
+  ll = start; // reset
+  
+  // allocate enough for tokens + NOTOK
+  token *tokl = malloc(sizeof(token) * (len+1));
+  int i = 0;
+  
+  while(ll) // go through and convert to tokens
+  {
+    if(ll->type == TOK_L) // already token, transfer
+      tokl[i++] = *ll->cont.tok;
+    else // expression
+    {
+      tokl[i++] = *ll->cont.expr->tok;
+    }
+    ll = ll->right;
+  }
+
+  // NOTOK
+  token nt;
+  nt.gen.type = NOTOK;
+  tokl[i] = nt;
+
+  return tokl;
+}
+
 link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
 {
   int len = 0;
@@ -1394,7 +1429,7 @@ ctype *getdeclspecs(token *toks, int *i)
 
 // read first declaration from array of tokens, and do things about it
 // returns 0 if runs into NOTOK
-int parsedecl(token *toks)
+int parsedecl(token *toks, int onlydecl)
 {
   // declaration *decl = malloc(sizeof(decl));
   
@@ -1917,10 +1952,11 @@ link *parseunaryexpr(link *chain)
       attach(temp, curl);
     }
 
-    if(lisatom(curl->left, PARENCL)) // (type-name) unary-expr
+    if(lisatom(curl->left, PARENCL)) // cast
     {
       int parendep = 1;
       link *opparen = curl->left;
+
       while(parendep > 0 && opparen != NULL) // find matching
       {
         if(lisatom(opparen, PARENCL)) parendep++;
@@ -1928,6 +1964,7 @@ link *parseunaryexpr(link *chain)
         assert(parandep >= 0);
         opparen = opparen->left;
       }
+
       link *outl = opparen;
       opparen = opparen->right->right;
 
@@ -1935,6 +1972,7 @@ link *parseunaryexpr(link *chain)
       opparen->left = NULL;
       curl->left->right = NULL;
       
+      token *abstype = ll2tok(opparen) // convert to token list
       // evaluate
       opparen = parsetypename(opparen);
 

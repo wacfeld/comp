@@ -250,6 +250,7 @@ lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
+ll2tok	main.c	/^tok *ll2tok(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
@@ -268,7 +269,7 @@ nline	defs.h	24;"	d
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseasgnexpr	main.c	/^link *parseasgnexpr(link *chain)$/;"	f
-parsedecl	main.c	/^int parsedecl(token *toks)$/;"	f
+parsedecl	main.c	/^int parsedecl(token *toks, int onlydecl)$/;"	f
 parseexpr	main.c	/^link *parseexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	main.c	/^link *parseprimexpr(link *chain)$/;"	f
