@@ -1567,6 +1567,12 @@ link *parseprimexpr(link *chain)
     // (expression)
     if(lisatom(curl, PARENOP))
     {
+      if(lisatom(curl->right, PARENCL)) // empty parens -> funcall, ignore for now, deal with later as special case
+      {
+        curl = curl->right->right;
+        continue;
+      }
+        
       // putd(0);
       // find matching
       int parendep = 1;
@@ -1578,12 +1584,19 @@ link *parseprimexpr(link *chain)
         assert(parendep >= 0);
         opl = opl->right;
       }
+
+      curl = curl->right; // move inside paren
+      if(isdeclspec(*curl->cont.tok)) // it's a cast, therefore not a primary expression
+      {
+        curl = opl; // move over
+        continue;
+      }
+
       opl = opl->left->left; // move inside paren
 
       // disconnect
-      curl = curl->right; // move inside paren
-      link *left = curl->left;
-      link *right = opl->right;
+      link *left = curl->left->left; // just outside the parens
+      link *right = opl->right->right;
       curl->left = NULL;
       opl->right = NULL;
 
@@ -1591,7 +1604,11 @@ link *parseprimexpr(link *chain)
       link *l = parseexpr(curl);
       // encapsulate it in a primary expression (this is important!)
       expr *newe = malloc(sizeof(expr));
-      
+      newe->type = PRIM_E;
+      newe->optype = PAREN_O;
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = l->cont.exp;
+      l->cont.exp = newe;
 
       // write
       // link *l = malloc(sizeof(link));

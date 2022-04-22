@@ -209,6 +209,7 @@ enum optype
   FLOAT_O,
   CHAR_O,
   ENUM_O,
+  PAREN_O, // (expression), which is a primary expression
   // ^^^ expressions that return their data as-is
   
   // postfix expressions
