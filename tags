@@ -269,7 +269,7 @@ nline	defs.h	24;"	d
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseasgnexpr	main.c	/^link *parseasgnexpr(link *chain)$/;"	f
-parsedecl	main.c	/^int parsedecl(token *toks, int onlydecl)$/;"	f
+parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseexpr	main.c	/^link *parseexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	main.c	/^link *parseprimexpr(link *chain)$/;"	f

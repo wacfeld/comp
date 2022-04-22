@@ -1428,8 +1428,8 @@ ctype *getdeclspecs(token *toks, int *i)
 }
 
 // read first declaration from array of tokens, and do things about it
-// returns 0 if runs into NOTOK
-int parsedecl(token *toks, int onlydecl)
+// returns NULL if runs into NOTOK
+ctype * parsedecl(token *toks, int onlydecl)
 {
   // declaration *decl = malloc(sizeof(decl));
   
@@ -1438,12 +1438,12 @@ int parsedecl(token *toks, int onlydecl)
   if(!toks) // reset if passed NULL
   {
     i = 0;
-    return 1; // return value doesn't matter
+    return NULL; // return value doesn't matter
   }
 
   if(toks[i].gen.type == NOTOK) // end of token stream
   {
-    return 0;
+    return NULL;
   }
   
   ctype *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
@@ -1482,15 +1482,15 @@ int parsedecl(token *toks, int onlydecl)
   int tmlen = l->n;
   for(int j = 0; j < tmlen; j++)
   {
-    puttypemod(tms[j]);
+    // puttypemod(tms[j]);
   }
   int *tss = (int *) typespecs->cont;
   int tslen = typespecs->n;
   for(int j = 0; j < tslen; j++)
   {
-    printf("%s ", keywords[tss[j]]);
+    // printf("%s ", keywords[tss[j]]);
   }
-  nline();
+  // nline();
 
 
   // ctype ct = {typespecs, typequals, storespecs, l};
@@ -1526,7 +1526,7 @@ int parsedecl(token *toks, int onlydecl)
     i++; // move over semicolon
   }
 
-  return 1; // success
+  return ct; // success
 }
 
 
