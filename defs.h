@@ -285,7 +285,7 @@ typedef enum expr_type
   PRIM_E,
   POST_E,
   UNAR_E,
-  CAST_E,
+  // CAST_E, // merged into UNAR_E
   MULT_E,
   ADD_E,
   SHIFT_E,
@@ -332,6 +332,8 @@ typedef struct expr
   struct expr **args;
   int arglen; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
+  ctype *ct; // for casts
+  // did not want to make a union for this so we just have tok and ct, both optional
 } expr;
 
 enum link_type {EXPR_L, TOK_L};

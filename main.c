@@ -8,7 +8,7 @@
 
 void puttok(token t);
 
-tok *ll2tok(link *ll) // linked list to NOTOK-terminated token list
+tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
 {
   link *start = ll; // save
   int len = 0; // find length
@@ -1475,22 +1475,29 @@ ctype * parsedecl(token *toks, int onlydecl)
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
   list *l = makelist(sizeof(typemod));
-  i = gettypemods(toks, i, -1, l, 0); // parse one declarator
+  i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
   reverse(l); // typemods are parsed from the outside in, so now we flip that
+  ct->typemods = l; // add to ct
 
-  typemod *tms = (typemod *) l->cont;
-  int tmlen = l->n;
-  for(int j = 0; j < tmlen; j++)
+  if(onlydecl) // only declaration => no initialization, function definition, etc.
   {
-    // puttypemod(tms[j]);
+    return ct;
   }
-  int *tss = (int *) typespecs->cont;
-  int tslen = typespecs->n;
-  for(int j = 0; j < tslen; j++)
-  {
-    // printf("%s ", keywords[tss[j]]);
-  }
-  // nline();
+
+  // print debugging
+  // typemod *tms = (typemod *) l->cont;
+  // int tmlen = l->n;
+  // for(int j = 0; j < tmlen; j++)
+  // {
+  //   // puttypemod(tms[j]);
+  // }
+  // int *tss = (int *) typespecs->cont;
+  // int tslen = typespecs->n;
+  // for(int j = 0; j < tslen; j++)
+  // {
+  //   // printf("%s ", keywords[tss[j]]);
+  // }
+  // // nline();
 
 
   // ctype ct = {typespecs, typequals, storespecs, l};
@@ -1921,7 +1928,7 @@ link *parseunaryexpr(link *chain)
   {
     if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
     {
-      curl = curl->right;
+      curl = curl->left;
       continue;
     }
 
@@ -1938,7 +1945,7 @@ link *parseunaryexpr(link *chain)
       attach(temp, curl);
     }
 
-    if(lisatom(curl->left, DEC)) // -- unary-expr
+    else if(lisatom(curl->left, DEC)) // -- unary-expr
     {
       expr *newe = malloc(sizeof(expr));
       newe->type = UNAR_E;
@@ -1952,7 +1959,7 @@ link *parseunaryexpr(link *chain)
       attach(temp, curl);
     }
 
-    if(lisatom(curl->left, PARENCL)) // cast
+    else if(lisatom(curl->left, PARENCL)) // cast
     {
       int parendep = 1;
       link *opparen = curl->left;
@@ -1966,26 +1973,42 @@ link *parseunaryexpr(link *chain)
       }
 
       link *outl = opparen;
-      opparen = opparen->right->right;
+      opparen = opparen->right->right; // move in
 
       // detach
       opparen->left = NULL;
-      curl->left->right = NULL;
+      curl->left->left->right = NULL;
       
-      token *abstype = ll2tok(opparen) // convert to token list
       // evaluate
-      opparen = parsetypename(opparen);
+      token *abstype = ll2tokl(opparen); // convert to token list
+      // evaluate
+      ctype *ct = parsedecl(abstype, 1); // parse only declaration
 
-      // reattach
-      // TODO type names, special case, or no?
+      // new expression
+      expr *newe = malloc(sizeof(expr));
+      newe->type = UNAR_E;
+      newe->optype = CAST_O;
+
+      newe->args = malloc(sizeof(expr));
+      newe->args[0] = curl->cont.exp;
+      newe->ct = ct; // tell it what to cast to
+      curl->cont.exp = newe;
+      
+      // absorb cast
+      attach(outl, curl);
     }
 
-    if(lisatom(curl->left, SIZEOF))
+    else if(lisatom(curl->left, SIZEOF))
     {
       
     }
 
-    if(
+    else if();
+    else
+    {
+      if(curl->left == NULL) break; // break preemptively
+      curl = curl->left; // move on
+    }
   } while(curl != NULL);
 }
 
