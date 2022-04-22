@@ -6,6 +6,6 @@ int f(int x)
 }
 int main()
 {
- putd(f(3) + 1);
+ putd(((((((3)))))));
   return 0;
 }

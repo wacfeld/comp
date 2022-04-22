@@ -1589,6 +1589,9 @@ link *parseprimexpr(link *chain)
 
       // evaluate
       link *l = parseexpr(curl);
+      // encapsulate it in a primary expression (this is important!)
+      expr *newe = malloc(sizeof(expr));
+      
 
       // write
       // link *l = malloc(sizeof(link));
