@@ -1493,7 +1493,7 @@ int parsedecl(token *toks, int onlydecl)
   nline();
 
 
-  ctype ct = {typespecs, typequals, storespecs, l};
+  // ctype ct = {typespecs, typequals, storespecs, l};
 
   // TODO comma-separated declarations
 
