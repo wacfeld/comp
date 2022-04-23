@@ -226,6 +226,14 @@ enum optype
   PREDEC_O,
   // it's more convenient to just use expr.type for parsing, and just use expr.optype for evaluation. therefore we must differentiate between PRE/POST INC/DEC operators
 
+  // unary operators
+  ADDR_O,
+  POINT_O,
+  UPLUS_O,
+  UMIN_O,
+  BNOT_O,
+  LNOT_O,
+
   // cast expressions
   CAST_O, // likely unnecessary
   
@@ -286,7 +294,7 @@ typedef enum expr_type
   PRIM_E,
   POST_E,
   UNAR_E,
-  // CAST_E, // merged into UNAR_E
+  CAST_E,
   MULT_E,
   ADD_E,
   SHIFT_E,
@@ -301,6 +309,7 @@ typedef enum expr_type
   ASGN_E,
   COMMA_E,
   CONST_E,
+  TYPENAME, // special case: for casts
 } expr_type;
 
 char *hr_expr[100] = 

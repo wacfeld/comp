@@ -3,8 +3,8 @@
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
-// attach two links, accounting for null
-#define attach(a, b) {if(a) a->right = b; if(b) b->left = a;}
+// attach two links, accounting for null, creating temporary variables to account for yknow
+#define attach(a, b) {link *ta = a; link *tb = b; if(ta) ta->right = tb; if(tb) tb->left = ta;}
 
 void puttok(token t);
 
@@ -1042,6 +1042,16 @@ int listok(link *l, enum tok_type t)
   return l != NULL && l->type == TOK_L && l->cont.tok->gen.type == t;
 }
 
+int lisunaryop(link *l) // & * + - ~ !
+{
+  return lisatom(l, BITAND) ||
+    lisatom(l, STAR) ||
+    lisatom(l, PLUS) ||
+    lisatom(l, MIN) ||
+    lisatom(l, LOGNOT) ||
+    lisatom(l, BITNOT);
+}
+
 
 int gettypespec(token t) // get type specifier
 {
@@ -1777,58 +1787,87 @@ link *parsepostexpr(link *chain)
       // we can probably not restart from the beginning, due to how postfix works, but this also works fine
     }
 
+    else if(lisop(curl->right, PAREN_O)) // function call time
+    {
+      // TODO
+    }
+
     else if(lisatom(curl->right, PARENOP)) // postfix-expression(argument-expression-list_opt)
     {
-      link *argl = curl->right->right; // left of arguments
-      link *argr = curl->right->right;
-      
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E;
-      newe->optype = FUN_O;
-      newe->arglen = 0;
-      int size = 5;
-      newe->args = malloc(sizeof(expr) * size);
+      // parens are a special case
+      // paren tokens can only be (casts) and empty() now
 
-      newe->args[0] = curl->cont.exp; // function name is the first thing
-      newe->arglen++;
-
-      int parendep = 1;
-      while(parendep) // while in argument parentheses
+      if(isdeclspec(*curl->cont.tok)) // cast, move over
       {
-        if(lisatom(argr, PARENOP)) parendep++;
-        if(lisatom(argr, PARENCL)) parendep--;
-        assert(parendep >= 0 && argr != NULL);
-
-        if((lisatom(argr, COMMA) && parendep == 1) || parendep == 0) // end of argument, evaluate
+        int parendep = 1;
+        curl = curl->right;
+        while(parendep)
         {
-          // detach
-          argr->left->right = NULL;
-          argl->left = NULL;
-
-          // parse assignment expression
-          argl = parseasgnexpr(argl);
-          expr *e = argl->cont.exp;
-
-          // append to argument list
-          resize(newe->args, size, newe->arglen);
-          newe->args[newe->arglen] = e;
-          newe->arglen++;
-          
-          // setup for next argument
-          argl = argr->right;
-          argr = argr->right;
+          if(lisatom(curl), PARENOP) parendep++;
+          if(lisatom(curl), PARENCL) parendep--;
+          assert(parendep >= 0 && curl != NULL);
+          curl = curl->right;
         }
-
-        else
-          argr = argr->right;
-
+        continue;
       }
 
+      if(lisatom(curl->right, PARENCL)) // empty args
+      {
+        // TODO
+        curl = curl->right->right;
+        continue;
+      }
+
+      // link *argl = curl->right->right; // left of arguments
+      // link *argr = curl->right->right;
+      
+      // expr *newe = malloc(sizeof(expr));
+      // newe->type = POST_E;
+      // newe->optype = FUN_O;
+      // newe->arglen = 0;
+      // int size = 5;
+      // newe->args = malloc(sizeof(expr) * size);
+
+      // newe->args[0] = curl->cont.exp; // function name is the first thing
+      // newe->arglen++;
+
+      // int parendep = 1;
+      // while(parendep) // while in argument parentheses
+      // {
+      //   if(lisatom(argr, PARENOP)) parendep++;
+      //   if(lisatom(argr, PARENCL)) parendep--;
+      //   assert(parendep >= 0 && argr != NULL);
+
+      //   if((lisatom(argr, COMMA) && parendep == 1) || parendep == 0) // end of argument, evaluate
+      //   {
+      //     // detach
+      //     argr->left->right = NULL;
+      //     argl->left = NULL;
+
+      //     // parse assignment expression
+      //     argl = parseasgnexpr(argl);
+      //     expr *e = argl->cont.exp;
+
+      //     // append to argument list
+      //     resize(newe->args, size, newe->arglen);
+      //     newe->args[newe->arglen] = e;
+      //     newe->arglen++;
+          
+      //     // setup for next argument
+      //     argl = argr->right;
+      //     argr = argr->right;
+      //   }
+
+      //   else
+      //     argr = argr->right;
+
+      // }
+
       // wrap up, reattach
-      curl->cont.exp = newe;
-      attach(curl, argr);
-      // curl->right = argr;
-      // argr->left = curl;
+      // curl->cont.exp = newe;
+      // attach(curl, argr);
+      // // curl->right = argr;
+      // // argr->left = curl;
       
       // curl = chain; // restart
     }
@@ -1847,8 +1886,8 @@ link *parsepostexpr(link *chain)
 
       // attach
       curl->cont.exp = newe;
-      link *temp = curl->right->right->right;
-      attach(curl, temp);
+      // link *temp = curl->right->right->right;
+      attach(curl, curl->right->right->right);
       // curl->right = curl->right->right->right;
       // curl->right->left = curl;
 
@@ -1868,8 +1907,8 @@ link *parsepostexpr(link *chain)
       newe->args[1] = curl->right->right->cont.exp;
 
       curl->cont.exp = newe;
-      link *temp = curl->right->right->right;
-      attach(curl, temp);
+      // link *temp = curl->right->right->right;
+      attach(curl, curl->right->right->right);
 
       // curl = chain;
     }
@@ -1883,8 +1922,8 @@ link *parsepostexpr(link *chain)
       newe->args[0] = curl->cont.exp;
 
       curl->cont.exp = newe;
-      link *temp = curl->right->right;
-      attach(curl, temp);
+      // link *temp = curl->right->right;
+      attach(curl, curl->right->right);
 
       // curl = chain;
     }
@@ -1898,8 +1937,8 @@ link *parsepostexpr(link *chain)
       newe->args[0] = curl->cont.exp;
 
       curl->cont.exp = newe;
-      link *temp = curl->right->right;
-      attach(curl, temp);
+      // link *temp = curl->right->right;
+      attach(curl, curl->right->right);
 
       // curl = chain;
     }
@@ -1922,114 +1961,172 @@ link *parsepostexpr(link *chain)
   
 }
 
-link *parseunaryexpr(link *chain)
+// unary and cast expressions mutually reference each other so they have to be parsed together
+link *parsecastunaryexpr(link *chain)
 {
   // parse post
   chain = parsepostexpr(chain);
-  
-  // promote post to unary
-  link *curl = chain;
-  while(curl != NULL)
-  {
-    if(lisexpr(curl, POST_E))
-    {
-      curl->cont.exp->type = UNAR_E;
-    }
-    curl = curl->right;
-  }
 
-  // navigate to end, because we're parsing right to left
-  while(curl->right != NULL)
+  int modified;
+  link *curl = chain;
+
+  do // we go back and forth between unary and cast, until modifications stop being made
   {
-    curl = curl->right;
-  }
-  
-  do
-  {
-    if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
+    modified = 0;
+
+    // promote post to unary
+    // go to left
+    while(curl->left != NULL)
     {
       curl = curl->left;
-      continue;
     }
 
-    if(lisatom(curl->left, INC)) // ++ unary-expr
+    link *temp = curl;
+    while(temp != NULL)
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = UNAR_E;
-      newe->optype = PREINC_O;
-      newe->args = malloc(sizeof(expr));
-      newe->args[0] = curl->cont.exp;
-
-      curl->cont.exp = newe;
-      link *temp = curl->left->left;
-      attach(temp, curl);
-    }
-
-    else if(lisatom(curl->left, DEC)) // -- unary-expr
-    {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = UNAR_E;
-      newe->optype = PREDEC_O;
-
-      newe->args = malloc(sizeof(expr));
-      newe->args[0] = curl->cont.exp;
-
-      curl->cont.exp = newe;
-      link *temp = curl->left->left;
-      attach(temp, curl);
-    }
-
-    else if(lisatom(curl->left, PARENCL)) // cast
-    {
-      int parendep = 1;
-      link *opparen = curl->left;
-
-      while(parendep > 0 && opparen != NULL) // find matching
+      if(lisexpr(temp, POST_E))
       {
-        if(lisatom(opparen, PARENCL)) parendep++;
-        if(lisatom(opparen, PARENOP)) parendep--;
-        assert(parandep >= 0);
-        opparen = opparen->left;
+        temp->cont.exp->type = UNAR_E;
+      }
+      temp = temp->right;
+    }
+
+    // navigate to end, because we're parsing right to left
+    while(curl->right != NULL)
+    {
+      curl = curl->right;
+    }
+
+    do
+    {
+      // if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
+      // {
+      //   curl = curl->left;
+      //   continue;
+      // }
+
+      if(lisexpr(curl, UNAR_E) && lisatom(curl->left, INC)) // ++ unary-expr
+      {
+        expr *newe = malloc(sizeof(expr));
+        newe->type = UNAR_E;
+        newe->optype = PREINC_O;
+        newe->args = malloc(sizeof(expr));
+        newe->args[0] = curl->cont.exp;
+
+        curl->cont.exp = newe;
+        // link *temp = curl->left->left;
+        attach(temp, curl->left->left);
+
+        modified = 1;
       }
 
-      link *outl = opparen;
-      opparen = opparen->right->right; // move in
+      else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, DEC)) // -- unary-expr
+      {
+        expr *newe = malloc(sizeof(expr));
+        newe->type = UNAR_E;
+        newe->optype = PREDEC_O;
 
-      // detach
-      opparen->left = NULL;
-      curl->left->left->right = NULL;
-      
-      // evaluate
-      token *abstype = ll2tokl(opparen); // convert to token list
-      // evaluate
-      ctype *ct = parsedecl(abstype, 1); // parse only declaration
+        newe->args = malloc(sizeof(expr));
+        newe->args[0] = curl->cont.exp;
 
-      // new expression
-      expr *newe = malloc(sizeof(expr));
-      newe->type = UNAR_E;
-      newe->optype = CAST_O;
+        curl->cont.exp = newe;
+        // link *temp = curl->left->left;
+        attach(temp, curl->left->left);
 
-      newe->args = malloc(sizeof(expr));
-      newe->args[0] = curl->cont.exp;
-      newe->ct = ct; // tell it what to cast to
-      curl->cont.exp = newe;
-      
-      // absorb cast
-      attach(outl, curl);
-    }
+        modified = 1;
+      }
 
-    else if(lisatom(curl->left, SIZEOF))
-    {
-      
-    }
+      // unary-operator cast-expression
+      else if(lisexpr(curl, CAST_E) && lisunaryop(curl->left))
+      {
+        // get operator
+        int atom = curl->left->cont.tok.atom.type;
 
-    else if();
-    else
-    {
-      if(curl->left == NULL) break; // break preemptively
-      curl = curl->left; // move on
-    }
-  } while(curl != NULL);
+        // create new expression
+        expr *newe = malloc(sizeof(expr));
+        newe->type = UNAR_E;
+
+        int optype;
+        if(atom      == BITAND) optype = ADDR_O;
+        else if(atom == STAR) optype   = POINT_O;
+        else if(atom == PLUS) optype   = UPLUS_O;
+        else if(atom == MIN) optype    = UMIN_O;
+        else if(atom == BITNOT) optype = BNOT_O;
+        else if(atom == LOGNOT) optype = LNOT_O;
+
+        newe->optype = optype;
+        newe->args = malloc(sizeof(expr)); // unary obviously has 1 arg
+        newe->args[0] = curl->cont.exp;
+        curl->cont.exp = newe;
+
+        // reattach
+        attach(curl->left->left, curl);
+
+        // signal modified
+        modified = 1;
+
+        // we could do curl = curl->left here because it's now a UNAR_E but it's not necessary
+      }
+
+      // else if(lisatom(curl->left, PARENCL)) // cast
+      // {
+      //   int parendep = 1;
+      //   link *opparen = curl->left;
+
+      //   while(parendep > 0 && opparen != NULL) // find matching
+      //   {
+      //     if(lisatom(opparen, PARENCL)) parendep++;
+      //     if(lisatom(opparen, PARENOP)) parendep--;
+      //     assert(parandep >= 0);
+      //     opparen = opparen->left;
+      //   }
+
+      //   link *outl = opparen;
+      //   opparen = opparen->right->right; // move in
+
+      //   // detach
+      //   opparen->left = NULL;
+      //   curl->left->left->right = NULL;
+
+      //   // evaluate
+      //   token *abstype = ll2tokl(opparen); // convert to token list
+      //                                      // evaluate
+      //   ctype *ct = parsedecl(abstype, 1); // parse only declaration
+
+      //   // new expression
+      //   expr *newe = malloc(sizeof(expr));
+      //   newe->type = UNAR_E;
+      //   newe->optype = CAST_O;
+
+      //   newe->args = malloc(sizeof(expr));
+      //   newe->args[0] = curl->cont.exp;
+      //   newe->ct = ct; // tell it what to cast to
+      //   curl->cont.exp = newe;
+
+      //   // absorb cast
+      //   attach(outl, curl);
+      // }
+
+      else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, SIZEOF)) // sizeof unary-expression
+      {
+        // TODO (this is a compile-time expression, must be evaluated now or soon)
+      }
+
+      else if(
+
+      else if(lisexpr(curl, UNAR_E) && );
+      else
+      {
+        if(curl->left == NULL) break; // break preemptively
+        curl = curl->left; // move on
+      }
+    } while(curl != NULL);
+
+
+  } while(modified);
+
+
+  
 }
 
 int main()
