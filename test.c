@@ -6,6 +6,8 @@ int f(int x)
 }
 int main()
 {
- putd(((((((3)))))));
-  return 0;
+  while()
+  {
+
+  }
 }

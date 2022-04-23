@@ -1766,13 +1766,14 @@ link *parsepostexpr(link *chain)
   curl = chain; // back to start
   do // fold in post expressions until none left
   {
-    puts("----");
-    putll(curl);
+    // puts("----");
+    // putll(curl);
     if(!lisexpr(curl, POST_E)) // if not postfix expression, pass over
     {
       curl = curl->right;
       continue;
     }
+
     if(lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
     {
       link* indr = curl->right; // index right
@@ -2156,7 +2157,7 @@ link *parsecastunaryexpr(link *chain)
         if(curl->left == NULL) break; // break preemptively
         curl = curl->left; // move on
       }
-    } while();
+    } while(1);
 
     // because we broke preemptively curl is not NULL
     leftend(curl);
@@ -2198,13 +2199,43 @@ link *parsecastunaryexpr(link *chain)
         if(curl->left == NULL) break;
         curl = curl->left;
       }
-    } while();
+    } while(1);
 
   } while(modified);
 
 
   leftend(curl);
   return curl;
+}
+
+// multiplicative expression
+link *parsemultexpr(link *chain)
+{
+  // parse cast expression
+  chain = parsecastunaryexpr(chain);
+
+  // cast -> mult
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, CAST_E))
+    {
+      temp->cont.exp->type = MULT_E;
+    }
+    temp = temp->right;
+  }
+  
+  while(1)
+  {
+    if(!lisexpr(curl, MULT_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(
+  }
 }
 
 int main()
