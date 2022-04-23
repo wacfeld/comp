@@ -6,6 +6,11 @@
 // attach two links, accounting for null, creating temporary variables to account for yknow
 #define attach(a, b) {link *ta = a; link *tb = b; if(ta) ta->right = tb; if(tb) tb->left = ta;}
 
+// move to either end of a linked list
+#define rightend(l) {while(l->right != NULL) l = l->right;}
+#define leftend(l) {while(l->left != NULL) l = l->left;}
+// it's not enough to just save either end of the list because the pointer might change
+
 void puttok(token t);
 
 tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
@@ -2000,10 +2005,11 @@ link *parsecastunaryexpr(link *chain)
 
     // promote post to unary
     // go to left
-    while(curl->left != NULL)
-    {
-      curl = curl->left;
-    }
+    // while(curl->left != NULL)
+    // {
+    //   curl = curl->left;
+    // }
+    leftend(curl);
 
     link *temp = curl;
     while(temp != NULL)
@@ -2016,11 +2022,13 @@ link *parsecastunaryexpr(link *chain)
     }
 
     // navigate to end, because we're parsing right to left
-    while(curl->right != NULL)
-    {
-      curl = curl->right;
-    }
+    // while(curl->right != NULL)
+    // {
+    //   curl = curl->right;
+    // }
+    rightend(curl);
 
+    // unary expressions
     do
     {
       // if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
@@ -2134,23 +2142,69 @@ link *parsecastunaryexpr(link *chain)
       else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, SIZEOF)) // sizeof unary-expression
       {
         // TODO (this is a compile-time expression, must be evaluated now or soon)
+        modified = 1;
       }
 
-      else if(lisexpr(curl, TYPENAME) && );
+      else if(lisexpr(curl, TYPENAME) && lisatom(curl->left, SIZEOF)) // sizeof(type-name)
+      {
+        // TODO (see above)
+        modified = 1;
+      }
 
-      else if(lisexpr(curl, UNAR_E) && );
       else
       {
         if(curl->left == NULL) break; // break preemptively
         curl = curl->left; // move on
       }
-    } while(curl != NULL);
+    } while();
 
+    // because we broke preemptively curl is not NULL
+    leftend(curl);
+    
+    // unary -> cast
+    link *temp = curl;
+    while(temp != NULL)
+    {
+      if(lisexpr(temp, UNAR_E))
+      {
+        temp->cont.exp->type = CAST_E;
+      }
+      temp = temp->right;
+    }
+
+    rightend(curl);
+
+    // cast expressions
+    do
+    {
+      if(lisexpr(curl, CAST_E) && lisexpr(curl->left, TYPENAME)) // cast
+      {
+        expr *newe = malloc(sizeof(expr));
+        newe->type = CAST_E;
+        newe->optype = CAST_O;
+        newe->args = malloc(sizeof(expr)*2); // cast, expr
+        newe->args[0] = curl->left->cont.exp; // cast
+        newe->args[1] = curl->cont.exp; // expr
+
+        curl->cont.exp = newe;
+
+        attach(curl->left->left, curl);
+
+        modified = 1;
+      }
+
+      else
+      {
+        if(curl->left == NULL) break;
+        curl = curl->left;
+      }
+    } while();
 
   } while(modified);
 
 
-  
+  leftend(curl);
+  return curl;
 }
 
 int main()
