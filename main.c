@@ -1597,12 +1597,13 @@ link *parseprimexpr(link *chain)
       }
 
       parr = parr->left; // move onto )
+
+      // detach
+      curl->right->left = NULL;
+      parr->left->right = NULL;
+
       if(isdeclspec(*curl->cont.tok)) // it's a cast, therefore not a primary expression
       {
-        // detach
-        curl->right->left = NULL;
-        parr->left->right = NULL;
-
         // convert to token list
         token *abstype = ll2tokl(curl->right);
         // parse type
@@ -1621,18 +1622,20 @@ link *parseprimexpr(link *chain)
         curl = newe; // recentre
 
         // curl = opl; // move over
-        // continue;
+        continue;
       }
 
+      // otherwise it's an expression or a function call
+      // either way, it's a comma-separated list of assignment expressions, possibly empty if function call
 
       // disconnect
-      link *left = curl->left->left; // just outside the parens
-      link *right = opl->right->right;
-      curl->left = NULL;
-      opl->right = NULL;
+      // link *left = curl->left->left; // just outside the parens
+      // link *right = opl->right->right;
+      // curl->left = NULL;
+      // opl->right = NULL;
 
       // evaluate
-      link *l = parseexpr(curl);
+      link *l = parseexpr(curl->right);
       // encapsulate it in a primary expression (this is important!)
       expr *newe = malloc(sizeof(expr));
       newe->type = PRIM_E;
@@ -1647,8 +1650,8 @@ link *parseprimexpr(link *chain)
       // l->cont.exp = exp;
 
       // reconnect
-      attach(left, l);
-      attach(l, right);
+      attach(curl->left, l);
+      attach(l, parr->right);
       // l->left = left;
       // l->right = right;
       // if(left) left->right = l;
