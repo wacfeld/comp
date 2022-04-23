@@ -1565,6 +1565,7 @@ link *parseasgnexpr(link *chain)
 
 }
 // evaluate primary expressions
+// this also parses top-level type names because we have to do that somewhere
 link *parseprimexpr(link *chain)
 {
   // chain is a linked list of tokens and expressions
@@ -1586,23 +1587,43 @@ link *parseprimexpr(link *chain)
       // putd(0);
       // find matching
       int parendep = 1;
-      link *opl = curl->right; // opposite
-      while(parendep > 0 && opl != NULL) // find opposite
+      link *parr = curl->right; // paren right
+      while(parendep > 0) // find opposite
       {
-        if(lisatom(opl, PARENOP)) parendep++;
-        if(lisatom(opl, PARENCL)) parendep--;
-        assert(parendep >= 0);
-        opl = opl->right;
+        if(lisatom(parr, PARENOP)) parendep++;
+        if(lisatom(parr, PARENCL)) parendep--;
+        assert(parendep >= 0 && parr != NULL);
+        parr = parr->right;
       }
 
-      curl = curl->right; // move inside paren
+      parr = parr->left; // move onto )
       if(isdeclspec(*curl->cont.tok)) // it's a cast, therefore not a primary expression
       {
-        curl = opl; // move over
-        continue;
+        // detach
+        curl->right->left = NULL;
+        parr->left->right = NULL;
+
+        // convert to token list
+        token *abstype = ll2tokl(curl->right);
+        // parse type
+        ctype *ct = parsedecl(abstype, 1);
+        
+        // put into expression
+        expr *newe = malloc(sizeof(expr));
+        newe->type = TYPENAME;
+        // no optype, or other things, only ct
+        newe->ct = ct;
+
+        // remove the parens. type-name can only ever occur within exactly one pair of parens, so this simplifies things
+        // reattach
+        attach(curl->left, newe);
+        attach(newe, parr->right);
+        curl = newe; // recentre
+
+        // curl = opl; // move over
+        // continue;
       }
 
-      opl = opl->left->left; // move inside paren
 
       // disconnect
       link *left = curl->left->left; // just outside the parens
@@ -2112,7 +2133,7 @@ link *parsecastunaryexpr(link *chain)
         // TODO (this is a compile-time expression, must be evaluated now or soon)
       }
 
-      else if(
+      else if(lisexpr(curl, TYPENAME) && );
 
       else if(lisexpr(curl, UNAR_E) && );
       else
