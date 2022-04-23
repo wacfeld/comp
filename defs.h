@@ -251,6 +251,12 @@ enum optype
   SHR_O,
 
   // relational expressions
+  LT_O,
+  GT_O,
+  LEQ_O,
+  GEQ_O,
+
+  // equality expressions
   EQEQ_O,
   NEQ_O,
 

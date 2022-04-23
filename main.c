@@ -2208,6 +2208,8 @@ link *parsecastunaryexpr(link *chain)
   return curl;
 }
 
+// the following functions are extremely repetitive and therefore poorly implemented
+
 // multiplicative expression
 link *parsemultexpr(link *chain)
 {
@@ -2234,9 +2236,605 @@ link *parsemultexpr(link *chain)
       continue;
     }
 
-    if(lisatom(
+    if(lisatom(curl->right, STAR) && lisexpr(curl->right->right, CAST_E)) // mult-expr * cast-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = MULT_E;
+      newe->optype = MULT_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, DIV) && lisexpr(curl->right->right, CAST_E)) // mult-expr / cast-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = MULT_E;
+      newe->optype = DIV_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, MOD) && lisexpr(curl->right->right, CAST_E)) // mult-expr % cast-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = MULT_E;
+      newe->optype = MOD_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
   }
+
+  leftend(curl);
+  return curl;
 }
+
+// additive expression
+link *parseaddexpr(link *chain)
+{
+  // parse mult expr
+  chain = parsemultexpr(chain);
+
+  // mult -> add
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, MULT_E))
+    {
+      temp->cont.exp->type = ADD_E;
+    }
+    temp = temp->right;
+  }
+  
+  while(1)
+  {
+    if(!lisexpr(curl, ADD_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, PLUS) && lisexpr(curl->right->right, MULT_E)) // add-expr + mult-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = ADD_E;
+      newe->optype = ADD_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, MIN) && lisexpr(curl->right->right, MULT_E)) // add-expr - mult-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = ADD_E;
+      newe->optype = SUB_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+}
+
+link *parseshiftexpr(link *chain)
+{
+  // parse add expr
+  chain = parseaddexpr(chain);
+
+  // add -> shift
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, ADD_E))
+    {
+      temp->cont.exp->type = SHIFT_E;
+    }
+    temp = temp->right;
+  }
+  
+  while(1)
+  {
+    if(!lisexpr(curl, SHIFT_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, SHL) && lisexpr(curl->right->right, ADD_E)) // shift-expr << add-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = SHIFT_E;
+      newe->optype = SHL_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, SHR) && lisexpr(curl->right->right, ADD_E)) // shift-expr >> add-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = SHIFT_E
+      newe->optype = SHR_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+}
+
+link *parserelexpr(link *chain)
+{
+  // parse shift
+  chain = parseshiftexpr(chain);
+
+  // shift -> rel
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, SHIFT_E))
+    {
+      temp->cont.exp->type = RELAT_E;
+    }
+    temp = temp->right;
+  }
+  
+  while(1)
+  {
+    if(!lisexpr(curl, RELAT_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, LESS) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr < shift-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = RELAT_E;
+      newe->optype = LT_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, GREAT) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr > shift-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = RELAT_E;
+      newe->optype = GT_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, LEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr <= shift-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = RELAT_E;
+      newe->optype = LEQ_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, GEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr >= shift-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = RELAT_E;
+      newe->optype = GEQ_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+link *parseeqexpr(link *chain)
+{
+  // parse rel expression
+  chain = parserelexpr(chain);
+
+  // rel -> eq
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, RELAT_E))
+    {
+      temp->cont.exp->type = EQUAL_E;
+    }
+    temp = temp->right;
+  }
+  
+  while(1)
+  {
+    if(!lisexpr(curl, EQUAL_O))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, EQEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-expr == rel-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = EQUAL_E;
+      newe->optype = EQEQ_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else if(lisatom(curl->right, NOTEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-epr != rel-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = EQUAL_E;
+      newe->optype = NEQ_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+link *parseandexpr(link *chain)
+{
+  // parse eq expression
+  chain = parseeqexpr(chain);
+
+  // eq -> and
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, EQUAL_E))
+    {
+      temp->cont.exp->type = AND_E;
+    }
+    temp = temp->right;
+  }
+
+  while(1)
+  {
+    if(!lisexpr(curl, AND_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, BITAND) && lisexpr(curl->right->right, EQUAL_E)) // and-expr & eq-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = AND_E;
+      newe->optype = BAND_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+link *parsexorexpr(link *chain)
+{
+  // parse and expression
+  chain = parseandexpr(chain);
+
+  // and -> xor
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, AND_E))
+    {
+      temp->cont.exp->type = XOR_E;
+    }
+    temp = temp->right;
+  }
+
+  while(1)
+  {
+    if(!lisexpr(curl, XOR_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, XOR) && lisexpr(curl->right->right, AND_E)) // xor-expr ^ and-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = XOR_E;
+      newe->optype = XOR_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+link *parseorexpr(link *chain)
+{
+  // parse xor expression
+  chain = parsexorexpr(chain);
+
+  // xor -> or
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, XOR_E))
+    {
+      temp->cont.exp->type = OR_E;
+    }
+    temp = temp->right;
+  }
+
+  while(1)
+  {
+    if(!lisexpr(curl, OR_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, OR) && lisexpr(curl->right->right, XOR_E)) // or-expr | xor-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = OR_E;
+      newe->optype = BOR_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+link *parselandexpr(link *chain)
+{
+  // parse or expression
+  chain = parseorexpr(chain);
+
+  // or -> land
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, OR_E))
+    {
+      temp->cont.exp->type = LAND_E;
+    }
+    temp = temp->right;
+  }
+
+  while(1)
+  {
+    if(!lisexpr(curl, LAND_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, LOGAND) && lisexpr(curl->right->right, OR_E)) // land-expr && or-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = LAND_E;
+      newe->optype = LAND_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+
+}
+
+link *parselorexpr(link *chain)
+{
+  // parse land expression
+  chain = parselandexpr(chain);
+
+  // land -> lor
+  link *curl = chain;
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(lisexpr(temp, LAND_E))
+    {
+      temp->cont.exp->type = LOR_E;
+    }
+    temp = temp->right;
+  }
+
+  while(1)
+  {
+    if(!lisexpr(curl, LOR_E))
+    {
+      curl = curl->right;
+      continue;
+    }
+
+    if(lisatom(curl->right, LOGOR) && lisexpr(curl->right->right, LAND_E)) // lor-expr || land-expr
+    {
+      expr *newe = malloc(sizeof(expr));
+      newe->type = LOR_E;
+      newe->optype = LOR_O;
+      newe->args  =malloc(sizeof(expr)*2);
+      newe->args[0] = curl->cont.exp;
+      newe->args[1] = curl->right->right->cont.exp;
+
+      curl->cont.exp = newe;
+
+      attach(curl, curl->right->right->right);
+    }
+
+    else
+    {
+      if(curl->right == NULL) break;
+      curl = curl->right;
+    }
+  }
+
+  leftend(curl);
+  return curl;
+
+}
+
+// TODO constant expressions
+
+
 
 int main()
 {
