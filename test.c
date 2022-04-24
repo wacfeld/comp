@@ -6,8 +6,9 @@ int f(int x)
 }
 int main()
 {
-  while()
-  {
+  putd(
+      
+      0 ? 19 : 1 ? 0 < 1? 8 : 9 : 6
 
-  }
+      );
 }

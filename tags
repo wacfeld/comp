@@ -291,6 +291,7 @@ parseaddexpr	main.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^link *parseandexpr(link *chain)$/;"	f
 parseasgnexpr	main.c	/^link *parseasgnexpr(link *chain)$/;"	f
 parsecastunaryexpr	main.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
+parsecondexpr	main.c	/^link *parsecondexpr(link *chain)$/;"	f
 parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^link *parseexpr(link *chain)$/;"	f

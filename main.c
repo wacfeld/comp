@@ -2857,6 +2857,34 @@ link *parselorexpr(link *chain)
 
 // TODO constant expressions
 
+link *parsecondexpr(link *chain)
+{
+  chain = parselorexpr(chain);
+
+  link *curl = chain;
+  
+  // promote
+  link *temp = curl;
+  while(temp != NULL)
+  {
+    if(leistype(temp, LOR_E))
+    {
+      etypeadd(temp->cont.exp, COND_E);
+    }
+    temp = temp->right;
+  }
+
+  rightend();
+  while(1)
+  {
+    if(leistype(curl, COND_E) && lisatom(curl->left, COLON))
+    {
+      // find matching question for colon
+      int conddep = 1;
+ // LEH TODO dep searches all need to be redone for NULL at end of chain
+    }
+  }
+}
 
 
 int main()
