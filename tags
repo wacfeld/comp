@@ -258,6 +258,7 @@ keywords	defs.h	/^char *keywords[] =$/;"	v
 last	datastruct.c	/^void *last(list *l)$/;"	f
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	11;"	d	file:
+leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len;$/;"	m	struct:__anon11::__anon14
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link

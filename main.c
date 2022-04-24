@@ -29,6 +29,11 @@ int eistype(expr *e, int type)
   else return inset(e->type, type);
 }
 
+int leistype(link *l, int type)
+{
+  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp->type, type);
+}
+
 
 tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
 {
@@ -1774,7 +1779,7 @@ link *parsepostexpr(link *chain)
   link *curl = chain;
   while(curl != NULL)
   {
-    if(lisexpr(curl, PRIM_E))
+    if(leistype(curl, PRIM_E))
     {
       etypeadd(curl->cont.exp,POST_E);
     }
@@ -1786,7 +1791,7 @@ link *parsepostexpr(link *chain)
   {
     // puts("----");
     // putll(curl);
-    if(!lisexpr(curl, POST_E)) // if not postfix expression, pass over
+    if(!leistype(curl, POST_E)) // if not postfix expression, pass over
     {
       curl = curl->right;
       continue;
@@ -2033,7 +2038,7 @@ link *parsecastunaryexpr(link *chain)
     link *temp = curl;
     while(temp != NULL)
     {
-      if(lisexpr(temp, POST_E))
+      if(leistype(temp, POST_E))
       {
         etypeadd(temp->cont.exp,UNAR_E);
       }
@@ -2050,13 +2055,13 @@ link *parsecastunaryexpr(link *chain)
     // unary expressions
     do
     {
-      // if(!lisexpr(curl, UNAR_E)) // if not unary expression, skip
+      // if(!leistype(curl, UNAR_E)) // if not unary expression, skip
       // {
       //   curl = curl->left;
       //   continue;
       // }
 
-      if(lisexpr(curl, UNAR_E) && lisatom(curl->left, INC)) // ++ unary-expr
+      if(leistype(curl, UNAR_E) && lisatom(curl->left, INC)) // ++ unary-expr
       {
         expr *newe = calloc(1,sizeof(expr));
         etypeadd(newe,UNAR_E);
@@ -2071,7 +2076,7 @@ link *parsecastunaryexpr(link *chain)
         modified = 1;
       }
 
-      else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, DEC)) // -- unary-expr
+      else if(leistype(curl, UNAR_E) && lisatom(curl->left, DEC)) // -- unary-expr
       {
         expr *newe = calloc(1,sizeof(expr));
         etypeadd(newe,UNAR_E);
@@ -2088,7 +2093,7 @@ link *parsecastunaryexpr(link *chain)
       }
 
       // unary-operator cast-expression
-      else if(lisexpr(curl, CAST_E) && lisunaryop(curl->left))
+      else if(leistype(curl, CAST_E) && lisunaryop(curl->left))
       {
         // get operator
         int atom = curl->left->cont.tok.atom.type;
@@ -2158,13 +2163,13 @@ link *parsecastunaryexpr(link *chain)
       //   attach(outl, curl);
       // }
 
-      else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, SIZEOF)) // sizeof unary-expression
+      else if(leistype(curl, UNAR_E) && lisatom(curl->left, SIZEOF)) // sizeof unary-expression
       {
         // TODO (this is a compile-time expression, must be evaluated now or soon)
         modified = 1;
       }
 
-      else if(lisexpr(curl, TYPENAME) && lisatom(curl->left, SIZEOF)) // sizeof(type-name)
+      else if(leistype(curl, TYPENAME) && lisatom(curl->left, SIZEOF)) // sizeof(type-name)
       {
         // TODO (see above)
         modified = 1;
@@ -2184,7 +2189,7 @@ link *parsecastunaryexpr(link *chain)
     link *temp = curl;
     while(temp != NULL)
     {
-      if(lisexpr(temp, UNAR_E))
+      if(leistype(temp, UNAR_E))
       {
         etypeadd(temp->cont.exp,CAST_E);
       }
@@ -2196,7 +2201,7 @@ link *parsecastunaryexpr(link *chain)
     // cast expressions
     do
     {
-      if(lisexpr(curl, CAST_E) && lisexpr(curl->left, TYPENAME)) // cast
+      if(leistype(curl, CAST_E) && leistype(curl->left, TYPENAME)) // cast
       {
         expr *newe = calloc(1,sizeof(expr));
         etypeadd(newe,CAST_E);
@@ -2239,7 +2244,7 @@ link *parsemultexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, CAST_E))
+    if(leistype(temp, CAST_E))
     {
       etypeadd(temp->cont.exp,MULT_E);
     }
@@ -2248,13 +2253,13 @@ link *parsemultexpr(link *chain)
   
   while(1)
   {
-    if(!lisexpr(curl, MULT_E))
+    if(!leistype(curl, MULT_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, STAR) && lisexpr(curl->right->right, CAST_E)) // mult-expr * cast-expr
+    if(lisatom(curl->right, STAR) && leistype(curl->right->right, CAST_E)) // mult-expr * cast-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,MULT_E);
@@ -2268,7 +2273,7 @@ link *parsemultexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, DIV) && lisexpr(curl->right->right, CAST_E)) // mult-expr / cast-expr
+    else if(lisatom(curl->right, DIV) && leistype(curl->right->right, CAST_E)) // mult-expr / cast-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,MULT_E);
@@ -2282,7 +2287,7 @@ link *parsemultexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, MOD) && lisexpr(curl->right->right, CAST_E)) // mult-expr % cast-expr
+    else if(lisatom(curl->right, MOD) && leistype(curl->right->right, CAST_E)) // mult-expr % cast-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,MULT_E);
@@ -2318,7 +2323,7 @@ link *parseaddexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, MULT_E))
+    if(leistype(temp, MULT_E))
     {
       etypeadd(temp->cont.exp,ADD_E);
     }
@@ -2327,13 +2332,13 @@ link *parseaddexpr(link *chain)
   
   while(1)
   {
-    if(!lisexpr(curl, ADD_E))
+    if(!leistype(curl, ADD_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, PLUS) && lisexpr(curl->right->right, MULT_E)) // add-expr + mult-expr
+    if(lisatom(curl->right, PLUS) && leistype(curl->right->right, MULT_E)) // add-expr + mult-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,ADD_E);
@@ -2347,7 +2352,7 @@ link *parseaddexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, MIN) && lisexpr(curl->right->right, MULT_E)) // add-expr - mult-expr
+    else if(lisatom(curl->right, MIN) && leistype(curl->right->right, MULT_E)) // add-expr - mult-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,ADD_E);
@@ -2382,7 +2387,7 @@ link *parseshiftexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, ADD_E))
+    if(leistype(temp, ADD_E))
     {
       etypeadd(temp->cont.exp,SHIFT_E);
     }
@@ -2391,13 +2396,13 @@ link *parseshiftexpr(link *chain)
   
   while(1)
   {
-    if(!lisexpr(curl, SHIFT_E))
+    if(!leistype(curl, SHIFT_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, SHL) && lisexpr(curl->right->right, ADD_E)) // shift-expr << add-expr
+    if(lisatom(curl->right, SHL) && leistype(curl->right->right, ADD_E)) // shift-expr << add-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,SHIFT_E);
@@ -2411,7 +2416,7 @@ link *parseshiftexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, SHR) && lisexpr(curl->right->right, ADD_E)) // shift-expr >> add-expr
+    else if(lisatom(curl->right, SHR) && leistype(curl->right->right, ADD_E)) // shift-expr >> add-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,SHIFT_E
@@ -2446,7 +2451,7 @@ link *parserelexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, SHIFT_E))
+    if(leistype(temp, SHIFT_E))
     {
       etypeadd(temp->cont.exp,RELAT_E);
     }
@@ -2455,13 +2460,13 @@ link *parserelexpr(link *chain)
   
   while(1)
   {
-    if(!lisexpr(curl, RELAT_E))
+    if(!leistype(curl, RELAT_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, LESS) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr < shift-expr
+    if(lisatom(curl->right, LESS) && leistype(curl->right->right, SHIFT_E)) // rel-expr < shift-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,RELAT_E);
@@ -2475,7 +2480,7 @@ link *parserelexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, GREAT) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr > shift-expr
+    else if(lisatom(curl->right, GREAT) && leistype(curl->right->right, SHIFT_E)) // rel-expr > shift-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,RELAT_E);
@@ -2489,7 +2494,7 @@ link *parserelexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, LEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr <= shift-expr
+    else if(lisatom(curl->right, LEQ) && leistype(curl->right->right, SHIFT_E)) // rel-expr <= shift-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,RELAT_E);
@@ -2503,7 +2508,7 @@ link *parserelexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, GEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr >= shift-expr
+    else if(lisatom(curl->right, GEQ) && leistype(curl->right->right, SHIFT_E)) // rel-expr >= shift-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,RELAT_E);
@@ -2539,7 +2544,7 @@ link *parseeqexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, RELAT_E))
+    if(leistype(temp, RELAT_E))
     {
       etypeadd(temp->cont.exp,EQUAL_E);
     }
@@ -2548,13 +2553,13 @@ link *parseeqexpr(link *chain)
   
   while(1)
   {
-    if(!lisexpr(curl, EQUAL_O))
+    if(!leistype(curl, EQUAL_O))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, EQEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-expr == rel-expr
+    if(lisatom(curl->right, EQEQ) && leistype(curl->right->right, RELAT_E)) // eq-expr == rel-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,EQUAL_E);
@@ -2568,7 +2573,7 @@ link *parseeqexpr(link *chain)
       attach(curl, curl->right->right->right);
     }
 
-    else if(lisatom(curl->right, NOTEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-epr != rel-expr
+    else if(lisatom(curl->right, NOTEQ) && leistype(curl->right->right, RELAT_E)) // eq-epr != rel-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,EQUAL_E);
@@ -2604,7 +2609,7 @@ link *parseandexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, EQUAL_E))
+    if(leistype(temp, EQUAL_E))
     {
       etypeadd(temp->cont.exp,AND_E);
     }
@@ -2613,13 +2618,13 @@ link *parseandexpr(link *chain)
 
   while(1)
   {
-    if(!lisexpr(curl, AND_E))
+    if(!leistype(curl, AND_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, BITAND) && lisexpr(curl->right->right, EQUAL_E)) // and-expr & eq-expr
+    if(lisatom(curl->right, BITAND) && leistype(curl->right->right, EQUAL_E)) // and-expr & eq-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,AND_E);
@@ -2655,7 +2660,7 @@ link *parsexorexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, AND_E))
+    if(leistype(temp, AND_E))
     {
       etypeadd(temp->cont.exp,XOR_E);
     }
@@ -2664,13 +2669,13 @@ link *parsexorexpr(link *chain)
 
   while(1)
   {
-    if(!lisexpr(curl, XOR_E))
+    if(!leistype(curl, XOR_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, XOR) && lisexpr(curl->right->right, AND_E)) // xor-expr ^ and-expr
+    if(lisatom(curl->right, XOR) && leistype(curl->right->right, AND_E)) // xor-expr ^ and-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,XOR_E);
@@ -2706,7 +2711,7 @@ link *parseorexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, XOR_E))
+    if(leistype(temp, XOR_E))
     {
       etypeadd(temp->cont.exp,OR_E);
     }
@@ -2715,13 +2720,13 @@ link *parseorexpr(link *chain)
 
   while(1)
   {
-    if(!lisexpr(curl, OR_E))
+    if(!leistype(curl, OR_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, OR) && lisexpr(curl->right->right, XOR_E)) // or-expr | xor-expr
+    if(lisatom(curl->right, OR) && leistype(curl->right->right, XOR_E)) // or-expr | xor-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,OR_E);
@@ -2757,7 +2762,7 @@ link *parselandexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, OR_E))
+    if(leistype(temp, OR_E))
     {
       etypeadd(temp->cont.exp,LAND_E);
     }
@@ -2766,13 +2771,13 @@ link *parselandexpr(link *chain)
 
   while(1)
   {
-    if(!lisexpr(curl, LAND_E))
+    if(!leistype(curl, LAND_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, LOGAND) && lisexpr(curl->right->right, OR_E)) // land-expr && or-expr
+    if(lisatom(curl->right, LOGAND) && leistype(curl->right->right, OR_E)) // land-expr && or-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,LAND_E);
@@ -2809,7 +2814,7 @@ link *parselorexpr(link *chain)
   link *temp = curl;
   while(temp != NULL)
   {
-    if(lisexpr(temp, LAND_E))
+    if(leistype(temp, LAND_E))
     {
       etypeadd(temp->cont.exp,LOR_E);
     }
@@ -2818,13 +2823,13 @@ link *parselorexpr(link *chain)
 
   while(1)
   {
-    if(!lisexpr(curl, LOR_E))
+    if(!leistype(curl, LOR_E))
     {
       curl = curl->right;
       continue;
     }
 
-    if(lisatom(curl->right, LOGOR) && lisexpr(curl->right->right, LAND_E)) // lor-expr || land-expr
+    if(lisatom(curl->right, LOGOR) && leistype(curl->right->right, LAND_E)) // lor-expr || land-expr
     {
       expr *newe = calloc(1,sizeof(expr));
       etypeadd(newe,LOR_E);
