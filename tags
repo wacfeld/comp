@@ -111,7 +111,7 @@ K_WHILE	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTI
 LAB_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 LAND_E	defs.h	/^  LAND_E,$/;"	e	enum:expr_type
 LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
-LEFT	main.c	18;"	d	file:
+LEFT	main.c	19;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ_O	defs.h	/^  LEQ_O,$/;"	e	enum:optype
 LESS	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -153,7 +153,7 @@ PRIM_E	defs.h	/^  PRIM_E,$/;"	e	enum:expr_type
 PSTRUCT_O	defs.h	/^  PSTRUCT_O, \/\/ ->$/;"	e	enum:optype
 QUESTION	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
-RIGHT	main.c	17;"	d	file:
+RIGHT	main.c	18;"	d	file:
 SEL_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 SEMICOLON	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 SHIFT_E	defs.h	/^  SHIFT_E,$/;"	e	enum:expr_type
@@ -200,7 +200,7 @@ args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon14
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
 atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
-attach	main.c	7;"	d	file:
+attach	main.c	8;"	d	file:
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
@@ -243,7 +243,7 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
-isasgnop	main.c	/^int isasgnop(link *l)$/;"	f
+isasgnop	is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon11::__anon13
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
@@ -253,6 +253,7 @@ iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon7
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
+isquest	is.c	/^int isquest(link *l)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
 isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon11::__anon13
@@ -261,14 +262,14 @@ keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTI
 keywords	defs.h	/^char *keywords[] =$/;"	v
 last	datastruct.c	/^void *last(list *l)$/;"	f
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
-leftend	main.c	11;"	d	file:
+leftend	main.c	12;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len;$/;"	m	struct:__anon11::__anon14
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
-liscomma	main.c	/^int liscomma(link *l)$/;"	f
+liscomma	is.c	/^int liscomma(link *l)$/;"	f
 lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
@@ -296,8 +297,9 @@ optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseaddexpr	main.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^link *parseandexpr(link *chain)$/;"	f
-parseasgnexpr	main.c	/^expr *parseasgnexpr(link *chain)$/;"	f
+parseasgnexpr	main.c	/^expr *parseasgnexpr(link *start)$/;"	f
 parsecastunaryexpr	main.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
+parsecondexpr	main.c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	main.c	/^link *parsecondexpr(link *chain)$/;"	f
 parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^link *parseeqexpr(link *chain)$/;"	f
@@ -323,9 +325,10 @@ rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 resize	defs.h	27;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
-rightend	main.c	10;"	d	file:
+rightend	main.c	11;"	d	file:
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
+sever	main.c	/^void sever(link *l)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g

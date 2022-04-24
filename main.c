@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "datastruct.h"
+#include "is.h"
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
@@ -17,6 +18,15 @@ void puttok(token t);
 #define RIGHT 1
 #define LEFT 0
 
+
+void sever(link *l)
+{
+  if(!l) return;
+  assert(l->left);
+  l->left->right = NULL;
+  assert(l->right);
+  l->right->left = NULL;
+}
 
 
 void etypeadd(expr *e, int type)
@@ -1606,13 +1616,17 @@ link *nexttoplevel(link *start, link *dir, int (*det)(link *l))
 
   while(1)
   {
+    // we do the det check on either end of the dep check for when we're searching for (, {, ), }, etc.
+    if(det(curl) && dep == 0) // passes test, return
+      return curl;
+
     if(listok(curl, PARENOP) || listok(curl, BRACKOP) || listok(curl, BRACEOP) || listok(curl, QUESTION))
       dep++;
     if(listok(curl, PARENCL) || listok(curl, BRACKCL) || listok(curl, BRACECL) || listok(curl, COLON))
       dep--;
     assert(dep >= 0);
 
-    if(det(curl)) // passes test, return
+    if(det(curl) && dep == 0) // passes test, return
       return curl;
 
     if(curl == NULL)
@@ -1621,11 +1635,6 @@ link *nexttoplevel(link *start, link *dir, int (*det)(link *l))
   }
 
   return NULL;
-}
-
-int liscomma(link *l)
-{
-  return lisatom(l, COMMA);
 }
 
 
@@ -1648,9 +1657,16 @@ expr *makeexpr(int type, int optype, int arglen, ...)
   return e;
 }
 
+// REQUIREMENTS
+// start can be anywhere in the linked list
+// use rightend() and leftend() to get it where you want
+// the left and right ends must be null terminated
+
 expr *parseexpr(link *start)
 {
-  link *comma = nexttoplevel(start, RIGHT, liscomma);
+  rightend(start);
+  link *comma = nexttoplevel(start, LEFT, liscomma);
+  assert(start != comma) // no empty subexprs
   
   if(!comma) // base case, drop down
   {
@@ -1660,36 +1676,68 @@ expr *parseexpr(link *start)
   // recurse sideways
   
   // detach
-  start->left = NULL; // can't hurt
-  comma->left->right = NULL;
-  comma->right->left = NULL;
+  start->right = NULL; // can't hurt
+  // comma->right->left = NULL;
+  // comma->left->right = NULL;
+  sever(comma);
 
-  expr *e1 = parseasgnexpr(start);
-  expr *e2 = parseexpr(comma->right);
+  expr *e1 = parseexpr(comma->left);
+  expr *e2 = parseasgnexpr(start);
 
   expr *newe = makeexpr(EXPR, COMMA, 2, e1, e2);
   return newe;
 }
 
-int isasgnop(link *l)
+expr *parseasgnexpr(link *start)
 {
-  return lisatom(l, EQ)
-    || lisatom(l, DIVEQ)
-    || lisatom(l, MODEQ)
-    || lisatom(l, PLUSEQ)
-    || lisatom(l, MINEQ)
-    || lisatom(l, SHLEQ)
-    || lisatom(l, SHREQ)
-    || lisatom(l, ANDEQ)
-    || lisatom(l, XOREQ)
-    || lisatom(l, OREQ);
-}
-
-expr *parseasgnexpr(link *chain)
-{
+  leftend(start);
+  link *op = nexttoplevel(start, RIGHT, lisasgnop);
+  assert(start != op); // no empty assignment
   
+  if(!op)
+  {
+    return parsecondexpr(start);
+  }
+  
+  start->left = NULL;
+  // op->right->left = NULL;
+  // op->left->right = NULL;
+  sever(op);
 
+  expr *e1 = parsecastunaryexpr(start);
+  expr *e1 = parseasgnexpr(op->right);
+
+  expr *newe = makeexpr(ASGN_E, op->cont.tok->cont.atom.type, 2, e1, e2);
+  return newe;
 }
+
+expr *parsecondexpr(link *start)
+{
+  leftend(start);
+  link *quest = nexttoplevel(start, RIGHT, isquest);
+
+  assert(start != quest);
+
+  if(!quest)
+    return parselorexpr(start);
+
+  link *colon = findmatch(quest, RIGHT, QUESTION, COLON);
+  assert(quest + 1 != colon);
+
+  sever(quest);
+  sever(colon);
+
+  expr *e1 = parselorexpr(quest->left);
+  expr *e2 = parseexpr(quest->right);
+  expr *e3 = parsecondexpr(colon->right);
+
+  expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
+  return newe;
+}
+
+expr *parselorexpr(
+
+
 // evaluate primary expressions
 // this also parses top-level type names because we have to do that somewhere
 link *parseprimexpr(link *chain)
