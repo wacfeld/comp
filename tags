@@ -271,6 +271,7 @@ link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
 liscomma	is.c	/^int liscomma(link *l)$/;"	f
 lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
+lisin	main.c	/^int lisin(link *l, int num, token *tokl)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
@@ -291,7 +292,7 @@ n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon11::__anon16
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
-nexttoplevel	main.c	/^link *nexttoplevel(link *start, link *dir, int (*det)(link *l))$/;"	f
+nexttoplevel	main.c	/^link *nexttoplevel(link *start, link *dir, int num, ...)$/;"	f
 nline	defs.h	24;"	d
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
@@ -306,6 +307,7 @@ parseeqexpr	main.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
 parselandexpr	main.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^link *parselorexpr(link *chain)$/;"	f
+parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int atom, int optype, expr *(*down)(link *))$/;"	f
 parsemultexpr	main.c	/^link *parsemultexpr(link *chain)$/;"	f
 parseorexpr	main.c	/^link *parseorexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^link *parsepostexpr(link *chain)$/;"	f

@@ -1607,18 +1607,42 @@ ctype * parsedecl(token *toks, int onlydecl)
   return ct; // success
 }
 
+int lisin(link *l, int num, token *tokl)
+{
+  for(int i = 0; i < num; i++)
+  {
+    if(listok(l, tokl[i])) return 1;
+  }
+
+  return 0;
+}
+
 
 // next top level link that passes the function det()
-link *nexttoplevel(link *start, link *dir, int (*det)(link *l))
+link *nexttoplevel(link *start, link *dir, int num, ...)
 {
+  // read list of tokens
+  va_list ap;
+  token *tokl = malloc(sizeof(token) * num);
+  va_start(ap, num);
+  for(int i = 0; i < num; i++)
+  {
+    tokl[i] = va_arg(ap, int);
+  }
+  va_end(ap);
+
+
   int dep = 0; // { [ ( ?: depth
   link *curl = start;
 
   while(1)
   {
-    // we do the det check on either end of the dep check for when we're searching for (, {, ), }, etc.
-    if(det(curl) && dep == 0) // passes test, return
+    // we do the lisin check on either end of the dep check for when we're searching for (, {, ), }, etc.
+    // if(det(curl) && dep == 0) // passes test, return
+    if(lisin(curl, num, tokl) && dep == 0)
+    {
       return curl;
+    }
 
     if(listok(curl, PARENOP) || listok(curl, BRACKOP) || listok(curl, BRACEOP) || listok(curl, QUESTION))
       dep++;
@@ -1626,7 +1650,8 @@ link *nexttoplevel(link *start, link *dir, int (*det)(link *l))
       dep--;
     assert(dep >= 0);
 
-    if(det(curl) && dep == 0) // passes test, return
+    // if(det(curl) && dep == 0) // passes test, return
+    if(lisin(curl, num, tokl) && dep == 0)
       return curl;
 
     if(curl == NULL)
@@ -1665,7 +1690,7 @@ expr *makeexpr(int type, int optype, int arglen, ...)
 expr *parseexpr(link *start)
 {
   rightend(start);
-  link *comma = nexttoplevel(start, LEFT, liscomma);
+  link *comma = nexttoplevel(start, LEFT, 1, COMMA);
   assert(start != comma) // no empty subexprs
   
   if(!comma) // base case, drop down
@@ -1691,7 +1716,8 @@ expr *parseexpr(link *start)
 expr *parseasgnexpr(link *start)
 {
   leftend(start);
-  link *op = nexttoplevel(start, RIGHT, lisasgnop);
+  link *op = nexttoplevel(start, RIGHT, 11,
+      EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ);
   assert(start != op); // no empty assignment
   
   if(!op)
@@ -1714,7 +1740,7 @@ expr *parseasgnexpr(link *start)
 expr *parsecondexpr(link *start)
 {
   leftend(start);
-  link *quest = nexttoplevel(start, RIGHT, isquest);
+  link *quest = nexttoplevel(start, RIGHT, 1, QUESTION);
 
   assert(start != quest);
 
@@ -1735,7 +1761,12 @@ expr *parsecondexpr(link *start)
   return newe;
 }
 
-expr *parselorexpr(
+// parse LTR binary expression, a very common expression type, which can be generalized
+expr * parseltrbinexpr(link *start, int atom, int optype, expr *(*down)(link *))
+{
+  rightend(start);
+  
+}
 
 
 // evaluate primary expressions
