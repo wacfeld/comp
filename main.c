@@ -1762,7 +1762,7 @@ expr *parsecondexpr(link *start)
 }
 
 // parse LTR binary expression, a very common expression type, which can be generalized
-expr * parseltrbinexpr(link *start, int atom, int etype, int optype, expr *(*down)(link *))
+expr * parseltrbinexpr(link *start, int atom, int etype, int num, int *atom2type, expr *(*down)(link *))
 {
   rightend(start);
   link *op = nexttoplevel(start, LEFT, 1, atom);
@@ -1781,6 +1781,30 @@ expr * parseltrbinexpr(link *start, int atom, int etype, int optype, expr *(*dow
   return newe;
 }
 
+expr *parselorexpr(link *start)
+{
+  return parseltrbinexpr(start, LOGOR, LOR_E, LOR_O, parselandexpr);
+}
+
+expr *parselandexpr(link *start)
+{
+  return parseltrbinexpr(start, LOGAND, LAND_E, LAND_O, parseorexpr);
+}
+
+expr *parseorexpr(link *start)
+{
+  return parseltrbinexpr(start, BITOR, OR_E, BOR_O, parsexorexpr);
+}
+
+expr *parsexorexpr(link *start)
+{
+  return parseltrbinexpr(start, XOR, XOR_E, XOR_O, parseandexpr);
+}
+
+expr *parseandexpr(link *start)
+{
+  return parseltrbinexpr(start, BITAND, AND_E, BAND_O, parseeqexpr);
+}
 
 // evaluate primary expressions
 // this also parses top-level type names because we have to do that somewhere
