@@ -243,6 +243,7 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
+isasgnop	main.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon11::__anon13
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
@@ -267,6 +268,7 @@ link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
+liscomma	main.c	/^int liscomma(link *l)$/;"	f
 lisexpr	main.c	/^int lisexpr(link *l, expr_type e)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
@@ -278,6 +280,7 @@ main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	test2.s	/^main:$/;"	l
+makeexpr	main.c	/^expr *makeexpr(int type, int optype, int arglen, ...)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
@@ -287,17 +290,18 @@ n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon11::__anon16
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
+nexttoplevel	main.c	/^link *nexttoplevel(link *start, link *dir, int (*det)(link *l))$/;"	f
 nline	defs.h	24;"	d
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseaddexpr	main.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^link *parseandexpr(link *chain)$/;"	f
-parseasgnexpr	main.c	/^link *parseasgnexpr(link *chain)$/;"	f
+parseasgnexpr	main.c	/^expr *parseasgnexpr(link *chain)$/;"	f
 parsecastunaryexpr	main.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
 parsecondexpr	main.c	/^link *parsecondexpr(link *chain)$/;"	f
 parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^link *parseeqexpr(link *chain)$/;"	f
-parseexpr	main.c	/^link *parseexpr(link *chain)$/;"	f
+parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
 parselandexpr	main.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^link *parselorexpr(link *chain)$/;"	f
 parsemultexpr	main.c	/^link *parsemultexpr(link *chain)$/;"	f

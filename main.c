@@ -1598,21 +1598,96 @@ ctype * parsedecl(token *toks, int onlydecl)
 }
 
 
-link *parseexpr(link *chain)
+// next top level link that passes the function det()
+link *nexttoplevel(link *start, link *dir, int (*det)(link *l))
+{
+  int dep = 0; // { [ ( ?: depth
+  link *curl = start;
+
+  while(1)
+  {
+    if(listok(curl, PARENOP) || listok(curl, BRACKOP) || listok(curl, BRACEOP) || listok(curl, QUESTION))
+      dep++;
+    if(listok(curl, PARENCL) || listok(curl, BRACKCL) || listok(curl, BRACECL) || listok(curl, COLON))
+      dep--;
+    assert(dep >= 0);
+
+    if(det(curl)) // passes test, return
+      return curl;
+
+    if(curl == NULL)
+      break;
+    curl = (dir == RIGHT) ? curl->right : curl->left;
+  }
+
+  return NULL;
+}
+
+int liscomma(link *l)
+{
+  return lisatom(l, COMMA);
+}
+
+
+expr *makeexpr(int type, int optype, int arglen, ...)
+{
+  expr *e = calloc(1, sizeof(expr));
+  etypeadd(e, type);
+  e->optype = optype;
+  e->arglen = arglen;
+  e->args = malloc(sizeof(expr) * arglen);
+
+  va_list ap;
+  va_start(ap, arglen);
+  for(i = 0; i < arglen; i++)
+  {
+    e->args[i] = va_arg(ap, expr *);
+  }
+  va_end(ap);
+
+  return e;
+}
+
+expr *parseexpr(link *start)
+{
+  link *comma = nexttoplevel(start, RIGHT, liscomma);
+  
+  if(!comma) // base case, drop down
+  {
+    return parseasgnexpr(start);
+  }
+  
+  // recurse sideways
+  
+  // detach
+  start->left = NULL; // can't hurt
+  comma->left->right = NULL;
+  comma->right->left = NULL;
+
+  expr *e1 = parseasgnexpr(start);
+  expr *e2 = parseexpr(comma->right);
+
+  expr *newe = makeexpr(EXPR, COMMA, 2, e1, e2);
+  return newe;
+}
+
+int isasgnop(link *l)
+{
+  return lisatom(l, EQ)
+    || lisatom(l, DIVEQ)
+    || lisatom(l, MODEQ)
+    || lisatom(l, PLUSEQ)
+    || lisatom(l, MINEQ)
+    || lisatom(l, SHLEQ)
+    || lisatom(l, SHREQ)
+    || lisatom(l, ANDEQ)
+    || lisatom(l, XOREQ)
+    || lisatom(l, OREQ);
+}
+
+expr *parseasgnexpr(link *chain)
 {
   
-  // link *l = malloc(sizeof(link));
-  // l->type = EXPR_L;
-  // expr *e = malloc(sizeof(expr));
-  // e->type = EXPR;
-  // l->cont.exp = e;
-  // l->left = NULL;
-  // l->right = NULL;
-  // return l;
-
-}
-link *parseasgnexpr(link *chain)
-{
 
 }
 // evaluate primary expressions
@@ -2907,12 +2982,44 @@ link *parsecondexpr(link *chain)
   rightend();
   while(1)
   {
+    // lor-expr ? expr : cond-expr
     if(leistype(curl, COND_E) && lisatom(curl->left, COLON))
     {
       // find matching question for colon
-      int conddep = 1;
+      link *colon = curl->left;
+      link *quest = findmatch(colon, LEFT, COLON, QUESTION);
+
+      // make sure it's proper form
+      assert(leistype(quest->left, LOR_E));
+
+      // detach middle expression & parse
+      colon->left->right = NULL;
+      quest->right->left = NULL;
+      link *l = parseexpr(quest->right);
+
+      // create new
+      expr *newe = calloc(1, sizeof(expr));
+      etypeadd(newe, COND_E);
+      newe->optype = TERN_O;
+      newe->args = malloc(sizeof(expr)*3);
+      newe->args[0] = quest->left->cont.exp;
+      newe->args[1] = l->cont.exp;
+      newe->args[2] = curl->cont.exp;
+      curl->cont.exp = newe;
+
+      // attach
+      attach(quest->left->left, curl);
+    }
+
+    else
+    {
+      if(curl->left == NULL) break;
+      curl = curl->left;
     }
   }
+
+  leftend(curl);
+  return curl;
 }
 
 
