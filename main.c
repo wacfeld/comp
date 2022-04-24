@@ -1731,7 +1731,7 @@ expr *parseasgnexpr(link *start)
   sever(op);
 
   expr *e1 = parsecastunaryexpr(start);
-  expr *e1 = parseasgnexpr(op->right);
+  expr *e2 = parseasgnexpr(op->right);
 
   expr *newe = makeexpr(ASGN_E, op->cont.tok->cont.atom.type, 2, e1, e2);
   return newe;
@@ -1762,10 +1762,23 @@ expr *parsecondexpr(link *start)
 }
 
 // parse LTR binary expression, a very common expression type, which can be generalized
-expr * parseltrbinexpr(link *start, int atom, int optype, expr *(*down)(link *))
+expr * parseltrbinexpr(link *start, int atom, int etype, int optype, expr *(*down)(link *))
 {
   rightend(start);
+  link *op = nexttoplevel(start, LEFT, 1, atom);
+
+  assert(start != op);
+
+  if(!op)
+    return down(start);
+
+  start->right = NULL;
+  sever(op);
+  expr *e1 = parseltrbinexpr(op->left, atom, etype, optype, down); // recurse sideways
+  expr *e2 = down(start);
   
+  expr *newe = makeexpr(etype, optype, 2, e1, e2);
+  return newe;
 }
 
 

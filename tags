@@ -307,7 +307,7 @@ parseeqexpr	main.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
 parselandexpr	main.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^link *parselorexpr(link *chain)$/;"	f
-parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int atom, int optype, expr *(*down)(link *))$/;"	f
+parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int atom, int etype, int optype, expr *(*down)(link *))$/;"	f
 parsemultexpr	main.c	/^link *parsemultexpr(link *chain)$/;"	f
 parseorexpr	main.c	/^link *parseorexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^link *parsepostexpr(link *chain)$/;"	f
