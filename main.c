@@ -14,6 +14,11 @@
 void puttok(token t);
 
 
+#define RIGHT 1
+#define LEFT 0
+
+
+
 void etypeadd(expr *e, int type)
 {
   if(e->type == NULL) 
@@ -1069,6 +1074,25 @@ int listok(link *l, enum tok_type t)
   return l != NULL && l->type == TOK_L && l->cont.tok->gen.type == t;
 }
 
+// find matching paren, brace, matching ?:, etc.
+link *findmatch(link *start, int dir, token inc, token dec)
+{
+  int dep = 1;
+  link *curl = start;
+  do
+  {
+    curl = (dir == RIGHT) ? curl->right : curl->left;
+
+    if(listok(curl, inc)) dep++;
+    if(listok(curl, dec)) dep--;
+    assert(parendep >= 0 && curl != NULL);
+
+  } while(parendep > 0);
+  
+  return curl;
+}
+
+
 int lisunaryop(link *l) // & * + - ~ !
 {
   return lisatom(l, BITAND) ||
@@ -1613,17 +1637,18 @@ link *parseprimexpr(link *chain)
         
       // putd(0);
       // find matching
-      int parendep = 1;
-      link *parr = curl->right; // paren right
-      while(parendep > 0) // find opposite
-      {
-        if(lisatom(parr, PARENOP)) parendep++;
-        if(lisatom(parr, PARENCL)) parendep--;
-        assert(parendep >= 0 && parr != NULL);
-        parr = parr->right;
-      }
+      // int parendep = 1;
+      // link *parr = curl->right; // paren right
+      // while(parendep > 0) // find opposite
+      // {
+      //   if(lisatom(parr, PARENOP)) parendep++;
+      //   if(lisatom(parr, PARENCL)) parendep--;
+      //   assert(parendep >= 0 && parr != NULL);
+      //   parr = parr->right;
+      // }
+      link *parr = findmatch(curl, RIGHT, PARENOP, PARENCL);
 
-      parr = parr->left; // move onto )
+      // parr = parr->left; // move onto )
 
       // detach
       curl->right->left = NULL;
@@ -1799,17 +1824,20 @@ link *parsepostexpr(link *chain)
 
     if(lisatom(curl->right, BRACKOP)) // postfix-expression[expression]
     {
-      link* indr = curl->right; // index right
+      // link* indr = curl->right; // index right
       link *indl = curl->right->right; // [
-      int brackdep = 1; // find matching
 
-      while(brackdep)
-      {
-        indr = indr->right;
-        if(lisatom(indr, BRACKOP)) brackdep++;
-        if(lisatom(indr, BRACKCL)) brackdep--;
-        assert(brackdep >= 0 && indr != NULL);
-      }
+      // int brackdep = 1; // find matching
+
+//       while(brackdep)
+//       {
+//         indr = indr->right;
+//         if(lisatom(indr, BRACKOP)) brackdep++;
+//         if(lisatom(indr, BRACKCL)) brackdep--;
+//         assert(brackdep >= 0 && indr != NULL);
+//       }
+//       indr = indr->left; // left of ]
+      link *indr = findmatch(curl->right, RIGHT, BRACKOP, BRACKCL);
       indr = indr->left; // left of ]
 
       link *outr = indr->right->right; // right of ]
@@ -1852,15 +1880,17 @@ link *parsepostexpr(link *chain)
 
       if(isdeclspec(*curl->cont.tok)) // cast, move over
       {
-        int parendep = 1;
-        curl = curl->right;
-        while(parendep)
-        {
-          if(lisatom(curl), PARENOP) parendep++;
-          if(lisatom(curl), PARENCL) parendep--;
-          assert(parendep >= 0 && curl != NULL);
-          curl = curl->right;
-        }
+        // int parendep = 1;
+        // curl = curl->right;
+        // while(parendep)
+        // {
+        //   if(lisatom(curl), PARENOP) parendep++;
+        //   if(lisatom(curl), PARENCL) parendep--;
+        //   assert(parendep >= 0 && curl != NULL);
+        //   curl = curl->right;
+        // }
+
+        curl = findmatch(curl, RIGHT, PARENOP, PARENCL)->right;
         continue;
       }
 
@@ -2881,7 +2911,6 @@ link *parsecondexpr(link *chain)
     {
       // find matching question for colon
       int conddep = 1;
- // LEH TODO dep searches all need to be redone for NULL at end of chain
     }
   }
 }
