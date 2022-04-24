@@ -343,7 +343,8 @@ char *hr_expr[100] =
 
 typedef struct expr
 {
-  expr_type type;
+  // expr_type type;
+  set *type; // multiple types at once are possible
   int optype;
   struct expr **args;
   int arglen; // sometimes necessary, eg. function arguments

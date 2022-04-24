@@ -214,6 +214,8 @@ cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon10
 ct	defs.h	/^  ctype *ct; \/\/ for casts$/;"	m	struct:expr
 ctype	defs.h	/^} ctype; \/\/ "type" is used everywhere so i call it ctype$/;"	t	typeref:struct:__anon17
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
+eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
+etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon10
 expr	defs.h	/^typedef struct expr$/;"	s
 expr	defs.h	/^} expr;$/;"	t	typeref:struct:expr
@@ -343,7 +345,7 @@ type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon7
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon8
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon9
 type	defs.h	/^  enum link_type type;$/;"	m	struct:link	typeref:enum:link::link_type
-type	defs.h	/^  expr_type type;$/;"	m	struct:expr
+type	defs.h	/^  set *type; \/\/ multiple types at once are possible$/;"	m	struct:expr
 typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon11
 typemods	defs.h	/^  list *typemods;$/;"	m	struct:__anon17
 typequals	defs.h	/^  set *typequals;$/;"	m	struct:__anon17

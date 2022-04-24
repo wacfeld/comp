@@ -13,6 +13,23 @@
 
 void puttok(token t);
 
+
+void etypeadd(expr *e, int type)
+{
+  if(e->type == NULL) 
+    e->type = makeset(sizeof(int));
+  setins(e->type, &type);
+}
+
+int eistype(expr *e, int type)
+{
+  if(e->type == NULL)
+    return 0;
+
+  else return inset(e->type, type);
+}
+
+
 tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
 {
   link *start = ll; // save
@@ -337,7 +354,7 @@ void putll(link *l) // put linked list
     {
       printf("EXPR:  ");
       
-      puts(hr_expr[l->cont.exp->type]);
+      // puts(hr_expr[l->cont.exp->type]);
     }
 
     l = l->right;
@@ -1555,14 +1572,14 @@ ctype * parsedecl(token *toks, int onlydecl)
 link *parseexpr(link *chain)
 {
   
-  link *l = malloc(sizeof(link));
-  l->type = EXPR_L;
-  expr *e = malloc(sizeof(expr));
-  e->type = EXPR;
-  l->cont.exp = e;
-  l->left = NULL;
-  l->right = NULL;
-  return l;
+  // link *l = malloc(sizeof(link));
+  // l->type = EXPR_L;
+  // expr *e = malloc(sizeof(expr));
+  // e->type = EXPR;
+  // l->cont.exp = e;
+  // l->left = NULL;
+  // l->right = NULL;
+  // return l;
 
 }
 link *parseasgnexpr(link *chain)
@@ -1615,8 +1632,9 @@ link *parseprimexpr(link *chain)
         ctype *ct = parsedecl(abstype, 1);
         
         // put into expression
-        expr *newe = malloc(sizeof(expr));
-        newe->type = TYPENAME;
+        expr *newe = calloc(1,sizeof(expr));
+        // newe->type = TYPENAME;
+        etypeadd(newe, TYPENAME);
         // no optype, or other things, only ct
         newe->ct = ct;
 
@@ -1642,10 +1660,10 @@ link *parseprimexpr(link *chain)
       // evaluate
       link *l = parseexpr(curl->right);
       // encapsulate it in a primary expression (this is important!)
-      expr *newe = malloc(sizeof(expr));
-      newe->type = PRIM_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,PRIM_E);
       newe->optype = PAREN_O;
-      newe->args = malloc(sizeof(expr));
+      newe->args = calloc(1,sizeof(expr));
       newe->args[0] = l->cont.exp;
       l->cont.exp = newe;
 
@@ -1672,8 +1690,8 @@ link *parseprimexpr(link *chain)
     else if(listok(curl, INTEGER)) // integer constant
     {
     // putd(1);
-      expr *e = malloc(sizeof(expr));
-      e->type = PRIM_E;
+      expr *e = calloc(1,sizeof(expr));
+      etypeadd(e,PRIM_E);
       e->optype = INT_O;
 
       e->tok = curl->cont.tok;
@@ -1684,8 +1702,8 @@ link *parseprimexpr(link *chain)
     else if(listok(curl, CHAR))
     {
 // putd(2);
-      expr *e = malloc(sizeof(expr));
-      e->type = PRIM_E;
+      expr *e = calloc(1,sizeof(expr));
+      etypeadd(e,PRIM_E);
       e->optype = CHAR_O;
 
       e->tok = curl->cont.tok;
@@ -1696,8 +1714,8 @@ link *parseprimexpr(link *chain)
     else if(listok(curl, FLOATING))
     {
 // putd(3);
-      expr *e = malloc(sizeof(expr));
-      e->type = PRIM_E;
+      expr *e = calloc(1,sizeof(expr));
+      etypeadd(e,PRIM_E);
       e->optype = FLOAT_O;
       e->tok = curl->cont.tok;
 
@@ -1708,8 +1726,8 @@ link *parseprimexpr(link *chain)
     else if(listok(curl, STRLIT)) // string literal
     {
     // putd(4);
-      expr *e = malloc(sizeof(expr));
-      e->type = PRIM_E;
+      expr *e = calloc(1,sizeof(expr));
+      etypeadd(e,PRIM_E);
       e->optype = STRING_O;
       e->tok = curl->cont.tok;
 
@@ -1720,8 +1738,8 @@ link *parseprimexpr(link *chain)
     else if(listok(curl, IDENT)) // identifiers
     {
     // putd(5);
-      expr *e = malloc(sizeof(expr));
-      e->type = PRIM_E;
+      expr *e = calloc(1,sizeof(expr));
+      etypeadd(e,PRIM_E);
       e->optype = IDENT_O;
       e->tok = curl->cont.tok;
 
@@ -1758,7 +1776,7 @@ link *parsepostexpr(link *chain)
   {
     if(lisexpr(curl, PRIM_E))
     {
-      curl->cont.exp->type = POST_E;
+      etypeadd(curl->cont.exp,POST_E);
     }
     curl = curl->right;
   }
@@ -1799,8 +1817,8 @@ link *parsepostexpr(link *chain)
       expr *e = indl->cont.exp; // extract expression from link
 
       // make new expression from base and index
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E; // postfix
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,POST_E); // postfix
       newe->optype = ARR_O; // array indexing
       newe->args = malloc(sizeof(expr) * 2); // 2 args
       newe->args[0] = curl->cont.exp; // base
@@ -1907,8 +1925,8 @@ link *parsepostexpr(link *chain)
       assert(listok(curl->right->right, IDENT)); // struct members are always single identifiers
 
       // create new expression
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,POST_E);
       newe->optype = STRUCT_O;
       newe->args = malloc(sizeof(expr) * 2);
       newe->args[0] = curl->cont.exp;
@@ -1929,8 +1947,8 @@ link *parsepostexpr(link *chain)
     {
       assert(lisop(curl->right->right, IDENT_O));
       
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,POST_E);
       newe->optype = PSTRUCT_O;
       newe->args = malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -1945,8 +1963,8 @@ link *parsepostexpr(link *chain)
 
     else if(lisatom(curl->right, INC))
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,POST_E);
       newe->optype = POSTINC_O;
       newe->args = malloc(sizeof(expr));
       newe->args[0] = curl->cont.exp;
@@ -1960,8 +1978,8 @@ link *parsepostexpr(link *chain)
 
     else if(lisatom(curl->right, DEC))
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = POST_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,POST_E);
       newe->optype = POSTDEC_O;
       newe->args = malloc(sizeof(expr));
       newe->args[0] = curl->cont.exp;
@@ -2017,7 +2035,7 @@ link *parsecastunaryexpr(link *chain)
     {
       if(lisexpr(temp, POST_E))
       {
-        temp->cont.exp->type = UNAR_E;
+        etypeadd(temp->cont.exp,UNAR_E);
       }
       temp = temp->right;
     }
@@ -2040,8 +2058,8 @@ link *parsecastunaryexpr(link *chain)
 
       if(lisexpr(curl, UNAR_E) && lisatom(curl->left, INC)) // ++ unary-expr
       {
-        expr *newe = malloc(sizeof(expr));
-        newe->type = UNAR_E;
+        expr *newe = calloc(1,sizeof(expr));
+        etypeadd(newe,UNAR_E);
         newe->optype = PREINC_O;
         newe->args = malloc(sizeof(expr));
         newe->args[0] = curl->cont.exp;
@@ -2055,8 +2073,8 @@ link *parsecastunaryexpr(link *chain)
 
       else if(lisexpr(curl, UNAR_E) && lisatom(curl->left, DEC)) // -- unary-expr
       {
-        expr *newe = malloc(sizeof(expr));
-        newe->type = UNAR_E;
+        expr *newe = calloc(1,sizeof(expr));
+        etypeadd(newe,UNAR_E);
         newe->optype = PREDEC_O;
 
         newe->args = malloc(sizeof(expr));
@@ -2076,8 +2094,8 @@ link *parsecastunaryexpr(link *chain)
         int atom = curl->left->cont.tok.atom.type;
 
         // create new expression
-        expr *newe = malloc(sizeof(expr));
-        newe->type = UNAR_E;
+        expr *newe = calloc(1,sizeof(expr));
+        etypeadd(newe,UNAR_E);
 
         int optype;
         if(atom      == BITAND) optype = ADDR_O;
@@ -2168,7 +2186,7 @@ link *parsecastunaryexpr(link *chain)
     {
       if(lisexpr(temp, UNAR_E))
       {
-        temp->cont.exp->type = CAST_E;
+        etypeadd(temp->cont.exp,CAST_E);
       }
       temp = temp->right;
     }
@@ -2180,8 +2198,8 @@ link *parsecastunaryexpr(link *chain)
     {
       if(lisexpr(curl, CAST_E) && lisexpr(curl->left, TYPENAME)) // cast
       {
-        expr *newe = malloc(sizeof(expr));
-        newe->type = CAST_E;
+        expr *newe = calloc(1,sizeof(expr));
+        etypeadd(newe,CAST_E);
         newe->optype = CAST_O;
         newe->args = malloc(sizeof(expr)*2); // cast, expr
         newe->args[0] = curl->left->cont.exp; // cast
@@ -2223,7 +2241,7 @@ link *parsemultexpr(link *chain)
   {
     if(lisexpr(temp, CAST_E))
     {
-      temp->cont.exp->type = MULT_E;
+      etypeadd(temp->cont.exp,MULT_E);
     }
     temp = temp->right;
   }
@@ -2238,8 +2256,8 @@ link *parsemultexpr(link *chain)
 
     if(lisatom(curl->right, STAR) && lisexpr(curl->right->right, CAST_E)) // mult-expr * cast-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = MULT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,MULT_E);
       newe->optype = MULT_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2252,8 +2270,8 @@ link *parsemultexpr(link *chain)
 
     else if(lisatom(curl->right, DIV) && lisexpr(curl->right->right, CAST_E)) // mult-expr / cast-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = MULT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,MULT_E);
       newe->optype = DIV_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2266,8 +2284,8 @@ link *parsemultexpr(link *chain)
 
     else if(lisatom(curl->right, MOD) && lisexpr(curl->right->right, CAST_E)) // mult-expr % cast-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = MULT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,MULT_E);
       newe->optype = MOD_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2302,7 +2320,7 @@ link *parseaddexpr(link *chain)
   {
     if(lisexpr(temp, MULT_E))
     {
-      temp->cont.exp->type = ADD_E;
+      etypeadd(temp->cont.exp,ADD_E);
     }
     temp = temp->right;
   }
@@ -2317,8 +2335,8 @@ link *parseaddexpr(link *chain)
 
     if(lisatom(curl->right, PLUS) && lisexpr(curl->right->right, MULT_E)) // add-expr + mult-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = ADD_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,ADD_E);
       newe->optype = ADD_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2331,8 +2349,8 @@ link *parseaddexpr(link *chain)
 
     else if(lisatom(curl->right, MIN) && lisexpr(curl->right->right, MULT_E)) // add-expr - mult-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = ADD_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,ADD_E);
       newe->optype = SUB_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2366,7 +2384,7 @@ link *parseshiftexpr(link *chain)
   {
     if(lisexpr(temp, ADD_E))
     {
-      temp->cont.exp->type = SHIFT_E;
+      etypeadd(temp->cont.exp,SHIFT_E);
     }
     temp = temp->right;
   }
@@ -2381,8 +2399,8 @@ link *parseshiftexpr(link *chain)
 
     if(lisatom(curl->right, SHL) && lisexpr(curl->right->right, ADD_E)) // shift-expr << add-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = SHIFT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,SHIFT_E);
       newe->optype = SHL_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2395,8 +2413,8 @@ link *parseshiftexpr(link *chain)
 
     else if(lisatom(curl->right, SHR) && lisexpr(curl->right->right, ADD_E)) // shift-expr >> add-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = SHIFT_E
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,SHIFT_E
       newe->optype = SHR_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2430,7 +2448,7 @@ link *parserelexpr(link *chain)
   {
     if(lisexpr(temp, SHIFT_E))
     {
-      temp->cont.exp->type = RELAT_E;
+      etypeadd(temp->cont.exp,RELAT_E);
     }
     temp = temp->right;
   }
@@ -2445,8 +2463,8 @@ link *parserelexpr(link *chain)
 
     if(lisatom(curl->right, LESS) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr < shift-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = RELAT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,RELAT_E);
       newe->optype = LT_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2459,8 +2477,8 @@ link *parserelexpr(link *chain)
 
     else if(lisatom(curl->right, GREAT) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr > shift-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = RELAT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,RELAT_E);
       newe->optype = GT_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2473,8 +2491,8 @@ link *parserelexpr(link *chain)
 
     else if(lisatom(curl->right, LEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr <= shift-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = RELAT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,RELAT_E);
       newe->optype = LEQ_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2487,8 +2505,8 @@ link *parserelexpr(link *chain)
 
     else if(lisatom(curl->right, GEQ) && lisexpr(curl->right->right, SHIFT_E)) // rel-expr >= shift-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = RELAT_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,RELAT_E);
       newe->optype = GEQ_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2523,7 +2541,7 @@ link *parseeqexpr(link *chain)
   {
     if(lisexpr(temp, RELAT_E))
     {
-      temp->cont.exp->type = EQUAL_E;
+      etypeadd(temp->cont.exp,EQUAL_E);
     }
     temp = temp->right;
   }
@@ -2538,8 +2556,8 @@ link *parseeqexpr(link *chain)
 
     if(lisatom(curl->right, EQEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-expr == rel-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = EQUAL_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,EQUAL_E);
       newe->optype = EQEQ_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2552,8 +2570,8 @@ link *parseeqexpr(link *chain)
 
     else if(lisatom(curl->right, NOTEQ) && lisexpr(curl->right->right, RELAT_E)) // eq-epr != rel-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = EQUAL_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,EQUAL_E);
       newe->optype = NEQ_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2588,7 +2606,7 @@ link *parseandexpr(link *chain)
   {
     if(lisexpr(temp, EQUAL_E))
     {
-      temp->cont.exp->type = AND_E;
+      etypeadd(temp->cont.exp,AND_E);
     }
     temp = temp->right;
   }
@@ -2603,8 +2621,8 @@ link *parseandexpr(link *chain)
 
     if(lisatom(curl->right, BITAND) && lisexpr(curl->right->right, EQUAL_E)) // and-expr & eq-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = AND_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,AND_E);
       newe->optype = BAND_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2639,7 +2657,7 @@ link *parsexorexpr(link *chain)
   {
     if(lisexpr(temp, AND_E))
     {
-      temp->cont.exp->type = XOR_E;
+      etypeadd(temp->cont.exp,XOR_E);
     }
     temp = temp->right;
   }
@@ -2654,8 +2672,8 @@ link *parsexorexpr(link *chain)
 
     if(lisatom(curl->right, XOR) && lisexpr(curl->right->right, AND_E)) // xor-expr ^ and-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = XOR_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,XOR_E);
       newe->optype = XOR_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2690,7 +2708,7 @@ link *parseorexpr(link *chain)
   {
     if(lisexpr(temp, XOR_E))
     {
-      temp->cont.exp->type = OR_E;
+      etypeadd(temp->cont.exp,OR_E);
     }
     temp = temp->right;
   }
@@ -2705,8 +2723,8 @@ link *parseorexpr(link *chain)
 
     if(lisatom(curl->right, OR) && lisexpr(curl->right->right, XOR_E)) // or-expr | xor-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = OR_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,OR_E);
       newe->optype = BOR_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2741,7 +2759,7 @@ link *parselandexpr(link *chain)
   {
     if(lisexpr(temp, OR_E))
     {
-      temp->cont.exp->type = LAND_E;
+      etypeadd(temp->cont.exp,LAND_E);
     }
     temp = temp->right;
   }
@@ -2756,8 +2774,8 @@ link *parselandexpr(link *chain)
 
     if(lisatom(curl->right, LOGAND) && lisexpr(curl->right->right, OR_E)) // land-expr && or-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = LAND_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,LAND_E);
       newe->optype = LAND_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
@@ -2793,7 +2811,7 @@ link *parselorexpr(link *chain)
   {
     if(lisexpr(temp, LAND_E))
     {
-      temp->cont.exp->type = LOR_E;
+      etypeadd(temp->cont.exp,LOR_E);
     }
     temp = temp->right;
   }
@@ -2808,8 +2826,8 @@ link *parselorexpr(link *chain)
 
     if(lisatom(curl->right, LOGOR) && lisexpr(curl->right->right, LAND_E)) // lor-expr || land-expr
     {
-      expr *newe = malloc(sizeof(expr));
-      newe->type = LOR_E;
+      expr *newe = calloc(1,sizeof(expr));
+      etypeadd(newe,LOR_E);
       newe->optype = LOR_O;
       newe->args  =malloc(sizeof(expr)*2);
       newe->args[0] = curl->cont.exp;
