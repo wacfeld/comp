@@ -41,16 +41,16 @@ int eistype(expr *e, int type)
   if(e->type == NULL)
     return 0;
 
-  else return inset(e->type, type);
+  else return inset(e->type, &type);
 }
 
 int leistype(link *l, int type)
 {
-  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp->type, type);
+  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp, type);
 }
 
 
-tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
+token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
 {
   link *start = ll; // save
   int len = 0; // find length
@@ -72,7 +72,7 @@ tok *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
       tokl[i++] = *ll->cont.tok;
     else // expression
     {
-      tokl[i++] = *ll->cont.expr->tok;
+      tokl[i++] = *ll->cont.exp->tok;
     }
     ll = ll->right;
   }
@@ -1070,10 +1070,10 @@ int lisop(link *l, int o)
 {
   return l != NULL && l->type == EXPR_L && l->cont.exp->optype == o;
 }
-int lisexpr(link *l, expr_type e)
-{
-  return l != NULL && l->type == EXPR_L && l->cont.exp->type == e;
-}
+// int lisexpr(link *l, expr_type e)
+// {
+//   return l != NULL && l->type == EXPR_L && l->cont.exp->type == e;
+// }
 int lisatom(link *l, enum atom_type a)
 {
   return l != NULL && l->type == TOK_L && isatom(l->cont.tok, a);
@@ -1085,7 +1085,7 @@ int listok(link *l, enum tok_type t)
 }
 
 // find matching paren, brace, matching ?:, etc.
-link *findmatch(link *start, int dir, token inc, token dec)
+link *findmatch(link *start, int dir, int inc, int dec)
 {
   int dep = 1;
   link *curl = start;
@@ -1095,9 +1095,9 @@ link *findmatch(link *start, int dir, token inc, token dec)
 
     if(listok(curl, inc)) dep++;
     if(listok(curl, dec)) dep--;
-    assert(parendep >= 0 && curl != NULL);
+    assert(dep >= 0 && curl != NULL);
 
-  } while(parendep > 0);
+  } while(dep > 0);
   
   return curl;
 }
@@ -1407,7 +1407,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
   {
     // moreover, functions are dealt with above, so it must be an array
     assert(abs);
-    assert(isatom(toks+lo), BRACKOP);
+    assert(isatom(toks+lo, BRACKOP));
 
     // find matching bracket
     int brackdep = 0;
@@ -1532,7 +1532,7 @@ ctype * parsedecl(token *toks, int onlydecl)
      */
 
   int temp = K_TYPEDEF; // because of how sets are implemented we need an address
-  if(inset(storespecs, &temp)) // special case
+  if(inset(ct->storespecs, &temp)) // special case
   {
     // TODO
   }
@@ -1607,7 +1607,7 @@ ctype * parsedecl(token *toks, int onlydecl)
   return ct; // success
 }
 
-int lisin(link *l, int num, token *tokl)
+int lisin(link *l, int num, int *tokl)
 {
   for(int i = 0; i < num; i++)
   {
@@ -1619,7 +1619,7 @@ int lisin(link *l, int num, token *tokl)
 
 
 // next top level link that passes the function det()
-link *nexttoplevel(link *start, link *dir, int num, int *atoms)
+link *nexttoplevel(link *start, int dir, int num, int *atoms)
 {
   // read list of tokens
   // va_list ap;
@@ -1676,7 +1676,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
     e->args = malloc(sizeof(expr) * numargs);
     va_list ap;
     va_start(ap, numargs);
-    for(i = 0; i < numargs; i++)
+    for(int i = 0; i < numargs; i++)
     {
       e->args[i] = va_arg(ap, expr *);
     }
@@ -1691,6 +1691,27 @@ expr *makeexpr(int type, int optype, int numargs, ...)
 // use rightend() and leftend() to get it where you want
 // the left and right ends must be null terminated
 
+expr *parseexpr(link *start);
+expr *parseasgnexpr(link *start);
+expr *parsecondexpr(link *start);
+expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *));
+expr *parselorexpr(link *start);
+expr *parselandexpr(link *start);
+expr *parseorexpr(link *start);
+expr *parsexorexpr(link *start);
+expr *parseandexpr(link *start);
+expr *parseeqexpr(link *start);
+expr *parserelexpr(link *start);
+expr *parseshiftexpr(link *start);
+expr *parseaddexpr(link *start);
+expr *parsemultexpr(link *start);
+expr *parsecastexpr(link *start);
+expr *parseunaryexpr(link *start);
+expr *parsetypename(link *start);
+expr *parsepostexpr(link *start);
+expr *parsearglist(link *start);
+expr *parseprimexpr(link *start);
+
 expr *parseexpr(link *start)
 {
   assert(start);
@@ -1698,7 +1719,7 @@ expr *parseexpr(link *start)
   rightend(start);
   static int commaops[] = {COMMA};
   link *comma = nexttoplevel(start, LEFT, 1, commaops);
-  assert(start != comma) // no empty subexprs
+  assert(start != comma); // no empty subexprs
   
   if(!comma) // base case, drop down
   {
@@ -1751,7 +1772,10 @@ expr *parsecondexpr(link *start)
   assert(start);
   leftend(start);
 
-  link *quest = nexttoplevel(start, RIGHT, 1, QUESTION);
+  int ql[] = {QUESTION};
+  int cl[] = {COLON};
+
+  link *quest = nexttoplevel(start, RIGHT, 1, ql);
 
   assert(start != quest);
 
@@ -1797,7 +1821,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
   start->right = NULL;
   sever(op);
-  expr *e1 = parseltrbinexpr(op->left, etype, atoms, optypes, down); // recurse sideways
+  expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
   expr *e2 = down(start);
   
   expr *newe = makeexpr(etype, optype, 2, e1, e2);
@@ -1827,7 +1851,7 @@ expr *parseorexpr(link *start)
 
 expr *parsexorexpr(link *start)
 {
-  static int at[] = {XOR};
+  static int at[] = {BITXOR};
   static int op[] = {XOR_O};
   return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
 }
@@ -1857,21 +1881,21 @@ expr *parseshiftexpr(link *start)
 {
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
-  return parseltrbinexpr(start, SHIFT_E, at, op, parseaddexpr);
+  return parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
 }
 
 expr *parseaddexpr(link *start)
 {
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
-  return parseltrbinexpr(start, ADD_E, at, op, parsemultexpr);
+  return parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
 }
 
 expr *parsemultexpr(link *start)
 {
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
-  return parseltrbinexpr(start, MULT_E, at, op, parsecastexpr);
+  return parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
 }
 
 expr *parsecastexpr(link *start)
@@ -2017,7 +2041,7 @@ expr *parsepostexpr(link *start)
     expr *newe = makeexpr(POST_E, STRUCT_O, 2, e1, e2);
     return newe;
   }
-  if(lisatom(start->left, ARROw)) // a->b
+  if(lisatom(start->left, ARROW)) // a->b
   {
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
@@ -2078,7 +2102,7 @@ expr *parsearglist(link *start)
   // otherwise, count args
   int numargs = 1; // 0 commas -> 1 arg
   static int cl[] = {COMMA};
-  while((start = nexttop(start, RIGHT, 1, cl)) != NULL)
+  while((start = nexttoplevel(start, RIGHT, 1, cl)) != NULL)
   {
     numargs++;
   }
@@ -2094,7 +2118,7 @@ expr *parsearglist(link *start)
   for(int i = 0; i < numargs; i++)
   {
     comma = nexttoplevel(start, RIGHT, 1, cl);
-    assert(comma != start) // no empty args
+    assert(comma != start); // no empty args
 
     if(comma) // if comma == NULL, last arg only severs on left
     {
@@ -2226,7 +2250,6 @@ int main()
   puts("-------------------");
   putll(chain);
   puts("-------------------");
-  chain = parsepostexpr(chain);
   puts("--");
   putll(chain);
   

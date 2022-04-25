@@ -43,6 +43,17 @@ enum atom_type {/*FCALL, ARRIND,*/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS,
 typedef enum tok_type tok_type;
 typedef enum int_len int_len;
 
+
+typedef struct
+{
+  set *typespecs;
+  set *typequals;
+  set *storespecs;
+
+  list *typemods;
+} ctype; // "type" is used everywhere so i call it ctype
+
+
 typedef union
 {
   struct 
@@ -421,16 +432,6 @@ typedef union
 
 // typemod type
 enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
-
-
-typedef struct
-{
-  set *typespecs;
-  set *typequals;
-  set *storespecs;
-
-  list *typemods;
-} ctype; // "type" is used everywhere so i call it ctype
 
 enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 
