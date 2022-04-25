@@ -1919,10 +1919,14 @@ expr *parseunaryexpr(link *start)
 
   if(lisunaryop(start))
   {
-    
+    start->right->left = NULL;
+    expr *e = parsecastexpr(start->right);
+    expr *newe = makeexpr(UNAR_E, optype, 1, e);
+
+    return newe;
   }
 
-  if(lisatom(start, SIZEOF))
+  else if(lisatom(start, SIZEOF))
   {
     if(lisatom(start->right, PARENOP) && isdeclspec(*start->right->right->cont.tok)) // type-name
     {
@@ -1948,6 +1952,20 @@ expr *parseunaryexpr(link *start)
 
       return newe;
     }
+  }
+
+  else if(optype == PREINC_O || optype == PREDEC_O)
+  {
+    start->right->left = NULL;
+    expr *e = parseunaryexpr(start->right);
+    expr *newe = makeexpr(UNAR_E, optype, 1, e);
+
+    return newe;
+  }
+
+  else // postfix
+  {
+    return parsepostexpr(start);
   }
 }
 
