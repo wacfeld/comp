@@ -34,7 +34,8 @@ void putexpr(expr *e, int space)
     printf("%s ", hr_expr[types[i]]);
   }
 
-  putd(e->optype);
+  // putd(e->optype);
+  // putd(SUB_O);
   printf(": %s\n", hropt[e->optype]);
 
 
@@ -1694,6 +1695,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
   expr *e = calloc(1, sizeof(expr));
   etypeadd(e, type);
   e->optype = optype;
+  // putd(optype);
   e->numargs = numargs;
 
   // if numargs == 0 then don't do this
@@ -1834,7 +1836,8 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
   if(!op)
     return down(start);
 
-  int atom = op->cont.tok->atom.type;
+  int atom = op->cont.tok->atom.cont;
+
   int optype;
   for(int i = 0; i < num; i++)
   {
