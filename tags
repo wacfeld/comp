@@ -290,6 +290,7 @@ parseaddexpr	main.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
 parseandexpr	main.c	/^link *parseandexpr(link *chain)$/;"	f
 parseasgnexpr	main.c	/^expr *parseasgnexpr(link *start)$/;"	f
+parsecastexpr	main.c	/^expr *parsecastexpr(link *start)$/;"	f
 parsecastunaryexpr	main.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
 parsecondexpr	main.c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	main.c	/^link *parsecondexpr(link *chain)$/;"	f

@@ -1,6 +1,6 @@
 #include "defs.h"
 #include "datastruct.h"
-#include "is.h"
+#include "parser.h"
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
@@ -1732,7 +1732,7 @@ expr *parseasgnexpr(link *start)
   // op->left->right = NULL;
   sever(op);
 
-  expr *e1 = parsecastunaryexpr(start);
+  expr *e1 = parseunaryexpr(start);
   expr *e2 = parseasgnexpr(op->right);
 
   expr *newe = makeexpr(ASGN_E, op->cont.tok->atom.type, 2, e1, e2);
@@ -1862,8 +1862,18 @@ expr *parsemultexpr(link *start)
 {
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
-  return parseltrbinexpr(start, MULT_E, at, op, parsecastunaryexpr);
+  return parseltrbinexpr(start, MULT_E, at, op, parsecastexpr);
 }
+
+expr *parsecastexpr(link *start)
+{
+  leftend(start);
+  if(lisatom(start, PARENOP)) // it's a cast
+  {
+    
+  }
+}
+
 
 // evaluate primary expressions
 // this also parses top-level type names because we have to do that somewhere
