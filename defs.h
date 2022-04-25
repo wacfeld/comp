@@ -399,6 +399,8 @@ char *hr_expr[100] =
   [ASGN_E]="ASGN_E",
   [COMMA_E]="COMMA_E",
   [CONST_E]="CONST_E",
+  [TYPENAME]="TYPENAME",
+  [ARGLIST]="ARGLIST",
 };
 
 typedef struct expr

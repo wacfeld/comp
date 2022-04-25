@@ -19,6 +19,7 @@ void puttok(token t);
 #define LEFT 0
 
 int eistype(expr *e, int type);
+int isasgnop(int);
 void putexpr(expr *e, int space)
 {
   int *types = (int *) e->type->cont;
@@ -1971,9 +1972,9 @@ expr *parsecastexpr(link *start)
   {
     link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
 
-    // can't use sever() here, the asserts will fail
     start->right->left = NULL;
-    cl->left->right = NULL;
+    sever(cl);
+    // cl->left->right = NULL;
     
     expr *e1 = parsetypename(start->right);
     expr *e2 = parsecastexpr(cl->right);
