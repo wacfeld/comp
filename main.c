@@ -1879,7 +1879,7 @@ expr *parsecastexpr(link *start)
   assert(start);
   leftend(start);
 
-  if(lisatom(start, PARENOP) && isdeclspec(*start->cont.tok)) // it's a cast
+  if(lisatom(start, PARENOP) && isdeclspec(*start->right->cont.tok)) // it's a cast
   {
     link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
 
@@ -1908,7 +1908,47 @@ expr *parseunaryexpr(link *start)
 
   if(lisatom(start, INC)) optype = PREINC_O;
   if(lisatom(start, DEC)) optype = PREDEC_O;
-  if(lisatom(start, 
+
+  // unary operators
+  if(lisatom(start, BITAND)) optype = ADDR_O;
+  if(lisatom(start, STAR)) optype = POINT_O;
+  if(lisatom(start, PLUS)) optype = UPLUS_O;
+  if(lisatom(start, MIN)) optype = UMIN_O;
+  if(lisatom(start, BITNOT)) optype = BNOT_O;
+  if(lisatom(start, LOGNOT)) optype = LNOT_O;
+
+  if(lisunaryop(start))
+  {
+    
+  }
+
+  if(lisatom(start, SIZEOF))
+  {
+    if(lisatom(start->right, PARENOP) && isdeclspec(*start->right->right->cont.tok)) // type-name
+    {
+      link *cl = findmatch(start->right, RIGHT, PARENOP, PARENCL);
+      
+      start->right->right->left = NULL;
+      cl->left->right = NULL;
+
+      expr *e = parsetypename(start->right->right);
+      e->args = NULL;
+      expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+
+      return newe;
+    }
+
+    else // unary expr
+    {
+      start->right->left = NULL;
+
+      expr *e = parseunaryexpr(start->right);
+      e->ct = NULL;
+      expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+
+      return newe;
+    }
+  }
 }
 
 expr *parsetypename(link *start)
