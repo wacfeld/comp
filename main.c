@@ -1120,8 +1120,11 @@ link *findmatch(link *start, int dir, int inc, int dec)
   {
     curl = (dir == RIGHT) ? curl->right : curl->left;
 
-    if(listok(curl, inc)) dep++;
-    if(listok(curl, dec)) dep--;
+    if(lisatom(curl, inc)) dep++;
+    if(lisatom(curl, dec)) dep--;
+    // putd(dep);
+    // // puttok(*curl->cont.tok);
+    // nline();
     assert(dep >= 0 && curl != NULL);
 
   } while(dep > 0);
@@ -1810,7 +1813,10 @@ expr *parsecondexpr(link *start)
   if(!quest)
     return parselorexpr(start);
 
+  puts("-------------------");
+  putd(1);
   link *colon = findmatch(quest, RIGHT, QUESTION, COLON);
+  putd(2);
   assert(quest + 1 != colon);
 
   sever(quest);
