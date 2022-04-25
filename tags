@@ -226,13 +226,14 @@ gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
+hropt	defs.h	/^char *hropt[1000] =$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon12	typeref:struct:__anon12::__anon17
 ident	defs.h	/^  } ident;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon5
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon8
-isasgnop	is.c	/^int isasgnop(link *l)$/;"	f
+isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon12::__anon14
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
@@ -242,7 +243,7 @@ iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon2::__anon8
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon2::__anon9
-isquest	is.c	/^int isquest(link *l)$/;"	f
+isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon2::__anon9
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon2::__anon8
 isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon12::__anon14
@@ -258,7 +259,7 @@ link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
-liscomma	is.c	/^int liscomma(link *l)$/;"	f
+liscomma	unused/is.c	/^int liscomma(link *l)$/;"	f
 lisin	main.c	/^int lisin(link *l, int num, int *tokl)$/;"	f
 lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
@@ -324,6 +325,7 @@ ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	test.c	2;"	d	file:
+putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f

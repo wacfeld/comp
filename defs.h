@@ -306,6 +306,53 @@ enum optype
   COMMA_O
 };
 
+char *hropt[1000] =
+{
+  [IDENT_O]="IDENT_O",
+  [STRING_O]="STRING_O",
+  [INT_O]="INT_O",
+  [FLOAT_O]="FLOAT_O",
+  [CHAR_O]="CHAR_O",
+  [ENUM_O]="ENUM_O",
+  [PAREN_O]="PAREN_O",
+  [ARR_O]="ARR_O",
+  [FUN_O]="FUN_O",
+  [STRUCT_O]="STRUCT_O",
+  [PSTRUCT_O]="PSTRUCT_O",
+  [POSTINC_O]="POSTINC_O",
+  [POSTDEC_O]="POSTDEC_O",
+  [SIZEOF_O]="SIZEOF_O",
+  [PREINC_O]="PREINC_O",
+  [PREDEC_O]="PREDEC_O",
+  [ADDR_O]="ADDR_O",
+  [POINT_O]="POINT_O",
+  [UPLUS_O]="UPLUS_O",
+  [UMIN_O]="UMIN_O",
+  [BNOT_O]="BNOT_O",
+  [LNOT_O]="LNOT_O",
+  [CAST_O]="CAST_O",
+  [MULT_O]="MULT_O",
+  [DIV_O]="DIV_O",
+  [MOD_O]="MOD_O",
+  [ADD_O]="ADD_O",
+  [SUB_O]="SUB_O",
+  [SHL_O]="SHL_O",
+  [SHR_O]="SHR_O",
+  [LT_O]="LT_O",
+  [GT_O]="GT_O",
+  [LEQ_O]="LEQ_O",
+  [GEQ_O]="GEQ_O",
+  [EQEQ_O]="EQEQ_O",
+  [NEQ_O]="NEQ_O",
+  [BAND_O]="BAND_O",
+  [XOR_O]="XOR_O",
+  [BOR_O]="BOR_O",
+  [LAND_O]="LAND_O",
+  [LOR_O]="LOR_O",
+  [TERN_O]="TERN_O",
+  [COMMA_O]="COMMA_O",
+};
+
 typedef enum expr_type
 {
   EXPR,

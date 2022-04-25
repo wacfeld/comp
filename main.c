@@ -18,6 +18,32 @@ void puttok(token t);
 #define RIGHT 1
 #define LEFT 0
 
+int eistype(expr *e, int type);
+void putexpr(expr *e, int space)
+{
+  int *types = (int *) e->type->cont;
+  int nt = e->type->n;
+
+  for(int i = 0; i < space; i++)
+  {
+    putchar(' ');
+  }
+
+  for(int i = 0; i < nt; i++)
+  {
+    printf("%s ", hr_expr[types[i]]);
+  }
+
+  putd(e->optype);
+  printf(": %s\n", hropt[e->optype]);
+
+
+  for(int i = 0; i < e->numargs; i++)
+  {
+    putexpr(e->args[i], space+2);
+  }
+}
+
 
 void sever(link *l)
 {
@@ -2142,6 +2168,10 @@ expr *parseprimexpr(link *start)
 {
   assert(start);
   leftend(start);
+  
+  // only one link
+  assert(!start->left);
+  assert(!start->right);
 
   if(lisatom(start, PARENOP))
   {
@@ -2250,8 +2280,8 @@ int main()
   puts("-------------------");
   putll(chain);
   puts("-------------------");
-  puts("--");
-  putll(chain);
+  expr *e = parseexpr(chain);
+  putexpr(e, 0);
   
 
   // puts("------------------");
