@@ -1663,20 +1663,20 @@ link *nexttoplevel(link *start, link *dir, int num, int *atoms)
 }
 
 
-expr *makeexpr(int type, int optype, int arglen, ...)
+expr *makeexpr(int type, int optype, int numargs, ...)
 {
   expr *e = calloc(1, sizeof(expr));
   etypeadd(e, type);
   e->optype = optype;
-  e->arglen = arglen;
-  e->args = malloc(sizeof(expr) * arglen);
+  e->numargs = numargs;
 
-  // if arglen == 0 then don't do this
-  if(arglen)
+  // if numargs == 0 then don't do this
+  if(numargs)
   {
+    e->args = malloc(sizeof(expr) * numargs);
     va_list ap;
-    va_start(ap, arglen);
-    for(i = 0; i < arglen; i++)
+    va_start(ap, numargs);
+    for(i = 0; i < numargs; i++)
     {
       e->args[i] = va_arg(ap, expr *);
     }
@@ -1985,7 +1985,119 @@ expr *parsetypename(link *start)
   return newe;
 }
 
+expr *parsepostexpr(link *start)
+{
+  assert(start);
+  rightend(start);
 
+  if(lisatom(start, INC)) // a++
+  {
+    start->left->right = NULL;
+    expr *e = parsepostexpr(start->left);
+
+    expr *newe = makeexpr(POST_E, POSTINC_O, 1, e);
+    return newe;
+  }
+  if(lisatom(start, DEC)) // a--
+  {
+    start->left->right = NULL;
+    expr *e = parsepostexpr(start->left);
+
+    expr *newe = makeexpr(POST_E, POSTDEC_O, 1, e);
+    return newe;
+  }
+
+  if(lisatom(start->left, DOT)) // a.b
+  {
+    start->left->left->right = NULL;
+    expr *e1 = parsepostexpr(start->left->left);
+    start->left = NULL;
+    expr *e2 = parseprimexpr(start);
+
+    expr *newe = makeexpr(POST_E, STRUCT_O, 2, e1, e2);
+    return newe;
+  }
+  if(lisatom(start->left, ARROw)) // a->b
+  {
+    start->left->left->right = NULL;
+    expr *e1 = parsepostexpr(start->left->left);
+    start->left = NULL;
+    expr *e2 = parseprimexpr(start);
+
+    expr *newe = makeexpr(POST_E, PSTRUCT_O, 2, e1, e2);
+    return newe;
+  }
+
+  if(lisatom(start, PARENCL)) // f(a,b,c)
+  {
+    link *op = findmatch(start, LEFT, PARENCL, PARENOP);
+
+    if(op->left != NULL)
+    {
+      sever(op);
+      expr *e1 = parsepostexpr(op->left);
+      start->left->right = NULL;
+      
+      expr *e2 = parsearglist(start->left);
+
+      expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
+    }
+  }
+
+  if(lisatom(start, BRACKCL)) // a[i]
+  {
+    link *op = findmatch(start, LEFT, BRACKCL, BRACKOP);
+  }
+}
+
+expr *parsearglist(link *start)
+{
+  if(!start) // when severing the parens, this gets set to NULL if the parens are side by side (0 args)
+  {
+    expr *newe = makeexpr(ARGLIST, -1, 0);
+    return newe;
+  }
+
+  leftend(start);
+
+  // otherwise, count args
+  int numargs = 1; // 0 commas -> 1 arg
+  static int cl[] = {COMMA};
+  while((start = nexttop(start, RIGHT, 1, cl)) != NULL)
+  {
+    numargs++;
+  }
+
+  // make new expr to hold the args
+  expr *newe = makeexpr(ARGLIST, -1, 0);
+  newe->args = malloc(sizeof(expr) * numargs);
+  newe->numargs = numargs;
+
+  // parse args
+  leftend(start);
+  link *comma;
+  for(int i = 0; i < numargs; i++)
+  {
+    comma = nexttoplevel(start, RIGHT, 1, cl);
+    assert(comma != start) // no empty args
+
+    if(comma) // if comma == NULL, last arg only severs on left
+    {
+      sever(comma);
+    }
+    start->left = NULL;
+
+    expr *e = parseasgnexpr(start);
+    newe->args[i] = e;
+
+    if(comma) // if not end, move on
+    {
+      start = comma->right;
+    }
+  }
+
+  return newe;
+}
 
 int main()
 {

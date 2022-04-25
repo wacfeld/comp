@@ -317,6 +317,7 @@ typedef enum expr_type
   COMMA_E,
   CONST_E,
   TYPENAME, // special case: for casts
+  ARGLIST, // special case: for function calls
 } expr_type;
 
 char *hr_expr[100] = 
@@ -348,7 +349,7 @@ typedef struct expr
   set *type; // multiple types at once are possible
   int optype;
   struct expr **args;
-  int arglen; // sometimes necessary, eg. function arguments
+  int numargs; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
   ctype *ct; // for casts
   // did not want to make a union for this so we just have tok and ct, both optional

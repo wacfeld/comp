@@ -9,6 +9,7 @@ ADD_E	defs.h	/^  ADD_E,$/;"	e	enum:expr_type
 ADD_O	defs.h	/^  ADD_O,$/;"	e	enum:optype
 ANDEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 AND_E	defs.h	/^  AND_E,$/;"	e	enum:expr_type
+ARGLIST	defs.h	/^  ARGLIST, \/\/ special case: for function calls$/;"	e	enum:expr_type
 ARROW	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 ARR_O	defs.h	/^  ARR_O,$/;"	e	enum:optype
 ASGN_E	defs.h	/^  ASGN_E,$/;"	e	enum:expr_type
@@ -184,7 +185,6 @@ XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 alloc	defs.h	29;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
-arglen	defs.h	/^  int arglen; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon11	typeref:struct:__anon11::__anon14
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
@@ -271,7 +271,7 @@ main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	test2.s	/^main:$/;"	l
-makeexpr	main.c	/^expr *makeexpr(int type, int optype, int arglen, ...)$/;"	f
+makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
@@ -283,12 +283,14 @@ nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, link *dir, int num, int *atoms)$/;"	f
 nline	defs.h	24;"	d
+numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
 parseandexpr	oldparser.c	/^link *parseandexpr(link *chain)$/;"	f
+parsearglist	main.c	/^expr *parsearglist(link *start)$/;"	f
 parseasgnexpr	main.c	/^expr *parseasgnexpr(link *start)$/;"	f
 parsecastexpr	main.c	/^expr *parsecastexpr(link *start)$/;"	f
 parsecastunaryexpr	oldparser.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
@@ -307,6 +309,7 @@ parsemultexpr	main.c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	oldparser.c	/^link *parsemultexpr(link *chain)$/;"	f
 parseorexpr	main.c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
+parsepostexpr	main.c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	oldparser.c	/^link *parseprimexpr(link *chain)$/;"	f
 parserelexpr	main.c	/^expr *parserelexpr(link *start)$/;"	f
