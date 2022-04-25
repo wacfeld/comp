@@ -1797,27 +1797,72 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
 expr *parselorexpr(link *start)
 {
-  return parseltrbinexpr(start, LOGOR, LOR_E, LOR_O, parselandexpr);
+  static int at[] = {LOGOR};
+  static int op[] = {LOR_O};
+  return parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
 }
 
 expr *parselandexpr(link *start)
 {
-  return parseltrbinexpr(start, LOGAND, LAND_E, LAND_O, parseorexpr);
+  static int at[] = {LOGAND};
+  static int op[] = {LAND_O};
+  return parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
 }
 
 expr *parseorexpr(link *start)
 {
-  return parseltrbinexpr(start, BITOR, OR_E, BOR_O, parsexorexpr);
+  static int at[] = {BITOR};
+  static int op[] = {BOR_O};
+  return parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
 }
 
 expr *parsexorexpr(link *start)
 {
-  return parseltrbinexpr(start, XOR, XOR_E, XOR_O, parseandexpr);
+  static int at[] = {XOR};
+  static int op[] = {XOR_O};
+  return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
 }
 
 expr *parseandexpr(link *start)
 {
-  return parseltrbinexpr(start, BITAND, AND_E, BAND_O, parseeqexpr);
+  static int at[] = {BITAND};
+  static int op[] = {BAND_O};
+  return parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
+}
+
+expr *parseeqexpr(link *start)
+{
+  static int at[] = {EQEQ, NOTEQ};
+  static int op[] = {EQEQ_O, NEQ_O};
+  return parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
+}
+
+expr *parserelexpr(link *start)
+{
+  static int at[] = {LESS, GREAT, LEQ, GEQ};
+  static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
+  return parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
+}
+
+expr *parseshiftexpr(link *start)
+{
+  static int at[] = {SHL, SHR};
+  static int op[] = {SHL_O, SHR_O};
+  return parseltrbinexpr(start, SHIFT_E, at, op, parseaddexpr);
+}
+
+expr *parseaddexpr(link *start)
+{
+  static int at[] = {PLUS, MIN};
+  static int op[] = {ADD_O, SUB_O};
+  return parseltrbinexpr(start, ADD_E, at, op, parsemultexpr);
+}
+
+expr *parsemultexpr(link *start)
+{
+  static int at[] = {STAR, DIV, MOD};
+  static int op[] = {MULT_O, DIV_O, MOD_O};
+  return parseltrbinexpr(start, MULT_E, at, op, parsecastunaryexpr);
 }
 
 // evaluate primary expressions

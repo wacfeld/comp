@@ -279,17 +279,18 @@ enum optype
   TERN_O,
 
   // assignment expressions
-  EQ_O,
-  TIMESEQ_O,
-  DIVEQ_O,
-  MODEQ_O,
-  PLUSEQ_O,
-  MINEQ_O,
-  SHLEQ_O,
-  SHREQ_O,
-  ANDEQ_O,
-  XOREQ_O,
-  OREQ_O,
+  // these don't get used, we just keep the atom types
+  // EQ_O,
+  // TIMESEQ_O,
+  // DIVEQ_O,
+  // MODEQ_O,
+  // PLUSEQ_O,
+  // MINEQ_O,
+  // SHLEQ_O,
+  // SHREQ_O,
+  // ANDEQ_O,
+  // XOREQ_O,
+  // OREQ_O,
 
   COMMA_O
 };
