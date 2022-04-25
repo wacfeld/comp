@@ -1611,7 +1611,7 @@ int lisin(link *l, int num, token *tokl)
 {
   for(int i = 0; i < num; i++)
   {
-    if(listok(l, tokl[i])) return 1;
+    if(lisatom(l, tokl[i])) return 1;
   }
 
   return 0;
@@ -1619,17 +1619,17 @@ int lisin(link *l, int num, token *tokl)
 
 
 // next top level link that passes the function det()
-link *nexttoplevel(link *start, link *dir, int num, ...)
+link *nexttoplevel(link *start, link *dir, int num, int *atoms)
 {
   // read list of tokens
-  va_list ap;
-  token *tokl = malloc(sizeof(token) * num);
-  va_start(ap, num);
-  for(int i = 0; i < num; i++)
-  {
-    tokl[i] = va_arg(ap, int);
-  }
-  va_end(ap);
+  // va_list ap;
+  // token *tokl = malloc(sizeof(token) * num);
+  // va_start(ap, num);
+  // for(int i = 0; i < num; i++)
+  // {
+  //   tokl[i] = va_arg(ap, int);
+  // }
+  // va_end(ap);
 
 
   int dep = 0; // { [ ( ?: depth
@@ -1639,7 +1639,7 @@ link *nexttoplevel(link *start, link *dir, int num, ...)
   {
     // we do the lisin check on either end of the dep check for when we're searching for (, {, ), }, etc.
     // if(det(curl) && dep == 0) // passes test, return
-    if(lisin(curl, num, tokl) && dep == 0)
+    if(lisin(curl, num, atoms) && dep == 0)
     {
       return curl;
     }
@@ -1651,7 +1651,7 @@ link *nexttoplevel(link *start, link *dir, int num, ...)
     assert(dep >= 0);
 
     // if(det(curl) && dep == 0) // passes test, return
-    if(lisin(curl, num, tokl) && dep == 0)
+    if(lisin(curl, num, atoms) && dep == 0)
       return curl;
 
     if(curl == NULL)
@@ -1690,7 +1690,8 @@ expr *makeexpr(int type, int optype, int arglen, ...)
 expr *parseexpr(link *start)
 {
   rightend(start);
-  link *comma = nexttoplevel(start, LEFT, 1, COMMA);
+  static int commaops[] = {COMMA};
+  link *comma = nexttoplevel(start, LEFT, 1, commaops);
   assert(start != comma) // no empty subexprs
   
   if(!comma) // base case, drop down
@@ -1716,8 +1717,9 @@ expr *parseexpr(link *start)
 expr *parseasgnexpr(link *start)
 {
   leftend(start);
-  link *op = nexttoplevel(start, RIGHT, 11,
-      EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ);
+
+  static int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
+  link *op = nexttoplevel(start, RIGHT, sizeof(asgnops)/sizeof(int), asgnops);
   assert(start != op); // no empty assignment
   
   if(!op)
@@ -1733,13 +1735,14 @@ expr *parseasgnexpr(link *start)
   expr *e1 = parsecastunaryexpr(start);
   expr *e2 = parseasgnexpr(op->right);
 
-  expr *newe = makeexpr(ASGN_E, op->cont.tok->cont.atom.type, 2, e1, e2);
+  expr *newe = makeexpr(ASGN_E, op->cont.tok->atom.type, 2, e1, e2);
   return newe;
 }
 
 expr *parsecondexpr(link *start)
 {
   leftend(start);
+
   link *quest = nexttoplevel(start, RIGHT, 1, QUESTION);
 
   assert(start != quest);
@@ -1762,19 +1765,30 @@ expr *parsecondexpr(link *start)
 }
 
 // parse LTR binary expression, a very common expression type, which can be generalized
-expr * parseltrbinexpr(link *start, int atom, int etype, int num, int *atom2type, expr *(*down)(link *))
+expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))
 {
   rightend(start);
-  link *op = nexttoplevel(start, LEFT, 1, atom);
+  link *op = nexttoplevel(start, LEFT, num, atoms);
 
   assert(start != op);
 
   if(!op)
     return down(start);
 
+  int atom = op->cont.tok->atom.type;
+  int optype;
+  for(int i = 0; i < num; i++)
+  {
+    if(atoms[i] == atom)
+    {
+      optype = optypes[i];
+    }
+  }
+
+
   start->right = NULL;
   sever(op);
-  expr *e1 = parseltrbinexpr(op->left, atom, etype, optype, down); // recurse sideways
+  expr *e1 = parseltrbinexpr(op->left, etype, atoms, optypes, down); // recurse sideways
   expr *e2 = down(start);
   
   expr *newe = makeexpr(etype, optype, 2, e1, e2);
