@@ -53,7 +53,7 @@ int inset(set *s, void *m)
   int size = s->size;
   for(int i = 0; i < s->n; i++)
   {
-    if(!memcmp(s->cont + i*size, m, size));
+    if(!memcmp(s->cont + i*size, m, size))
     {
       return 1;
     }

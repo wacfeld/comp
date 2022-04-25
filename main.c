@@ -36,7 +36,14 @@ void putexpr(expr *e, int space)
 
   // putd(e->optype);
   // putd(SUB_O);
-  printf(": %s\n", hropt[e->optype]);
+  printf(": %s", hropt[e->optype]);
+
+  if(eistype(e, PRIM_E))
+  {
+    printf(" : ");
+    puttok(*e->tok);
+  }
+  putchar('\n');
 
 
   for(int i = 0; i < e->numargs; i++)
@@ -63,12 +70,17 @@ void etypeadd(expr *e, int type)
   setins(e->type, &type);
 }
 
+// TODO eistype is sometimes broken, sometimes not
 int eistype(expr *e, int type)
 {
   if(e->type == NULL)
     return 0;
 
-  else return inset(e->type, &type);
+  else
+  {
+  // putd(type);
+    return inset(e->type, &type);
+  }
 }
 
 int leistype(link *l, int type)
@@ -432,7 +444,7 @@ void puttok(token t)
   {
     printf("%d ", t.integer.cont);
   }
-  nline();
+  // nline();
 }
 
 
@@ -1813,10 +1825,10 @@ expr *parsecondexpr(link *start)
   if(!quest)
     return parselorexpr(start);
 
-  puts("-------------------");
-  putd(1);
+  // puts("-------------------");
+  // putd(1);
   link *colon = findmatch(quest, RIGHT, QUESTION, COLON);
-  putd(2);
+  // putd(2);
   assert(quest + 1 != colon);
 
   sever(quest);
@@ -2206,11 +2218,25 @@ expr *parseprimexpr(link *start)
     newe->optype = FLOAT_O;
   
   newe->tok = start->cont.tok;
+  // printf("%p\n", newe->tok);
+  puttok(*newe->tok);
   return newe;
 }
 
 int main()
 {
+  // set *s = makeset(sizeof(int));
+  // int t = 4;
+  // setins(s, &t);
+  // t = 5;
+  // setins(s, &t);
+  // t = 100;
+  // putd(memcmp(s->cont+4, &t, 4));
+// putd(t);
+  // putd(inset(s, &t));
+  // return 0;
+
+
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
@@ -2286,9 +2312,9 @@ int main()
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
   link *chain = tokl2ll((token *)trans_unit->cont);
-  puts("-------------------");
+  puts("\n-------------------");
   putll(chain);
-  puts("-------------------");
+  puts("\n-------------------");
   expr *e = parseexpr(chain);
   putexpr(e, 0);
   
