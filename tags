@@ -311,6 +311,7 @@ parseorexpr	main.c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
+parseprimexpr	main.c	/^expr *parseprimexpr(link *start)$/;"	f
 parseprimexpr	oldparser.c	/^link *parseprimexpr(link *chain)$/;"	f
 parserelexpr	main.c	/^expr *parserelexpr(link *start)$/;"	f
 parserelexpr	oldparser.c	/^link *parserelexpr(link *chain)$/;"	f

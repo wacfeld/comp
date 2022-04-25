@@ -2032,21 +2032,36 @@ expr *parsepostexpr(link *start)
   {
     link *op = findmatch(start, LEFT, PARENCL, PARENOP);
 
-    if(op->left != NULL)
+    if(op->left != NULL) // if NULL, it's a (primary-expression)
     {
       sever(op);
-      expr *e1 = parsepostexpr(op->left);
       start->left->right = NULL;
-      
+
+      expr *e1 = parsepostexpr(op->left);
       expr *e2 = parsearglist(start->left);
 
       expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
+      return newe;
     }
   }
 
   if(lisatom(start, BRACKCL)) // a[i]
   {
     link *op = findmatch(start, LEFT, BRACKCL, BRACKOP);
+
+    sever(op);
+    start->left->right = NULL;
+
+    expr *e1 = parsepostexpr(op->left);
+    expr *e2 = parseexpr(start->left);
+
+    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
+    return newe;
+  }
+
+  else // primary expr
+  {
+    return parseprimexpr(start);
   }
 }
 
@@ -2097,6 +2112,11 @@ expr *parsearglist(link *start)
   }
 
   return newe;
+}
+
+expr *parseprimexpr(link *start)
+{
+
 }
 
 int main()
