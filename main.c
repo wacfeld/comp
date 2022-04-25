@@ -36,7 +36,14 @@ void putexpr(expr *e, int space)
 
   // putd(e->optype);
   // putd(SUB_O);
-  printf(": %s", hropt[e->optype]);
+  if(isasgnop(e->optype))
+  {
+    printf(": %s", hrat[e->optype]);
+  }
+  else
+  {
+    printf(": %s", hropt[e->optype]);
+  }
 
   if(eistype(e, PRIM_E))
   {
@@ -1784,12 +1791,22 @@ expr *parseexpr(link *start)
   return newe;
 }
 
+int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
+
+int isasgnop(int x)
+{
+  for(int i = 0; i < sizeof(asgnops)/sizeof(int); i++)
+  {
+    if(asgnops[i] == x) return 1;
+  }
+  return 0;
+}
+
 expr *parseasgnexpr(link *start)
 {
   assert(start);
   leftend(start);
 
-  static int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
   link *op = nexttoplevel(start, RIGHT, sizeof(asgnops)/sizeof(int), asgnops);
   assert(start != op); // no empty assignment
   
@@ -1806,7 +1823,7 @@ expr *parseasgnexpr(link *start)
   expr *e1 = parseunaryexpr(start);
   expr *e2 = parseasgnexpr(op->right);
 
-  expr *newe = makeexpr(ASGN_E, op->cont.tok->atom.type, 2, e1, e2);
+  expr *newe = makeexpr(ASGN_E, op->cont.tok->atom.cont, 2, e1, e2);
   return newe;
 }
 
@@ -2219,7 +2236,7 @@ expr *parseprimexpr(link *start)
   
   newe->tok = start->cont.tok;
   // printf("%p\n", newe->tok);
-  puttok(*newe->tok);
+  // puttok(*newe->tok);
   return newe;
 }
 
