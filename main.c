@@ -1145,7 +1145,8 @@ link *findmatch(link *start, int dir, int inc, int dec)
     // putd(dep);
     // // puttok(*curl->cont.tok);
     // nline();
-    assert(dep >= 0 && curl != NULL);
+    assert(dep >= 0);
+    assert(curl != NULL);
 
   } while(dep > 0);
   
@@ -1213,13 +1214,17 @@ int isdeclspec(token t) // get declaration specifier, -1 if it's not that
   int x;
   if((x = gettypespec(t)) != -1)
   {
-    return x;
+    return 1;
   }
   if((x = getstorespec(t)) != -1)
   {
-    return x;
+    return 1;
   }
-  return gettypequal(t);
+  if((x = gettypequal(t)) != -1)
+  {
+    return 1;
+  }
+  return 0;
 }
 
 // recursive function that interprets a declarator by getting the type modifiers in order
@@ -1668,7 +1673,7 @@ int lisin(link *l, int num, int *tokl)
 }
 
 
-// next top level link that passes the function det()
+// next top level link that is in atoms
 link *nexttoplevel(link *start, int dir, int num, int *atoms)
 {
   // read list of tokens
@@ -1694,11 +1699,11 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
       return curl;
     }
 
-    if(listok(curl, PARENOP) || listok(curl, BRACKOP) || listok(curl, BRACEOP) || listok(curl, QUESTION))
+    if(lisatom(curl, PARENOP) || lisatom(curl, BRACKOP) || lisatom(curl, BRACEOP) || lisatom(curl, QUESTION))
       dep++;
-    if(listok(curl, PARENCL) || listok(curl, BRACKCL) || listok(curl, BRACECL) || listok(curl, COLON))
+    if(lisatom(curl, PARENCL) || lisatom(curl, BRACKCL) || lisatom(curl, BRACECL) || lisatom(curl, COLON))
       dep--;
-    assert(dep >= 0);
+    // assert(dep >= 0); // it can go below 0 when going backwards
 
     // if(det(curl) && dep == 0) // passes test, return
     if(lisin(curl, num, atoms) && dep == 0)
@@ -1783,12 +1788,13 @@ expr *parseexpr(link *start)
   start->right = NULL; // can't hurt
   // comma->right->left = NULL;
   // comma->left->right = NULL;
+  // putd(1);
   sever(comma);
 
   expr *e1 = parseexpr(comma->left);
   expr *e2 = parseasgnexpr(start);
 
-  expr *newe = makeexpr(EXPR, COMMA, 2, e1, e2);
+  expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
   return newe;
 }
 
@@ -1819,6 +1825,8 @@ expr *parseasgnexpr(link *start)
   start->left = NULL;
   // op->right->left = NULL;
   // op->left->right = NULL;
+
+  // putd(2);
   sever(op);
 
   expr *e1 = parseunaryexpr(start);
@@ -1848,7 +1856,7 @@ expr *parsecondexpr(link *start)
   link *colon = findmatch(quest, RIGHT, QUESTION, COLON);
   // putd(2);
   assert(quest + 1 != colon);
-
+  // putd(3);
   sever(quest);
   sever(colon);
 
@@ -1885,6 +1893,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
 
   start->right = NULL;
+  // putd(4);
   sever(op);
   expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
   expr *e2 = down(start);
@@ -1973,6 +1982,7 @@ expr *parsecastexpr(link *start)
     link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
 
     start->right->left = NULL;
+    // putd(5);
     sever(cl);
     // cl->left->right = NULL;
     
@@ -2123,6 +2133,7 @@ expr *parsepostexpr(link *start)
 
     if(op->left != NULL) // if NULL, it's a (primary-expression)
     {
+      // putd(6);
       sever(op);
       start->left->right = NULL;
 
@@ -2138,6 +2149,7 @@ expr *parsepostexpr(link *start)
   {
     link *op = findmatch(start, LEFT, BRACKCL, BRACKOP);
 
+    // putd(7);
     sever(op);
     start->left->right = NULL;
 
@@ -2187,6 +2199,7 @@ expr *parsearglist(link *start)
 
     if(comma) // if comma == NULL, last arg only severs on left
     {
+      // putd(8);
       sever(comma);
     }
     start->left = NULL;
@@ -2208,9 +2221,6 @@ expr *parseprimexpr(link *start)
   assert(start);
   leftend(start);
   
-  // only one link
-  assert(!start->left);
-  assert(!start->right);
 
   if(lisatom(start, PARENOP))
   {
@@ -2221,6 +2231,10 @@ expr *parseprimexpr(link *start)
     cl->left->right = NULL;
     return parseexpr(start->right);
   }
+
+  // otherwise only one link
+  assert(!start->left);
+  assert(!start->right);
 
   expr *newe = makeexpr(PRIM_E, -1, 0);
   // not sure if the following _Os are necessary
@@ -2330,8 +2344,8 @@ int main()
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
   link *chain = tokl2ll((token *)trans_unit->cont);
-  puts("\n-------------------");
-  putll(chain);
+  // puts("\n-------------------");
+  // putll(chain);
   puts("\n-------------------");
   expr *e = parseexpr(chain);
   putexpr(e, 0);

@@ -6,5 +6,4 @@ int f(int x)
 }
 int main()
 {
-  putd(sizeof -5);
 }
