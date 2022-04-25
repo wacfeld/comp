@@ -2116,7 +2116,34 @@ expr *parsearglist(link *start)
 
 expr *parseprimexpr(link *start)
 {
+  assert(start);
+  leftend(start);
 
+  if(lisatom(start, PARENOP))
+  {
+    link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
+    assert(cl->right == NULL); // should be at far right side
+    
+    start->right->left = NULL;
+    cl->left->right = NULL;
+    return parseexpr(start->right);
+  }
+
+  expr *newe = makeexpr(PRIM_E, -1, 0);
+  // not sure if the following _Os are necessary
+  if(listok(start, IDENT))
+    newe->optype = IDENT_O;
+  if(listok(start, INTEGER))
+    newe->optype = INT_O;
+  if(listok(start, CHAR))
+    newe->optype = CHAR_O;
+  if(listok(start, STRLIT))
+    newe->optype = STRING_O;
+  if(listok(start, FLOATING))
+    newe->optype = FLOAT_O;
+  
+  newe->tok = start->cont.tok;
+  return newe;
 }
 
 int main()
