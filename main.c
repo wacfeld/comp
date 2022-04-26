@@ -51,6 +51,7 @@ void putexpr(expr *e, int space)
     printf(" : ");
     puttok(*e->tok);
   }
+  printf(" : %d ", e->numargs);
   putchar('\n');
 
 
@@ -2135,10 +2136,12 @@ expr *parsepostexpr(link *start)
     {
       // putd(6);
       sever(op);
-      start->left->right = NULL;
+      // printf("%p\n", start->left);
+      if(start->left) start->left->right = NULL; // could possibly be set NULL by the above sever()
 
       expr *e1 = parsepostexpr(op->left);
       expr *e2 = parsearglist(start->left);
+      // printf("%p\n", start->left);
 
       expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
       return newe;
@@ -2156,8 +2159,7 @@ expr *parsepostexpr(link *start)
     expr *e1 = parsepostexpr(op->left);
     expr *e2 = parseexpr(start->left);
 
-    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
-    return newe;
+    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);    return newe;
   }
 
   else // primary expr
@@ -2168,8 +2170,11 @@ expr *parsepostexpr(link *start)
 
 expr *parsearglist(link *start)
 {
+    puts("hi");
+    // printf("%p\n", start);
   if(!start) // when severing the parens, this gets set to NULL if the parens are side by side (0 args)
   {
+    // puts("bye");
     expr *newe = makeexpr(ARGLIST, -1, 0);
     return newe;
   }
@@ -2178,10 +2183,13 @@ expr *parsearglist(link *start)
 
   // otherwise, count args
   int numargs = 1; // 0 commas -> 1 arg
+  link *temp = start;
   static int cl[] = {COMMA};
-  while((start = nexttoplevel(start, RIGHT, 1, cl)) != NULL)
+  while((temp = nexttoplevel(temp, RIGHT, 1, cl)) != NULL)
   {
+    // puttok(*temp->cont.tok);
     numargs++;
+    temp = temp->right;
   }
 
   // make new expr to hold the args
