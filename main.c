@@ -1876,10 +1876,16 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
   rightend(start);
   link *op = nexttoplevel(start, LEFT, num, atoms);
 
-  assert(start != op);
-
   if(!op)
     return down(start);
+
+  assert(start != op); // both unary and binary require a right arg
+  if(!op->left) // no left arg; it's in unary form
+  {
+    assert(canbeunary[op->cont.tok->atom.cont]);
+    return down(start);
+  }
+  // puts("iuieiei");
 
   int atom = op->cont.tok->atom.cont;
 
@@ -1895,7 +1901,9 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
   start->right = NULL;
   // putd(4);
+  // putd(4);
   sever(op);
+  // putd(5);
   expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
   expr *e2 = down(start);
   
