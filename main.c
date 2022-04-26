@@ -1962,11 +1962,13 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
   link *curl = start;
   while(1)
   {
+    // puts("hi");
     op = nexttoplevel(curl, LEFT, num, atoms);
     if(!op) // we've reached the far left side, move down
-      return down(curl);
+      return down(start);
 
-    testerr(curl != op, "parseltrbinexpr: empty right arg"); // both unary and binary require a right arg
+    // puttok(*op->cont.tok);
+    testerr(start != op, "parseltrbinexpr: empty right arg"); // both unary and binary require a right arg
 
     // get optype from atom
     int atom = op->cont.tok->atom.cont;
@@ -1975,6 +1977,8 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
     // sever, but don't give error if NULL on either side
     trysever(op);
 
+    // puts("about to call");
+    // putd(op->left);
     expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
 
     if(!e1) // parsing left branch failed
@@ -2022,7 +2026,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
 expr *parselorexpr(link *start)
 {
-  puts("parselorexpr");
+  // puts("parselorexpr");
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
   return parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
@@ -2030,7 +2034,7 @@ expr *parselorexpr(link *start)
 
 expr *parselandexpr(link *start)
 {
-  puts("parselandexpr");
+  // puts("parselandexpr");
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   return parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
@@ -2038,7 +2042,7 @@ expr *parselandexpr(link *start)
 
 expr *parseorexpr(link *start)
 {
-  puts("parseorexpr");
+  // puts("parseorexpr");
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
   return parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
@@ -2046,7 +2050,7 @@ expr *parseorexpr(link *start)
 
 expr *parsexorexpr(link *start)
 {
-  puts("parsexorexpr");
+  // puts("parsexorexpr");
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
   return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
@@ -2054,7 +2058,7 @@ expr *parsexorexpr(link *start)
 
 expr *parseandexpr(link *start)
 {
-  puts("parseandexpr");
+  // puts("parseandexpr");
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   return parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
@@ -2062,7 +2066,7 @@ expr *parseandexpr(link *start)
 
 expr *parseeqexpr(link *start)
 {
-  puts("parseeqexpr");
+  // puts("parseeqexpr");
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   return parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
@@ -2070,7 +2074,7 @@ expr *parseeqexpr(link *start)
 
 expr *parserelexpr(link *start)
 {
-  puts("parserelexpr");
+  // puts("parserelexpr");
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   return parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
@@ -2078,7 +2082,7 @@ expr *parserelexpr(link *start)
 
 expr *parseshiftexpr(link *start)
 {
-  puts("parseshiftexpr");
+  // puts("parseshiftexpr");
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   return parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
@@ -2086,7 +2090,7 @@ expr *parseshiftexpr(link *start)
 
 expr *parseaddexpr(link *start)
 {
-  puts("parseaddexpr");
+  // puts("parseaddexpr");
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
   return parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
@@ -2094,7 +2098,7 @@ expr *parseaddexpr(link *start)
 
 expr *parsemultexpr(link *start)
 {
-  puts("parsemultexpr");
+  // puts("parsemultexpr");
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   return parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
@@ -2102,7 +2106,7 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
-  puts("parsecastexpr");
+  // puts("parsecastexpr");
   // assert(start);
   testerr(start, "parsecastexpr: empty start");
   leftend(start);

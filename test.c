@@ -3,4 +3,5 @@
 x = 5;
 int main()
 {
+  putd(__LINE__);
 }

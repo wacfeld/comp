@@ -1,1 +1,1 @@
--b
+sizeof +a
