@@ -1,9 +1,6 @@
 #include <stdio.h>
 #define putd(x) printf(#x ": %d\n", x)
-int f(int x)
-{
-  return 2 * x;
-}
+x = 5;
 int main()
 {
 }
