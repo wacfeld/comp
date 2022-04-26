@@ -290,18 +290,17 @@ enum optype
   TERN_O,
 
   // assignment expressions
-  // these don't get used, we just keep the atom types
-  // EQ_O,
-  // TIMESEQ_O,
-  // DIVEQ_O,
-  // MODEQ_O,
-  // PLUSEQ_O,
-  // MINEQ_O,
-  // SHLEQ_O,
-  // SHREQ_O,
-  // ANDEQ_O,
-  // XOREQ_O,
-  // OREQ_O,
+  EQ_O,
+  TIMESEQ_O,
+  DIVEQ_O,
+  MODEQ_O,
+  PLUSEQ_O,
+  MINEQ_O,
+  SHLEQ_O,
+  SHREQ_O,
+  ANDEQ_O,
+  XOREQ_O,
+  OREQ_O,
 
   COMMA_O
 };
@@ -351,6 +350,17 @@ char *hropt[1000] =
   [LOR_O]="LOR_O",
   [TERN_O]="TERN_O",
   [COMMA_O]="COMMA_O",
+  [EQ_O]="EQ_O",
+  [TIMESEQ_O]="TIMESEQ_O",
+  [DIVEQ_O]="DIVEQ_O",
+  [MODEQ_O]="MODEQ_O",
+  [PLUSEQ_O]="PLUSEQ_O",
+  [MINEQ_O]="MINEQ_O",
+  [SHLEQ_O]="SHLEQ_O",
+  [SHREQ_O]="SHREQ_O",
+  [ANDEQ_O]="ANDEQ_O",
+  [XOREQ_O]="XOREQ_O",
+  [OREQ_O]="OREQ_O",
 };
 
 typedef enum expr_type
