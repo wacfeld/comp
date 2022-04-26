@@ -8,8 +8,10 @@
 #define attach(a, b) {link *ta = a; link *tb = b; if(ta) ta->right = tb; if(tb) tb->left = ta;}
 
 // move to either end of a linked list
-#define rightend(l) {testerr(l, "rightend: l null"); while(l->right != NULL) l = l->right;}
-#define leftend(l) {testerr(l, "leftend: l null"); while(l->left != NULL) l = l->left;}
+// #define rightend(l) {testerr(l, "rightend: l null"); while(l->right != NULL) l = l->right;}
+#define rightend(l) {assert(l); while(l->right != NULL) l = l->right;}
+// #define leftend(l) {testerr(l, "leftend: l null"); while(l->left != NULL) l = l->left;}
+#define leftend(l) {assert(l); while(l->left != NULL) l = l->left;}
 // it's not enough to just save either end of the list because the pointer might change
 
 // list *errors; // list of error messages
@@ -65,16 +67,34 @@ void putexpr(expr *e, int space)
   }
 }
 
+// not as severe as sever; does not give error if it encounters NULL
+void trysever(link *l)
+{
+  if(!l) return;
+  if(l->left) l->left->right = NULL;
+  if(l->right) l->right->left = NULL;
+}
 
 void sever(link *l)
 {
-  if(!l) return;
+  // if(!l) return;
+  assert(l);
   assert(l->left);
   l->left->right = NULL;
   assert(l->right);
   l->right->left = NULL;
 }
 
+int corresp(int num, int *a, int *b, int x)
+{
+  for(int i = 0; i < num; i++)
+  {
+    if(a[i] == x)
+      return b[i];
+  }
+  // testerr(0, "corresp: x not in a");
+  assert(!"corresp: x not in a");
+}
 
 void etypeadd(expr *e, int type)
 {
@@ -1677,6 +1697,18 @@ int lisin(link *l, int num, int *tokl)
   return 0;
 }
 
+int lllen(link *l)
+{
+  if(!l) return 0;
+  leftend(l);
+  int len = 0;
+  while(l)
+  {
+    len++;
+    l = l->right;
+  }
+  return len;
+}
 
 // next top level link that is in atoms
 link *nexttoplevel(link *start, int dir, int num, int *atoms)
@@ -1691,6 +1723,7 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
   // }
   // va_end(ap);
 
+  if(!start) return start; // if NULL return NULL
 
   int dep = 0; // { [ ( ?: depth
   link *curl = start;
@@ -1900,47 +1933,96 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
   // assert(start);
   testerr(start, "parseltrbinexpr: empty start");
   rightend(start);
-  link *op = nexttoplevel(start, LEFT, num, atoms);
 
-  if(!op)
-    return down(start);
+  /*
+    to deal with ambiguous unary/binary operators:
+    we find the first atom in atoms[], and try parsing the left and right branches of that
+    if that doesn't work, we assume it's a unary operator, and find the next atom in atoms[]
+    if all fail, then we assume all are unary, and move down
+    the testerr() system should take care of invalid expressions
+    this way expressions such as
+      a + - b
+    work out
+  */
 
-  // assert(start != op); // both unary and binary require a right arg
-  testerr(start != op, "parseltrbinexpr: empty right arg"); // both unary and binary require a right arg
-  if(!op->left) // no left arg; it's in unary form
+  // backup linked list so we can restore later
+  int len = lllen(start);
+  link **backup = malloc(sizeof(link *)*(len + 2)); // number of links + 2 for NULL on each end
+  link *temp = start;
+  leftend(temp);
+  for(int i = 1; i <= len; i++)
   {
-    // assert(canbeunary[op->cont.tok->atom.cont]);
-    testerr(canbeunary[op->cont.tok->atom.cont], "parseltrbinexpr: empty left arg");
-    return down(start);
+    backup[i] = temp;
+    temp = temp->right;
   }
-  // puts("iuieiei");
+  backup[0] = NULL;
+  backup[len+1] = NULL;
 
-  int atom = op->cont.tok->atom.cont;
-
-  int optype;
-  for(int i = 0; i < num; i++)
+  link *op;
+  link *curl = start;
+  while(1)
   {
-    if(atoms[i] == atom)
+    op = nexttoplevel(curl, LEFT, num, atoms);
+    if(!op) // we've reached the far left side, move down
+      return down(curl);
+
+    testerr(curl != op, "parseltrbinexpr: empty right arg"); // both unary and binary require a right arg
+
+    // get optype from atom
+    int atom = op->cont.tok->atom.cont;
+    int optype = corresp(num, atoms, optypes, atom);
+
+    // sever, but don't give error if NULL on either side
+    trysever(op);
+
+    expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
+
+    if(!e1) // parsing left branch failed
     {
-      optype = optypes[i];
+      testerr(lisin(op, cbulen, canbeunary), "parseltrbinexpr: binary operator trying to be unary"); // make sure it can be a unary operator
+      
+      curl = op->left; // move over the op we just tried
+      // unsever using backup[]
+      for(int i = 1; i <= len; i++)
+      {
+        backup[i]->left = backup[i-1];
+        backup[i]->right = backup[i+1];
+      }
+
+      continue;
     }
+
+    free(backup);
+    expr *e2 = down(start);
+
+    expr *newe = makeexpr(etype, optype, 2, e1, e2);
+    return newe;
   }
 
 
-  start->right = NULL;
-  // putd(4);
-  // putd(4);
-  sever(op);
-  // putd(5);
-  expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
-  expr *e2 = down(start);
+//   // assert(start != op); // both unary and binary require a right arg
+//   // if(!op->left) // no left arg; it's in unary form
+//   // {
+//   //   // assert(canbeunary[op->cont.tok->atom.cont]);
+//   //   testerr(canbeunary[op->cont.tok->atom.cont], "parseltrbinexpr: empty left arg");
+//   //   return down(start);
+//   // }
+//   // puts("iuieiei");
+
+
+//   // start->right = NULL;
+
+//   expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
+
+//   expr *e2 = down(start);
   
-  expr *newe = makeexpr(etype, optype, 2, e1, e2);
-  return newe;
+//   expr *newe = makeexpr(etype, optype, 2, e1, e2);
+//   return newe;
 }
 
 expr *parselorexpr(link *start)
 {
+  puts("parselorexpr");
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
   return parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
@@ -1948,6 +2030,7 @@ expr *parselorexpr(link *start)
 
 expr *parselandexpr(link *start)
 {
+  puts("parselandexpr");
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   return parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
@@ -1955,6 +2038,7 @@ expr *parselandexpr(link *start)
 
 expr *parseorexpr(link *start)
 {
+  puts("parseorexpr");
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
   return parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
@@ -1962,6 +2046,7 @@ expr *parseorexpr(link *start)
 
 expr *parsexorexpr(link *start)
 {
+  puts("parsexorexpr");
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
   return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
@@ -1969,6 +2054,7 @@ expr *parsexorexpr(link *start)
 
 expr *parseandexpr(link *start)
 {
+  puts("parseandexpr");
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   return parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
@@ -1976,6 +2062,7 @@ expr *parseandexpr(link *start)
 
 expr *parseeqexpr(link *start)
 {
+  puts("parseeqexpr");
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   return parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
@@ -1983,6 +2070,7 @@ expr *parseeqexpr(link *start)
 
 expr *parserelexpr(link *start)
 {
+  puts("parserelexpr");
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   return parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
@@ -1990,6 +2078,7 @@ expr *parserelexpr(link *start)
 
 expr *parseshiftexpr(link *start)
 {
+  puts("parseshiftexpr");
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   return parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
@@ -1997,6 +2086,7 @@ expr *parseshiftexpr(link *start)
 
 expr *parseaddexpr(link *start)
 {
+  puts("parseaddexpr");
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
   return parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
@@ -2004,6 +2094,7 @@ expr *parseaddexpr(link *start)
 
 expr *parsemultexpr(link *start)
 {
+  puts("parsemultexpr");
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   return parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
@@ -2011,6 +2102,7 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
+  puts("parsecastexpr");
   // assert(start);
   testerr(start, "parsecastexpr: empty start");
   leftend(start);
@@ -2342,6 +2434,8 @@ int main()
     resize(src, srcsize, i);
   }
   src[i] = 0; // null terminate
+  printf("%s", src);
+  puts("-------------------");
 
   char *quot = malloc(i);
   char *esc = malloc(i);
@@ -2403,6 +2497,11 @@ int main()
   // putll(chain);
   puts("\n-------------------");
   expr *e = parseexpr(chain);
+  if(!e) // error happened
+  {
+    printf("ERROR: %s\n", error);
+    exit(1);
+  }
   putexpr(e, 0);
   
 

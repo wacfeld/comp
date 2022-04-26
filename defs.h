@@ -495,7 +495,8 @@ enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
 enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 
 
-int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // have unary and binary forms
+int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary and binary operators
+int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
 #endif
