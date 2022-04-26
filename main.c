@@ -8,9 +8,13 @@
 #define attach(a, b) {link *ta = a; link *tb = b; if(ta) ta->right = tb; if(tb) tb->left = ta;}
 
 // move to either end of a linked list
-#define rightend(l) {assert(l); while(l->right != NULL) l = l->right;}
-#define leftend(l) {assert(l); while(l->left != NULL) l = l->left;}
+#define rightend(l) {testerr(l, "rightend: l null"); while(l->right != NULL) l = l->right;}
+#define leftend(l) {testerr(l, "leftend: l null"); while(l->left != NULL) l = l->left;}
 // it's not enough to just save either end of the list because the pointer might change
+
+// list *errors; // list of error messages
+char *error;
+#define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
 void puttok(token t);
 
@@ -1771,12 +1775,14 @@ expr *parseprimexpr(link *start);
 
 expr *parseexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parseexpr: null start");
 
   rightend(start);
   static int commaops[] = {COMMA};
   link *comma = nexttoplevel(start, LEFT, 1, commaops);
-  assert(start != comma); // no empty subexprs
+  // assert(start != comma); // no empty subexprs
+  testerr(start != comma, "parseexpr: empty comma subexr"); // no empty subexprs
   
   if(!comma) // base case, drop down
   {
@@ -1812,7 +1818,8 @@ int isasgnop(int x)
 
 expr *parseasgnexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parseasgnexpr: empty start");
   leftend(start);
 
   static int ops[100] = {
@@ -1830,7 +1837,8 @@ expr *parseasgnexpr(link *start)
 
 
   link *op = nexttoplevel(start, RIGHT, sizeof(asgnops)/sizeof(int), asgnops);
-  assert(start != op); // no empty assignment
+  // assert(start != op); // no empty assignment
+  testerr(start != op, "parseasgnexpr: empty assignment"); // no empty assignment
   
   if(!op)
   {
@@ -1853,7 +1861,8 @@ expr *parseasgnexpr(link *start)
 
 expr *parsecondexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parsecondexpr: null start");
   leftend(start);
 
   int ql[] = {QUESTION};
@@ -1861,7 +1870,8 @@ expr *parsecondexpr(link *start)
 
   link *quest = nexttoplevel(start, RIGHT, 1, ql);
 
-  assert(start != quest);
+  // assert(start != quest);
+  testerr(start != quest, "parsecondexpr: empty question");
 
   if(!quest)
     return parselorexpr(start);
@@ -1870,7 +1880,8 @@ expr *parsecondexpr(link *start)
   // putd(1);
   link *colon = findmatch(quest, RIGHT, QUESTION, COLON);
   // putd(2);
-  assert(quest + 1 != colon);
+  // assert(quest + 1 != colon);
+  testerr(quest + 1 != colon, "parsecondexpr: empty left branch");
   // putd(3);
   sever(quest);
   sever(colon);
@@ -1886,17 +1897,20 @@ expr *parsecondexpr(link *start)
 // parse LTR binary expression, a very common expression type, which can be generalized
 expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parseltrbinexpr: empty start");
   rightend(start);
   link *op = nexttoplevel(start, LEFT, num, atoms);
 
   if(!op)
     return down(start);
 
-  assert(start != op); // both unary and binary require a right arg
+  // assert(start != op); // both unary and binary require a right arg
+  testerr(start != op, "parseltrbinexpr: empty right arg"); // both unary and binary require a right arg
   if(!op->left) // no left arg; it's in unary form
   {
-    assert(canbeunary[op->cont.tok->atom.cont]);
+    // assert(canbeunary[op->cont.tok->atom.cont]);
+    testerr(canbeunary[op->cont.tok->atom.cont], "parseltrbinexpr: empty left arg");
     return down(start);
   }
   // puts("iuieiei");
@@ -1997,7 +2011,8 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parsecastexpr: empty start");
   leftend(start);
 
   if(lisatom(start, PARENOP) && isdeclspec(*start->right->cont.tok)) // it's a cast
@@ -2023,7 +2038,8 @@ expr *parsecastexpr(link *start)
 
 expr *parseunaryexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parseunaryexpr: empty start");
   leftend(start);
 
   int optype;
@@ -2093,7 +2109,8 @@ expr *parseunaryexpr(link *start)
 
 expr *parsetypename(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parsetypename: empty start");
   leftend(start);
 
   // convert to token list
@@ -2109,7 +2126,8 @@ expr *parsetypename(link *start)
 
 expr *parsepostexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parsepostexpr: empty start");
   rightend(start);
 
   if(lisatom(start, INC)) // a++
@@ -2225,7 +2243,8 @@ expr *parsearglist(link *start)
   for(int i = 0; i < numargs; i++)
   {
     comma = nexttoplevel(start, RIGHT, 1, cl);
-    assert(comma != start); // no empty args
+    // assert(comma != start); // no empty args
+    testerr(comma != start, "parsearglist: empty arg"); // no empty args
 
     if(comma) // if comma == NULL, last arg only severs on left
     {
@@ -2248,14 +2267,16 @@ expr *parsearglist(link *start)
 
 expr *parseprimexpr(link *start)
 {
-  assert(start);
+  // assert(start);
+  testerr(start, "parseprimexpr: empty start");
   leftend(start);
   
 
   if(lisatom(start, PARENOP))
   {
     link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
-    assert(cl->right == NULL); // should be at far right side
+    // assert(cl->right == NULL); // should be at far right side
+    testerr(cl->right == NULL, "parseprimexpr: extra tokens after closing parenthesis"); // should be at far right side
     
     start->right->left = NULL;
     cl->left->right = NULL;
@@ -2263,8 +2284,10 @@ expr *parseprimexpr(link *start)
   }
 
   // otherwise only one link
-  assert(!start->left);
-  assert(!start->right);
+  // assert(!start->left);
+  testerr(!start->left, "parseprimexpr: extra tokens on left");
+  // assert(!start->right);
+  testerr(!start->right, "parseprimexpr: extra tokens on right");
 
   expr *newe = makeexpr(PRIM_E, -1, 0);
   // not sure if the following _Os are necessary
@@ -2302,6 +2325,8 @@ int main()
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
+
+  // errors = makelist(sizeof(char *));
 
   assert(sizeof(float) == 4); // there is no int32_t analog for floats
 
