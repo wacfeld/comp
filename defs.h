@@ -21,6 +21,8 @@
 
 
 #define putd(x) printf(#x ": %d\n", x)
+#define DEBUG 0
+#define here() {if(DEBUG) {printf("%d %s\n", __LINE__, __func__);}}
 #define nline() puts("")
 
 // use realloc when necessary to expand a dynamically allocated array

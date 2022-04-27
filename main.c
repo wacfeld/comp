@@ -75,15 +75,16 @@ void trysever(link *l)
   if(l->right) l->right->left = NULL;
 }
 
-void sever(link *l)
-{
-  // if(!l) return;
-  assert(l);
-  assert(l->left);
-  l->left->right = NULL;
-  assert(l->right);
-  l->right->left = NULL;
-}
+#define sever(l) {  testerr(l->left, "couldn't sever left");  l->left->right = NULL;  testerr(l->right, "couldn't sever right");  l->right->left = NULL;}
+// void sever(link *l)
+// {
+//   // if(!l) return;
+//   assert(l);
+//   assert(l->left);
+//   l->left->right = NULL;
+//   assert(l->right);
+//   l->right->left = NULL;
+// }
 
 int corresp(int num, int *a, int *b, int x)
 {
@@ -438,13 +439,11 @@ void putll(link *l) // put linked list
   {
     if(l->type == TOK_L)
     {
-      printf("TOKEN: ");
       puttok(*l->cont.tok);
     }
 
     if(l->type == EXPR_L)
     {
-      printf("EXPR:  ");
       
       // puts(hr_expr[l->cont.exp->type]);
     }
@@ -1829,6 +1828,7 @@ expr *parseexpr(link *start)
   // comma->right->left = NULL;
   // comma->left->right = NULL;
   // putd(1);
+  here();
   sever(comma);
 
   expr *e1 = parseexpr(comma->left);
@@ -1885,6 +1885,7 @@ expr *parseasgnexpr(link *start)
   // op->left->right = NULL;
 
   // putd(2);
+  here();
   sever(op);
 
   expr *e1 = parseunaryexpr(start);
@@ -1920,7 +1921,9 @@ expr *parsecondexpr(link *start)
   // assert(quest + 1 != colon);
   testerr(quest + 1 != colon, "parsecondexpr: empty left branch");
   // putd(3);
+  here();
   sever(quest);
+  here();
   sever(colon);
 
   expr *e1 = parselorexpr(quest->left);
@@ -1955,10 +1958,14 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
   // backup linked list so we can restore later
   int len = lllen(start);
   link **backup = malloc(sizeof(link *)*(len + 2)); // number of links + 2 for NULL on each end
+  // putd(len);
   link *temp = start;
   leftend(temp);
   for(int i = 1; i <= len; i++)
   {
+    // puts("backing up");
+    // puttok(*temp->cont.tok);
+    // nline();nline();
     backup[i] = temp;
     temp = temp->right;
   }
@@ -2007,6 +2014,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
     free(backup);
     expr *e2 = down(start);
+    if(!e2) return NULL;
 
     expr *newe = makeexpr(etype, optype, 2, e1, e2);
     return newe;
@@ -2035,7 +2043,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
 expr *parselorexpr(link *start)
 {
-  // puts("parselorexpr");
+  here();
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
   return parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
@@ -2043,7 +2051,7 @@ expr *parselorexpr(link *start)
 
 expr *parselandexpr(link *start)
 {
-  // puts("parselandexpr");
+  here();
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   return parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
@@ -2051,7 +2059,7 @@ expr *parselandexpr(link *start)
 
 expr *parseorexpr(link *start)
 {
-  // puts("parseorexpr");
+  here();
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
   return parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
@@ -2059,7 +2067,7 @@ expr *parseorexpr(link *start)
 
 expr *parsexorexpr(link *start)
 {
-  // puts("parsexorexpr");
+  here();
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
   return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
@@ -2067,7 +2075,7 @@ expr *parsexorexpr(link *start)
 
 expr *parseandexpr(link *start)
 {
-  // puts("parseandexpr");
+  here();
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   return parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
@@ -2075,7 +2083,7 @@ expr *parseandexpr(link *start)
 
 expr *parseeqexpr(link *start)
 {
-  // puts("parseeqexpr");
+  here();
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   return parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
@@ -2083,7 +2091,7 @@ expr *parseeqexpr(link *start)
 
 expr *parserelexpr(link *start)
 {
-  // puts("parserelexpr");
+  here();
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   return parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
@@ -2091,7 +2099,7 @@ expr *parserelexpr(link *start)
 
 expr *parseshiftexpr(link *start)
 {
-  // puts("parseshiftexpr");
+  here();
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   return parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
@@ -2099,7 +2107,7 @@ expr *parseshiftexpr(link *start)
 
 expr *parseaddexpr(link *start)
 {
-  // puts("parseaddexpr");
+  here();
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
   return parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
@@ -2107,7 +2115,7 @@ expr *parseaddexpr(link *start)
 
 expr *parsemultexpr(link *start)
 {
-  // puts("parsemultexpr");
+  here();
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   return parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
@@ -2115,6 +2123,7 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
+  here();
   // assert(start);
   testerr(start, "parsecastexpr: empty start");
 
@@ -2127,6 +2136,7 @@ expr *parsecastexpr(link *start)
   // nline();
 
   leftend(start);
+  // puttok(*start->cont.tok);
 
   if(lisatom(start, PARENOP) && isdeclspec(*start->right->cont.tok)) // it's a cast
   {
@@ -2135,6 +2145,7 @@ expr *parsecastexpr(link *start)
 
     start->right->left = NULL;
     // putd(5);
+    here();
     sever(cl);
     // cl->left->right = NULL;
     
@@ -2149,6 +2160,11 @@ expr *parsecastexpr(link *start)
 
   else // unary expr
   {
+    // here();
+    // puttok(*start->cont.tok);
+    // putd(start->left);
+    // putd(start->right);
+    // nline();nline();
     expr *e = parseunaryexpr(start);
     // putd(e);
     return e;
@@ -2157,9 +2173,13 @@ expr *parsecastexpr(link *start)
 
 expr *parseunaryexpr(link *start)
 {
+  here();
   // assert(start);
   testerr(start, "parseunaryexpr: empty start");
   leftend(start);
+  // here();
+  // putd(start);
+  // puttok(*start->cont.tok);
 
   int optype;
 
@@ -2176,7 +2196,13 @@ expr *parseunaryexpr(link *start)
 
   if(lisunaryop(start))
   {
+    // here();
+    // putd(start->left);
+    // putd(start->right);
+    // here();
+    testerr(start->right, "parseunaryexpr: no operand following unary operator");
     start->right->left = NULL;
+    // here();
     expr *e = parsecastexpr(start->right);
     // testerr(e, "parseunaryexpr: null castexpr below unary op");
     if(!e) return NULL;
@@ -2236,6 +2262,7 @@ expr *parseunaryexpr(link *start)
 
 expr *parsetypename(link *start)
 {
+  here();
   // assert(start);
   testerr(start, "parsetypename: empty start");
   leftend(start);
@@ -2253,6 +2280,7 @@ expr *parsetypename(link *start)
 
 expr *parsepostexpr(link *start)
 {
+  here();
   // assert(start);
   testerr(start, "parsepostexpr: empty start");
   rightend(start);
@@ -2308,6 +2336,7 @@ expr *parsepostexpr(link *start)
     if(op->left != NULL) // if NULL, it's a (primary-expression)
     {
       // putd(6);
+      here();
       sever(op);
       // printf("%p\n", start->left);
       if(start->left) start->left->right = NULL; // could possibly be set NULL by the above sever()
@@ -2328,6 +2357,7 @@ expr *parsepostexpr(link *start)
     link *op = findmatch(start, LEFT, BRACKCL, BRACKOP);
 
     // putd(7);
+    here();
     sever(op);
     start->left->right = NULL;
 
@@ -2347,7 +2377,8 @@ expr *parsepostexpr(link *start)
 
 expr *parsearglist(link *start)
 {
-    puts("hi");
+  here();
+    // puts("hi");
     // printf("%p\n", start);
   if(!start) // when severing the parens, this gets set to NULL if the parens are side by side (0 args)
   {
@@ -2386,6 +2417,7 @@ expr *parsearglist(link *start)
     if(comma) // if comma == NULL, last arg only severs on left
     {
       // putd(8);
+      here();
       sever(comma);
     }
     start->left = NULL;
@@ -2405,6 +2437,7 @@ expr *parsearglist(link *start)
 
 expr *parseprimexpr(link *start)
 {
+  here();
   // assert(start);
   testerr(start, "parseprimexpr: empty start");
   leftend(start);

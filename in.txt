@@ -1,1 +1,1 @@
-+sizeof *a
+(int)- --a + -b[(int) 5+6]
