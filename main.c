@@ -1832,7 +1832,9 @@ expr *parseexpr(link *start)
   sever(comma);
 
   expr *e1 = parseexpr(comma->left);
+  if(!e1) return NULL;
   expr *e2 = parseasgnexpr(start);
+  if(!e2) return NULL;
 
   expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
   return newe;
@@ -1886,7 +1888,9 @@ expr *parseasgnexpr(link *start)
   sever(op);
 
   expr *e1 = parseunaryexpr(start);
+  if(!e1) return NULL;
   expr *e2 = parseasgnexpr(op->right);
+  if(!e2) return NULL;
 
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
   return newe;
@@ -1920,8 +1924,11 @@ expr *parsecondexpr(link *start)
   sever(colon);
 
   expr *e1 = parselorexpr(quest->left);
+  if(!e1) return NULL;
   expr *e2 = parseexpr(quest->right);
+  if(!e2) return NULL;
   expr *e3 = parsecondexpr(colon->right);
+  if(!e3) return NULL;
 
   expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
   return newe;
@@ -1983,6 +1990,8 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
     if(!e1) // parsing left branch failed
     {
+      // putd(op);
+      // puttok(*op->cont.tok);
       testerr(lisin(op, cbulen, canbeunary), "parseltrbinexpr: binary operator trying to be unary"); // make sure it can be a unary operator
       
       curl = op->left; // move over the op we just tried
@@ -2106,13 +2115,22 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
-  // puts("parsecastexpr");
   // assert(start);
   testerr(start, "parsecastexpr: empty start");
+
+  // leftend(start);
+  // puts("parsecastexpr");
+  // puttok(*start->cont.tok);
+  // rightend(start);
+  // puttok(*start->cont.tok);
+  // nline();
+  // nline();
+
   leftend(start);
 
   if(lisatom(start, PARENOP) && isdeclspec(*start->right->cont.tok)) // it's a cast
   {
+    // puts("hi");
     link *cl = findmatch(start, RIGHT, PARENOP, PARENCL);
 
     start->right->left = NULL;
@@ -2121,14 +2139,19 @@ expr *parsecastexpr(link *start)
     // cl->left->right = NULL;
     
     expr *e1 = parsetypename(start->right);
+    if(!e1) return NULL;
     expr *e2 = parsecastexpr(cl->right);
+    if(!e2) return NULL;
     
     expr *newe = makeexpr(CAST_E, CAST_O, 2, e1, e2);
+    return newe;
   }
 
   else // unary expr
   {
-    return parseunaryexpr(start);
+    expr *e = parseunaryexpr(start);
+    // putd(e);
+    return e;
   }
 }
 
@@ -2155,6 +2178,8 @@ expr *parseunaryexpr(link *start)
   {
     start->right->left = NULL;
     expr *e = parsecastexpr(start->right);
+    // testerr(e, "parseunaryexpr: null castexpr below unary op");
+    if(!e) return NULL;
     expr *newe = makeexpr(UNAR_E, optype, 1, e);
 
     return newe;
@@ -2162,6 +2187,9 @@ expr *parseunaryexpr(link *start)
 
   else if(lisatom(start, SIZEOF))
   {
+    // puts("hi");
+    testerr(start->right, "parseunaryexpr: sizeof has no argument");
+    // puts("hi");
     if(lisatom(start->right, PARENOP) && isdeclspec(*start->right->right->cont.tok)) // type-name
     {
       link *cl = findmatch(start->right, RIGHT, PARENOP, PARENCL);
@@ -2170,6 +2198,7 @@ expr *parseunaryexpr(link *start)
       cl->left->right = NULL;
 
       expr *e = parsetypename(start->right->right);
+      if(!e) return NULL;
       e->args = NULL;
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
 
@@ -2181,6 +2210,7 @@ expr *parseunaryexpr(link *start)
       start->right->left = NULL;
 
       expr *e = parseunaryexpr(start->right);
+      if(!e) return NULL;
       e->ct = NULL;
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
 
@@ -2192,6 +2222,7 @@ expr *parseunaryexpr(link *start)
   {
     start->right->left = NULL;
     expr *e = parseunaryexpr(start->right);
+    if(!e) return NULL;
     expr *newe = makeexpr(UNAR_E, optype, 1, e);
 
     return newe;
@@ -2230,6 +2261,7 @@ expr *parsepostexpr(link *start)
   {
     start->left->right = NULL;
     expr *e = parsepostexpr(start->left);
+    if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTINC_O, 1, e);
     return newe;
@@ -2238,6 +2270,7 @@ expr *parsepostexpr(link *start)
   {
     start->left->right = NULL;
     expr *e = parsepostexpr(start->left);
+    if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTDEC_O, 1, e);
     return newe;
@@ -2247,8 +2280,10 @@ expr *parsepostexpr(link *start)
   {
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
+    if(!e1) return NULL;
     start->left = NULL;
     expr *e2 = parseprimexpr(start);
+    if(!e2) return NULL;
 
     expr *newe = makeexpr(POST_E, STRUCT_O, 2, e1, e2);
     return newe;
@@ -2257,8 +2292,10 @@ expr *parsepostexpr(link *start)
   {
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
+    if(!e1) return NULL;
     start->left = NULL;
     expr *e2 = parseprimexpr(start);
+    if(!e2) return NULL;
 
     expr *newe = makeexpr(POST_E, PSTRUCT_O, 2, e1, e2);
     return newe;
@@ -2276,7 +2313,9 @@ expr *parsepostexpr(link *start)
       if(start->left) start->left->right = NULL; // could possibly be set NULL by the above sever()
 
       expr *e1 = parsepostexpr(op->left);
+      if(!e1) return NULL;
       expr *e2 = parsearglist(start->left);
+      if(!e2) return NULL;
       // printf("%p\n", start->left);
 
       expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
@@ -2293,7 +2332,9 @@ expr *parsepostexpr(link *start)
     start->left->right = NULL;
 
     expr *e1 = parsepostexpr(op->left);
+    if(!e1) return NULL;
     expr *e2 = parseexpr(start->left);
+    if(!e2) return NULL;
 
     expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);    return newe;
   }
@@ -2350,6 +2391,7 @@ expr *parsearglist(link *start)
     start->left = NULL;
 
     expr *e = parseasgnexpr(start);
+    if(!e) return NULL;
     newe->args[i] = e;
 
     if(comma) // if not end, move on

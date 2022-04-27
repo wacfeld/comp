@@ -1,1 +1,1 @@
-sizeof +a
++sizeof *a
