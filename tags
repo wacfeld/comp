@@ -306,40 +306,40 @@ numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
-parseaddexpr	oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
+parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
-parseandexpr	oldparser.c	/^link *parseandexpr(link *chain)$/;"	f
+parseandexpr	unused/oldparser.c	/^link *parseandexpr(link *chain)$/;"	f
 parsearglist	main.c	/^expr *parsearglist(link *start)$/;"	f
 parseasgnexpr	main.c	/^expr *parseasgnexpr(link *start)$/;"	f
 parsecastexpr	main.c	/^expr *parsecastexpr(link *start)$/;"	f
-parsecastunaryexpr	oldparser.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
+parsecastunaryexpr	unused/oldparser.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
 parsecondexpr	main.c	/^expr *parsecondexpr(link *start)$/;"	f
-parsecondexpr	oldparser.c	/^link *parsecondexpr(link *chain)$/;"	f
+parsecondexpr	unused/oldparser.c	/^link *parsecondexpr(link *chain)$/;"	f
 parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^expr *parseeqexpr(link *start)$/;"	f
-parseeqexpr	oldparser.c	/^link *parseeqexpr(link *chain)$/;"	f
+parseeqexpr	unused/oldparser.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
 parselandexpr	main.c	/^expr *parselandexpr(link *start)$/;"	f
-parselandexpr	oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
+parselandexpr	unused/oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^expr *parselorexpr(link *start)$/;"	f
-parselorexpr	oldparser.c	/^link *parselorexpr(link *chain)$/;"	f
+parselorexpr	unused/oldparser.c	/^link *parselorexpr(link *chain)$/;"	f
 parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))$/;"	f
 parsemultexpr	main.c	/^expr *parsemultexpr(link *start)$/;"	f
-parsemultexpr	oldparser.c	/^link *parsemultexpr(link *chain)$/;"	f
+parsemultexpr	unused/oldparser.c	/^link *parsemultexpr(link *chain)$/;"	f
 parseorexpr	main.c	/^expr *parseorexpr(link *start)$/;"	f
-parseorexpr	oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
+parseorexpr	unused/oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
 parsepostexpr	main.c	/^expr *parsepostexpr(link *start)$/;"	f
-parsepostexpr	oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
+parsepostexpr	unused/oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	main.c	/^expr *parseprimexpr(link *start)$/;"	f
-parseprimexpr	oldparser.c	/^link *parseprimexpr(link *chain)$/;"	f
+parseprimexpr	unused/oldparser.c	/^link *parseprimexpr(link *chain)$/;"	f
 parserelexpr	main.c	/^expr *parserelexpr(link *start)$/;"	f
-parserelexpr	oldparser.c	/^link *parserelexpr(link *chain)$/;"	f
+parserelexpr	unused/oldparser.c	/^link *parserelexpr(link *chain)$/;"	f
 parseshiftexpr	main.c	/^expr *parseshiftexpr(link *start)$/;"	f
-parseshiftexpr	oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
+parseshiftexpr	unused/oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
 parsetypename	main.c	/^expr *parsetypename(link *start)$/;"	f
 parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
-parsexorexpr	oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
+parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
@@ -356,7 +356,7 @@ right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
-sever	main.c	78;"	d	file:
+sever	main.c	1030;"	d	file:
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g

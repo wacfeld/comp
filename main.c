@@ -24,164 +24,8 @@ void puttok(token t);
 #define RIGHT 1
 #define LEFT 0
 
-int eistype(expr *e, int type);
-int isasgnop(int);
-void putexpr(expr *e, int space)
-{
-  int *types = (int *) e->type->cont;
-  int nt = e->type->n;
 
-  for(int i = 0; i < space; i++)
-  {
-    putchar(' ');
-  }
-
-  for(int i = 0; i < nt; i++)
-  {
-    printf("%s ", hr_expr[types[i]]);
-  }
-
-  // putd(e->optype);
-  // putd(SUB_O);
-  // if(isasgnop(e->optype))
-  // {
-  //   printf(": %s", hrat[e->optype]);
-  // }
-  // else
-  // {
-    printf(": %s", hropt[e->optype]);
-  // }
-
-  if(eistype(e, PRIM_E))
-  {
-    printf(" : ");
-    puttok(*e->tok);
-  }
-  printf(" : %d ", e->numargs);
-  putchar('\n');
-
-
-  for(int i = 0; i < e->numargs; i++)
-  {
-    putexpr(e->args[i], space+2);
-  }
-}
-
-// not as severe as sever; does not give error if it encounters NULL
-void trysever(link *l)
-{
-  if(!l) return;
-  if(l->left) l->left->right = NULL;
-  if(l->right) l->right->left = NULL;
-}
-
-#define sever(l) {  testerr(l->left, "couldn't sever left");  l->left->right = NULL;  testerr(l->right, "couldn't sever right");  l->right->left = NULL;}
-// void sever(link *l)
-// {
-//   // if(!l) return;
-//   assert(l);
-//   assert(l->left);
-//   l->left->right = NULL;
-//   assert(l->right);
-//   l->right->left = NULL;
-// }
-
-int corresp(int num, int *a, int *b, int x)
-{
-  for(int i = 0; i < num; i++)
-  {
-    if(a[i] == x)
-      return b[i];
-  }
-  // testerr(0, "corresp: x not in a");
-  assert(!"corresp: x not in a");
-}
-
-void etypeadd(expr *e, int type)
-{
-  if(e->type == NULL) 
-    e->type = makeset(sizeof(int));
-  setins(e->type, &type);
-}
-
-// TODO eistype is sometimes broken, sometimes not
-int eistype(expr *e, int type)
-{
-  if(e->type == NULL)
-    return 0;
-
-  else
-  {
-  // putd(type);
-    return inset(e->type, &type);
-  }
-}
-
-int leistype(link *l, int type)
-{
-  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp, type);
-}
-
-
-token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
-{
-  link *start = ll; // save
-  int len = 0; // find length
-  while(ll)
-  {
-    len++;
-    ll = ll->right;
-  }
-
-  ll = start; // reset
-  
-  // allocate enough for tokens + NOTOK
-  token *tokl = malloc(sizeof(token) * (len+1));
-  int i = 0;
-  
-  while(ll) // go through and convert to tokens
-  {
-    if(ll->type == TOK_L) // already token, transfer
-      tokl[i++] = *ll->cont.tok;
-    else // expression
-    {
-      tokl[i++] = *ll->cont.exp->tok;
-    }
-    ll = ll->right;
-  }
-
-  // NOTOK
-  token nt;
-  nt.gen.type = NOTOK;
-  tokl[i] = nt;
-
-  return tokl;
-}
-
-link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
-{
-  int len = 0;
-  while(!(tokl[len].gen.type == NOTOK)) len++;
-  
-  link *ll = malloc(sizeof(link) * len);
-
-  for(int i = 0; i < len; i++)
-  {
-    ll[i].type = TOK_L;
-    ll[i].cont.tok = tokl+i;
-  }
-  
-  ll[0].left = NULL;
-  ll[len-1].right = NULL;
-  for(int i = 0; i < len-1; i++)
-  {
-    ll[i].right = ll+i+1;
-    ll[i+1].left = ll+i;
-  }
-
-  return ll;
-}
-
+//* lexer
 // replaces backslash + newline with nothing
 void splice(char *src)
 {
@@ -1126,6 +970,168 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
     //   putchar(src[i]);
     assert(strchr(banned, src[i]) == NULL || quot[i]);
   }
+}
+
+//* parser
+
+
+int eistype(expr *e, int type);
+int isasgnop(int);
+
+void putexpr(expr *e, int space)
+{
+  int *types = (int *) e->type->cont;
+  int nt = e->type->n;
+
+  for(int i = 0; i < space; i++)
+  {
+    putchar(' ');
+  }
+
+  for(int i = 0; i < nt; i++)
+  {
+    printf("%s ", hr_expr[types[i]]);
+  }
+
+  // putd(e->optype);
+  // putd(SUB_O);
+  // if(isasgnop(e->optype))
+  // {
+  //   printf(": %s", hrat[e->optype]);
+  // }
+  // else
+  // {
+    printf(": %s", hropt[e->optype]);
+  // }
+
+  if(eistype(e, PRIM_E))
+  {
+    printf(" : ");
+    puttok(*e->tok);
+  }
+  printf(" : %d ", e->numargs);
+  putchar('\n');
+
+
+  for(int i = 0; i < e->numargs; i++)
+  {
+    putexpr(e->args[i], space+2);
+  }
+}
+
+// not as severe as sever; does not give error if it encounters NULL
+void trysever(link *l)
+{
+  if(!l) return;
+  if(l->left) l->left->right = NULL;
+  if(l->right) l->right->left = NULL;
+}
+
+#define sever(l) {  testerr(l->left, "couldn't sever left");  l->left->right = NULL;  testerr(l->right, "couldn't sever right");  l->right->left = NULL;}
+// void sever(link *l)
+// {
+//   // if(!l) return;
+//   assert(l);
+//   assert(l->left);
+//   l->left->right = NULL;
+//   assert(l->right);
+//   l->right->left = NULL;
+// }
+
+int corresp(int num, int *a, int *b, int x)
+{
+  for(int i = 0; i < num; i++)
+  {
+    if(a[i] == x)
+      return b[i];
+  }
+  // testerr(0, "corresp: x not in a");
+  assert(!"corresp: x not in a");
+}
+
+void etypeadd(expr *e, int type)
+{
+  if(e->type == NULL) 
+    e->type = makeset(sizeof(int));
+  setins(e->type, &type);
+}
+
+// TODO eistype is sometimes broken, sometimes not
+int eistype(expr *e, int type)
+{
+  if(e->type == NULL)
+    return 0;
+
+  else
+  {
+  // putd(type);
+    return inset(e->type, &type);
+  }
+}
+
+int leistype(link *l, int type)
+{
+  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp, type);
+}
+
+
+token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
+{
+  link *start = ll; // save
+  int len = 0; // find length
+  while(ll)
+  {
+    len++;
+    ll = ll->right;
+  }
+
+  ll = start; // reset
+  
+  // allocate enough for tokens + NOTOK
+  token *tokl = malloc(sizeof(token) * (len+1));
+  int i = 0;
+  
+  while(ll) // go through and convert to tokens
+  {
+    if(ll->type == TOK_L) // already token, transfer
+      tokl[i++] = *ll->cont.tok;
+    else // expression
+    {
+      tokl[i++] = *ll->cont.exp->tok;
+    }
+    ll = ll->right;
+  }
+
+  // NOTOK
+  token nt;
+  nt.gen.type = NOTOK;
+  tokl[i] = nt;
+
+  return tokl;
+}
+
+link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
+{
+  int len = 0;
+  while(!(tokl[len].gen.type == NOTOK)) len++;
+  
+  link *ll = malloc(sizeof(link) * len);
+
+  for(int i = 0; i < len; i++)
+  {
+    ll[i].type = TOK_L;
+    ll[i].cont.tok = tokl+i;
+  }
+  
+  ll[0].left = NULL;
+  ll[len-1].right = NULL;
+  for(int i = 0; i < len-1; i++)
+  {
+    ll[i].right = ll+i+1;
+    ll[i+1].left = ll+i;
+  }
+
+  return ll;
 }
 
 int iskeyword(token *t, enum keyword k)
@@ -2479,6 +2485,7 @@ expr *parseprimexpr(link *start)
   return newe;
 }
 
+//* main
 int main()
 {
   // set *s = makeset(sizeof(int));
