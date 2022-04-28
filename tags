@@ -32,9 +32,9 @@ CAST	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, I
 CAST_E	defs.h	/^  CAST_E,$/;"	e	enum:expr_type
 CAST_O	defs.h	/^  CAST_O, \/\/ likely unnecessary$/;"	e	enum:optype
 CHAR	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
-CHAR_MAX	defs.h	35;"	d
+CHAR_MAX	defs.h	37;"	d
 CHAR_O	defs.h	/^  CHAR_O,$/;"	e	enum:optype
-CHAR_SIZE	defs.h	36;"	d
+CHAR_SIZE	defs.h	38;"	d
 COLON	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 COMMA	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 COMMA_E	defs.h	/^  COMMA_E,$/;"	e	enum:expr_type
@@ -43,7 +43,7 @@ COMP_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;
 COND_E	defs.h	/^  COND_E,$/;"	e	enum:expr_type
 CONST_E	defs.h	/^  CONST_E,$/;"	e	enum:expr_type
 DATASTRUCT	datastruct.h	2;"	d
-DEBUG	defs.h	24;"	d
+DEBUG	defs.h	26;"	d
 DEC	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 DEFS	defs.h	2;"	d
 DEREF	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -64,7 +64,7 @@ EXPR_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 EXPR_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 FLOATING	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 FLOAT_O	defs.h	/^  FLOAT_O,$/;"	e	enum:optype
-FLOAT_SIZE	defs.h	37;"	d
+FLOAT_SIZE	defs.h	39;"	d
 FUN_O	defs.h	/^  FUN_O,$/;"	e	enum:optype
 GEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 GEQ_O	defs.h	/^  GEQ_O,$/;"	e	enum:optype
@@ -75,7 +75,7 @@ IDENT_O	defs.h	/^  IDENT_O,$/;"	e	enum:optype
 INC	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 INTEGER	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 INT_O	defs.h	/^  INT_O,$/;"	e	enum:optype
-INT_SIZE	defs.h	38;"	d
+INT_SIZE	defs.h	40;"	d
 ITER_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 JUMP_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 KEYWORD	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
@@ -113,7 +113,7 @@ K_WHILE	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTI
 LAB_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 LAND_E	defs.h	/^  LAND_E,$/;"	e	enum:expr_type
 LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
-LEFT	main.c	25;"	d	file:
+LEFT	main.c	29;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ_O	defs.h	/^  LEQ_O,$/;"	e	enum:optype
 LESS	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -155,7 +155,7 @@ PRIM_E	defs.h	/^  PRIM_E,$/;"	e	enum:expr_type
 PSTRUCT_O	defs.h	/^  PSTRUCT_O, \/\/ ->$/;"	e	enum:optype
 QUESTION	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
-RIGHT	main.c	24;"	d	file:
+RIGHT	main.c	28;"	d	file:
 SEL_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 SEMICOLON	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 SHIFT_E	defs.h	/^  SHIFT_E,$/;"	e	enum:expr_type
@@ -195,7 +195,7 @@ XOREQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, 
 XOREQ_O	defs.h	/^  XOREQ_O,$/;"	e	enum:optype
 XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
-alloc	defs.h	31;"	d
+alloc	defs.h	33;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon15
@@ -241,15 +241,14 @@ getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
-here	defs.h	25;"	d
+here	defs.h	27;"	d
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hropt	defs.h	/^char *hropt[1000] =$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon12	typeref:struct:__anon12::__anon17
 ident	defs.h	/^  } ident;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon5
-init	defs.h	/^typedef struct init$/;"	s
-init	defs.h	/^} init;$/;"	t	typeref:struct:init
+init	defs.h	/^struct init$/;"	s
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon8
@@ -272,7 +271,6 @@ isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon12::__anon14
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon4
 keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keywords	defs.h	/^char *keywords[] =$/;"	v
-l	defs.h	/^  struct init *l;$/;"	m	struct:init	typeref:struct:init::init
 last	datastruct.c	/^void *last(list *l)$/;"	f
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	14;"	d	file:
@@ -291,6 +289,7 @@ listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
 lisunaryop	main.c	/^int lisunaryop(link *l) \/\/ & * + - ~ !$/;"	f
 ll2tokl	main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 lllen	main.c	/^int lllen(link *l)$/;"	f
+lst	defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
@@ -307,7 +306,7 @@ name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
-nline	defs.h	26;"	d
+nline	defs.h	28;"	d
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
@@ -356,16 +355,16 @@ putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
-read	defs.h	33;"	d
+read	defs.h	35;"	d
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
-resize	defs.h	29;"	d
+resize	defs.h	31;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1071;"	d	file:
+sever	main.c	1075;"	d	file:
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
@@ -373,7 +372,7 @@ storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon1
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon6
-testerr	main.c	19;"	d	file:
+testerr	main.c	23;"	d	file:
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon11
 tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr

@@ -16,6 +16,10 @@
 
 // list *errors; // list of error messages
 char *error;
+
+// for non-fatal errors, which may occur when parsing expressions
+// e.x. we misinterpret a unary * as binary *, and have to try again
+// e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
 void puttok(token t);
@@ -1659,6 +1663,81 @@ init *parseinit(link *start)
 {
   assert(start);
   leftend(start);
+
+  struct init init = malloc(sizeof(init));
+  if(lisatom(start, BRACEOP)) // {initializer-list}
+  {
+    // initialize init accordingly
+    init->islist = 1;
+    init->e = NULL;
+    // we will initialize init->lst and init->len once we know the length
+
+    link *end = start;
+    rightend(end);
+    assert(lisatom(end, BRACECL)); // opening brace needs closing brace
+    assert(start->right != end); // no empty initializer braces under ISO C
+    
+    // remove surrounding braces
+    start = start->right;
+    start->left = NULL;
+    end = end->left;
+    end->right = NULL;
+
+    if(lisatom(end, COMMA)) // optional ending comma: remove
+    {
+      assert(start != end); // comma must not be alone; something must precede it
+      end = end->left;
+      end->right = NULL;
+    }
+
+    // the following is very similar to parsearglist(), except that this is recursive
+    
+    // count commas
+    int len = 1;
+    int *temp = start;
+    static int cl[] = {COMMA};
+    while((temp = nexttoplevel(temp, RIGHT, 1, cl)) != NULL)
+    {
+      len++;
+      temp = temp->right;
+    }
+
+    // complete initialization
+    init->len = len;
+    init->lst = malloc(sizeof(struct init *) * len);
+    
+    link *comma;
+    for(int i = 0; i < len; i++)
+    {
+      // find next comma
+      comma = nexttoplevel(start, RIGHT, 1, cl);
+      assert(comma != start);
+
+      // separate
+      if(comma) // if at the end no severing needed
+        sever(comma);
+      start->left = NULL;
+      
+      struct init *subinit = parseinit(start);
+      assert(subinit);
+      
+      // add to list
+      init->lst[i] = subinit;
+    }
+  }
+
+  else // assignment expression
+  {
+    init->islist = 0;
+    init->lst = NULL;
+    init->len = 0;
+
+    expr *e = parseasgnexpr(start);
+    assert(e);
+    init->e = e;
+  }
+
+  return init;
 }
 
 

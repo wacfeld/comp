@@ -21,6 +21,8 @@
 
 
 #define putd(x) printf(#x ": %d\n", x)
+
+// when debug is on all here() calls activate
 #define DEBUG 0
 #define here() {if(DEBUG) {printf("%d %s\n", __LINE__, __func__);}}
 #define nline() puts("")
@@ -502,14 +504,14 @@ int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
 // initializer, can be just an expression, or a list of initializers!
-typedef struct init
+struct init
 {
   int islist;
-  struct init *l;
+  struct init **lst;
   int len;
 
   expr *e;
-} init;
+};
 
 
 #endif
