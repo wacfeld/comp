@@ -1,1 +1,1 @@
-x y
+sizeof(int const const volatile extern *) 

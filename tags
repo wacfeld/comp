@@ -208,7 +208,7 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon2	typeref:struct:__anon2::__anon7
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon2::__anon5
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon2::__anon6
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon2::__anon7
@@ -295,8 +295,8 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -341,6 +341,7 @@ parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
+putct	main.c	/^void putct(ctype *ct)$/;"	f
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	test.c	2;"	d	file:
@@ -354,11 +355,11 @@ resize	defs.h	29;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1030;"	d	file:
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
+sever	main.c	1071;"	d	file:
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon1
@@ -372,7 +373,7 @@ tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solut
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	defs.h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon2
-tokl2ll	main.c	/^link *tokl2ll(token *tokl) \/\/ NOTOK-terminated token list to linked list$/;"	f
+tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 trysever	main.c	/^void trysever(link *l)$/;"	f
 type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon13
 type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon14

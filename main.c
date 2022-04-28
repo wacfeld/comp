@@ -978,6 +978,41 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 int eistype(expr *e, int type);
 int isasgnop(int);
 
+void puttypemod(typemod ts);
+
+void putct(ctype *ct)
+{
+
+  if(ct->typemods)
+  {
+    typemod *tms = (typemod *) ct->typemods->cont;
+    int tmlen = ct->typemods->n;
+    for(int j = 0; j < tmlen; j++)
+    {
+      puttypemod(tms[j]);
+    }
+  }
+
+  if(ct->storespec != -1)
+  {
+    printf("%s ", keywords[ct->storespec]);
+  }
+
+  int *tqs = (int *) ct->typequals->cont;
+  int len = ct->typequals->n;
+  
+  for(int i = 0; i < len; i++)
+    printf("%s ", keywords[tqs[i]]);
+
+  int *tss = (int *) ct->typespecs->cont;
+  len = ct->typespecs->n;
+  for(int i = 0; i < len; i++)
+  {
+    printf("%s ", keywords[tss[i]]);
+  }
+}
+
+
 void putexpr(expr *e, int space)
 {
   int *types = (int *) e->type->cont;
@@ -1001,6 +1036,7 @@ void putexpr(expr *e, int space)
   // }
   // else
   // {
+  if(!eistype(e, TYPENAME))
     printf(": %s", hropt[e->optype]);
   // }
 
@@ -1008,6 +1044,11 @@ void putexpr(expr *e, int space)
   {
     printf(" : ");
     puttok(*e->tok);
+  }
+  if(eistype(e, TYPENAME))
+  {
+    printf(" : ");
+    putct(e->ct);
   }
   printf(" : %d ", e->numargs);
   putchar('\n');
@@ -1110,10 +1151,11 @@ token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
   return tokl;
 }
 
-link *tokl2ll(token *tokl) // NOTOK-terminated token list to linked list
+link *tokl2ll(token *tokl, int len) // NOTOK-terminated token list to linked list
 {
-  int len = 0;
-  while(!(tokl[len].gen.type == NOTOK)) len++;
+  // int len = 0;
+  if(len == -1) // determine len via NOTOK
+    while(!(tokl[len].gen.type == NOTOK)) len++;
   
   link *ll = malloc(sizeof(link) * len);
 
@@ -1633,12 +1675,40 @@ ctype * parsedecl(token *toks, int onlydecl)
   
   ctype *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
   
+  // we now are left with a declarator-initializer list, or a function declarator along with its definition
 
-  // we now are left with a declarator-initialier list, or a function declarator along with its definition
+  // now deal with each declarator + optional initializer in sequence
+  while(1)
+  {
+    // get the declarator
+    list *l = makelist(sizeof(typemod));
+    i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
+    reverse(l); // typemods are parsed from the outside in, so now we flip that
+    
+    if(isatom(toks + i, EQ)) // initializer follows
+    {
+      i++; // move over =
+      
+      // find terminating semicolon or comma
+      // very similar to nexttoplevel, but on a token list
+      // not used often enough to warrant its own function
+      int end = 0, dep = 0;
+      while(1)
+      {
+        if(isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON))
+          break;
 
-  list *l = makelist(sizeof(typemod));
-  i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
-  reverse(l); // typemods are parsed from the outside in, so now we flip that
+        if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
+          dep++;
+        if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
+          dep--;
+
+        assert(dep >= 0);
+        assert(toks[end].gen.type != NOTOK);
+      }
+    }
+  }
+
   ct->typemods = l; // add to ct
 
   if(onlydecl) // only declaration => no initialization, function definition, etc.
@@ -2574,7 +2644,7 @@ int main()
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
-  link *chain = tokl2ll((token *)trans_unit->cont);
+  link *chain = tokl2ll((token *)trans_unit->cont, -1);
 
   // parse every top level declaration
   // translate everything into assembly

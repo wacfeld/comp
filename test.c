@@ -4,7 +4,7 @@
 
 int main()
 {
-  int int x;
+  static int x;
   
 
 }
