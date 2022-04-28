@@ -48,15 +48,6 @@ typedef enum tok_type tok_type;
 typedef enum int_len int_len;
 
 
-typedef struct
-{
-  set *typespecs;
-  set *typequals;
-  int storespec;
-
-  list *typemods;
-} ctype; // "type" is used everywhere so i call it ctype
-
 
 typedef union
 {
@@ -425,7 +416,7 @@ typedef struct expr
   struct expr **args;
   int numargs; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
-  ctype *ct; // for casts
+  decl *ct; // for casts
   // did not want to make a union for this so we just have tok and ct, both optional
 } expr;
 
@@ -512,6 +503,16 @@ struct init
 
   expr *e;
 };
+
+typedef struct
+{
+  set *typespecs;
+  set *typequals;
+  int storespec;
+
+  list *typemods;
+  struct init *init;
+} decl;
 
 
 #endif

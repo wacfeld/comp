@@ -984,7 +984,7 @@ int isasgnop(int);
 
 void puttypemod(typemod ts);
 
-void putct(ctype *ct)
+void putct(decl *ct)
 {
 
   if(ct->typemods)
@@ -1070,7 +1070,7 @@ void putinit(struct init *init, int space)
 
   if(!init->islist)
   {
-    putexpr(init->e, space);
+    putexpr(init->e, space-2);
   }
   else
   {
@@ -1610,9 +1610,9 @@ void puttypemod(typemod ts)
 }
 
 // get storespecs, typequals, and typespecs from the front of a declaration
-ctype *getdeclspecs(token *toks, int *i)
+decl *getdeclspecs(token *toks, int *i)
 {
-  ctype *ct = malloc(sizeof(ctype));
+  decl *ct = malloc(sizeof(decl));
   
   // allocate sets
   set *typespecs  = makeset(sizeof(int));
@@ -1734,6 +1734,7 @@ struct init *parseinit(link *start)
     init->len = len;
     init->lst = malloc(sizeof(struct init *) * len);
     
+    // parse subinits
     link *comma;
     for(int i = 0; i < len; i++)
     {
@@ -1748,6 +1749,8 @@ struct init *parseinit(link *start)
       
       struct init *subinit = parseinit(start);
       assert(subinit);
+      if(comma)
+        start = comma->right;
       
       // add to list
       init->lst[i] = subinit;
@@ -1771,7 +1774,7 @@ struct init *parseinit(link *start)
 
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
-ctype * parsedecl(token *toks, int onlydecl)
+decl * parsedecl(token *toks, int onlydecl)
 {
   // declaration *decl = malloc(sizeof(decl));
   
@@ -1788,7 +1791,7 @@ ctype * parsedecl(token *toks, int onlydecl)
     return NULL;
   }
   
-  ctype *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
+  decl *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
   
   // we now are left with a declarator-initializer list, or a function declarator along with its definition
 
@@ -1826,7 +1829,7 @@ ctype * parsedecl(token *toks, int onlydecl)
 
       link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
 
-      // TODO (make a recursive function which deal with everything, including array/struct inits)
+      struct init *init = parseinit(chain);
     }
   }
 
@@ -1853,7 +1856,7 @@ ctype * parsedecl(token *toks, int onlydecl)
   // // // nline();
 
 
-  // // ctype ct = {typespecs, typequals, storespecs, l};
+  // // decl ct = {typespecs, typequals, storespecs, l};
 
   // // TODO comma-separated declarations
 
@@ -2474,7 +2477,7 @@ expr *parsetypename(link *start)
   // convert to token list
   token *abstype = ll2tokl(start);
   // parse type
-  ctype *ct = parsedecl(abstype, 1);
+  decl *ct = parsedecl(abstype, 1);
 
   // put into expression
   expr *newe = makeexpr(TYPENAME, -1, 0); // optype and args don't matter for TYPENAME expr
