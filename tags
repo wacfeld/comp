@@ -324,7 +324,7 @@ parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	unused/oldparser.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
-parseinit	main.c	/^init *parseinit(link *start)$/;"	f
+parseinit	main.c	/^struct init *parseinit(link *start)$/;"	f
 parselandexpr	main.c	/^expr *parselandexpr(link *start)$/;"	f
 parselandexpr	unused/oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^expr *parselorexpr(link *start)$/;"	f
@@ -352,6 +352,7 @@ putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	test.c	2;"	d	file:
 putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
+putinit	main.c	/^void putinit(struct init *init, int space)$/;"	f
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
@@ -364,7 +365,7 @@ rightend	main.c	12;"	d	file:
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1075;"	d	file:
+sever	main.c	1093;"	d	file:
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g

@@ -1016,7 +1016,6 @@ void putct(ctype *ct)
   }
 }
 
-
 void putexpr(expr *e, int space)
 {
   int *types = (int *) e->type->cont;
@@ -1063,6 +1062,25 @@ void putexpr(expr *e, int space)
     putexpr(e->args[i], space+2);
   }
 }
+
+void putinit(struct init *init, int space)
+{
+  for(int i = 0; i < space; i++)
+    putchar(' ');
+
+  if(!init->islist)
+  {
+    putexpr(init->e, space);
+  }
+  else
+  {
+    for(int i = 0; i < init->len; i++)
+    {
+      putinit(init->lst[i], space+2);
+    }
+  }
+}
+
 
 // not as severe as sever; does not give error if it encounters NULL
 void trysever(link *l)
@@ -1658,13 +1676,15 @@ ctype *getdeclspecs(token *toks, int *i)
   return ct;
 }
 
+link *nexttoplevel(link *start, int dir, int num, int *atoms);
+expr *parseasgnexpr(link *start);
 
-init *parseinit(link *start)
+struct init *parseinit(link *start)
 {
   assert(start);
   leftend(start);
 
-  struct init init = malloc(sizeof(init));
+  struct init *init = malloc(sizeof(init));
   if(lisatom(start, BRACEOP)) // {initializer-list}
   {
     // initialize init accordingly
@@ -1694,7 +1714,7 @@ init *parseinit(link *start)
     
     // count commas
     int len = 1;
-    int *temp = start;
+    link *temp = start;
     static int cl[] = {COMMA};
     while((temp = nexttoplevel(temp, RIGHT, 1, cl)) != NULL)
     {
@@ -1796,69 +1816,69 @@ ctype * parsedecl(token *toks, int onlydecl)
         end++;
       }
 
-      link *chain = tok2ll(toks + i, end - i); // turn the initializer into a token list
+      link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
 
       // TODO (make a recursive function which deal with everything, including array/struct inits)
     }
   }
 
-  ct->typemods = l; // add to ct
+  // ct->typemods = l; // add to ct
 
-  if(onlydecl) // only declaration => no initialization, function definition, etc.
-  {
-    return ct;
-  }
-
-  // print debugging
-  // typemod *tms = (typemod *) l->cont;
-  // int tmlen = l->n;
-  // for(int j = 0; j < tmlen; j++)
+  // if(onlydecl) // only declaration => no initialization, function definition, etc.
   // {
-  //   // puttypemod(tms[j]);
+  //   return ct;
   // }
-  // int *tss = (int *) typespecs->cont;
-  // int tslen = typespecs->n;
-  // for(int j = 0; j < tslen; j++)
+
+  // // print debugging
+  // // typemod *tms = (typemod *) l->cont;
+  // // int tmlen = l->n;
+  // // for(int j = 0; j < tmlen; j++)
+  // // {
+  // //   // puttypemod(tms[j]);
+  // // }
+  // // int *tss = (int *) typespecs->cont;
+  // // int tslen = typespecs->n;
+  // // for(int j = 0; j < tslen; j++)
+  // // {
+  // //   // printf("%s ", keywords[tss[j]]);
+  // // }
+  // // // nline();
+
+
+  // // ctype ct = {typespecs, typequals, storespecs, l};
+
+  // // TODO comma-separated declarations
+
+  // // only after first and only declarator: function definition
+  // if(isatom(toks+i, BRACEOP))
   // {
-  //   // printf("%s ", keywords[tss[j]]);
+  //   // TODO
+  //   // check if valid function declarator
+  //   puts("(function definition)");
+  //   int bracedep = 0;
+  //   do
+  //   {
+  //     if(isatom(toks+i, BRACEOP)) bracedep++;
+  //     if(isatom(toks+i, BRACECL)) bracedep--;
+  //     i++;
+  //   } while(bracedep);
   // }
-  // // nline();
 
+  // else if(isatom(toks+i, EQ)) // initialization
+  // {
+  //   // TODO
+  //   puts("(initialization)");
+  //   while(!isatom(toks+i, SEMICOLON)) i++;
+  //   i++;
+  // }
 
-  // ctype ct = {typespecs, typequals, storespecs, l};
+  // else
+  // {
+  //   assert(isatom(toks+i, SEMICOLON));
+  //   i++; // move over semicolon
+  // }
 
-  // TODO comma-separated declarations
-
-  // only after first and only declarator: function definition
-  if(isatom(toks+i, BRACEOP))
-  {
-    // TODO
-    // check if valid function declarator
-    puts("(function definition)");
-    int bracedep = 0;
-    do
-    {
-      if(isatom(toks+i, BRACEOP)) bracedep++;
-      if(isatom(toks+i, BRACECL)) bracedep--;
-      i++;
-    } while(bracedep);
-  }
-
-  else if(isatom(toks+i, EQ)) // initialization
-  {
-    // TODO
-    puts("(initialization)");
-    while(!isatom(toks+i, SEMICOLON)) i++;
-    i++;
-  }
-
-  else
-  {
-    assert(isatom(toks+i, SEMICOLON));
-    i++; // move over semicolon
-  }
-
-  return ct; // success
+  // return ct; // success
 }
 
 int lisin(link *l, int num, int *tokl)
