@@ -1692,7 +1692,7 @@ ctype * parsedecl(token *toks, int onlydecl)
       // find terminating semicolon or comma
       // very similar to nexttoplevel, but on a token list
       // not used often enough to warrant its own function
-      int end = 0, dep = 0;
+      int end = i, dep = 0;
       while(1)
       {
         if(isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON))
@@ -1705,7 +1705,13 @@ ctype * parsedecl(token *toks, int onlydecl)
 
         assert(dep >= 0);
         assert(toks[end].gen.type != NOTOK);
+
+        end++;
       }
+
+      link *chain = tok2ll(toks + i, end - i); // turn the initializer into a token list
+
+      // TODO (make a recursive function which deal with everything, including array/struct inits)
     }
   }
 
