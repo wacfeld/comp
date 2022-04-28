@@ -221,6 +221,7 @@ corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 ct	defs.h	/^  ctype *ct; \/\/ for casts$/;"	m	struct:expr
 ctype	defs.h	/^} ctype; \/\/ "type" is used everywhere so i call it ctype$/;"	t	typeref:struct:__anon1
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
+e	defs.h	/^  expr *e;$/;"	m	struct:init
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 error	main.c	/^char *error;$/;"	v
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
@@ -247,6 +248,8 @@ hropt	defs.h	/^char *hropt[1000] =$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
 ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon12	typeref:struct:__anon12::__anon17
 ident	defs.h	/^  } ident;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon5
+init	defs.h	/^typedef struct init$/;"	s
+init	defs.h	/^} init;$/;"	t	typeref:struct:init
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon8
@@ -259,6 +262,7 @@ isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
+islist	defs.h	/^  int islist;$/;"	m	struct:init
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon2::__anon8
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon2::__anon9
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
@@ -268,11 +272,13 @@ isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon12::__anon14
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon4
 keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keywords	defs.h	/^char *keywords[] =$/;"	v
+l	defs.h	/^  struct init *l;$/;"	m	struct:init	typeref:struct:init::init
 last	datastruct.c	/^void *last(list *l)$/;"	f
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	14;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
+len	defs.h	/^  int len;$/;"	m	struct:init
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
@@ -319,6 +325,7 @@ parsedecl	main.c	/^ctype * parsedecl(token *toks, int onlydecl)$/;"	f
 parseeqexpr	main.c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	unused/oldparser.c	/^link *parseeqexpr(link *chain)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
+parseinit	main.c	/^init *parseinit(link *start)$/;"	f
 parselandexpr	main.c	/^expr *parselandexpr(link *start)$/;"	f
 parselandexpr	unused/oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^expr *parselorexpr(link *start)$/;"	f

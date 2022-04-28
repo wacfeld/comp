@@ -501,4 +501,15 @@ int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary
 int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
+// initializer, can be just an expression, or a list of initializers!
+typedef struct init
+{
+  int islist;
+  struct init *l;
+  int len;
+
+  expr *e;
+} init;
+
+
 #endif

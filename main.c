@@ -1654,6 +1654,14 @@ ctype *getdeclspecs(token *toks, int *i)
   return ct;
 }
 
+
+init *parseinit(link *start)
+{
+  assert(start);
+  leftend(start);
+}
+
+
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
 ctype * parsedecl(token *toks, int onlydecl)
