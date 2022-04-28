@@ -208,7 +208,7 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon2	typeref:struct:__anon2::__anon7
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon2::__anon5
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon2::__anon6
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon2::__anon7
@@ -295,8 +295,8 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
 name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -354,13 +354,14 @@ resize	defs.h	29;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
+setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	main.c	1030;"	d	file:
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
-storespecs	defs.h	/^  set *storespecs;$/;"	m	struct:__anon1
+storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon1
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon2	typeref:struct:__anon2::__anon6

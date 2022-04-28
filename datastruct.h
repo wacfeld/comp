@@ -12,6 +12,7 @@ typedef set list; // same data structure, different functions
 
 set *makeset(int size);
 int setins(set *s, void * m);
+int setrem(set *s, void *m);
 int inset(set *s, void * m);
 
 void append(list *l, void *m);

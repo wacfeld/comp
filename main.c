@@ -1549,17 +1549,20 @@ ctype *getdeclspecs(token *toks, int *i)
   // allocate sets
   set *typespecs  = makeset(sizeof(int));
   set *typequals  = makeset(sizeof(int));
-  set *storespecs = makeset(sizeof(int));
 
   // assign
   ct->typespecs = typespecs;
   ct->typequals = typequals;
-  ct->storespecs = storespecs;
+
+  int hasstorespec = 0;
+  ct->storespec = -1;
+
   ct->typemods = NULL;
 
   int n = *i; // save starting point for future reference (e.x. checking typedef)
   token t;
   int spec;
+
   // read declaration specifiers
   for(;; (*i)++)
   {
@@ -1575,10 +1578,36 @@ ctype *getdeclspecs(token *toks, int *i)
     }
     else if((spec = getstorespec(t)) != -1)
     {
-      assert(!setins(storespecs, &spec)); // no duplicate storage classes allowed
+      assert(!hasstorespec);
+      hasstorespec = 1;
+      ct->storespec = spec;
     }
     else break; // end of declaration specifiers
   }
+  // TODO perform checks on the specifiers to make sure they're allowed
+  /*
+    auto and register only in functions
+    conflicting type specifiers
+    - [x] only one storage class allowed
+    (warning) typedef must be at beginning of declaration
+    functions inside a function are extern, functions declared outside are static with external linkage
+    etc.
+    static objects/arrays must be initialized with constant expressions
+    technically, list members must be constant expressions even if auto or register
+     */
+
+  // int temp = K_TYPEDEF; // because of how sets are implemented we need an address
+  if(ct->storespec == K_TYPEDEF) // special case
+  {
+    // TODO
+  }
+
+  // in the case of enum, struct, or union, the type is not done:
+
+  // else if(struct or union specifier) TODO
+  
+
+  // else if(enum specifier) TODO
 
   return ct;
 }
@@ -1604,29 +1633,6 @@ ctype * parsedecl(token *toks, int onlydecl)
   
   ctype *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
   
-  // TODO perform checks on the specifiers to make sure they're allowed
-  /*
-    auto and register only in functions
-    conflicting type specifiers
-    only one storage class allowed
-    typedef must be at beginning of declaration
-    functions inside a function are extern, functions declared outside are static with external linkage
-    etc.
-    static objects/arrays must be initialized with constant expressions
-    technically, list members must be constant expressions even if auto or register
-     */
-
-  int temp = K_TYPEDEF; // because of how sets are implemented we need an address
-  if(inset(ct->storespecs, &temp)) // special case
-  {
-    // TODO
-  }
-
-  // in the case of enum, struct, or union, the type is not done:
-
-  // else if(struct or union specifier) TODO
-
-  // else if(enum specifier) TODO
 
   // we now are left with a declarator-initialier list, or a function declarator along with its definition
 
@@ -2228,6 +2234,7 @@ expr *parseunaryexpr(link *start)
       
       start->right->right->left = NULL;
       cl->left->right = NULL;
+      testerr(!cl->right, "parseunaryexpr: extra tokens after (typename)");
 
       expr *e = parsetypename(start->right->right);
       if(!e) return NULL;
@@ -2488,17 +2495,6 @@ expr *parseprimexpr(link *start)
 //* main
 int main()
 {
-  // set *s = makeset(sizeof(int));
-  // int t = 4;
-  // setins(s, &t);
-  // t = 5;
-  // setins(s, &t);
-  // t = 100;
-  // putd(memcmp(s->cont+4, &t, 4));
-// putd(t);
-  // putd(inset(s, &t));
-  // return 0;
-
 
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
@@ -2579,8 +2575,12 @@ int main()
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
   link *chain = tokl2ll((token *)trans_unit->cont);
-  // puts("\n-------------------");
-  // putll(chain);
+
+  // parse every top level declaration
+  // translate everything into assembly
+
+  puts("\n-------------------");
+  putll(chain);
   puts("\n-------------------");
   expr *e = parseexpr(chain);
   if(!e) // error happened

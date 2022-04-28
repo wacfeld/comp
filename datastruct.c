@@ -48,6 +48,23 @@ int setins(set *s, void* m) // set insert, returns 1 if already in set
   return 0;
 }
 
+// returns 1 if already in set
+int setrem(set *s, void *m)
+{
+  int size = s->size;
+  for(int i = 0; i < s->n; i++)
+  {
+    if(!memcmp(s->cont + i*size, m, size))
+    {
+      memcpy(s->cont + i*size, s->cont + (s->n - 1)*size, size); // overwrite with last element
+      s->n--;
+      return 1;
+    }
+  }
+  
+  return 0;
+}
+
 int inset(set *s, void *m)
 {
   int size = s->size;

@@ -50,7 +50,7 @@ typedef struct
 {
   set *typespecs;
   set *typequals;
-  set *storespecs;
+  int storespec;
 
   list *typemods;
 } ctype; // "type" is used everywhere so i call it ctype
