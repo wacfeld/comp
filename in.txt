@@ -1,1 +1,1 @@
-sizeof(int const const volatile extern *) 
+{5}

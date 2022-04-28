@@ -365,7 +365,7 @@ rightend	main.c	12;"	d	file:
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1093;"	d	file:
+sever	main.c	1094;"	d	file:
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g

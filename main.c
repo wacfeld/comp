@@ -1074,6 +1074,7 @@ void putinit(struct init *init, int space)
   }
   else
   {
+    printf("list of length %d\n", init->len);
     for(int i = 0; i < init->len; i++)
     {
       putinit(init->lst[i], space+2);
@@ -1177,7 +1178,10 @@ link *tokl2ll(token *tokl, int len) // NOTOK-terminated token list to linked lis
 {
   // int len = 0;
   if(len == -1) // determine len via NOTOK
+  {
+    len = 0;
     while(!(tokl[len].gen.type == NOTOK)) len++;
+  }
   
   link *ll = malloc(sizeof(link) * len);
 
@@ -1684,18 +1688,20 @@ struct init *parseinit(link *start)
   assert(start);
   leftend(start);
 
-  struct init *init = malloc(sizeof(init));
+  struct init *init = malloc(sizeof(struct init));
   if(lisatom(start, BRACEOP)) // {initializer-list}
   {
     // initialize init accordingly
     init->islist = 1;
     init->e = NULL;
     // we will initialize init->lst and init->len once we know the length
+    here();
 
     link *end = start;
     rightend(end);
     assert(lisatom(end, BRACECL)); // opening brace needs closing brace
     assert(start->right != end); // no empty initializer braces under ISO C
+    here();
     
     // remove surrounding braces
     start = start->right;
@@ -1703,6 +1709,7 @@ struct init *parseinit(link *start)
     end = end->left;
     end->right = NULL;
 
+    here();
     if(lisatom(end, COMMA)) // optional ending comma: remove
     {
       assert(start != end); // comma must not be alone; something must precede it
@@ -1722,6 +1729,7 @@ struct init *parseinit(link *start)
       temp = temp->right;
     }
 
+    here();
     // complete initialization
     init->len = len;
     init->lst = malloc(sizeof(struct init *) * len);
@@ -2376,18 +2384,18 @@ expr *parseunaryexpr(link *start)
   // putd(start);
   // puttok(*start->cont.tok);
 
-  int optype;
+  int optype = -1;
 
   if(lisatom(start, INC)) optype = PREINC_O;
-  if(lisatom(start, DEC)) optype = PREDEC_O;
+  else if(lisatom(start, DEC)) optype = PREDEC_O;
 
   // unary operators
-  if(lisatom(start, BITAND)) optype = ADDR_O;
-  if(lisatom(start, STAR)) optype = POINT_O;
-  if(lisatom(start, PLUS)) optype = UPLUS_O;
-  if(lisatom(start, MIN)) optype = UMIN_O;
-  if(lisatom(start, BITNOT)) optype = BNOT_O;
-  if(lisatom(start, LOGNOT)) optype = LNOT_O;
+  else if(lisatom(start, BITAND)) optype = ADDR_O;
+  else if(lisatom(start, STAR)) optype = POINT_O;
+  else if(lisatom(start, PLUS)) optype = UPLUS_O;
+  else if(lisatom(start, MIN)) optype = UMIN_O;
+  else if(lisatom(start, BITNOT)) optype = BNOT_O;
+  else if(lisatom(start, LOGNOT)) optype = LNOT_O;
 
   if(lisunaryop(start))
   {
@@ -2757,6 +2765,7 @@ int main()
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
+  putd(trans_unit->n);
   link *chain = tokl2ll((token *)trans_unit->cont, -1);
 
   // parse every top level declaration
@@ -2765,13 +2774,17 @@ int main()
   puts("\n-------------------");
   putll(chain);
   puts("\n-------------------");
-  expr *e = parseexpr(chain);
-  if(!e) // error happened
-  {
-    printf("ERROR: %s\n", error);
-    exit(1);
-  }
-  putexpr(e, 0);
+  // expr *e = parseexpr(chain);
+
+  // if(!e) // error happened
+  // {
+  //   printf("ERROR: %s\n", error);
+  //   exit(1);
+  // }
+  // putexpr(e, 0);
+
+  struct init *init = parseinit(chain);
+  putinit(init,0);
   
 
   // puts("------------------");
