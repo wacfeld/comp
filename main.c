@@ -1329,6 +1329,15 @@ int isdeclspec(token t) // get declaration specifier, -1 if it's not that
 // returns hi + 1 (where to pick up next)
 int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 {
+  // here();
+  // int i = lo;
+  // while(toks[i].gen.type != NOTOK)
+  // {
+  //   puttok(toks[i]);
+  //   i++;
+  // }
+  // nline();
+
   // initial recursive call, must find right side of declarator
   // we also verify that parentheses are balanced here, just because we can
   if(hi == -1)
@@ -1349,6 +1358,8 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
       }
       if(isatom(toks+hi, PARENOP)) // if (, remember it
       {
+        if(isdeclspec(toks[hi+1]) || isatom(toks+hi, PARENCL))
+            break;
         parendep++;
         continue;
       }
@@ -1365,15 +1376,17 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
     // ^^ abstract declarators have no identifier
     // putd(1);
 
-    if(toks[hi].gen.type == IDENT) // not abstract, has identifier
+
+    if(!abs)
     {
-      abs = 0;
-      hi++; // pass over
+      assert(toks[hi].gen.type == IDENT);
+      hi++;
     }
-    else
-    {
-      abs = 1;
-    }
+    // if(toks[hi].gen.type == IDENT) // not abstract, has identifier
+    // {
+    //   abs = 0;
+    //   hi++; // pass over
+    // }
 
     // possible things: [constant-expression_opt] (parameter-type-list) )
     for(;;) // all incrementing is now done manually, because it's more complex
@@ -1401,6 +1414,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 
         continue;
       }
+      puttok(toks[hi]);nline();
 
       if(isatom(toks+hi, PARENOP)) // (
       {
@@ -2557,7 +2571,7 @@ expr *parsetypename(link *start)
   int i = 0; // set for getdeclspecs()
   decl *ct = getdeclspecs(abstype, &i);
   list *l = makelist(sizeof(typemod));
-  gettypemods(abstype, i, -1, l, 0); // write typemods into l
+  gettypemods(abstype, i, -1, l, 1); // write typemods into l
   reverse(l);
   ct->typemods = l;
 

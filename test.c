@@ -4,7 +4,7 @@
 
 int main()
 {
-  int x[] = {};
+  putd(sizeof(int ()()));
   
 
 }

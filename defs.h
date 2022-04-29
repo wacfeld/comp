@@ -23,7 +23,7 @@
 #define putd(x) printf(#x ": %d\n", x)
 
 // when debug is on all here() calls activate
-#define DEBUG 0
+#define DEBUG 1
 #define here() {if(DEBUG) {printf("%d %s\n", __LINE__, __func__);}}
 #define nline() puts("")
 
