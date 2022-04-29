@@ -984,32 +984,32 @@ int isasgnop(int);
 
 void puttypemod(typemod ts);
 
-void putct(decl *ct)
+void putdecl(decl *dcl)
 {
 
-  if(ct->typemods)
+  if(dcl->typemods)
   {
-    typemod *tms = (typemod *) ct->typemods->cont;
-    int tmlen = ct->typemods->n;
+    typemod *tms = (typemod *) dcl->typemods->cont;
+    int tmlen = dcl->typemods->n;
     for(int j = 0; j < tmlen; j++)
     {
       puttypemod(tms[j]);
     }
   }
 
-  if(ct->storespec != -1)
+  if(dcl->storespec != -1)
   {
-    printf("%s ", keywords[ct->storespec]);
+    printf("%s ", keywords[dcl->storespec]);
   }
 
-  int *tqs = (int *) ct->typequals->cont;
-  int len = ct->typequals->n;
+  int *tqs = (int *) dcl->typequals->cont;
+  int len = dcl->typequals->n;
   
   for(int i = 0; i < len; i++)
     printf("%s ", keywords[tqs[i]]);
 
-  int *tss = (int *) ct->typespecs->cont;
-  len = ct->typespecs->n;
+  int *tss = (int *) dcl->typespecs->cont;
+  len = dcl->typespecs->n;
   for(int i = 0; i < len; i++)
   {
     printf("%s ", keywords[tss[i]]);
@@ -1051,7 +1051,7 @@ void putexpr(expr *e, int space)
   if(eistype(e, TYPENAME))
   {
     printf(" : ");
-    putct(e->ct);
+    putdecl(e->ct);
   }
   printf(" : %d ", e->numargs);
   putchar('\n');
@@ -1535,8 +1535,12 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
       tmod->gen.type = TM_ARR;
       append(l, tmod);
       free(tmod);
+      if(!abs || i != lo) gettypemods(toks, lo, i-1, l, abs); // must recurse further
+
       // gettypemods(toks, lo, i-1, l, abs);
       // no need to recurse; we're done because it's abstract and the [] was at the start
+      // ^^^ turns out this was incorrect
+      // spaghetti code
 
       return hi+1;
     }
@@ -1817,7 +1821,7 @@ decl * parsedecl(token *toks)
   dcl->typemods = l;
 
   // make typemods easier to access for following logic
-  typemod *tms = l->cont;
+  typemod *tms = (typemod *)l->cont;
   int tmlen = l->n;
 
   // gettypemods() works on both abstract and regular declarators. we don't want abstract declarators
@@ -1838,8 +1842,8 @@ decl * parsedecl(token *toks)
     int bracedep = 0;
     do
     {
-      if(istok(toks + i, BRACEOP)) bracedep++;
-      if(istok(toks + i, BRACECL)) bracedep--;
+      if(isatom(toks + i, BRACEOP)) bracedep++;
+      if(isatom(toks + i, BRACECL)) bracedep--;
       assert(bracedep >= 0);
       assert(toks[i].gen.type != NOTOK);
 
@@ -1891,8 +1895,8 @@ decl * parsedecl(token *toks)
   }
 
   // check what's terminating
-  assert(lisatom(toks + i, COMMA) || lisatom(toks + i, SEMICOLON));
-  if(lisatom(toks + i, SEMICOLON)) // end of declaration grouping
+  assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
+  if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
   {
     free(specs);
     specs = NULL;
@@ -2549,7 +2553,13 @@ expr *parsetypename(link *start)
   // convert to token list
   token *abstype = ll2tokl(start);
   // parse type
-  decl *ct = parsedecl(abstype, 1);
+  // decl *ct = parsedecl(abstype, 1);
+  int i = 0; // set for getdeclspecs()
+  decl *ct = getdeclspecs(abstype, &i);
+  list *l = makelist(sizeof(typemod));
+  gettypemods(abstype, i, -1, l, 0); // write typemods into l
+  reverse(l);
+  ct->typemods = l;
 
   // put into expression
   expr *newe = makeexpr(TYPENAME, -1, 0); // optype and args don't matter for TYPENAME expr
@@ -2849,17 +2859,17 @@ int main()
   puts("\n-------------------");
   putll(chain);
   puts("\n-------------------");
-  // expr *e = parseexpr(chain);
+  expr *e = parseexpr(chain);
 
-  // if(!e) // error happened
-  // {
-  //   printf("ERROR: %s\n", error);
-  //   exit(1);
-  // }
-  // putexpr(e, 0);
+  if(!e) // error happened
+  {
+    printf("ERROR: %s\n", error);
+    exit(1);
+  }
+  putexpr(e, 0);
 
-  struct init *init = parseinit(chain);
-  putinit(init,0);
+  // struct init *init = parseinit(chain);
+  // putinit(init,0);
   
 
   // puts("------------------");

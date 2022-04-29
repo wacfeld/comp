@@ -203,6 +203,29 @@ char *keywords[] =
   [K_WHILE]="while"
 };
 
+struct expr;
+typedef struct expr expr;
+
+// initializer, can be just an expression, or a list of initializers!
+struct init
+{
+  int islist;
+  struct init **lst;
+  int len;
+
+  expr *e;
+};
+
+typedef struct
+{
+  set *typespecs;
+  set *typequals;
+  int storespec;
+
+  list *typemods;
+  struct init *init;
+} decl;
+
 // operator types, "subtypes" of expressions
 // we could just borrow the duplicate atom names from above, but oh well
 enum optype
@@ -408,7 +431,7 @@ char *hr_expr[100] =
   [ARGLIST]="ARGLIST",
 };
 
-typedef struct expr
+struct expr
 {
   // expr_type type;
   set *type; // multiple types at once are possible
@@ -418,7 +441,9 @@ typedef struct expr
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
   decl *ct; // for casts, only uses the type component of the decl struct
   // did not want to make a union for this so we just have tok and ct, both optional
-} expr;
+};
+// typedef struct expr expr;
+
 
 enum link_type {EXPR_L, TOK_L};
 
@@ -493,26 +518,6 @@ enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary and binary operators
 int cbulen = sizeof(canbeunary)/sizeof(int);
 
-
-// initializer, can be just an expression, or a list of initializers!
-struct init
-{
-  int islist;
-  struct init **lst;
-  int len;
-
-  expr *e;
-};
-
-typedef struct
-{
-  set *typespecs;
-  set *typequals;
-  int storespec;
-
-  list *typemods;
-  struct init *init;
-} decl;
 
 
 #endif
