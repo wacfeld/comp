@@ -1655,13 +1655,15 @@ decl *getdeclspecs(token *toks, int *i)
   // TODO perform checks on the specifiers to make sure they're allowed
   /*
     auto and register only in functions
-    conflicting type specifiers
+    conflicting type specifiers. short, long, unsigned, signed, etc.
     - [x] only one storage class allowed
     (warning) typedef must be at beginning of declaration
     functions inside a function are extern, functions declared outside are static with external linkage
     etc.
     static objects/arrays must be initialized with constant expressions
     technically, list members must be constant expressions even if auto or register
+
+    empty type specs -> int
      */
 
   // int temp = K_TYPEDEF; // because of how sets are implemented we need an address
@@ -1774,15 +1776,19 @@ struct init *parseinit(link *start)
 
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
-decl * parsedecl(token *toks, int onlydecl)
+decl * parsedecl(token *toks)
 {
   // declaration *decl = malloc(sizeof(decl));
   
   static int i = 0;
+  static decl *specs = NULL; // decl containing current decl specs
+  static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
+  // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
 
   if(!toks) // reset if passed NULL
   {
     i = 0;
+    specs = NULL;
     return NULL; // return value doesn't matter
   }
 
@@ -1791,47 +1797,113 @@ decl * parsedecl(token *toks, int onlydecl)
     return NULL;
   }
   
-  decl *ct = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
-  
-  // we now are left with a declarator-initializer list, or a function declarator along with its definition
-
-  // now deal with each declarator + optional initializer in sequence
-  while(1)
+  if(!specs) // read new decl specs
   {
-    // get the declarator
-    list *l = makelist(sizeof(typemod));
-    i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
-    reverse(l); // typemods are parsed from the outside in, so now we flip that
-    
-    if(isatom(toks + i, EQ)) // initializer follows
-    {
-      i++; // move over =
-      
-      // find terminating semicolon or comma
-      // very similar to nexttoplevel, but on a token list
-      // not used often enough to warrant its own function
-      int end = i, dep = 0;
-      while(1)
-      {
-        if(isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON))
-          break;
-
-        if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
-          dep++;
-        if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
-          dep--;
-
-        assert(dep >= 0);
-        assert(toks[end].gen.type != NOTOK);
-
-        end++;
-      }
-
-      link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
-
-      struct init *init = parseinit(chain);
-    }
+    first = 1; // start anew
+    specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
   }
+  
+  // now deal with a single declarator + optional initializer, or function definition
+
+
+  // get the declarator
+  list *l = makelist(sizeof(typemod));
+  i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
+  reverse(l); // typemods are parsed from the outside in, so now we flip that
+
+  // write all this information into dcl
+  decl *dcl = malloc(sizeof(decl));
+  memcpy(dcl, specs, sizeof(decl)); // copy declspecs into this
+  dcl->typemods = l;
+
+  // make typemods easier to access for following logic
+  typemod *tms = l->cont;
+  int tmlen = l->n;
+
+  // gettypemods() works on both abstract and regular declarators. we don't want abstract declarators
+  assert(tmlen >= 1);
+  assert(tms[0].gen.type == TM_IDENT);
+
+  if(isatom(toks+i, BRACEOP)) // function definition
+  {
+    // make sure first place
+    assert(first);
+    first = 0; // claim first place
+
+    // check if valid function declarator: ident, ()
+    assert(tmlen >= 2);
+    assert(tms[1].gen.type == TM_FUNC);
+
+    // find matching brace
+    int bracedep = 0;
+    do
+    {
+      if(istok(toks + i, BRACEOP)) bracedep++;
+      if(istok(toks + i, BRACECL)) bracedep--;
+      assert(bracedep >= 0);
+      assert(toks[i].gen.type != NOTOK);
+
+      i++;
+    } while(bracedep > 0);
+    
+    // TODO parse compound statement
+
+    free(specs); // end of declaration group
+    specs = NULL;
+    return dcl;
+  }
+
+  first = 0; // claim first place
+  if(isatom(toks + i, EQ)) // initializer follows
+  {
+    i++; // move over =
+
+    // find terminating semicolon or comma
+    // very similar to nexttoplevel, but on a token list
+    // not used often enough to warrant its own function
+    int end = i, dep = 0;
+    while(1)
+    {
+      if(isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON))
+        break;
+
+      if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
+        dep++;
+      if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
+        dep--;
+
+      assert(dep >= 0);
+      assert(toks[end].gen.type != NOTOK);
+
+      end++;
+    }
+
+    link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
+
+    struct init *init = parseinit(chain);
+
+    dcl->init = init;
+    i = end; // move over to comma or semicolon
+  }
+  else // no initializer
+  {
+    dcl->init = NULL;
+  }
+
+  // check what's terminating
+  assert(lisatom(toks + i, COMMA) || lisatom(toks + i, SEMICOLON));
+  if(lisatom(toks + i, SEMICOLON)) // end of declaration grouping
+  {
+    free(specs);
+    specs = NULL;
+    i++;
+  }
+  else // comma, simply move over
+  {
+    i++;
+  }
+
+  return dcl;
 
   // ct->typemods = l; // add to ct
 

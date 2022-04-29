@@ -416,7 +416,7 @@ typedef struct expr
   struct expr **args;
   int numargs; // sometimes necessary, eg. function arguments
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
-  decl *ct; // for casts
+  decl *ct; // for casts, only uses the type component of the decl struct
   // did not want to make a union for this so we just have tok and ct, both optional
 } expr;
 
