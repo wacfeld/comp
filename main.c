@@ -1329,6 +1329,18 @@ int isdeclspec(token t) // get declaration specifier, -1 if it's not that
 // returns hi + 1 (where to pick up next)
 int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 {
+  // wrapper that appends TM_NONE to signify end of typemods
+  int i = helpgettypemods(toks, lo, hi, l, abs);
+  
+  typemod tm;
+  tm.gen.type = TM_NONE;
+  append(l, tm);
+  
+  return i;
+}
+
+int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
+{
   // here();
   // int i = lo;
   // while(toks[i].gen.type != NOTOK)
@@ -1377,10 +1389,24 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
     // putd(1);
 
 
-    if(!abs)
+    // check for identifier according to abs
+    if(abs == 0) // must not be abstract
     {
       assert(toks[hi].gen.type == IDENT);
       hi++;
+    }
+    else if(abs == 1) // must be abstract
+    {
+      assert(toks[hi].gen.type != IDENT);
+    }
+    else if(abs == -1) // means either is allowed, determine which it is now
+    {
+      if(toks[hi].gen.type == IDENT)
+      {
+        abs = 0;
+        hi++;
+      }
+      else abs = 1;
     }
     // if(toks[hi].gen.type == IDENT) // not abstract, has identifier
     // {
@@ -1468,7 +1494,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
       return hi+1;
     }
 
-    gettypemods(toks, lo, hi, l, abs);
+    helpgettypemods(toks, lo, hi, l, abs);
 
     return hi+1;
   }
@@ -1513,7 +1539,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
         {
           free(tmod); // wasn't needed
           // recurse without the paren
-          gettypemods(toks, lo+1, hi-1, l, abs);
+          helpgettypemods(toks, lo+1, hi-1, l, abs);
 
           return hi+1;
         }
@@ -1525,7 +1551,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
         // TODO store the parameter type list
         append(l, tmod);
         free(tmod);
-        if(!abs || i != lo) gettypemods(toks, lo, i-1, l, abs); // must recurse further
+        if(!abs || i != lo) helpgettypemods(toks, lo, i-1, l, abs); // must recurse further
         
         return hi+1;
       }
@@ -1545,11 +1571,14 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
       } while(brackdep != 0);
       i++; // back onto last [
 
-      // TODO evaluate and store length (should be constant expression)
       tmod->gen.type = TM_ARR;
+      tmod->arr.len = -1; // signify incomplete type for now
+      // TODO evaluate and store length (should be constant expression)
+      // also make sure len > 0
+
       append(l, tmod);
       free(tmod);
-      if(!abs || i != lo) gettypemods(toks, lo, i-1, l, abs); // must recurse further
+      if(!abs || i != lo) helpgettypemods(toks, lo, i-1, l, abs); // must recurse further
 
       // gettypemods(toks, lo, i-1, l, abs);
       // no need to recurse; we're done because it's abstract and the [] was at the start
@@ -1634,6 +1663,64 @@ int intinset(set *s, int x)
 void intsetins(set *s, int x)
 {
   append(s, &x);
+}
+
+int getsize(decl *ct)
+{
+  // wrapper that separates ct into relevant components
+  typemod *tms = (typemod *) ct->typemods->cont;
+  int dattype = ct->dattype;
+  return helpgetsize(dattype, tms);
+}
+
+int helpgetsize(int dt, typemod *tms)
+{
+  int dtsize(int dt);
+
+  int tmtype = tms->gen.type;
+
+  
+  assert(tmtype != TM_FUNC); // functions have no size
+  switch(tmtype)
+  {
+    case TM_IDENT:
+      return helpgetsize(dt, tms+1); // not abstract declarator, just skip identifier
+
+    case TM_NONE:
+      return dtsize(dt); // no more typemods, just size of dt
+
+    case TM_PTR:
+      return PTR_SIZE; // all pointers have same size regardless of what they point to
+
+    case TM_ARR:
+      assert(tms->arr.len != -1); // incomplete type
+      return tms->arr.len * helpgetsize(dt, tms+1);
+  }
+  else 
+}
+
+// get size of dattype
+int dtsize(int dt)
+{
+// TODO struct, enum, union, etc.
+  assert(dt != VOID_T);
+
+  switch(dt)
+  {
+    case CHAR_T: return CHAR_SIZE;
+    case UCHAR_T: return CHAR_SIZE;
+
+    case INT_T: return INT_SIZE;
+    case UINT_T: return INT_SIZE;
+    case SINT_T: return INT_SIZE;
+    case LINT_T: return INT_SIZE;
+    case USINT_T: return INT_SIZE;
+    case ULINT_T: return INT_SIZE;
+
+    case FLOAT_T: return FLOAT_SIZE;
+    case DUB_T: return FLOAT_SIZE;
+    case LDUB_T: return FLOAT_SIZE;
+  }
 }
 
 // type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn the multiple specs into a single enum
@@ -1767,18 +1854,26 @@ decl *getdeclspecs(token *toks, int *i)
     }
     else break; // end of declaration specifiers
   }
+
+  // condense typespecs into one integer
+  proctypespecs(ct);
+  // ->typespecs no longer needed, info stored in ->dattype
+  free(ct->typespecs->cont);
+  free(ct->typespecs);
+  
+
   // TODO perform checks on the specifiers to make sure they're allowed
   /*
-    auto and register only in functions
-    conflicting type specifiers. short, long, unsigned, signed, etc.
+    - [ ] auto and register only in functions
+    - [x] conflicting type specifiers. short, long, unsigned, signed, etc.
     - [x] only one storage class allowed
-    (warning) typedef must be at beginning of declaration
-    functions inside a function are extern, functions declared outside are static with external linkage
-    etc.
-    static objects/arrays must be initialized with constant expressions
-    technically, list members must be constant expressions even if auto or register
+    - [ ] (warning) typedef must be at beginning of declaration
+    - [ ] functions inside a function are extern, functions declared outside are static with external linkage
+    - [ ] etc.
+    - [ ] static objects/arrays must be initialized with constant expressions
+    - [ ] technically, list members must be constant expressions even if auto or register
 
-    empty type specs -> int
+    - [ ] empty type specs -> int
      */
 
   // int temp = K_TYPEDEF; // because of how sets are implemented we need an address

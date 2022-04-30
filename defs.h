@@ -38,7 +38,10 @@
 #define CHAR_SIZE 1
 #define FLOAT_SIZE 4
 #define INT_SIZE 4
-
+#define PTR_SIZE 4
+// doubles and long doubles are the same size as floats
+// all int sizes are the same as int
+// this complies with the standard
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};
 
@@ -511,7 +514,7 @@ typedef union
 } typemod; // type modifier
 
 // typemod type
-enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};
+enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};
 
 enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 

@@ -159,6 +159,7 @@ PREDEC_O	defs.h	/^  PREDEC_O,$/;"	e	enum:optype
 PREINC_O	defs.h	/^  PREINC_O,$/;"	e	enum:optype
 PRIM_E	defs.h	/^  PRIM_E,$/;"	e	enum:expr_type
 PSTRUCT_O	defs.h	/^  PSTRUCT_O, \/\/ ->$/;"	e	enum:optype
+PTR_SIZE	defs.h	41;"	d
 QUESTION	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
 RIGHT	main.c	28;"	d	file:
@@ -186,10 +187,11 @@ TERN_O	defs.h	/^  TERN_O,$/;"	e	enum:optype
 TIMES	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 TIMESEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 TIMESEQ_O	defs.h	/^  TIMESEQ_O,$/;"	e	enum:optype
-TM_ARR	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
-TM_FUNC	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
-TM_IDENT	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
-TM_PTR	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
+TM_ARR	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	e	enum:tmt
+TM_FUNC	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	e	enum:tmt
+TM_IDENT	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	e	enum:tmt
+TM_NONE	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	e	enum:tmt
+TM_PTR	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	e	enum:tmt
 TOK_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 TYPENAME	defs.h	/^  TYPENAME, \/\/ special case: for casts$/;"	e	enum:expr_type
 UCHAR_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
@@ -220,7 +222,7 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
@@ -235,6 +237,7 @@ dattype	defs.h	/^  int dattype;$/;"	m	struct:__anon10
 dattypes	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:__anon10
+dtsize	main.c	/^int dtsize(int dt)$/;"	f
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 error	main.c	/^char *error;$/;"	v
@@ -247,15 +250,19 @@ expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 f	test.s	/^f:$/;"	l
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
+foofoo	test.c	/^int foofoo;$/;"	v
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon13
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
+getsize	main.c	/^int getsize(decl *ct)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+helpgetsize	main.c	/^int helpgetsize(int dt, typemod *tms)$/;"	f
+helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 here	defs.h	27;"	d
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
@@ -318,8 +325,8 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
 name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -382,11 +389,11 @@ reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
 s	test.s	/^s:$/;"	l
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	main.c	1094;"	d	file:
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
@@ -395,7 +402,7 @@ striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 t	test.s	/^t:$/;"	l
 testerr	main.c	23;"	d	file:
-tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	g
+tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon11
 tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g

@@ -22,4 +22,7 @@ void *last(list *l);
 list *makelist(int size);
 void reverse(list *l);
 void clear(list *l);
+
+void *first(list *l);
+list *rest(list *l);
 #endif

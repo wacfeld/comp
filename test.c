@@ -1,9 +1,10 @@
 #include <stdio.h>
 #define putd(x) printf(#x ": %d\n", x)
 
+int foofoo;
+
 int main()
 {
   
-  int i = sizeof(long double []);
-  putd(i);
+  int x[0];
 }
