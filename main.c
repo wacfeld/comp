@@ -1636,7 +1636,7 @@ void intsetins(set *s, int x)
   append(s, &x);
 }
 
-// type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn it into a more compact/concise form
+// type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn the multiple specs into a single enum
 void proctypespecs(decl *ct)
 {
   int islong = 0;
@@ -1670,13 +1670,13 @@ void proctypespecs(decl *ct)
   // only one of short and long allowed
   if(intinset(ts, K_LONG))
   {
-    assert(isintegral || type == K_DOUBLE);
+    assert(type == K_INT || type == K_DOUBLE);
     assert(!intinset(ts, K_SHORT));
     islong = 1;
   }
   if(intinset(ts, K_SHORT))
   {
-    assert(isintegral);
+    assert(type == K_INT);
     assert(!intinset(ts, K_SHORT));
     isshort = 1;
   }
@@ -1692,11 +1692,36 @@ void proctypespecs(decl *ct)
   {
     assert(isintegral);
     assert(!intinset(ts, K_SIGNED));
-    isunsigned = 1;
+    issigned = 0;
   }
 
   if(type == K_VOID) ct->dattype = VOID_T;
-  
+  else if(type == K_CHAR)
+  {
+    if(issigned) ct->dattype = CHAR_T;
+    else ct->dattype = UCHAR_T;
+  }
+  else if(type == K_INT)
+  {
+    if(issigned)
+    {
+      if(isshort) ct->dattype = SINT_T;
+      else if(islong) ct->dattype = LINT_T;
+      else ct->dattype = INT_T;
+    }
+    else
+    {
+      if(isshort) ct->dattype = USINT_T;
+      else if(islong) ct->dattype = ULINT_T;
+      else ct->dattype = UINT_T;
+    }
+  }
+  else if(type == K_FLOAT) ct->dattype = FLOAT_T;
+  else if(type == K_DOUBLE)
+  {
+    if(islong) ct->dattype = LDUB_T;
+    else ct->dattype = DUB_T;
+  }
 }
 
 // get storespecs, typequals, and typespecs from the front of a declaration
