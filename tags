@@ -35,6 +35,7 @@ CHAR	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERT
 CHAR_MAX	defs.h	37;"	d
 CHAR_O	defs.h	/^  CHAR_O,$/;"	e	enum:optype
 CHAR_SIZE	defs.h	38;"	d
+CHAR_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 COLON	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 COMMA	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 COMMA_E	defs.h	/^  COMMA_E,$/;"	e	enum:expr_type
@@ -52,6 +53,7 @@ DIVEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, 
 DIVEQ_O	defs.h	/^  DIVEQ_O,$/;"	e	enum:optype
 DIV_O	defs.h	/^  DIV_O,$/;"	e	enum:optype
 DOT	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
+DUB_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 ENUM_O	defs.h	/^  ENUM_O,$/;"	e	enum:optype
 EQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 EQEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -65,6 +67,7 @@ EXPR_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;
 FLOATING	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 FLOAT_O	defs.h	/^  FLOAT_O,$/;"	e	enum:optype
 FLOAT_SIZE	defs.h	39;"	d
+FLOAT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 FUN_O	defs.h	/^  FUN_O,$/;"	e	enum:optype
 GEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 GEQ_O	defs.h	/^  GEQ_O,$/;"	e	enum:optype
@@ -76,6 +79,7 @@ INC	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, IN
 INTEGER	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 INT_O	defs.h	/^  INT_O,$/;"	e	enum:optype
 INT_SIZE	defs.h	40;"	d
+INT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 ITER_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 JUMP_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 KEYWORD	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
@@ -113,10 +117,12 @@ K_WHILE	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTI
 LAB_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 LAND_E	defs.h	/^  LAND_E,$/;"	e	enum:expr_type
 LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
+LDUB_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LEFT	main.c	29;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ_O	defs.h	/^  LEQ_O,$/;"	e	enum:optype
 LESS	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
+LINT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LNOT_O	defs.h	/^  LNOT_O,$/;"	e	enum:optype
 LOGAND	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LOGNOT	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -167,6 +173,7 @@ SHR	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, IN
 SHREQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 SHREQ_O	defs.h	/^  SHREQ_O,$/;"	e	enum:optype
 SHR_O	defs.h	/^  SHR_O,$/;"	e	enum:optype
+SINT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 SIZEOF	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 SIZEOF_O	defs.h	/^  SIZEOF_O,$/;"	e	enum:optype
 STAR	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -185,12 +192,17 @@ TM_IDENT	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
 TM_PTR	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	e	enum:tmt
 TOK_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 TYPENAME	defs.h	/^  TYPENAME, \/\/ special case: for casts$/;"	e	enum:expr_type
+UCHAR_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
+UINT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
+ULINT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 UMIN_O	defs.h	/^  UMIN_O,$/;"	e	enum:optype
 UNAR_E	defs.h	/^  UNAR_E,$/;"	e	enum:expr_type
 UNCERTAIN	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 UNMIN	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 UNPLUS	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 UPLUS_O	defs.h	/^  UPLUS_O,$/;"	e	enum:optype
+USINT_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
+VOID_T	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 XOREQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 XOREQ_O	defs.h	/^  XOREQ_O,$/;"	e	enum:optype
 XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
@@ -219,6 +231,8 @@ cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
 cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon11
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 ct	defs.h	/^  decl *ct; \/\/ for casts, only uses the type component of the decl struct$/;"	m	struct:expr
+dattype	defs.h	/^  int dattype;$/;"	m	struct:__anon10
+dattypes	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:__anon10
 e	defs.h	/^  expr *e;$/;"	m	struct:init
@@ -230,6 +244,7 @@ expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.s	/^f:$/;"	l
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
@@ -253,6 +268,8 @@ init	defs.h	/^struct init$/;"	s
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
+intinset	main.c	/^int intinset(set *s, int x)$/;"	f
+intsetins	main.c	/^void intsetins(set *s, int x)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
@@ -347,6 +364,7 @@ parsetypename	main.c	/^expr *parsetypename(link *start)$/;"	f
 parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
+proctypespecs	main.c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
@@ -363,6 +381,7 @@ resize	defs.h	31;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
+s	test.s	/^s:$/;"	l
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
@@ -374,6 +393,7 @@ storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
+t	test.s	/^t:$/;"	l
 testerr	main.c	23;"	d	file:
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon11

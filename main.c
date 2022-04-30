@@ -1627,6 +1627,78 @@ void puttypemod(typemod ts)
   }
 }
 
+int intinset(set *s, int x)
+{
+  return inset(s, &x);
+}
+void intsetins(set *s, int x)
+{
+  append(s, &x);
+}
+
+// type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn it into a more compact/concise form
+void proctypespecs(decl *ct)
+{
+  int islong = 0;
+  int isshort = 0;
+  int issigned = 1; // under this implementation all integral types are signed unless specified unsigned
+  
+  set *ts = ct->typespecs;
+
+  // TODO incorporate typedefs, structs/unions/enums
+  static int basetypes[] = {K_VOID, K_CHAR, K_INT, K_FLOAT, K_DOUBLE, };
+  int btlen = sizeof(basetypes)/sizeof(basetypes[0]);
+
+  int type = K_INT; // default
+  // find the basetype and make sure it's unique
+  for(int i = 0; i < btlen; i++)
+  {
+    if(intinset(ts, basetypes[i]))
+      type = basetypes[i];
+  }
+  // make sure only one basetype
+  for(int i = 0; i < btlen; i++)
+  {
+    if(basetypes[i] != type)
+    {
+      assert(!intinset(ts, basetypes[i]));
+    }
+  }
+
+  int isintegral = (type == K_CHAR || type == K_INT);
+
+  // only one of short and long allowed
+  if(intinset(ts, K_LONG))
+  {
+    assert(isintegral || type == K_DOUBLE);
+    assert(!intinset(ts, K_SHORT));
+    islong = 1;
+  }
+  if(intinset(ts, K_SHORT))
+  {
+    assert(isintegral);
+    assert(!intinset(ts, K_SHORT));
+    isshort = 1;
+  }
+
+  // only one of signed and unsigned allowed
+  if(intinset(ts, K_SIGNED))
+  {
+    assert(isintegral);
+    assert(!intinset(ts, K_UNSIGNED));
+    issigned = 1;
+  }
+  if(intinset(ts, K_UNSIGNED))
+  {
+    assert(isintegral);
+    assert(!intinset(ts, K_SIGNED));
+    isunsigned = 1;
+  }
+
+  if(type == K_VOID) ct->dattype = VOID_T;
+  
+}
+
 // get storespecs, typequals, and typespecs from the front of a declaration
 decl *getdeclspecs(token *toks, int *i)
 {

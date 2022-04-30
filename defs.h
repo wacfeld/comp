@@ -219,6 +219,7 @@ struct init
 typedef struct
 {
   set *typespecs;
+  int dattype;
   set *typequals;
   int storespec;
 
@@ -518,6 +519,8 @@ enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary and binary operators
 int cbulen = sizeof(canbeunary)/sizeof(int);
 
+
+enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
 
 
 #endif
