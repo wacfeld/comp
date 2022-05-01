@@ -27,4 +27,6 @@ void *first(list *l);
 list *rest(list *l);
 
 int isempty(list *l);
+
+void rem_front(list *l); // like a dequeue function, but doesn't return anything
 #endif

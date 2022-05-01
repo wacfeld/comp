@@ -1327,7 +1327,7 @@ int isdeclspec(token t) // get declaration specifier, -1 if it's not that
 }
 
 // parse the list of parameters in a function type
-// we don't support ... declarations
+// we don't support ... parameters
 list *parseparamlist(link *start)
 {
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
@@ -1353,6 +1353,12 @@ list *parseparamlist(link *start)
     decl *param = getdeclspecs(toks, &i);
     param->typemods = makelist(sizeof(typemod));
     gettypemods(toks, i, -1, param->typemods, -1);
+
+    // // if not abstract, remove the identifier
+    // typemod first = * (typemod *) param->typemods->cont;
+    // if(first.gen.type == IDENT)
+    //   rem_front(param->typemods);
+
     free(toks);
 
     append(paramlist, param);
@@ -1707,6 +1713,11 @@ void puttypemod(typemod ts)
     printf("function returning ");
   }
 }
+
+
+
+
+
 
 int intinset(set *s, int x)
 {

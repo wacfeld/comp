@@ -133,3 +133,9 @@ int isempty(list *l)
   return l->n == 0;
 }
 
+
+void rem_front(list *l)
+{
+  memmove(l->cont, l->cont + l->size, l->size * (l->n - 1));
+  l->n -= 1;
+}
