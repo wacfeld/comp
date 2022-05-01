@@ -209,6 +209,7 @@ XOREQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, 
 XOREQ_O	defs.h	/^  XOREQ_O,$/;"	e	enum:optype
 XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
+a	test.c	/^int *a;$/;"	v
 alloc	defs.h	33;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
@@ -247,7 +248,6 @@ expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.c	/^int f(void)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16

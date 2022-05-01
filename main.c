@@ -1748,11 +1748,45 @@ int isequiv(decl *t1, decl *t2)
 
     // based on the typemod type, check equality in different ways
     int type = tm1.gen.type;
-    switch(type)
+
+    // if pointer, move over
+
+    if(type == TM_FUNC)
     {
-      case TM_PTR:
-        
+      list *p1 = tm1.func.params;
+      list *p2 = tm2.func.params;
+      // if one or the other is unspecified, then they are equivalent
+      if(p1 && p2)
+      {
+        if(p1->n != p2->n) // same length?
+          return 0;
+
+        decl *pl1 = p1->cont;
+        decl *pl2 = p2->cont;
+
+        // recursively check parameters for equivalence
+        for(int i = 0; i < p1->n; i++)
+        {
+          if(!isequiv(pl1+i, pl2+i)
+            return 0;
+        }
+      }
     }
+
+    else if(type == TM_ARR)
+    {
+      // TODO what to do with unspecified length?
+      if((tm1.arr.len != -1) && (tm2.arr.len != -1))
+      {
+        if(tm1.arr.len != tm2.arr.len) // must be same length
+        {
+          return 0;
+        }
+      }
+    }
+
+    else if(type == TM_NONE) // reached the end
+      return 1;
   }
 }
 

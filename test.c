@@ -2,12 +2,11 @@
 #define putd(x) printf(#x ": %d\n", x)
 
 
-
-int f(void)
-{
-  return 1;
-}
+int *a;
+int *a;
 int main()
 {
+  int *const x;
+  int *volatile y = x;
   return 0;
 }
