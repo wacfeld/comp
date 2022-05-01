@@ -1510,7 +1510,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
   }
 
   // get one typemod then recurse
-  typemod *tmod = malloc(sizeof(typemod));
+  typemod *tmod = calloc(1,sizeof(typemod));
 
   if(isatom(toks+lo, STAR)) // pointer time
   {
@@ -1715,7 +1715,46 @@ void puttypemod(typemod ts)
 }
 
 
+// checks if two types are equivalent
+int isequiv(decl *t1, decl *t2)
+{
+  // TODO equivalence for structs, unions, enums
 
+  // equivalent type specifier lists?
+  if(t1->dattype != t2->dattype)
+    return 0;
+
+  // we assume typedefs have all been expanded already
+
+  typemod *tms1 = (typemod *) t1->typemods->cont;
+  typemod *tms2 = (typemod *) t2->typemods->cont;
+  
+  // make both typemod lists abstract
+  if(tms1[0].gen.type == TM_IDENT)
+    tms1++;
+  if(tms2[0].gen.type == TM_IDENT)
+    tms2++;
+  
+  while(1)
+  {
+    typemod tm1 = *tms1;
+    typemod tm2 = *tms2;
+
+    // same typemod type?
+    if(tm1.gen.type != tm2.gen.type)
+    {
+      return 0;
+    }
+
+    // based on the typemod type, check equality in different ways
+    int type = tm1.gen.type;
+    switch(type)
+    {
+      case TM_PTR:
+        
+    }
+  }
+}
 
 
 

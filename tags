@@ -282,6 +282,7 @@ isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon12::__anon14
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
+isequiv	main.c	/^int isequiv(decl *t1, decl *t2)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
