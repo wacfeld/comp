@@ -25,4 +25,6 @@ void clear(list *l);
 
 void *first(list *l);
 list *rest(list *l);
+
+int isempty(list *l);
 #endif

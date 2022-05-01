@@ -127,3 +127,9 @@ void clear(list *l) // don't free() anything, just make length 0 again
 {
   l->n = 0;
 }
+
+int isempty(list *l)
+{
+  return l->n == 0;
+}
+

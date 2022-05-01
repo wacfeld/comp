@@ -3,11 +3,11 @@
 
 
 
-int len = 5;
+int f(void)
+{
+  return 1;
+}
 int main()
 {
-len += 3;
-  
-  int x[len];
-  putd(sizeof(x));
+  return 0;
 }

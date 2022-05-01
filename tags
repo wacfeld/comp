@@ -222,7 +222,7 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
@@ -247,6 +247,7 @@ expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^int f(void)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
@@ -280,6 +281,7 @@ isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon12::__anon14
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
+isempty	datastruct.c	/^int isempty(list *l)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
@@ -300,7 +302,6 @@ leftend	main.c	14;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
 len	defs.h	/^  int len;$/;"	m	struct:init
-len	test.c	/^int len = 5;$/;"	v
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
@@ -324,8 +325,8 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
 name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -334,6 +335,7 @@ nline	defs.h	28;"	d
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
+params	defs.h	/^    list *params;$/;"	m	struct:__anon12::__anon16
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
@@ -388,11 +390,11 @@ resize	defs.h	31;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	main.c	1094;"	d	file:
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10

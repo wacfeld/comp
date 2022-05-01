@@ -1182,6 +1182,7 @@ link *tokl2ll(token *tokl, int len) // NOTOK-terminated token list to linked lis
     len = 0;
     while(!(tokl[len].gen.type == NOTOK)) len++;
   }
+  assert(len != 0);
   
   link *ll = malloc(sizeof(link) * len);
 
@@ -1332,6 +1333,9 @@ list *parseparamlist(link *start)
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
   decl *getdeclspecs(token *toks, int *i);
   int gettypemods(token *toks, int lo, int hi, list *l, int abs);
+
+  assert(start);
+  leftend(start);
 
   static int cl[] = {COMMA};
   link *comma;
@@ -1584,7 +1588,19 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
       if(fun) // it's a function
       {
         tmod->gen.type = TM_FUNC;
-        // TODO store the parameter type list
+
+        // store parameter list
+        if(i+1 == hi) // empty list, means params unspecified
+        {
+          tmod->func.params = NULL; // indicate this with NULL
+        }
+        else
+        {
+          link *ll = tokl2ll(toks+i+1, hi-i-1);
+          list *params = parseparamlist(ll);
+          tmod->func.params = params;
+        }
+
         append(l, tmod);
         free(tmod);
         if(!abs || i != lo) helpgettypemods(toks, lo, i-1, l, abs); // must recurse further

@@ -501,6 +501,7 @@ typedef union
   struct
   {
     int type;
+    list *params;
     // TODO parameters
   } func;
 
