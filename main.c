@@ -1325,16 +1325,52 @@ int isdeclspec(token t) // get declaration specifier, -1 if it's not that
   return 0;
 }
 
+// parse the list of parameters in a function type
+// we don't support ... declarations
+list *parseparamlist(link *start)
+{
+  link *nexttoplevel(link *start, int dir, int num, int *atoms);
+  decl *getdeclspecs(token *toks, int *i);
+  int gettypemods(token *toks, int lo, int hi, list *l, int abs);
+
+  static int cl[] = {COMMA};
+  link *comma;
+  list *paramlist = makelist(sizeof(decl));
+
+  do
+  {
+    comma = nexttoplevel(start, RIGHT, 1, cl);
+    assert(comma != start); // no empty
+    if(comma) sever(comma);
+
+    // parse declspecs and typemods
+    token *toks = ll2tokl(start);
+    int i = 0;
+    decl *param = getdeclspecs(toks, &i);
+    param->typemods = makelist(sizeof(typemod));
+    gettypemods(toks, i, -1, param->typemods, -1);
+    free(toks);
+
+    append(paramlist, param);
+    
+    if(comma) start = comma->right;
+  } while(comma);
+
+  return paramlist;
+}
+
 // recursive function that interprets a declarator by getting the type modifiers in order
 // returns hi + 1 (where to pick up next)
 int gettypemods(token *toks, int lo, int hi, list *l, int abs)
 {
+  int helpgettypemods(token *toks, int lo, int hi, list *l, int abs); 
+
   // wrapper that appends TM_NONE to signify end of typemods
   int i = helpgettypemods(toks, lo, hi, l, abs);
   
   typemod tm;
   tm.gen.type = TM_NONE;
-  append(l, tm);
+  append(l, &tm);
   
   return i;
 }
@@ -1667,6 +1703,8 @@ void intsetins(set *s, int x)
 
 int getsize(decl *ct)
 {
+  int helpgetsize(int dt, typemod *tms);
+
   // wrapper that separates ct into relevant components
   typemod *tms = (typemod *) ct->typemods->cont;
   int dattype = ct->dattype;
@@ -1696,7 +1734,8 @@ int helpgetsize(int dt, typemod *tms)
       assert(tms->arr.len != -1); // incomplete type
       return tms->arr.len * helpgetsize(dt, tms+1);
   }
-  else 
+
+  assert(!"should not reach here");
 }
 
 // get size of dattype

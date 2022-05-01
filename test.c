@@ -1,10 +1,13 @@
 #include <stdio.h>
 #define putd(x) printf(#x ": %d\n", x)
 
-int foofoo;
 
+
+int len = 5;
 int main()
 {
+len += 3;
   
-  int x[0];
+  int x[len];
+  putd(sizeof(x));
 }

@@ -222,7 +222,7 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
@@ -247,10 +247,8 @@ expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.s	/^f:$/;"	l
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
-foofoo	test.c	/^int foofoo;$/;"	v
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon13
@@ -302,6 +300,7 @@ leftend	main.c	14;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
 len	defs.h	/^  int len;$/;"	m	struct:init
+len	test.c	/^int len = 5;$/;"	v
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
@@ -325,8 +324,8 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
 nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -359,6 +358,7 @@ parsemultexpr	main.c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	unused/oldparser.c	/^link *parsemultexpr(link *chain)$/;"	f
 parseorexpr	main.c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	unused/oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
+parseparamlist	main.c	/^list *parseparamlist(link *start)$/;"	f
 parsepostexpr	main.c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	unused/oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
 parseprimexpr	main.c	/^expr *parseprimexpr(link *start)$/;"	f
@@ -388,19 +388,17 @@ resize	defs.h	31;"	d
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
-s	test.s	/^s:$/;"	l
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	main.c	1094;"	d	file:
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
-t	test.s	/^t:$/;"	l
 testerr	main.c	23;"	d	file:
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon11
