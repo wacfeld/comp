@@ -23,7 +23,7 @@
 #define putd(x) printf(#x ": %d\n", x)
 
 // when debug is on all here() calls activate
-#define DEBUG 1
+#define DEBUG 0
 #define here() {if(DEBUG) {printf("%d %s\n", __LINE__, __func__);}}
 #define nline() puts("")
 
@@ -228,6 +228,8 @@ typedef struct
 
   list *typemods;
   struct init *init;
+  void *fundef; // TODO figure out what type this should be
+  char *ident;
 } decl;
 
 // operator types, "subtypes" of expressions
@@ -525,6 +527,22 @@ int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
 enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
+
+char *hrdt[] =
+{
+  [VOID_T]="VOID_T",
+  [CHAR_T]="CHAR_T",
+  [UCHAR_T]="UCHAR_T",
+  [INT_T]="INT_T",
+  [UINT_T]="UINT_T",
+  [SINT_T]="SINT_T",
+  [LINT_T]="LINT_T",
+  [USINT_T]="USINT_T",
+  [ULINT_T]="ULINT_T",
+  [FLOAT_T]="FLOAT_T",
+  [DUB_T]="DUB_T",
+  [LDUB_T]="LDUB_T",
+};
 
 
 #endif

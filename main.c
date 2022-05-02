@@ -1,6 +1,5 @@
 #include "defs.h"
 #include "datastruct.h"
-#include "parser.h"
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
@@ -1008,12 +1007,13 @@ void putdecl(decl *dcl)
   for(int i = 0; i < len; i++)
     printf("%s ", keywords[tqs[i]]);
 
-  int *tss = (int *) dcl->typespecs->cont;
-  len = dcl->typespecs->n;
-  for(int i = 0; i < len; i++)
-  {
-    printf("%s ", keywords[tss[i]]);
-  }
+  // int *tss = (int *) dcl->typespecs->cont;
+  // len = dcl->typespecs->n;
+  // for(int i = 0; i < len; i++)
+  // {
+  //   printf("%s ", keywords[tss[i]]);
+  // }
+  printf("%s\n", hrdt[dcl->dattype]);
 }
 
 void putexpr(expr *e, int space)
@@ -1332,7 +1332,7 @@ list *parseparamlist(link *start)
 {
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
   decl *getdeclspecs(token *toks, int *i);
-  int gettypemods(token *toks, int lo, int hi, list *l, int abs);
+  int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s);
 
   assert(start);
   leftend(start);
@@ -1352,7 +1352,7 @@ list *parseparamlist(link *start)
     int i = 0;
     decl *param = getdeclspecs(toks, &i);
     param->typemods = makelist(sizeof(typemod));
-    gettypemods(toks, i, -1, param->typemods, -1);
+    gettypemods(toks, i, -1, param->typemods, -1, &param->ident);
 
     // // if not abstract, remove the identifier
     // typemod first = * (typemod *) param->typemods->cont;
@@ -1371,7 +1371,7 @@ list *parseparamlist(link *start)
 
 // recursive function that interprets a declarator by getting the type modifiers in order
 // returns hi + 1 (where to pick up next)
-int gettypemods(token *toks, int lo, int hi, list *l, int abs)
+int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
 {
   int helpgettypemods(token *toks, int lo, int hi, list *l, int abs); 
 
@@ -1380,7 +1380,11 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs)
   
   typemod tm;
   tm.gen.type = TM_NONE;
+  // typemods are parsed from the outside in, so now we flip that
+  reverse(l);
   append(l, &tm);
+
+  *s = ((typemod *)l->cont)[0].ident.name; // write pointer to ident name into s
   
   return i;
 }
@@ -1486,7 +1490,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
 
         continue;
       }
-      puttok(toks[hi]);nline();
+      // puttok(toks[hi]);nline();
 
       if(isatom(toks+hi, PARENOP)) // (
       {
@@ -1761,13 +1765,13 @@ int isequiv(decl *t1, decl *t2)
         if(p1->n != p2->n) // same length?
           return 0;
 
-        decl *pl1 = p1->cont;
-        decl *pl2 = p2->cont;
+        decl *pl1 = (decl *) p1->cont;
+        decl *pl2 = (decl *) p2->cont;
 
         // recursively check parameters for equivalence
         for(int i = 0; i < p1->n; i++)
         {
-          if(!isequiv(pl1+i, pl2+i)
+          if(!isequiv(pl1+i, pl2+i))
             return 0;
         }
       }
@@ -1775,7 +1779,6 @@ int isequiv(decl *t1, decl *t2)
 
     else if(type == TM_ARR)
     {
-      // TODO what to do with unspecified length?
       if((tm1.arr.len != -1) && (tm2.arr.len != -1))
       {
         if(tm1.arr.len != tm2.arr.len) // must be same length
@@ -1903,7 +1906,7 @@ void proctypespecs(decl *ct)
   if(intinset(ts, K_SHORT))
   {
     assert(type == K_INT);
-    assert(!intinset(ts, K_SHORT));
+    assert(!intinset(ts, K_LONG));
     isshort = 1;
   }
 
@@ -1953,7 +1956,7 @@ void proctypespecs(decl *ct)
 // get storespecs, typequals, and typespecs from the front of a declaration
 decl *getdeclspecs(token *toks, int *i)
 {
-  decl *ct = malloc(sizeof(decl));
+  decl *ct = calloc(1, sizeof(decl));
   
   // allocate sets
   set *typespecs  = makeset(sizeof(int));
@@ -1999,6 +2002,7 @@ decl *getdeclspecs(token *toks, int *i)
   // ->typespecs no longer needed, info stored in ->dattype
   free(ct->typespecs->cont);
   free(ct->typespecs);
+  ct->typespecs = NULL;
   
 
   // TODO perform checks on the specifiers to make sure they're allowed
@@ -2145,6 +2149,7 @@ decl * parsedecl(token *toks)
   {
     return NULL;
   }
+  assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
   
   if(!specs) // read new decl specs
   {
@@ -2157,13 +2162,15 @@ decl * parsedecl(token *toks)
 
   // get the declarator
   list *l = makelist(sizeof(typemod));
-  i = gettypemods(toks, i, -1, l, 0); // parse one declarator and move i forward accordingly
-  reverse(l); // typemods are parsed from the outside in, so now we flip that
+  char *name;
+  i = gettypemods(toks, i, -1, l, 0, &name); // parse one declarator and move i forward accordingly
+  // reverse(l); // typemods are parsed from the outside in, so now we flip that
 
   // write all this information into dcl
   decl *dcl = malloc(sizeof(decl));
   memcpy(dcl, specs, sizeof(decl)); // copy declspecs into this
   dcl->typemods = l;
+  dcl->ident = name;
 
   // make typemods easier to access for following logic
   typemod *tms = (typemod *)l->cont;
@@ -2902,8 +2909,8 @@ expr *parsetypename(link *start)
   int i = 0; // set for getdeclspecs()
   decl *ct = getdeclspecs(abstype, &i);
   list *l = makelist(sizeof(typemod));
-  gettypemods(abstype, i, -1, l, 1); // write typemods into l
-  reverse(l);
+  gettypemods(abstype, i, -1, l, 1, NULL); // write typemods into l; there should be no name
+  // reverse(l);
   ct->typemods = l;
 
   // put into expression
@@ -3123,7 +3130,7 @@ int main()
 
   // errors = makelist(sizeof(char *));
 
-  assert(sizeof(float) == 4); // there is no int32_t analog for floats
+  assert(sizeof(float) == 4); // there is no int32_t analog for floats. we rely on the system the compiler is running on to make sure floats work
 
   // for marking quoted and escaped sections
   // char src[1000], quot[1000], esc[1000];
@@ -3195,23 +3202,58 @@ int main()
   }
   while(((token *)last(trans_unit))->gen.type != NOTOK);
 
-  putd(trans_unit->n);
-  link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  puts("---");
+  // putd(trans_unit->n);
+  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
+
+  // we parse the top-level decls and function defs
+  token *toks = (token *) trans_unit->cont;
+  
+  decl **alldecls = malloc(sizeof(decl *) * 10);
+  int dsize = 10;
+  int dn = 0;
+
+  decl *d;
+  while((d = parsedecl(toks)) != NULL) // parse until NOTOK or error
+  {
+    putdecl(d);
+    
+    // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
+    assert(d->storespec != K_EXTERN);
+    assert(d->storespec != K_STATIC);
+    assert(dcl->ident); // probably not necessary but good to check that it exists
+    
+    // TODO typedef
+
+    // top-level lexical scope depends on where its first declaration occurs
+    
+    // search previous declarations for the same identifier. check if types conflict
+
+    // because no extern or static is allowed, we can always reserve storage on the first occurrence
+
+    if(dcl->init) // it's initialized
+    {
+      
+    }
+
+    else if(dcl->fundef) // it's a function definition
+    
+  }
 
   // parse every top level declaration
   // translate everything into assembly
 
-  puts("\n-------------------");
-  putll(chain);
-  puts("\n-------------------");
-  expr *e = parseexpr(chain);
+  // puts("\n-------------------");
+  // putll(chain);
+  // puts("\n-------------------");
+  // expr *e = parseexpr(chain);
 
-  if(!e) // error happened
-  {
-    printf("ERROR: %s\n", error);
-    exit(1);
-  }
-  putexpr(e, 0);
+  // if(!e) // error happened
+  // {
+  //   printf("ERROR: %s\n", error);
+  //   exit(1);
+  // }
+  // putexpr(e, 0);
 
   // struct init *init = parseinit(chain);
   // putinit(init,0);

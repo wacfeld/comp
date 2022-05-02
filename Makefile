@@ -1,5 +1,5 @@
 all: main.c
-	cc main.c datastruct.c parser.c -o main -g
+	cc main.c datastruct.c -o main -g
 test: test.c
 	gcc test.c -o test -ansi -pedantic -Wextra -Wall
 disas:
