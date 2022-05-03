@@ -21,6 +21,11 @@
 
 
 #define putd(x) printf(#x ": %d\n", x)
+#define putp(x) printf(#x ": %p\n", x)
+#define putf(x) printf(#x ": %f\n", x)
+
+#define streq(a, b) (!strcmp((a), (b)))
+
 
 // when debug is on all here() calls activate
 #define DEBUG 0
@@ -219,6 +224,8 @@ struct init
   expr *e;
 };
 
+// sometimes we will use the decl type just to hold declspecs and typemods, e.x. for abstract declarators
+// other times we will use them to hold fully-fledged declarations
 typedef struct
 {
   set *typespecs;
@@ -227,6 +234,7 @@ typedef struct
   int storespec;
 
   list *typemods;
+
   struct init *init;
   void *fundef; // TODO figure out what type this should be
   char *ident;

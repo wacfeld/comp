@@ -1719,10 +1719,71 @@ void puttypemod(typemod ts)
 }
 
 
+// make composite types
+// writes into t1
+// assumes that iscompat(t1, t2) returns 1
+void makecomposite(decl *t1, const decl *t2)
+{
+  assert(iscompat(t1, t2));
+
+  // dattype, typequals must all be equal
+  // top-level storespecs are not supported
+  // multiple declarations aren't allowed in functions, only top-level
+
+  // for init and fundef, one decl may have it NULL
+  if(!t1->init)
+    t1->init = t2->init;
+  if(!t1->fundef)
+    t1->fundef = t2->fundef;
+
+  // now go through typemods and update any incomplete types
+  typemod *tms1 = (typemod *) t1->typemods->cont;
+  typemod *tms2 = (typemod *) t2->typemods->cont;
+  for(int i = 0; i < t1->typemods->n - 1; i++)
+  {
+    int type = tms1->gen.type;
+    
+    // pointers should be identical
+    // ident should not be appearing at this stage
+    // none is avoided by n - 1 above
+    
+    if(type == TM_FUNC) // incomplete function type
+    {
+      if(tms1->func.params == NULL)
+      {
+        tms1->func.params = tms2->func.params;
+      }
+
+      else if(tms2->func.params) // both have params, then recursively makecomposite each param
+      {
+        decl *pl1 = (decl *) tms1->func.params->cont;
+        decl *pl2 = (decl *) tms2->func.params->cont;
+
+        assert(iscompat(pl1, pl2));
+        
+        for(int i = 0; i < tms1->func.params->n; i++)
+        {
+          makecompat(pl1, pl2);
+        }
+      }
+    }
+
+    else if(type == TM_ARR)
+    {
+      if(tms1->arr.len == -1)
+      {
+        tms1->arr.len = tms2->arr.len;
+      }
+    }
+  }
+}
+
+
 // checks if two types are equivalent
-int isequiv(decl *t1, decl *t2)
+int iscompat(decl *t1, decl *t2)
 {
   // TODO equivalence for structs, unions, enums
+  // TODO qualifiers
 
   // equivalent type specifier lists?
   if(t1->dattype != t2->dattype)
@@ -1733,11 +1794,11 @@ int isequiv(decl *t1, decl *t2)
   typemod *tms1 = (typemod *) t1->typemods->cont;
   typemod *tms2 = (typemod *) t2->typemods->cont;
   
-  // make both typemod lists abstract
-  if(tms1[0].gen.type == TM_IDENT)
-    tms1++;
-  if(tms2[0].gen.type == TM_IDENT)
-    tms2++;
+  // // make both typemod lists abstract
+  // if(tms1[0].gen.type == TM_IDENT)
+  //   tms1++;
+  // if(tms2[0].gen.type == TM_IDENT)
+  //   tms2++;
   
   while(1)
   {
@@ -1771,7 +1832,7 @@ int isequiv(decl *t1, decl *t2)
         // recursively check parameters for equivalence
         for(int i = 0; i < p1->n; i++)
         {
-          if(!isequiv(pl1+i, pl2+i))
+          if(!iscompat(pl1+i, pl2+i))
             return 0;
         }
       }
@@ -3221,13 +3282,38 @@ int main()
     // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
     assert(d->storespec != K_EXTERN);
     assert(d->storespec != K_STATIC);
-    assert(dcl->ident); // probably not necessary but good to check that it exists
-    
-    // TODO typedef
+    assert(d->storespec != K_AUTO);
+    assert(d->storespec != K_REGISTER);
 
+    if(d->storespec == K_TYPEDEF)
+    {
+      // TODO typedef
+      assert(!"typedef isn't supported yet");
+    }
+    
+    assert(d->ident); // probably not necessary but good to check that it exists
+    
     // top-level lexical scope depends on where its first declaration occurs
     
     // search previous declarations for the same identifier. check if types conflict
+    for(int i = 0; i < dn; i++)
+    {
+      if(streq(alldecls[i]->ident, d->ident)) // referring to same object
+      {
+        // check that the inits/fundefs don't conflict
+        if(d->fundef) // function def
+        {
+          assert(!alldecls[i]->fundef); // must be unique
+          assert(iscompat(alldecls[i], d)) // make sure same type!
+        }
+        if(d->init) // initialized
+        {
+          assert(!alldecls[i]->init); // musn't be prior initialization in this case
+        }
+
+        makecomposite(alldecls[i], d); // write into alldecls[i] the composite type
+      }
+    }
 
     // because no extern or static is allowed, we can always reserve storage on the first occurrence
 
