@@ -3315,15 +3315,12 @@ int main()
       }
     }
 
-    // because no extern or static is allowed, we can always reserve storage on the first occurrence
-
-    if(dcl->init) // it's initialized
+    else // it's the first occurrence
     {
       
     }
 
-    else if(dcl->fundef) // it's a function definition
-    
+    // because no extern or static is allowed, we reserve storage for every declared variable
   }
 
   // parse every top level declaration
