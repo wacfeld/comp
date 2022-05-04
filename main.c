@@ -985,6 +985,12 @@ void puttypemod(typemod ts);
 
 void putdecl(decl *dcl)
 {
+  void putinit(struct init *e, int space);
+
+  if(dcl->ident)
+  {
+    printf("%s is a ", dcl->ident);
+  }
 
   if(dcl->typemods)
   {
@@ -1007,13 +1013,29 @@ void putdecl(decl *dcl)
   for(int i = 0; i < len; i++)
     printf("%s ", keywords[tqs[i]]);
 
+  printf("%s ", hrdt[dcl->dattype]);
+
+  if(dcl->init)
+  {
+    printf("initialized to\n");
+    putinit(dcl->init, 2);
+  }
+  else
+    putchar('\n');
+
+  if(dcl->fundef)
+  {
+    printf("with definition ___\n");
+  }
+  else
+    putchar('\n');
+
   // int *tss = (int *) dcl->typespecs->cont;
   // len = dcl->typespecs->n;
   // for(int i = 0; i < len; i++)
   // {
   //   printf("%s ", keywords[tss[i]]);
   // }
-  printf("%s\n", hrdt[dcl->dattype]);
 }
 
 void putexpr(expr *e, int space)
@@ -1385,6 +1407,7 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
   append(l, &tm);
 
   *s = ((typemod *)l->cont)[0].ident.name; // write pointer to ident name into s
+  rem_front(l); // then remove the identifier
   
   return i;
 }
@@ -2233,8 +2256,9 @@ decl * parsedecl(token *toks)
   int tmlen = l->n;
 
   // gettypemods() works on both abstract and regular declarators. we don't want abstract declarators
-  assert(tmlen >= 1);
-  assert(tms[0].gen.type == TM_IDENT);
+  // assert(tmlen >= 1);
+  // assert(tms[0].gen.type == TM_IDENT);
+  assert(name);
 
   if(isatom(toks+i, BRACEOP)) // function definition
   {
@@ -2244,7 +2268,7 @@ decl * parsedecl(token *toks)
 
     // check if valid function declarator: ident, ()
     assert(tmlen >= 2);
-    assert(tms[1].gen.type == TM_FUNC);
+    assert(tms[0].gen.type == TM_FUNC);
 
     // find matching brace
     int bracedep = 0;
@@ -3219,8 +3243,83 @@ list *proctokens(char *src, char *esc, char *quot)
   return trans_unit;
 }
 
-void proctoplevel()
+void proctoplevel(token  *toks)
 {
+  alloc(decl *, alldecls, dsize, dn);
+
+  decl *d;
+  while((d = parsedecl(toks)) != NULL) // parse until NOTOK
+  {
+    putdecl(d);
+    
+    // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
+    assert(d->storespec != K_EXTERN);
+    assert(d->storespec != K_STATIC);
+    assert(d->storespec != K_AUTO);
+    assert(d->storespec != K_REGISTER);
+
+    if(d->storespec == K_TYPEDEF)
+    {
+      // TODO typedef
+      assert(!"typedef isn't supported yet");
+    }
+    
+    assert(d->ident); // probably not necessary but good to check that it exists
+    
+    // top-level lexical scope depends on where its first declaration occurs
+    
+    // search previous declarations for the same identifier. check if types conflict
+    for(int i = 0; i < dn; i++)
+    {
+      if(streq(alldecls[i]->ident, d->ident)) // referring to same object
+      {
+        // check that the inits/fundefs don't conflict
+        if(d->fundef) // function def
+        {
+          assert(!alldecls[i]->fundef); // must be unique
+          assert(iscompat(alldecls[i], d)); // make sure same type!
+        }
+        if(d->init) // initialized
+        {
+          assert(!alldecls[i]->init); // musn't be prior initialization in this case
+        }
+
+        makecomposite(alldecls[i], d); // write into alldecls[i] the composite type
+      }
+
+      else // it's the first occurrence, write into alldecls
+      {
+        resize(alldecls, dsize, dn);
+        alldecls[dn++] = d;
+      }
+    }
+  }
+
+  // run through a second time, this time allocating storage, parsing fundefs, initializing, etc.
+  for(int i = 0; i < dn; i++)
+  {
+    d = alldecls[i];
+
+    if(d->init) // initialize
+    {
+      
+    }
+
+    else if(d->fundef) // function definition
+    {
+      
+    }
+
+    else // tentative
+    {
+      
+    }
+  }
+  
+  // because no extern or static is allowed, we reserve storage for every declared variable
+
+  // translate everything into assembly
+
   
 }
 
@@ -3274,64 +3373,11 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
+  proctoplevel(toks);
+
   // puts("---");
   // putd(trans_unit->n);
   // link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  alloc(decl *, alldecls, dsize, dn);
-
-  decl *d;
-  while((d = parsedecl(toks)) != NULL) // parse until NOTOK or error
-  {
-    putdecl(d);
-    
-    // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
-    assert(d->storespec != K_EXTERN);
-    assert(d->storespec != K_STATIC);
-    assert(d->storespec != K_AUTO);
-    assert(d->storespec != K_REGISTER);
-
-    if(d->storespec == K_TYPEDEF)
-    {
-      // TODO typedef
-      assert(!"typedef isn't supported yet");
-    }
-    
-    assert(d->ident); // probably not necessary but good to check that it exists
-    
-    // top-level lexical scope depends on where its first declaration occurs
-    
-    // search previous declarations for the same identifier. check if types conflict
-    for(int i = 0; i < dn; i++)
-    {
-      if(streq(alldecls[i]->ident, d->ident)) // referring to same object
-      {
-        // check that the inits/fundefs don't conflict
-        if(d->fundef) // function def
-        {
-          assert(!alldecls[i]->fundef); // must be unique
-          assert(iscompat(alldecls[i], d)); // make sure same type!
-        }
-        if(d->init) // initialized
-        {
-          assert(!alldecls[i]->init); // musn't be prior initialization in this case
-        }
-
-        makecomposite(alldecls[i], d); // write into alldecls[i] the composite type
-      }
-
-      else // it's the first occurrence, write into alldecls
-      {
-        resize(alldecls, dsize, dn);
-        alldecls[dn++] = d;
-      }
-    }
-
-
-  }
-  // because no extern or static is allowed, we reserve storage for every declared variable
-
-  // translate everything into assembly
-
 
 }

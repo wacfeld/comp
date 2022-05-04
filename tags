@@ -380,7 +380,7 @@ parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 proctokens	main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
-proctoplevel	main.c	/^void proctoplevel()$/;"	f
+proctoplevel	main.c	/^void proctoplevel(token  *toks)$/;"	f
 proctypespecs	main.c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
 putd	dcl/main.c	16;"	d	file:
@@ -405,7 +405,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1094;"	d	file:
+sever	main.c	1116;"	d	file:
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 splice	main.c	/^void splice(char *src)$/;"	f
