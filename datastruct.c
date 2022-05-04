@@ -139,3 +139,33 @@ void rem_front(list *l)
   memmove(l->cont, l->cont + l->size, l->size * (l->n - 1));
   l->n -= 1;
 }
+
+// is subset
+int issub(set *sub, set *sup)
+{
+  assert(sub->size == sup->size);
+  int size = sub->size;
+
+  for(int i = 0; i < sub->n; i++)
+  {
+    if(!inset(sup, sub->cont + size * i))
+      return 0;
+  }
+
+  return 1;
+}
+
+int seteq(set *s1, set *s2)
+{
+  return issub(s1, s2) && issub(s2, s1);
+}
+
+int intinset(set *s, int x)
+{
+  return inset(s, &x);
+}
+void intsetins(set *s, int x)
+{
+  append(s, &x);
+}
+

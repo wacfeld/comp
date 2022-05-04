@@ -1722,8 +1722,10 @@ void puttypemod(typemod ts)
 // make composite types
 // writes into t1
 // assumes that iscompat(t1, t2) returns 1
-void makecomposite(decl *t1, const decl *t2)
+void makecomposite(decl *t1, decl *t2)
 {
+  int iscompat(decl *t1, decl *t2);
+  
   assert(iscompat(t1, t2));
 
   // dattype, typequals must all be equal
@@ -1763,7 +1765,7 @@ void makecomposite(decl *t1, const decl *t2)
         
         for(int i = 0; i < tms1->func.params->n; i++)
         {
-          makecompat(pl1, pl2);
+          makecomposite(pl1, pl2);
         }
       }
     }
@@ -1784,10 +1786,13 @@ int iscompat(decl *t1, decl *t2)
 {
   // TODO equivalence for structs, unions, enums
   // TODO qualifiers
+  // TODO typedefs?
 
   // equivalent type specifier lists?
   if(t1->dattype != t2->dattype)
     return 0;
+
+  // equivalent typedefs?
 
   // we assume typedefs have all been expanded already
 
@@ -1854,16 +1859,6 @@ int iscompat(decl *t1, decl *t2)
   }
 }
 
-
-
-int intinset(set *s, int x)
-{
-  return inset(s, &x);
-}
-void intsetins(set *s, int x)
-{
-  append(s, &x);
-}
 
 int getsize(decl *ct)
 {
@@ -3137,6 +3132,28 @@ expr *parsearglist(link *start)
   return newe;
 }
 
+void showlithier(char *src, char *esc, char *quot)
+{
+  int i;
+  printf("%s", src);
+  for(i = 0; i < strlen(src); i++)
+  {
+    if(esc[i]) putchar('e');
+    else putchar('.');
+  }
+  puts("");
+  for(i = 0; i < strlen(src); i++)
+  {
+    if(quot[i] == 0)
+    {
+      putchar('.');
+    }
+    else
+      putchar(quot[i]);
+  }
+  
+}
+
 expr *parseprimexpr(link *start)
 {
   here();
@@ -3179,6 +3196,32 @@ expr *parseprimexpr(link *start)
   // printf("%p\n", newe->tok);
   // puttok(*newe->tok);
   return newe;
+}
+
+list *proctokens(char *src, char *esc, char *quot)
+{
+  list *trans_unit = makelist(sizeof(token));
+
+  // turn text into tokens
+  do
+  {
+    // resize(trans_unit, tsize, tcount);
+    token *t = nexttok(src, esc, quot);
+    append(trans_unit, t);
+    free(t);
+    // nexttok(src, esc, quot, trans_unit+tcount);
+    // puttok(trans_unit[tcount]);
+    // puttok(*(token *)last(trans_unit));
+
+  }
+  while(((token *)last(trans_unit))->gen.type != NOTOK);
+  
+  return trans_unit;
+}
+
+void proctoplevel()
+{
+  
 }
 
 //* main
@@ -3225,54 +3268,17 @@ int main()
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
 
-
-  // printf("%s", src);
-  // for(i = 0; i < strlen(src); i++)
-  // {
-  //   if(esc[i]) putchar('e');
-  //   else putchar('.');
-  // }
-  // puts("");
-  // for(i = 0; i < strlen(src); i++)
-  // {
-  //   if(quot[i] == 0)
-  //   {
-  //     putchar('.');
-  //   }
-  //   else
-  //     putchar(quot[i]);
-  // }
-
-
-  // tokenize
-  // alloc(token, trans_unit, tsize, tcount);
-
-  list *trans_unit = makelist(sizeof(token));
-
-  // turn text into tokens
-  do
-  {
-    // resize(trans_unit, tsize, tcount);
-    token *t = nexttok(src, esc, quot);
-    append(trans_unit, t);
-    free(t);
-    // nexttok(src, esc, quot, trans_unit+tcount);
-    // puttok(trans_unit[tcount]);
-    puttok(*(token *)last(trans_unit));
-
-  }
-  while(((token *)last(trans_unit))->gen.type != NOTOK);
-
-  puts("---");
-  // putd(trans_unit->n);
-  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  // showlithier(src, esc, quot);
 
   // we parse the top-level decls and function defs
+  list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
+
+  // puts("---");
+  // putd(trans_unit->n);
+  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  decl **alldecls = malloc(sizeof(decl *) * 10);
-  int dsize = 10;
-  int dn = 0;
+  alloc(decl *, alldecls, dsize, dn);
 
   decl *d;
   while((d = parsedecl(toks)) != NULL) // parse until NOTOK or error
@@ -3304,7 +3310,7 @@ int main()
         if(d->fundef) // function def
         {
           assert(!alldecls[i]->fundef); // must be unique
-          assert(iscompat(alldecls[i], d)) // make sure same type!
+          assert(iscompat(alldecls[i], d)); // make sure same type!
         }
         if(d->init) // initialized
         {
@@ -3313,145 +3319,19 @@ int main()
 
         makecomposite(alldecls[i], d); // write into alldecls[i] the composite type
       }
+
+      else // it's the first occurrence, write into alldecls
+      {
+        resize(alldecls, dsize, dn);
+        alldecls[dn++] = d;
+      }
     }
 
-    else // it's the first occurrence
-    {
-      
-    }
 
-    // because no extern or static is allowed, we reserve storage for every declared variable
   }
+  // because no extern or static is allowed, we reserve storage for every declared variable
 
-  // parse every top level declaration
   // translate everything into assembly
 
-  // puts("\n-------------------");
-  // putll(chain);
-  // puts("\n-------------------");
-  // expr *e = parseexpr(chain);
-
-  // if(!e) // error happened
-  // {
-  //   printf("ERROR: %s\n", error);
-  //   exit(1);
-  // }
-  // putexpr(e, 0);
-
-  // struct init *init = parseinit(chain);
-  // putinit(init,0);
-  
-
-  // puts("------------------");
-  // while(parsedecl((token *)trans_unit->cont)); // parse until NOTOK
-
-  // tcount--; // exclude NOTOK
-
-  // turn tokens into linked list (translation unit)
-  // link *trans_unit = malloc(sizeof(link) * tcount);
-  // link *prevl = NULL; // previous link
-  // for(i = 0; i < tcount; i++)
-  // {
-  //     tok_chain[i].left = prevl;
-  //     tok_chain[i].right = NULL;
-  //     if(prevl != NULL)
-  //     {
-  //       prevl->right = tok_chain+i;
-  //     }
-  //     prevl = tok_chain+i;
-
-  //     tok_chain[i].type = TOK_L;
-  //     tok_chain[i].cont.tok = toks+i;
-  // }
-
-
-
-
-
-  // link ** decls = calloc(tcount, sizeof(link *) ); // declarations, a list of linked lists
-  // int numdecl = 0;
-  // int bracedepth = 0; // used to tell when a declaration is ending
-  // link *cur_l = tok_chain;
-  // do
-  // {
-  //   if(!decls[numdecl]) // start of new declaration
-  //   {
-  //     decls[numdecl] = cur_l;
-  //     // puttok(*cur_l->cont.tok);
-  //     cur_l->left = NULL; // start of linked list for declaration
-  //   }
-
-  //   link *right = cur_l->right; // may be overwritten soon if declaration ends
-
-  //   token *cur_tok = cur_l->cont.tok;
-
-  //   if(isatom(cur_tok, BRACEOP))
-  //     bracedepth++;
-  //   if(isatom(cur_tok, BRACECL))
-  //   {
-  //     bracedepth--;
-  //     if(bracedepth == 0) // must be end of statement
-  //     {
-  //       if(right && isatom(right->cont.tok, SEMICOLON)) // presume end of declaration
-  //       {
-  //         cur_l = right->right;
-  //         right->right = NULL;
-
-  //         numdecl++;
-  //         continue;
-  //       }
-  //       else // presume end of function
-  //       {
-  //         cur_l->right = NULL;
-  //         cur_l = right;
-
-  //         numdecl++;
-  //         continue;
-  //       }
-  //     }
-  //   }
-
-  //   if(isatom(cur_l->cont.tok, SEMICOLON) && bracedepth == 0) // end of declaration
-  //   {
-  //     numdecl++;
-  //     cur_l->right = NULL;
-  //   }
-
-  //   cur_l = right;
-  // } while(cur_l);
-
-  // assert(decls[numdecl] == NULL); // otherwise we have an unfinished declaration
-
-  // for(i = 0; i < numdecl; i++)
-  // {
-  //   puttok(*decls[i]->cont.tok);
-  // }
-
-
-
-
-
-
-  // separate top-level declarations
-  // link *trans_unit = malloc(;
-  
-
-  // print escape and quote markers
-  // printf("%s", src);
-  // for(i = 0; i < strlen(src); i++)
-  // {
-  //   if(esc[i]) putchar('e');
-  //   else putchar('.');
-  // }
-  // puts("");
-  // for(i = 0; i < strlen(src); i++)
-  // {
-  //   if(quot[i] == 0)
-  //   {
-  //     putchar('.');
-  //   }
-  //   else
-  //     putchar(quot[i]);
-  // }
 
 }
