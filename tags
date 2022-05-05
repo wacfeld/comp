@@ -242,6 +242,7 @@ e	defs.h	/^  expr *e;$/;"	m	struct:init
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 error	main.c	/^char *error;$/;"	v
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
+evalconstexpr	main.c	/^void evalconstexpr(expr *e)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon11
 expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
@@ -260,9 +261,11 @@ getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+hello	test.c	/^int hello()$/;"	f
 helpgetsize	main.c	/^int helpgetsize(int dt, typemod *tms)$/;"	f
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 here	defs.h	32;"	d
+hey	test.c	/^int hey = 6;$/;"	v
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrdt	defs.h	/^char *hrdt[] =$/;"	v
@@ -408,6 +411,7 @@ setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	main.c	1116;"	d	file:
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
+sizeofexpr	main.c	/^int sizeofexpr(expr *e)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
@@ -445,5 +449,5 @@ typequals	defs.h	/^  set *typequals;$/;"	m	struct:__anon10
 typespecs	defs.h	/^  set *typespecs;$/;"	m	struct:__anon10
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^int x;$/;"	v
 xtod	main.c	/^int xtod(char c)$/;"	f
+y	test.c	/^int y = sizeof(hello());$/;"	v

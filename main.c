@@ -1883,6 +1883,14 @@ int iscompat(decl *t1, decl *t2)
 }
 
 
+int sizeofexpr(expr *e)
+{
+  
+  
+}
+
+
+// the lowest level of sizeof. we have a type, and we run through the typemods/dattype to get its size. called by sizeofexpr()
 int getsize(decl *ct)
 {
   int helpgetsize(int dt, typemod *tms);
@@ -3243,6 +3251,12 @@ list *proctokens(char *src, char *esc, char *quot)
   return trans_unit;
 }
 
+// check that expression only contains valid constant operators and evaluate constant expression at compile time
+void evalconstexpr(expr *e)
+{
+  
+}
+
 void proctoplevel(token  *toks)
 {
   alloc(decl *, alldecls, dsize, dn);
@@ -3302,16 +3316,20 @@ void proctoplevel(token  *toks)
 
     if(d->init) // initialize
     {
+      // TODO {} initializers have to be dealt with still
+      // TODO perform evaluation on constant expr
       
     }
 
     else if(d->fundef) // function definition
     {
-      
+      // TODO evaluate declarations and statements
     }
 
     else // tentative
     {
+      // initialize to 0
+      
       
     }
   }
