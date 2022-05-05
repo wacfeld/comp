@@ -1142,7 +1142,7 @@ void etypeadd(expr *e, int type)
   setins(e->type, &type);
 }
 
-// TODO eistype is sometimes broken, sometimes not
+// DONE eistype is sometimes broken, sometimes not
 int eistype(expr *e, int type)
 {
   if(e->type == NULL)
@@ -1883,10 +1883,37 @@ int iscompat(decl *t1, decl *t2)
 }
 
 
+// get the size of a token (which we assume was part of a primary expression)
+int sizeoftok(token *t)
+{
+  int type = t->gen.type;
+
+  if(type == FLOATING)
+    return FLOAT_SIZE;
+  if(type == INTEGER)
+    return INT_SIZE;
+  if(type == CHAR)
+    return CHAR_SIZE;
+
+  if(type == IDENT)
+  {
+    // TODO
+    
+  }
+
+  if(type == STRLIT)
+  {
+    // return length of string including added-on \0
+    
+  }
+}
+
 int sizeofexpr(expr *e)
 {
-  
-  
+  if(eistype(e, PRIM_E))
+  {
+    
+  }
 }
 
 

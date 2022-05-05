@@ -261,11 +261,9 @@ getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
-hello	test.c	/^int hello()$/;"	f
 helpgetsize	main.c	/^int helpgetsize(int dt, typemod *tms)$/;"	f
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 here	defs.h	32;"	d
-hey	test.c	/^int hey = 6;$/;"	v
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrdt	defs.h	/^char *hrdt[] =$/;"	v
@@ -307,6 +305,7 @@ last	datastruct.c	/^void *last(list *l)$/;"	f
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	13;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
+len	defs.h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon1::__anon5
 len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
 len	defs.h	/^  int len;$/;"	m	struct:init
 len	test.s	/^len:$/;"	l
@@ -412,6 +411,7 @@ sever	main.c	1116;"	d	file:
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 sizeofexpr	main.c	/^int sizeofexpr(expr *e)$/;"	f
+sizeoftok	main.c	/^int sizeoftok(token *t)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
@@ -450,4 +450,3 @@ typespecs	defs.h	/^  set *typespecs;$/;"	m	struct:__anon10
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 xtod	main.c	/^int xtod(char c)$/;"	f
-y	test.c	/^int y = sizeof(hello());$/;"	v

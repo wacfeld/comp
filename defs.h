@@ -80,6 +80,7 @@ typedef union
   {
     tok_type type;
     char *cont;
+    int len; // we need len because it might have user-added \0's in the string
   } strlit;
 
   struct
@@ -448,6 +449,7 @@ char *hr_expr[100] =
 struct expr
 {
   // expr_type type;
+  // the bottom-up evaluation apparatus required that an expr could be multiple types. this is no longer the case but it remains a set for consistency
   set *type; // multiple types at once are possible
   int optype;
   struct expr **args;
