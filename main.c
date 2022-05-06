@@ -504,7 +504,25 @@ whitespace:
       // we either don't check for overflows or do so later
       u_int32_t num = 0;
 
-      assert(tolower(str[1]) != 'x' || str[2] != 0);
+      // assert(tolower(str[1]) != 'x' || str[2] != 0); // if there's an x, then the string can't just terminate right after the x
+
+      if(tolower(str[1]) == 'x')
+        assert(str[2] != 0); // no empty hex strings
+      if(tolower(str[1]) == 'x') // 'x' implies 0 before it
+        assert(str[0] == '0');
+
+      // figure out if decimal or not, important for determining type later
+      if(str[0] == '0' && tolower(str[1]) == 'x') // hex
+      {
+        t->integer.isdecimal = 0;
+      }
+      else if(str[0] == '0' && c >= 2) // octal
+      {
+        t->integer.isdecimal = 0;
+      }
+      else
+        t->integer.isdecimal = 1;
+
       int i = 0; // for indexing string soon
       // determine base
       int base = 10;
@@ -632,6 +650,7 @@ leaddot:
     
     t->gen.type = STRLIT;
     t->strlit.cont = str;
+    t->strlit.len = c+1; // length needs to be remembered, including terminating '\0' (length of the array, not the string)
 
     return t;
   }
@@ -1883,31 +1902,172 @@ int iscompat(decl *t1, decl *t2)
 }
 
 
-// get the size of a token (which we assume was part of a primary expression)
-int sizeoftok(token *t)
-{
-  int type = t->gen.type;
+// // get the size of a primary expression (by passing its token)
+// // primary expressions can be identifiers, string literals, constants, or (expression)
+// // (expression) will never occur because it evaluates to another kind of expression
+// // TODO enums, etc. should be in scope
+// int sizeofprim(token *t, decl **scope, int sn)
+// {
+//   int type = t->gen.type;
 
+//   if(type == FLOATING)
+//     return FLOAT_SIZE;
+//   if(type == INTEGER)
+//     return INT_SIZE;
+//   if(type == CHAR)
+//     return CHAR_SIZE;
+
+//   if(type == IDENT)
+//   {
+//     // look up identifier in list of declarations
+//     char *ident = t->ident.cont;
+//     for(int i = sn-1; i >= 0; i--) // we go backwards, so that inner block declarations "mask" outer ones
+//     {
+//       if(streq(scope[i]->ident, ident)) // found the thing
+//       {
+//         return sizeofdecl(scope[i]);
+//       }
+//     }
+
+//     // if for loop exits, we failed to find the identifier
+//     assert(!"could not find identifier");
+//   }
+
+//   if(type == STRLIT)
+//   {
+//     // return length of string including added-on \0
+//     return t->strlit.len;
+//   }
+// }
+
+
+int typeofprim(token *t, decl **scope, int sn)
+{
   if(type == FLOATING)
-    return FLOAT_SIZE;
+  {
+    decl *ct = calloc(1, sizeof(decl));
+    ct->storespec = -1;
+    
+    if(t->floating.isshort)
+      ct->dattype = FLOAT_T;
+    else if(t->floating.islong)
+      ct->dattype = LDUB_T;
+    else
+      ct->dattype = DUB_T;
+
+    return ct;
+  }
+
   if(type == INTEGER)
-    return INT_SIZE;
-  if(type == CHAR)
-    return CHAR_SIZE;
+  {
+    decl *ct = calloc(1, sizeof(decl));
+    ct->storespec = -1;
+    
+    if(t->integer.isdecimal && (!t->integer.islong) && (!t->integer.isunsigned)) // decimal and unsuffixed
+    {
+      if(t->integer.cont <= INT_MAX)
+        ct->dattype = INT_T;
+      // long int is same size as int in our implementation. skip
+      else
+        ct->dattype = ULINT_T;
+    }
+
+    else if(!t->integer.isdecimal && (!t->integer.islong) && (!t->integer.isunsigned)) // unsuffixed, not decimal
+    {
+      if(t->integer.cont <= INT_MAX)
+        ct->dattype = INT_T;
+      // long int is same size as int in our implementation. skip
+      else
+        ct->dattype = UINT_T;
+    }
+
+    else if(t->integer.isunsigned && (!t->integer.islong))
+    {
+      // always this under our implementation
+      ct->dattype = UINT_T;
+    }
+
+    else if(t->integer.islong)
+    {
+      if(t->integer.cont <= INT_MAX)
+        ct->dattype = LINT_T;
+      // long int is same size as int in our implementation. skip
+      else
+        ct->dattype = ULINT_T;
+    }
+
+    else if(t->integer.islong && t->integer.isunsigned)
+    {
+      ct->dattype = ULINT_T;
+    }
+
+    return ct;
+  }
 
   if(type == IDENT)
   {
-    // TODO
-    
+    // look up identifier in list of declarations
+    char *ident = t->ident.cont;
+    for(int i = sn-1; i >= 0; i--) // we go backwards, so that inner block declarations "mask" outer ones
+    {
+      if(streq(scope[i]->ident, ident)) // found the thing
+      {
+        return scope[i];
+      }
+    }
+
+    // if for loop exits, we failed to find the identifier
+    assert(!"could not find identifier");
+  }
+
+  if(type == CHAR)
+  {
+    decl *ct = calloc(1, sizeof(decl));
+    ct->storespec = -1;
+    ct->dattype = CHAR_T;
   }
 
   if(type == STRLIT)
   {
-    // return length of string including added-on \0
+    decl *ct = calloc(1, sizeof(decl));
+    ct->storespec = -1;
     
+    // chars
+    ct->dattype = CHAR_T;
+    ct->typemods = makelist(sizeof(typemod));
+
+    // array of
+    typemod tm;
+    tm.gen.type = TM_ARR;
+    tm.arr.len = t->strlit.len;
+    append(ct->typemods, &tm);
+
+    return ct;
   }
 }
 
+// TODO integral promotion (p. 174)
+// TODO pointer conversion (p. 177)
+
+decl *getexprtype(expr *e, decl **scope, int sn)
+{
+  // if ct already there, use
+  if(e->ct)
+    return e->ct;
+  
+  if(e->type == PRIM_E)
+  {
+    decl *ct = typeofprim(e->tok, scope, sn); // get type
+    e->ct = ct; // remember type
+    return ct; // return
+  }
+
+  // if(e->type ==   
+  // LEH
+  
+}
+
+// simply calls getexprtype and finds the size of the returned decl
 int sizeofexpr(expr *e)
 {
   if(eistype(e, PRIM_E))
@@ -1918,17 +2078,22 @@ int sizeofexpr(expr *e)
 
 
 // the lowest level of sizeof. we have a type, and we run through the typemods/dattype to get its size. called by sizeofexpr()
-int getsize(decl *ct)
+int sizeofdecl(decl *ct)
 {
-  int helpgetsize(int dt, typemod *tms);
+  int helpsizeofdecl(int dt, typemod *tms);
+  int dtsize(int dt);
+
+  if(!ct->typemods)
+    return dtsize(ct->dattype);
+  
 
   // wrapper that separates ct into relevant components
   typemod *tms = (typemod *) ct->typemods->cont;
   int dattype = ct->dattype;
-  return helpgetsize(dattype, tms);
+  return helpsizeofdecl(dattype, tms);
 }
 
-int helpgetsize(int dt, typemod *tms)
+int helpsizeofdecl(int dt, typemod *tms)
 {
   int dtsize(int dt);
 
@@ -1939,7 +2104,7 @@ int helpgetsize(int dt, typemod *tms)
   switch(tmtype)
   {
     case TM_IDENT:
-      return helpgetsize(dt, tms+1); // not abstract declarator, just skip identifier
+      return helpsizeofdecl(dt, tms+1); // not abstract declarator, just skip identifier
 
     case TM_NONE:
       return dtsize(dt); // no more typemods, just size of dt
@@ -1949,7 +2114,7 @@ int helpgetsize(int dt, typemod *tms)
 
     case TM_ARR:
       assert(tms->arr.len != -1); // incomplete type
-      return tms->arr.len * helpgetsize(dt, tms+1);
+      return tms->arr.len * helpsizeofdecl(dt, tms+1);
   }
 
   assert(!"should not reach here");
@@ -3379,6 +3544,7 @@ int main()
   // errors = makelist(sizeof(char *));
 
   assert(sizeof(float) == 4); // there is no int32_t analog for floats. we rely on the system the compiler is running on to make sure floats work
+  assert(sizeof(int) >= 4); // similar but less strict because longer ints are easy to convert to shorter
 
   // for marking quoted and escaped sections
   // char src[1000], quot[1000], esc[1000];

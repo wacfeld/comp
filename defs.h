@@ -48,6 +48,9 @@
 // all int sizes are the same as int
 // this complies with the standard
 
+#define INT_MAX 2147483647
+// the largest a signed int can be
+
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};
 
 enum atom_type {/*FCALL, ARRIND,*/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};
@@ -95,6 +98,7 @@ typedef union
     u_int32_t cont;
     int islong;
     int isunsigned;
+    int isdecimal;
   } integer;
 
   struct
@@ -454,9 +458,11 @@ struct expr
   int optype;
   struct expr **args;
   int numargs; // sometimes necessary, eg. function arguments
+
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
-  decl *ct; // for casts, only uses the type component of the decl struct
-  // did not want to make a union for this so we just have tok and ct, both optional
+
+  decl *ct; // initially NULL, in case we have to call a function to evaluate the type. however, is set beforehand for casts
+
 };
 // typedef struct expr expr;
 
