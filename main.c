@@ -1156,7 +1156,7 @@ int corresp(int num, int *a, int *b, int x)
 
 void etypeadd(expr *e, int type)
 {
-  if(e->type == NULL) 
+  if(e->type == NULL)
     e->type = makeset(sizeof(int));
   setins(e->type, &type);
 }
@@ -1414,7 +1414,7 @@ list *parseparamlist(link *start)
 // returns hi + 1 (where to pick up next)
 int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
 {
-  int helpgettypemods(token *toks, int lo, int hi, list *l, int abs); 
+  int helpgettypemods(token *toks, int lo, int hi, list *l, int abs);
 
   // wrapper that appends TM_NONE to signify end of typemods
   int i = helpgettypemods(toks, lo, hi, l, abs);
@@ -1943,6 +1943,7 @@ int iscompat(decl *t1, decl *t2)
 
 int typeofprim(token *t, decl **scope, int sn)
 {
+  int type == t->gen.type;
   if(type == FLOATING)
   {
     decl *ct = calloc(1, sizeof(decl));
@@ -2049,6 +2050,39 @@ int typeofprim(token *t, decl **scope, int sn)
 // TODO integral promotion (p. 174)
 // TODO pointer conversion (p. 177)
 
+int isintegral(decl *ct)
+{
+  int t = ct->type;
+  return t == CHAR_T || t == UCHAR_T || t == INT_T || t == UINT_T || t == SINT_T || t == LINT_T || t == USINT_T || t == ULINT_T;
+}
+
+// perform integral promotion on integer decl
+// returns dattype
+int intpromote(int dt, u_int32_t x)
+{
+  // TODO enums (which are ints)
+  if(dt == CHAR_T || dt == SINT_T || dt == USINT_T || dt == UCHAR_T)
+  {
+    if(x <= INT_MAX) // fits in signed int
+      return INT_T;
+    else
+      return UINT_T;
+  }
+
+  else // otherwise don't change
+    return dt;
+}
+
+// get first typemod of type. if no typemods, return -1
+typemod *firsttm(decl *ct)
+{
+  if(!ct->typemods) return NULL; // typemods don't exist
+  if(!ct->typemods->n) return NULL; // typemods has len 0
+
+  typemod *tms = (typemod *) ct->typemods->cont;
+  returnt tms; // first element, no offset
+}
+
 decl *getexprtype(expr *e, decl **scope, int sn)
 {
   // if ct already there, use
@@ -2062,8 +2096,37 @@ decl *getexprtype(expr *e, decl **scope, int sn)
     return ct; // return
   }
 
-  // if(e->type ==   
-  // LEH
+  if(e->type == POST_E)
+  {
+    if(e->optype == ARR_O)
+    {
+      // recurse to get subtypes
+      decl *ct1 = getexprtype(e->args[0], scope, sn);
+      decl *ct2 = getexprtype(e->args[1], scope, sn);
+      
+      // get typemods (NULL if doesn't exist)
+      typemod *tm1 = firsttm(ct1);
+      typemod *tm2 = firsttm(ct2);
+      
+      // pointer[integral] and integral[pointer] are the two valid forms
+      if(tm1 && tm1->gen.type == PTR && isintegral(ct2))
+      {
+        // pointer to T -> return type T
+        decl *ct = malloc(sizeof(ct));
+        memcpy(ct, ct1, sizeof(decl)); // pointer to T
+        rem_front(ct->typemods); // T
+
+        // attach to e and return
+        e->ct = ct;
+        return ct;
+      }
+    }
+
+    if(e->optype == FUN_O)
+    {
+      
+    }
+  }
   
 }
 

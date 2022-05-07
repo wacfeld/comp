@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <ctype.h>
 #define putd(x) printf(#x ": %d\n", x)
-
+#define putp(x) printf(#x ": %p\n", x)
 
 int main()
 {
-  char s[] = "hellohellohello";
-  putd(sizeof(s));
-  putd(sizeof(s+1));
+  typedef struct p p;
+  struct p {int x;};
 }

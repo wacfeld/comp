@@ -250,6 +250,7 @@ expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
+firsttm	main.c	/^typemod *firsttm(decl *ct)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
 fundef	defs.h	/^  void *fundef; \/\/ TODO figure out what type this should be$/;"	m	struct:__anon10
@@ -279,6 +280,7 @@ inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
+intpromote	main.c	/^int intpromote(int dt, u_int32_t x)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
@@ -289,6 +291,7 @@ isdecimal	defs.h	/^    int isdecimal;$/;"	m	struct:__anon1::__anon7
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
+isintegral	main.c	/^int isintegral(decl *ct)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
@@ -310,7 +313,6 @@ leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon1::__anon5
 len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
 len	defs.h	/^  int len;$/;"	m	struct:init
-len	test.s	/^len:$/;"	l
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
@@ -396,6 +398,7 @@ putf	defs.h	25;"	d
 putinit	main.c	/^void putinit(struct init *init, int space)$/;"	f
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	defs.h	24;"	d
+putp	test.c	4;"	d	file:
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
 read	defs.h	40;"	d
@@ -452,4 +455,6 @@ typequals	defs.h	/^  set *typequals;$/;"	m	struct:__anon10
 typespecs	defs.h	/^  set *typespecs;$/;"	m	struct:__anon10
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+x	test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
+y	test.s	/^y:$/;"	l

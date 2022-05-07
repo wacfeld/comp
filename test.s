@@ -1,15 +1,19 @@
 	.file	"test.c"
 	.text
-	.globl	len
+	.globl	x
 	.data
 	.align 4
-	.type	len, @object
-	.size	len, 4
-len:
+	.type	x, @object
+	.size	x, 4
+x:
 	.long	5
-	.section	.rodata
-.LC0:
-	.string	"sizeof(x): %d\n"
+	.globl	y
+	.section	.data.rel.local,"aw"
+	.align 8
+	.type	y, @object
+	.size	y, 8
+y:
+	.quad	x
 	.text
 	.globl	main
 	.type	main, @function
@@ -22,80 +26,8 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	pushq	%rbx
-	subq	$40, %rsp
-	.cfi_offset 3, -24
-	movq	%fs:40, %rax
-	movq	%rax, -24(%rbp)
-	xorl	%eax, %eax
-	movq	%rsp, %rax
-	movq	%rax, %rbx
-	movl	len(%rip), %eax
-	addl	$3, %eax
-	movl	%eax, len(%rip)
-	movl	len(%rip), %ecx
-	movslq	%ecx, %rax
-	subq	$1, %rax
-	movq	%rax, -40(%rbp)
-	movslq	%ecx, %rax
-	movq	%rax, %r8
-	movl	$0, %r9d
-	movslq	%ecx, %rax
-	movq	%rax, %rsi
-	movl	$0, %edi
-	movslq	%ecx, %rax
-	leaq	0(,%rax,4), %rdx
-	movl	$16, %eax
-	subq	$1, %rax
-	addq	%rdx, %rax
-	movl	$16, %esi
-	movl	$0, %edx
-	divq	%rsi
-	imulq	$16, %rax, %rax
-	movq	%rax, %rdx
-	andq	$-4096, %rdx
-	movq	%rsp, %rdi
-	subq	%rdx, %rdi
-	movq	%rdi, %rdx
-.L2:
-	cmpq	%rdx, %rsp
-	je	.L3
-	subq	$4096, %rsp
-	orq	$0, 4088(%rsp)
-	jmp	.L2
-.L3:
-	movq	%rax, %rdx
-	andl	$4095, %edx
-	subq	%rdx, %rsp
-	movq	%rax, %rdx
-	andl	$4095, %edx
-	testq	%rdx, %rdx
-	je	.L4
-	andl	$4095, %eax
-	subq	$8, %rax
-	addq	%rsp, %rax
-	orq	$0, (%rax)
-.L4:
-	movq	%rsp, %rax
-	addq	$3, %rax
-	shrq	$2, %rax
-	salq	$2, %rax
-	movq	%rax, -32(%rbp)
-	movslq	%ecx, %rax
-	salq	$2, %rax
-	movq	%rax, %rsi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movq	%rbx, %rsp
 	nop
-	movq	-24(%rbp), %rbx
-	xorq	%fs:40, %rbx
-	je	.L5
-	call	__stack_chk_fail@PLT
-.L5:
-	movq	-8(%rbp), %rbx
-	leave
+	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
