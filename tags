@@ -249,8 +249,8 @@ expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^int f(int * x)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
-firsttm	main.c	/^typemod *firsttm(decl *ct)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
 fundef	defs.h	/^  void *fundef; \/\/ TODO figure out what type this should be$/;"	m	struct:__anon10
@@ -260,6 +260,7 @@ get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getexprtype	main.c	/^decl *getexprtype(expr *e, decl **scope, int sn)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
+gettm	main.c	/^typemod *gettm(decl *ct, int i)$/;"	f
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
@@ -347,7 +348,7 @@ nline	defs.h	33;"	d
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
-params	defs.h	/^    list *params;$/;"	m	struct:__anon12::__anon16
+params	defs.h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon12::__anon16
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f

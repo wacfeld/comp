@@ -3,8 +3,14 @@
 #define putd(x) printf(#x ": %d\n", x)
 #define putp(x) printf(#x ": %p\n", x)
 
+int f(int * x)
+{
+  return *x;
+}
+
 int main()
 {
-  typedef struct p p;
-  struct p {int x;};
+  int const *x;
+  int *y;
+  x = y;
 }

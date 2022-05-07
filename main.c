@@ -2074,17 +2074,20 @@ int intpromote(int dt, u_int32_t x)
 }
 
 // get first typemod of type. if no typemods, return -1
-typemod *firsttm(decl *ct)
+typemod *gettm(decl *ct, int i)
 {
   if(!ct->typemods) return NULL; // typemods don't exist
   if(!ct->typemods->n) return NULL; // typemods has len 0
 
+  assert(i < ct->typemods->n);
   typemod *tms = (typemod *) ct->typemods->cont;
-  returnt tms; // first element, no offset
+  returnt tms + i;
 }
 
 decl *getexprtype(expr *e, decl **scope, int sn)
 {
+  // TODO pointer conversion, for functions and arrays
+  
   // if ct already there, use
   if(e->ct)
     return e->ct;
@@ -2105,14 +2108,14 @@ decl *getexprtype(expr *e, decl **scope, int sn)
       decl *ct2 = getexprtype(e->args[1], scope, sn);
       
       // get typemods (NULL if doesn't exist)
-      typemod *tm1 = firsttm(ct1);
-      typemod *tm2 = firsttm(ct2);
+      typemod *tm1 = gettm(ct1, 0);
+      typemod *tm2 = gettm(ct2, 0);
       
       // pointer[integral] and integral[pointer] are the two valid forms
-      if(tm1 && tm1->gen.type == PTR && isintegral(ct2))
+      if(tm1 && tm1->gen.type == TM_PTR && isintegral(ct2))
       {
         // pointer to T -> return type T
-        decl *ct = malloc(sizeof(ct));
+        decl *ct = malloc(sizeof(decl));
         memcpy(ct, ct1, sizeof(decl)); // pointer to T
         rem_front(ct->typemods); // T
 
@@ -2120,14 +2123,39 @@ decl *getexprtype(expr *e, decl **scope, int sn)
         e->ct = ct;
         return ct;
       }
+
+      if(isintegral(ct1) && tm2 && tm2->gen.type == TM_PTR)
+      {
+        decl *ct = malloc(sizeof(decl));
+        memcpy(ct, ct2, sizeof(decl));
+        rem_front(ct->typemods);
+
+        e->ct = ct;
+        return ct;
+      }
+
+      assert(!"invalid array indexing");
     }
 
     if(e->optype == FUN_O)
     {
-      
+      decl *ct1 = getexprtype(e->args[0], scope, sn); // pointer to function
+      assert(e->args[1]->type == ARGLIST); // arglist
+
+      typemod *tm1 = gettm(ct1, 0);
+      assert(tm1->gen.type == TM_PTR); // pointer to
+      tm1 = gettm(ct1, 1);
+      assert(tm2->gen.type == TM_FUNC); // function
+
+      list *params = tm1->func.params;
+      if(params) // if params specified, go through and check them against the arglist
+      {
+        
+      }
     }
   }
   
+  // TODO TYPENAME, ARGLIST
 }
 
 // simply calls getexprtype and finds the size of the returned decl

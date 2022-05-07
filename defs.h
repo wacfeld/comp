@@ -519,7 +519,7 @@ typedef union
   struct
   {
     int type;
-    list *params;
+    list *params; // list of decls
     // TODO parameters
   } func;
 
