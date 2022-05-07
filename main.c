@@ -1824,15 +1824,22 @@ void makecomposite(decl *t1, decl *t2)
 
 
 // checks if two types are equivalent
-int iscompat(decl *t1, decl *t2)
+/*
+   in case asgn is 1, then t1 type qualifiers may be more strict than t2
+   in case top, then the current (toplevel) qualifiers for t1 and t2 may be anything, as we always pass/assign by value
+*/
+int iscompat(decl *t1, decl *t2, int top, int asgn)
 {
   // TODO equivalence for structs, unions, enums
   // TODO qualifiers
   // TODO typedefs?
 
   // equivalent type specifier lists?
-  if(t1->dattype != t2->dattype)
-    return 0;
+  // if(t1->dattype != t2->dattype)
+  //   return 0;
+  // so that top functions properly we check dattype at the very end
+
+  
 
   // equivalent typedefs?
 
@@ -1847,7 +1854,7 @@ int iscompat(decl *t1, decl *t2)
   // if(tms2[0].gen.type == TM_IDENT)
   //   tms2++;
   
-  while(1)
+  for(;; tms1++, tms2++)
   {
     typemod tm1 = *tms1;
     typemod tm2 = *tms2;
@@ -1861,7 +1868,30 @@ int iscompat(decl *t1, decl *t2)
     // based on the typemod type, check equality in different ways
     int type = tm1.gen.type;
 
-    // if pointer, move over
+    // if pointer, check qualifiers
+    if(type == TM_PTR)
+    {
+      if(top) // top level, ignore qualifiers
+      {
+        top = 0; // no longer top level
+      }
+      
+      else if(asgn) // assignment, t1 quals may be superset of t2
+      {
+        if(!tm1.ptr.isconst && tm2.ptr.isconst)
+          return 0;
+        if(!tm1.ptr.isvolatile && tm2.ptr.isvolatile)
+          return 0;
+      }
+
+      else // else, strict equivalence in quals required (usually for multiple compatible declarations
+      {
+        if(tm1.ptr.isconst != tm2.ptr.isconst)
+          return 0;
+        if(tm2.ptr.isvolatile != tm2.ptr.isvolatile)
+          return 0;
+      }
+    }
 
     if(type == TM_FUNC)
     {
@@ -1897,8 +1927,28 @@ int iscompat(decl *t1, decl *t2)
     }
 
     else if(type == TM_NONE) // reached the end
-      return 1;
+    {
+      
+      break;
+    }
   }
+
+  if(t1->dattype != t2->dattype) // equivalent type specs?
+    return 0;
+
+  if(top) // toplevel -> don't care about quals
+    return 1;
+
+  if(asgn) // asgn -> t1 quals superset of t2
+  {
+    if(issub(t2->typequals, t1->typequals))
+    {
+      return 1;
+    }
+  }
+
+  // otherwise strict equality of qualifiers required
+  return seteq(t2->typequals, t1->typequals);
 }
 
 

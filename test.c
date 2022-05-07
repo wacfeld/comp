@@ -3,14 +3,13 @@
 #define putd(x) printf(#x ": %d\n", x)
 #define putp(x) printf(#x ": %p\n", x)
 
-int f(int * x)
-{
-  return *x;
-}
+
+
 
 int main()
 {
-  int const *x;
+  const int *x;
   int *y;
-  x = y;
+  y = x;
+  return 0;
 }
