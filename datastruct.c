@@ -133,6 +133,12 @@ int isempty(list *l)
   return l->n == 0;
 }
 
+void shift_front(list *l)
+{
+  l->cont += l->size;
+  l->n --;
+}
+
 
 void rem_front(list *l)
 {
@@ -168,4 +174,16 @@ void intsetins(set *s, int x)
 {
   append(s, &x);
 }
+
+
+// set *copyset(set *s)
+// {
+//   set *t = malloc(sizeof(set));
+//   memcpy(t, s, sizeof(set));
+  
+//   t->cont = malloc(s->n * s->size);
+//   memcpy(t->cont, s->cont, s->n * s->size);
+
+//   return t;
+// }
 

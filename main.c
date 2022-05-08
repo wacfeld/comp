@@ -1410,6 +1410,22 @@ list *parseparamlist(link *start)
   return paramlist;
 }
 
+// // decls contain lost of nested pointers. we use a function to make a deep copy so we can modify
+// decl *copydecl(decl *ct)
+// {
+//   // first copy superficial info in
+//   decl *newct = malloc(sizeof(decl));
+//   memcpy(newct, ct, sizeof(decl));
+
+//   // make deep copy of sets/lists
+
+//   newct->typespecs = copyset(ct->typespecs);
+//   newct->typequals = copyset(ct->typequals);
+
+//   newct->typemods = copyset(ct->typemods); // copyset works on lists too
+
+// }
+
 // recursive function that interprets a declarator by getting the type modifiers in order
 // returns hi + 1 (where to pick up next)
 int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
@@ -1766,9 +1782,9 @@ void puttypemod(typemod ts)
 // assumes that iscompat(t1, t2) returns 1
 void makecomposite(decl *t1, decl *t2)
 {
-  int iscompat(decl *t1, decl *t2);
+  int iscompat(decl *t1, decl *t2, int top, int asgn);
   
-  assert(iscompat(t1, t2));
+  assert(iscompat(t1, t2, 0, 0));
 
   // dattype, typequals must all be equal
   // top-level storespecs are not supported
@@ -1803,7 +1819,7 @@ void makecomposite(decl *t1, decl *t2)
         decl *pl1 = (decl *) tms1->func.params->cont;
         decl *pl2 = (decl *) tms2->func.params->cont;
 
-        assert(iscompat(pl1, pl2));
+        assert(iscompat(pl1, pl2, 0, 0));
         
         for(int i = 0; i < tms1->func.params->n; i++)
         {
@@ -1909,7 +1925,7 @@ int iscompat(decl *t1, decl *t2, int top, int asgn)
         // recursively check parameters for equivalence
         for(int i = 0; i < p1->n; i++)
         {
-          if(!iscompat(pl1+i, pl2+i))
+          if(!iscompat(pl1+i, pl2+i, 0, 0))
             return 0;
         }
       }
@@ -2100,9 +2116,21 @@ int typeofprim(token *t, decl **scope, int sn)
 // TODO integral promotion (p. 174)
 // TODO pointer conversion (p. 177)
 
+int isarith(decl *ct)
+{
+  int t = ct->type;
+  if(ct->typemods && ct->typemods->n > 0) // typespec is not toplevel, there are typemods
+    return 0;
+  // TODO enums (should be dealt with in isintegral() actually
+  return isintegral(ct) || t == FLOAT_T || t == DUB_T || t == LDUB_T;
+}
+
 int isintegral(decl *ct)
 {
   int t = ct->type;
+  if(ct->typemods && ct->typemods->n > 0) // typespec is not toplevel, there are typemods
+    return 0;
+  // TODO enums
   return t == CHAR_T || t == UCHAR_T || t == INT_T || t == UINT_T || t == SINT_T || t == LINT_T || t == USINT_T || t == ULINT_T;
 }
 
@@ -2167,7 +2195,10 @@ decl *getexprtype(expr *e, decl **scope, int sn)
         // pointer to T -> return type T
         decl *ct = malloc(sizeof(decl));
         memcpy(ct, ct1, sizeof(decl)); // pointer to T
-        rem_front(ct->typemods); // T
+        // rem_front(ct->typemods); // T
+        // can't use rem_front because our pointers are pointing to the same list
+        // ct->typemods->cont += ct->typemods->size; // T
+        shift_front(ct->typemods);
 
         // attach to e and return
         e->ct = ct;
@@ -2178,7 +2209,9 @@ decl *getexprtype(expr *e, decl **scope, int sn)
       {
         decl *ct = malloc(sizeof(decl));
         memcpy(ct, ct2, sizeof(decl));
-        rem_front(ct->typemods);
+        // rem_front(ct->typemods);
+        // ct->typemods->cont += ct->typemods->size; // T
+        shift_front(ct->typemods);
 
         e->ct = ct;
         return ct;
@@ -2200,8 +2233,113 @@ decl *getexprtype(expr *e, decl **scope, int sn)
       list *params = tm1->func.params;
       if(params) // if params specified, go through and check them against the arglist
       {
-        
+        assert(params->n == e->args[1]->numargs);
+        decl *paramtypes = (decl *) params->cont;
+        for(int i = 0; i < params->n; i++)
+        {
+          decl *ct = getexprtype(e->args[1]->args[i], scope, sn);
+          assert(iscompat(paramtypes[i], ct, 1, 1)); // toplevel and assignment flags on
+        }
       }
+
+      decl *ct = malloc(sizeof(decl));
+      memcpy(ct, ct1, sizeof(decl));
+      // rem_front(ct->typemods); // * () T -> () T
+      // rem_front(ct->typemods); // () T -> T
+      // ct->typemods->cont += ct->typemods->size * 2; // * () T -> T
+      shift_front(ct->typemods); // () T
+      shift_front(ct->typemods); // T
+
+      return ct;
+    }
+
+    if(e->optype == STRUCT_O)
+    {
+      decl *ct1 = getexprtype(e->args[0], scope, sn); // struct/union
+      // TODO
+      assert(!"not done yet");
+    }
+    
+    if(e->optype == PSTRUCT_O)
+    {
+      decl *ct1 = getexprtype(e->args[0], scope, sn); // struct/union
+      // TODO
+      assert(!"not done yet");
+    }
+
+    if(e->optype == POSTINC_O)
+    {
+      decl *ct1 = getexprtype(e->args[0], scope, sn);
+      // TODO based on additive ops and assignment. must be lvalue
+      assert(!"not done yet");
+    }
+
+    if(e->optype == POSTDEC_O)
+    {
+      // TODO
+      assert(!"not done yet");
+    }
+  }
+
+  if(e->type == UNAR_E)
+  {
+    if(e->optype == PREINC_O)
+    {
+      assert(!"not done yet");
+    }
+
+    if(e->optype == PREDEC_O)
+    {
+      assert(!"not done yet");
+    }
+
+    if(e->optype == ADDR_O)
+    {
+      decl *ct1 = getexprtype(e->args[0], scope, sn);
+      assert(ct1->storespec != K_REGISTER); // no taking address of register
+      assert(ct1->lval); // can only take address of lvalue
+
+      decl *ct = malloc(sizeof(decl));
+      memcpy(ct, ct1, sizeof(decl));
+
+      // add TM_PTR to typemods
+      ct->typemods = makelist(sizeof(typemod));
+      ct->lval = 0; // no longer lvalue
+      typemod tm;
+      tm.gen.type == TM_PTR;
+      tm.ptr.isconst = tm.ptr.isvolatile = 0;
+      append(ct->typemods, &tm);
+
+      // write the rest of the type in
+      typemod *ct1tms = (typemod *) ct1->typemods->cont;
+      for(int i = 0; i < ct1->typemods->n; i++)
+      {
+        append(ct->typemods, ct1tm + i);
+      }
+
+      return ct;
+    }
+
+    if(e->optype == POINT_O)
+    {
+      decl *ct1 = getexprtype(e->args[0], scope, sn);
+      // check pointer
+      typemod *tm = gettm(ct1, 0);
+      assert(tm->gen.type == TM_PTR);
+
+
+      decl *ct = malloc(sizeof(decl));
+      memcpy(ct, ct1, sizeof(decl));
+      shift_front(ct->typemods);
+
+      // check if lval
+      // TODO struct and union also lval
+      if(isarith(ct))
+        ct->lval = 1;
+
+      tm = gettm(ct->typemods, 0);
+      if(tm && tm->gen.type == TM_PTR)
+        ct->lval = 1;
     }
   }
   
@@ -3624,7 +3762,7 @@ void proctoplevel(token  *toks)
         if(d->fundef) // function def
         {
           assert(!alldecls[i]->fundef); // must be unique
-          assert(iscompat(alldecls[i], d)); // make sure same type!
+          assert(iscompat(alldecls[i], d, 0, 0)); // make sure same type!
         }
         if(d->init) // initialized
         {
@@ -3638,6 +3776,13 @@ void proctoplevel(token  *toks)
       {
         resize(alldecls, dsize, dn);
         alldecls[dn++] = d;
+
+        // TODO struct, union also lvalues
+        typemod *tm1 = gettm(d, 0);
+        if(isarith(d) || (tm1 && tm1->gen.type == TM_PTR))
+        {
+          d->lval = 1;
+        }
       }
     }
   }

@@ -15,6 +15,8 @@ int setins(set *s, void * m);
 int setrem(set *s, void *m);
 int inset(set *s, void * m);
 
+// set *copyset(set *s);
+
 int issub(set *sub, set *sup);
 int seteq(set *s1, set *s2);
 
@@ -32,6 +34,7 @@ list *rest(list *l);
 int isempty(list *l);
 
 void rem_front(list *l); // like a dequeue function, but doesn't return anything
+void shift_front(list *l) // non-destructive, just moves pointer forward and decrements n
 
 int intinset(set *s, int x);
 void intsetins(set *s, int x);

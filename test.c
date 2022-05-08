@@ -8,8 +8,8 @@
 
 int main()
 {
-  const int *x;
-  int *y;
-  y = x;
+  int (*f)(int *volatile x);
+  int (*g)(int *x);
+  g = f;
   return 0;
 }

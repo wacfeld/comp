@@ -239,6 +239,7 @@ typedef struct
   int storespec;
 
   list *typemods;
+  int lval;
 
   struct init *init;
   void *fundef; // TODO figure out what type this should be
@@ -275,8 +276,8 @@ enum optype
   // it's more convenient to just use expr.type for parsing, and just use expr.optype for evaluation. therefore we must differentiate between PRE/POST INC/DEC operators
 
   // unary operators
-  ADDR_O,
-  POINT_O,
+  ADDR_O, // &
+  POINT_O, // *
   UPLUS_O,
   UMIN_O,
   BNOT_O,
