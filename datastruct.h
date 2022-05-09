@@ -34,7 +34,7 @@ list *rest(list *l);
 int isempty(list *l);
 
 void rem_front(list *l); // like a dequeue function, but doesn't return anything
-void shift_front(list *l) // non-destructive, just moves pointer forward and decrements n
+void shift_front(list *l); // non-destructive, just moves pointer forward and decrements n
 
 int intinset(set *s, int x);
 void intsetins(set *s, int x);
