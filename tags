@@ -213,7 +213,7 @@ XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 alloc	defs.h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
-arr	defs.h	/^  } arr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon15
+arr	defs.h	/^  } arr;$/;"	m	union:__anon13	typeref:struct:__anon13::__anon16
 asgnops	main.c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
 atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
@@ -231,35 +231,35 @@ cont	defs.h	/^    enum atom_type cont;$/;"	m	struct:__anon1::__anon9	typeref:enu
 cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
 cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
-cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon11
+cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon12
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
+ct	defs.h	/^  ctype *ct;$/;"	m	struct:__anon11
 ct	defs.h	/^  decl *ct; \/\/ initially NULL, in case we have to call a function to evaluate the type. however, is set beforehand for casts$/;"	m	struct:expr
-dattype	defs.h	/^  int dattype;$/;"	m	struct:__anon10
+ctype	defs.h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon10
+dattype	defs.h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon10
 dattypes	defs.h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
-decl	defs.h	/^} decl;$/;"	t	typeref:struct:__anon10
+decl	defs.h	/^} decl;$/;"	t	typeref:struct:__anon11
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 error	main.c	/^char *error;$/;"	v
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 evalconstexpr	main.c	/^void evalconstexpr(expr *e)$/;"	f
-exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon11
+exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon12
 expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
-func	defs.h	/^  } func;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon16
-fundef	defs.h	/^  void *fundef; \/\/ TODO figure out what type this should be$/;"	m	struct:__anon10
+func	defs.h	/^  } func;$/;"	m	union:__anon13	typeref:struct:__anon13::__anon17
+fundef	defs.h	/^  void *fundef; \/\/ TODO figure out what type this should be$/;"	m	struct:__anon11
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
-gen	defs.h	/^  } gen;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon13
+gen	defs.h	/^  } gen;$/;"	m	union:__anon13	typeref:struct:__anon13::__anon14
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
-getexprtype	main.c	/^decl *getexprtype(expr *e, decl **scope, int sn)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
-gettm	main.c	/^typemod *gettm(decl *ct, int i)$/;"	f
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	main.c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
@@ -271,28 +271,26 @@ hrat	defs.h	/^char *hrat[100] = {$/;"	v
 hrdt	defs.h	/^char *hrdt[] =$/;"	v
 hropt	defs.h	/^char *hropt[1000] =$/;"	v
 hrtok	defs.h	/^char *hrtok[100] = {$/;"	v
-ident	defs.h	/^  char *ident;$/;"	m	struct:__anon10
-ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon12	typeref:struct:__anon12::__anon17
+ident	defs.h	/^  char *ident;$/;"	m	struct:__anon11
+ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon13	typeref:struct:__anon13::__anon18
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
-init	defs.h	/^  struct init *init;$/;"	m	struct:__anon10	typeref:struct:__anon10::init
+init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon11	typeref:struct:__anon11::init
 init	defs.h	/^struct init$/;"	s
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
-intpromote	main.c	/^int intpromote(int dt, u_int32_t x)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
-isarith	main.c	/^int isarith(decl *ct)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 iscompat	main.c	/^int iscompat(decl *t1, decl *t2, int top, int asgn)$/;"	f
-isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon12::__anon14
+isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon13::__anon15
+isconst	defs.h	/^  int isconst;$/;"	m	struct:__anon10
 isdecimal	defs.h	/^    int isdecimal;$/;"	m	struct:__anon1::__anon7
 isdeclspec	main.c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
-isintegral	main.c	/^int isintegral(decl *ct)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
@@ -303,7 +301,8 @@ isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
 issub	datastruct.c	/^int issub(set *sub, set *sup)$/;"	f
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
-isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon12::__anon14
+isvolat	defs.h	/^  int isvolat;$/;"	m	struct:__anon10
+isvolatile	defs.h	/^    int isvolatile;$/;"	m	struct:__anon13::__anon15
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon3
 keyword	defs.h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keywords	defs.h	/^char *keywords[] =$/;"	v
@@ -312,7 +311,7 @@ left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	13;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon1::__anon5
-len	defs.h	/^    int len;$/;"	m	struct:__anon12::__anon15
+len	defs.h	/^    int len;$/;"	m	struct:__anon13::__anon16
 len	defs.h	/^  int len;$/;"	m	struct:init
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
@@ -327,7 +326,6 @@ lisunaryop	main.c	/^int lisunaryop(link *l) \/\/ & * + - ~ !$/;"	f
 ll2tokl	main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 lllen	main.c	/^int lllen(link *l)$/;"	f
 lst	defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
-lval	defs.h	/^  int lval;$/;"	m	struct:__anon10
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
@@ -341,15 +339,14 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
-name	defs.h	/^    char *name;$/;"	m	struct:__anon12::__anon17
-nextstat	main.c	/^token *nextstat(char *src, char *esc, char *quot)$/;"	f
+name	defs.h	/^    char *name;$/;"	m	struct:__anon13::__anon18
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
 nline	defs.h	33;"	d
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
-params	defs.h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon12::__anon16
+params	defs.h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon13::__anon17
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
@@ -388,9 +385,8 @@ parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 proctokens	main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
-proctoplevel	main.c	/^void proctoplevel(token  *toks)$/;"	f
 proctypespecs	main.c	/^void proctypespecs(decl *ct)$/;"	f
-ptr	defs.h	/^  } ptr;$/;"	m	union:__anon12	typeref:struct:__anon12::__anon14
+ptr	defs.h	/^  } ptr;$/;"	m	union:__anon13	typeref:struct:__anon13::__anon15
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	test.c	3;"	d	file:
@@ -414,33 +410,34 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1135;"	d	file:
+sever	main.c	1136;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 sizeofdecl	main.c	/^int sizeofdecl(decl *ct)$/;"	f
-sizeofexpr	main.c	/^int sizeofexpr(expr *e)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
-storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon10
+storespec	defs.h	/^  int storespec; \/\/ K_EXTERN, K_STATIC, or -1 (none)$/;"	m	struct:__anon10
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 streq	defs.h	27;"	d
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 testerr	main.c	22;"	d	file:
+tmlen	defs.h	/^  int tmlen;$/;"	m	struct:__anon10
+tms	defs.h	/^  typemod *tms;$/;"	m	struct:__anon10
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
-tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon11
+tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon12
 tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok_type	defs.h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	defs.h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
 tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 trysever	main.c	/^void trysever(link *l)$/;"	f
-type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon13
-type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon14
-type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon15
-type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon16
-type	defs.h	/^    int type;$/;"	m	struct:__anon12::__anon17
+type	defs.h	/^    int type;$/;"	m	struct:__anon13::__anon14
+type	defs.h	/^    int type;$/;"	m	struct:__anon13::__anon15
+type	defs.h	/^    int type;$/;"	m	struct:__anon13::__anon16
+type	defs.h	/^    int type;$/;"	m	struct:__anon13::__anon17
+type	defs.h	/^    int type;$/;"	m	struct:__anon13::__anon18
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon2
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon3
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon4
@@ -451,11 +448,7 @@ type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon8
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon9
 type	defs.h	/^  enum link_type type;$/;"	m	struct:link	typeref:enum:link::link_type
 type	defs.h	/^  set *type; \/\/ multiple types at once are possible$/;"	m	struct:expr
-typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon12
-typemods	defs.h	/^  list *typemods;$/;"	m	struct:__anon10
-typeofprim	main.c	/^int typeofprim(token *t, decl **scope, int sn)$/;"	f
-typequals	defs.h	/^  set *typequals;$/;"	m	struct:__anon10
-typespecs	defs.h	/^  set *typespecs;$/;"	m	struct:__anon10
+typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon13
 unesc	main.c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	test.s	/^x:$/;"	l

@@ -49,7 +49,7 @@
 // this complies with the standard
 
 #define INT_MAX 2147483647
-// the largest a signed int can be
+// the largest a signed int can be (inclusive)
 
 enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};
 
@@ -229,20 +229,34 @@ struct init
   expr *e;
 };
 
-// sometimes we will use the decl type just to hold declspecs and typemods, e.x. for abstract declarators
-// other times we will use them to hold fully-fledged declarations
 typedef struct
 {
-  set *typespecs;
-  int dattype;
-  set *typequals;
-  int storespec;
+  int dattype; // e.g. INT_T, SHORT_T, VOID_T, etc.
 
-  list *typemods;
-  int lval;
+  int storespec; // K_EXTERN, K_STATIC, or -1 (none)
 
-  struct init *init;
+  int isconst;
+  int isvolat;
+
+  typemod *tms;
+  int tmlen;
+
+} ctype; // type, ALWAYS ABSTRACT.
+
+typedef struct
+{
+  // set *typespecs;
+  // int dattype;
+  // set *typequals;
+  // int storespec;
+  ctype *ct;
+
+  // list *typemods;
+  // int lval; // TODO
+
+  struct init *init; // e.g. {1,2, {3,4,5}}
   void *fundef; // TODO figure out what type this should be
+
   char *ident;
 } decl;
 
