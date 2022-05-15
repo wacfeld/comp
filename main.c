@@ -1003,41 +1003,66 @@ int isasgnop(int);
 
 void puttypemod(typemod ts);
 
+void putctype(ctype *ct)
+{
+  // typemods
+  if(ct->tms)
+  {
+    for(int i = 0; i < ct->tmlen; i++)
+    {
+      puttypemod(ct->tms[j]);
+    }
+  }
+
+  // store spec
+  if(ct->storespec == EXTERN_S)
+    printf("etern ");
+  else if(ct->storespec == STATIC_S)
+    printf("static ");
+
+  if(ct->isconst)
+    printf("const ");
+  if(ct->isvolat)
+    printf("volat ");
+
+  printf("%s ", hrdt[ct->dattype]);
+}
+
 void putdecl(decl *dcl)
 {
   void putinit(struct init *e, int space);
 
   if(dcl->ident)
   {
-    printf("%s is a ", dcl->ident);
+    printf("%s: ", dcl->ident);
   }
 
-  if(dcl->typemods)
-  {
-    typemod *tms = (typemod *) dcl->typemods->cont;
-    int tmlen = dcl->typemods->n;
-    for(int j = 0; j < tmlen; j++)
-    {
-      puttypemod(tms[j]);
-    }
-  }
+  // if(dcl->typemods)
+  // {
+  //   typemod *tms = (typemod *) dcl->typemods->cont;
+  //   int tmlen = dcl->typemods->n;
+  //   for(int j = 0; j < tmlen; j++)
+  //   {
+  //     puttypemod(tms[j]);
+  //   }
+  // }
 
-  if(dcl->storespec != -1)
-  {
-    printf("%s ", keywords[dcl->storespec]);
-  }
+  // if(dcl->storespec != -1)
+  // {
+  //   printf("%s ", keywords[dcl->storespec]);
+  // }
 
-  int *tqs = (int *) dcl->typequals->cont;
-  int len = dcl->typequals->n;
+  // int *tqs = (int *) dcl->typequals->cont;
+  // int len = dcl->typequals->n;
   
-  for(int i = 0; i < len; i++)
-    printf("%s ", keywords[tqs[i]]);
+  // for(int i = 0; i < len; i++)
+  //   printf("%s ", keywords[tqs[i]]);
 
-  printf("%s ", hrdt[dcl->dattype]);
+  // printf("%s ", hrdt[dcl->dattype]);
 
   if(dcl->init)
   {
-    printf("initialized to\n");
+    printf(":= \n");
     putinit(dcl->init, 2);
   }
   else
@@ -1093,7 +1118,7 @@ void putexpr(expr *e, int space)
   if(eistype(e, TYPENAME))
   {
     printf(" : ");
-    putdecl(e->ct);
+    putctype(e->ct);
   }
   printf(" : %d ", e->numargs);
   putchar('\n');
@@ -2359,9 +2384,9 @@ int iscompat(decl *t1, decl *t2, int top, int asgn)
 
 
 // the lowest level of sizeof. we have a type, and we run through the typemods/dattype to get its size. called by sizeofexpr()
-int sizeofdecl(decl *ct)
+int sizeoftype(ctype *ct)
 {
-  int helpsizeofdecl(int dt, typemod *tms);
+  int helpsizeoftype(int dt, typemod *tms);
   int dtsize(int dt);
 
   if(!ct->typemods)
