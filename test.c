@@ -8,8 +8,10 @@
 
 int main()
 {
-  int (*f)(int *volatile x);
-  int (*g)(int *x);
-  g = f;
+  struct x;
+
+  struct x{int a;};
+  struct x y;
+
   return 0;
 }

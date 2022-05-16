@@ -2232,6 +2232,7 @@ int iscompat(decl *t1, decl *t2, int top, int asgn)
 //         e->ct = ct;
 //         return ct;
 //       }
+<<<<<<< HEAD
 
 //       if(isintegral(ct1) && tm2 && tm2->gen.type == TM_PTR)
 //       {
@@ -2282,6 +2283,57 @@ int iscompat(decl *t1, decl *t2, int top, int asgn)
 //       return ct;
 //     }
 
+=======
+
+//       if(isintegral(ct1) && tm2 && tm2->gen.type == TM_PTR)
+//       {
+//         decl *ct = malloc(sizeof(decl));
+//         memcpy(ct, ct2, sizeof(decl));
+//         // rem_front(ct->typemods);
+//         // ct->typemods->cont += ct->typemods->size; // T
+//         shift_front(ct->typemods);
+
+//         e->ct = ct;
+//         return ct;
+//       }
+
+//       assert(!"invalid array indexing");
+//     }
+
+//     if(e->optype == FUN_O)
+//     {
+//       decl *ct1 = getexprtype(e->args[0], scope, sn); // pointer to function
+//       assert(e->args[1]->type == ARGLIST); // arglist
+
+//       typemod *tm1 = gettm(ct1, 0);
+//       assert(tm1->gen.type == TM_PTR); // pointer to
+//       tm1 = gettm(ct1, 1);
+//       assert(tm2->gen.type == TM_FUNC); // function
+
+//       list *params = tm1->func.params;
+//       if(params) // if params specified, go through and check them against the arglist
+//       {
+//         assert(params->n == e->args[1]->numargs);
+//         decl *paramtypes = (decl *) params->cont;
+//         for(int i = 0; i < params->n; i++)
+//         {
+//           decl *ct = getexprtype(e->args[1]->args[i], scope, sn);
+//           assert(iscompat(paramtypes[i], ct, 1, 1)); // toplevel and assignment flags on
+//         }
+//       }
+
+//       decl *ct = malloc(sizeof(decl));
+//       memcpy(ct, ct1, sizeof(decl));
+//       // rem_front(ct->typemods); // * () T -> () T
+//       // rem_front(ct->typemods); // () T -> T
+//       // ct->typemods->cont += ct->typemods->size * 2; // * () T -> T
+//       shift_front(ct->typemods); // () T
+//       shift_front(ct->typemods); // T
+
+//       return ct;
+//     }
+
+>>>>>>> bb95ba5f7c10c28bc43b91ae24e531ffc93e04de
 //     if(e->optype == STRUCT_O)
 //     {
 //       decl *ct1 = getexprtype(e->args[0], scope, sn); // struct/union
