@@ -128,6 +128,12 @@ void clear(list *l) // don't free() anything, just make length 0 again
   l->n = 0;
 }
 
+void freeset(set *s)
+{
+  free(s->cont);
+  free(s);
+}
+
 int isempty(list *l)
 {
   return l->n == 0;

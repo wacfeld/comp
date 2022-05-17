@@ -8,10 +8,7 @@
 
 int main()
 {
-  struct x;
-
-  struct x{int a;};
-  struct x y;
+  int short int x;
 
   return 0;
 }

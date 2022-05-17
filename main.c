@@ -1331,67 +1331,67 @@ int lisunaryop(link *l) // & * + - ~ !
 }
 
 
-int gettypespec(token t) // get type specifier
-{
-  if(t.gen.type == KEYWORD)
-  {
-    enum keyword k = t.keyword.cont;
-    if(k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED)
-    {
-      return k;
-    }
-    else return -1;
-  }
-  // TODO user-defined specifiers, can be identifiers
-  else return -1;
+// int gettypespec(token t) // get type specifier
+// {
+//   if(t.gen.type == KEYWORD)
+//   {
+//     enum keyword k = t.keyword.cont;
+//     if(k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED)
+//     {
+//       return k;
+//     }
+//     else return -1;
+//   }
+//   // TODO user-defined specifiers, can be identifiers
+//   else return -1;
 
-}
+// }
 
-int gettypequal(token t) // get type qualifier
-{
-  if(t.gen.type == KEYWORD)
-  {
-    enum keyword k = t.keyword.cont;
-    if(k == K_VOLATILE || k == K_CONST)
-    {
-      return k;
-    }
-    else return -1;
-  }
-  return -1;
-}
+// int gettypequal(token t) // get type qualifier
+// {
+//   if(t.gen.type == KEYWORD)
+//   {
+//     enum keyword k = t.keyword.cont;
+//     if(k == K_VOLATILE || k == K_CONST)
+//     {
+//       return k;
+//     }
+//     else return -1;
+//   }
+//   return -1;
+// }
 
-int getstorespec(token t) // get storage class specifier
-{
-  if(t.gen.type == KEYWORD)
-  {
-    enum keyword k = t.keyword.cont;
-    if(k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF)
-    {
-      return k;
-    }
-    return -1;
-  }
-  return -1;
-}
+// int getstorespec(token t) // get storage class specifier
+// {
+//   if(t.gen.type == KEYWORD)
+//   {
+//     enum keyword k = t.keyword.cont;
+//     if(k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF)
+//     {
+//       return k;
+//     }
+//     return -1;
+//   }
+//   return -1;
+// }
 
-int isdeclspec(token t) // get declaration specifier, -1 if it's not that
-{
-  int x;
-  if((x = gettypespec(t)) != -1)
-  {
-    return 1;
-  }
-  if((x = getstorespec(t)) != -1)
-  {
-    return 1;
-  }
-  if((x = gettypequal(t)) != -1)
-  {
-    return 1;
-  }
-  return 0;
-}
+// int isdeclspec(token t) // get declaration specifier, -1 if it's not that
+// {
+//   int x;
+//   if((x = gettypespec(t)) != -1)
+//   {
+//     return 1;
+//   }
+//   if((x = getstorespec(t)) != -1)
+//   {
+//     return 1;
+//   }
+//   if((x = gettypequal(t)) != -1)
+//   {
+//     return 1;
+//   }
+//   return 0;
+// }
 
 // parse the list of parameters in a function type
 // we don't support ... parameters
@@ -2046,146 +2046,170 @@ int dtsize(int dt)
   }
 }
 
-// // type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn the multiple specs into a single enum
-// // TODO replace this with just an int
-// void proctypespecs(decl *ct)
-// {
-//   int islong = 0;
-//   int isshort = 0;
-//   int issigned = 1; // under this implementation all integral types are signed unless specified unsigned
+// type specifiers work weirdly, so we perform some checks to make sure it's sane, then turn the multiple specs into a single enum
+// TODO replace this with just an int
+int proctypespecs(set *ts)
+{
+  int islong = 0;
+  int isshort = 0;
+  int issigned = 1; // under this implementation all integral types are signed unless specified unsigned
   
-//   set *ts = ct->typespecs;
+  // set *ts = ct->typespecs;
 
-//   // TODO incorporate typedefs, structs/unions/enums
-//   static int basetypes[] = {K_VOID, K_CHAR, K_INT, K_FLOAT, K_DOUBLE, };
-//   int btlen = sizeof(basetypes)/sizeof(basetypes[0]);
+  // TODO incorporate typedefs, structs/unions/enums
+  static int basetypes[] = {K_VOID, K_CHAR, K_INT, K_FLOAT, K_DOUBLE, };
+  int btlen = sizeof(basetypes)/sizeof(basetypes[0]);
 
-//   int type = K_INT; // default
-//   // find the basetype and make sure it's unique
-//   for(int i = 0; i < btlen; i++)
-//   {
-//     if(intinset(ts, basetypes[i]))
-//       type = basetypes[i];
-//   }
-//   // make sure only one basetype
-//   for(int i = 0; i < btlen; i++)
-//   {
-//     if(basetypes[i] != type)
-//     {
-//       assert(!intinset(ts, basetypes[i]));
-//     }
-//   }
+  int type = K_INT; // default
+  // find the basetype and make sure it's unique
+  for(int i = 0; i < btlen; i++)
+  {
+    if(intinset(ts, basetypes[i]))
+      type = basetypes[i];
+  }
+  // make sure only one basetype
+  for(int i = 0; i < btlen; i++)
+  {
+    if(basetypes[i] != type)
+    {
+      assert(!intinset(ts, basetypes[i]));
+    }
+  }
 
-//   int isintegral = (type == K_CHAR || type == K_INT);
+  int isintegral = (type == K_CHAR || type == K_INT);
 
-//   // only one of short and long allowed
-//   if(intinset(ts, K_LONG))
-//   {
-//     assert(type == K_INT || type == K_DOUBLE);
-//     assert(!intinset(ts, K_SHORT));
-//     islong = 1;
-//   }
-//   if(intinset(ts, K_SHORT))
-//   {
-//     assert(type == K_INT);
-//     assert(!intinset(ts, K_LONG));
-//     isshort = 1;
-//   }
+  // only one of short and long allowed
+  if(intinset(ts, K_LONG))
+  {
+    assert(type == K_INT || type == K_DOUBLE);
+    assert(!intinset(ts, K_SHORT));
+    islong = 1;
+  }
+  if(intinset(ts, K_SHORT))
+  {
+    assert(type == K_INT);
+    assert(!intinset(ts, K_LONG));
+    isshort = 1;
+  }
 
-//   // only one of signed and unsigned allowed
-//   if(intinset(ts, K_SIGNED))
-//   {
-//     assert(isintegral);
-//     assert(!intinset(ts, K_UNSIGNED));
-//     issigned = 1;
-//   }
-//   if(intinset(ts, K_UNSIGNED))
-//   {
-//     assert(isintegral);
-//     assert(!intinset(ts, K_SIGNED));
-//     issigned = 0;
-//   }
+  // only one of signed and unsigned allowed
+  if(intinset(ts, K_SIGNED))
+  {
+    assert(isintegral);
+    assert(!intinset(ts, K_UNSIGNED));
+    issigned = 1;
+  }
+  if(intinset(ts, K_UNSIGNED))
+  {
+    assert(isintegral);
+    assert(!intinset(ts, K_SIGNED));
+    issigned = 0;
+  }
 
-//   if(type == K_VOID) ct->dattype = VOID_T;
-//   else if(type == K_CHAR)
-//   {
-//     if(issigned) ct->dattype = CHAR_T;
-//     else ct->dattype = UCHAR_T;
-//   }
-//   else if(type == K_INT)
-//   {
-//     if(issigned)
-//     {
-//       if(isshort) ct->dattype = SINT_T;
-//       else if(islong) ct->dattype = LINT_T;
-//       else ct->dattype = INT_T;
-//     }
-//     else
-//     {
-//       if(isshort) ct->dattype = USINT_T;
-//       else if(islong) ct->dattype = ULINT_T;
-//       else ct->dattype = UINT_T;
-//     }
-//   }
-//   else if(type == K_FLOAT) ct->dattype = FLOAT_T;
-//   else if(type == K_DOUBLE)
-//   {
-//     if(islong) ct->dattype = LDUB_T;
-//     else ct->dattype = DUB_T;
-//   }
-// }
+  if(type == K_VOID) return VOID_T;
+  else if(type == K_CHAR)
+  {
+    if(issigned) return CHAR_T;
+    else return UCHAR_T;
+  }
+  else if(type == K_INT)
+  {
+    if(issigned)
+    {
+      if(isshort) return SINT_T;
+      else if(islong) return LINT_T;
+      else return INT_T;
+    }
+    else
+    {
+      if(isshort) return USINT_T;
+      else if(islong) return ULINT_T;
+      else return UINT_T;
+    }
+  }
+  else if(type == K_FLOAT) return FLOAT_T;
+  else if(type == K_DOUBLE)
+  {
+    if(islong) return LDUB_T;
+    else return DUB_T;
+  }
+
+  assert(!"should not reach here");
+}
+
+// gets a single decl spec in form of integer
+int getspec(token t)
+{
+  // TODO custom types
+  
+  if(t.gen.type == KEYWORD) // all builtin decl specs are keywords
+  {
+    return t.keyword.cont;
+  }
+  else
+    return K_NONE;
+}
+
+int istypespec(int k)
+{
+  return k == K_VOID || k == K_CHAR || k == K_SHORT || k == K_INT || k == K_LONG || k == K_FLOAT || k == K_DOUBLE || k == K_SIGNED || k == K_UNSIGNED;
+}
+
+int istypequal(int k)
+{
+  return k == K_VOLATILE || k == K_CONST;
+}
+
+int isstorespec(int k)
+{
+  return k == K_AUTO || k == K_REGISTER || k == K_STATIC || k == K_EXTERN || k == K_TYPEDEF;
+}
 
 // get storespecs, typequals, and typespecs from the front of a declaration
-decl *getdeclspecs(token *toks, int *i)
+ctype *getdeclspecs(token *toks, int *i)
 {
-  decl *ct = calloc(1, sizeof(decl));
+  ctype *ct = calloc(1, sizeof(ctype));
   
-  // allocate sets
-  set *typespecs  = makeset(sizeof(int));
-  set *typequals  = makeset(sizeof(int));
+  ct->storespec = NOSPEC;
+  set *typespecs = makeset(sizeof(int)); // temporary storage for typespecs, to be converted  into dattype
 
-  // assign
-  ct->typespecs = typespecs;
-  ct->typequals = typequals;
-
-  int hasstorespec = 0;
-  ct->storespec = -1;
-
+  // list *typemods = makelist(sizeof(typemod));
   ct->typemods = NULL;
 
   int n = *i; // save starting point for future reference (e.x. checking typedef)
   token t;
-  int spec;
+  int k;
 
   // read declaration specifiers
   for(;; (*i)++)
   {
-    t =toks[*i];
-    if((spec = gettypespec(t)) != -1)
+    t = toks[*i];
+    k = getspec(t);
+    
+    if(istypespec(k))
     {
-      // insert
-      assert(!setins(typespecs, &spec)); // no duplicate type specifiers allowed
+      assert(!setins(typespecs, &k)); // no duplicate type specifiers allowed
     }
-    else if((spec = gettypequal(t)) != -1)
+
+    else if(k == K_CONST) // duplicate quals allowed
     {
-      setins(typequals, &spec); // duplicate type quals are ignored
+      ct->isconst = 1;
     }
-    else if((spec = getstorespec(t)) != -1)
+    else if(k == K_VOLATILE)
     {
-      assert(!hasstorespec);
-      hasstorespec = 1;
-      ct->storespec = spec;
+      ct->isvolat = 1;
+    }
+
+    else if(isstorespec(k))
+    {
+      assert(ct->storespec == NOSPEC); // only 1 storespec allowed
+      ct->storespec = k;
     }
     else break; // end of declaration specifiers
   }
 
   // condense typespecs into one integer
-  proctypespecs(ct);
-  // ->typespecs no longer needed, info stored in ->dattype
-  free(ct->typespecs->cont);
-  free(ct->typespecs);
-  ct->typespecs = NULL;
-  
+  ct->dattype = proctypespecs(typespecs);
 
   // TODO perform checks on the specifiers to make sure they're allowed
   /*
