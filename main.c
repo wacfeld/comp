@@ -2468,63 +2468,6 @@ decl * parsedecl(token *toks)
 
   return dcl;
 
-  // ct->typemods = l; // add to ct
-
-  // if(onlydecl) // only declaration => no initialization, function definition, etc.
-  // {
-  //   return ct;
-  // }
-
-  // // print debugging
-  // // typemod *tms = (typemod *) l->cont;
-  // // int tmlen = l->n;
-  // // for(int j = 0; j < tmlen; j++)
-  // // {
-  // //   // puttypemod(tms[j]);
-  // // }
-  // // int *tss = (int *) typespecs->cont;
-  // // int tslen = typespecs->n;
-  // // for(int j = 0; j < tslen; j++)
-  // // {
-  // //   // printf("%s ", keywords[tss[j]]);
-  // // }
-  // // // nline();
-
-
-  // // decl ct = {typespecs, typequals, storespecs, l};
-
-  // // TODO comma-separated declarations
-
-  // // only after first and only declarator: function definition
-  // if(isatom(toks+i, BRACEOP))
-  // {
-  //   // TODO
-  //   // check if valid function declarator
-  //   puts("(function definition)");
-  //   int bracedep = 0;
-  //   do
-  //   {
-  //     if(isatom(toks+i, BRACEOP)) bracedep++;
-  //     if(isatom(toks+i, BRACECL)) bracedep--;
-  //     i++;
-  //   } while(bracedep);
-  // }
-
-  // else if(isatom(toks+i, EQ)) // initialization
-  // {
-  //   // TODO
-  //   puts("(initialization)");
-  //   while(!isatom(toks+i, SEMICOLON)) i++;
-  //   i++;
-  // }
-
-  // else
-  // {
-  //   assert(isatom(toks+i, SEMICOLON));
-  //   i++; // move over semicolon
-  // }
-
-  // return ct; // success
 }
 
 int lisin(link *l, int num, int *tokl)
