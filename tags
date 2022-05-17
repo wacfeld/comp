@@ -477,6 +477,7 @@ dattypes	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dat
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:__anon11
 decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon30
+dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 e	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  expr *e;$/;"	m	struct:init
@@ -509,6 +510,7 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon13	typeref:struct:__anon13::__anon14
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon21
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon33
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
+getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getdeclspecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getstorespec	main.c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
 getstorespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
@@ -520,6 +522,7 @@ gettypespec	main.c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 gettypespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
+helpsizeofdecl	main.c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
 here	defs.h	32;"	d
 here	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	32;"	d
@@ -780,6 +783,7 @@ shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon19
+sizeoftype	main.c	/^int sizeoftype(ctype *ct)$/;"	f
 sizeoftype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int sizeoftype(ctype *ct)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 splice	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void splice(char *src)$/;"	f
@@ -799,9 +803,8 @@ strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon24
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
-tmlen	defs.h	/^  int tmlen;$/;"	m	struct:__anon10
 tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon29
-tms	defs.h	/^  typemod *tms;$/;"	m	struct:__anon10
+tms	defs.h	/^  typemod *tms; \/\/ end indicated by TM_NONE$/;"	m	struct:__anon10
 tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon29
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
 tmt	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g

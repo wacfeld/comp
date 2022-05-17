@@ -238,8 +238,8 @@ typedef struct
   int isconst;
   int isvolat;
 
-  typemod *tms;
-  int tmlen;
+  typemod *tms; // end indicated by TM_NONE
+  // int tmlen;
 
 } ctype; // type, ALWAYS ABSTRACT.
 
