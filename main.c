@@ -2591,27 +2591,6 @@ expr *makeexpr(int type, int optype, int numargs, ...)
 // use rightend() and leftend() to get it where you want
 // the left and right ends must be null terminated
 
-expr *parseexpr(link *start);
-expr *parseasgnexpr(link *start);
-expr *parsecondexpr(link *start);
-expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *));
-expr *parselorexpr(link *start);
-expr *parselandexpr(link *start);
-expr *parseorexpr(link *start);
-expr *parsexorexpr(link *start);
-expr *parseandexpr(link *start);
-expr *parseeqexpr(link *start);
-expr *parserelexpr(link *start);
-expr *parseshiftexpr(link *start);
-expr *parseaddexpr(link *start);
-expr *parsemultexpr(link *start);
-expr *parsecastexpr(link *start);
-expr *parseunaryexpr(link *start);
-expr *parsetypename(link *start);
-expr *parsepostexpr(link *start);
-expr *parsearglist(link *start);
-expr *parseprimexpr(link *start);
-
 expr *parseexpr(link *start)
 {
   // assert(start);
@@ -2644,6 +2623,10 @@ expr *parseexpr(link *start)
   if(!e2) return NULL;
 
   expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
+
+  assert(e2->ct);
+  newe->ct = e2->ct; // inherits type from right operand
+
   return newe;
 }
 
@@ -2700,7 +2683,12 @@ expr *parseasgnexpr(link *start)
   expr *e2 = parseasgnexpr(op->right);
   if(!e2) return NULL;
 
+  assert(e1->lval); // must be lval to be assigned to
+  // TODO check that lval is modifiable, not incomplete, not function
+  
+
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
+  assert(e1->
   return newe;
 }
 

@@ -519,6 +519,7 @@ struct expr
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
   // TODO ^^
 
+  int lval
   ctype *ct; // expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be
 
 };
@@ -581,6 +582,28 @@ char *hrdt[] =
   [DUB_T]="DUB_T",
   [LDUB_T]="LDUB_T",
 };
+
+
+expr *parseexpr(link *start);
+expr *parseasgnexpr(link *start);
+expr *parsecondexpr(link *start);
+expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *));
+expr *parselorexpr(link *start);
+expr *parselandexpr(link *start);
+expr *parseorexpr(link *start);
+expr *parsexorexpr(link *start);
+expr *parseandexpr(link *start);
+expr *parseeqexpr(link *start);
+expr *parserelexpr(link *start);
+expr *parseshiftexpr(link *start);
+expr *parseaddexpr(link *start);
+expr *parsemultexpr(link *start);
+expr *parsecastexpr(link *start);
+expr *parseunaryexpr(link *start);
+expr *parsetypename(link *start);
+expr *parsepostexpr(link *start);
+expr *parsearglist(link *start);
+expr *parseprimexpr(link *start);
 
 
 #endif

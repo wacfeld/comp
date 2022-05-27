@@ -646,8 +646,8 @@ main	main.c	/^int main()$/;"	f
 main	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	test.c	/^int main()$/;"	f
-main	test.s	/^main:$/;"	l
-main	test2.s	/^main:$/;"	l
+main	unused/test.s	/^main:$/;"	l
+main	unused/test2.s	/^main:$/;"	l
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
@@ -862,7 +862,7 @@ typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.s	/^x:$/;"	l
+x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f
-y	test.s	/^y:$/;"	l
+y	unused/test.s	/^y:$/;"	l
