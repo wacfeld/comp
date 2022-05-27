@@ -59,7 +59,6 @@ typedef enum tok_type tok_type;
 typedef enum int_len int_len;
 
 
-
 typedef union
 {
   struct 
@@ -230,11 +229,48 @@ struct init
   expr *e;
 };
 
+typedef union
+{
+  struct
+  {
+    int type;
+  } gen;
+
+  struct
+  {
+    int type;
+    int isconst;
+    int isvolatile;
+  } ptr;
+
+  struct
+  {
+    int type;
+    int len;
+  } arr;
+
+  struct
+  {
+    int type;
+    list *params; // list of decls
+    // TODO parameters
+  } func;
+
+  struct
+  {
+    int type;
+    char *name;
+  } ident; // we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)
+  // note thate this means that checking equality of types will require checking for possible identifiers
+
+} typemod; // type modifier
+
+
 typedef struct
 {
   int dattype; // e.g. INT_T, SHORT_T, VOID_T, etc.
 
-  enum storespec storespec; // NOSPEC, EXTERN_S, STATIC_S
+  int storespec; // NOSPEC, EXTERN_S, STATIC_S
 
   int isconst;
   int isvolat;
@@ -262,7 +298,7 @@ typedef struct
   // int lval; // TODO
 
   struct init *init; // e.g. {1,2, {3,4,5}}
-  // void *fundef; // TODO
+  void *fundef; // TODO
 
 } decl;
 
@@ -517,42 +553,6 @@ typedef struct link
 //   // TODO the rest
 
 // } declaration;
-
-typedef union
-{
-  struct
-  {
-    int type;
-  } gen;
-
-  struct
-  {
-    int type;
-    int isconst;
-    int isvolatile;
-  } ptr;
-
-  struct
-  {
-    int type;
-    int len;
-  } arr;
-
-  struct
-  {
-    int type;
-    list *params; // list of decls
-    // TODO parameters
-  } func;
-
-  struct
-  {
-    int type;
-    char *name;
-  } ident; // we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)
-  // note thate this means that checking equality of types will require checking for possible identifiers
-
-} typemod; // type modifier
 
 // typemod type
 enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};

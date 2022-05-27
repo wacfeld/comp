@@ -1,1 +1,1 @@
-int f() {}
+a + sizeof +x
