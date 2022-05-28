@@ -556,6 +556,7 @@ integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon
 integer	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } integer;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon26
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
+isarithmetic	main.c	/^int isarithmetic(ctype *ct)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isasgnop(int x)$/;"	f
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
@@ -573,6 +574,7 @@ isdeclspec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int is
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isfloatsuffix	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isfloatsuffix(char c)$/;"	f
+isintegral	main.c	/^int isintegral(ctype *ct)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 isintsuffix	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isintsuffix(char c)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
@@ -586,6 +588,7 @@ islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon20::__anon26
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon20::__anon27
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
+isscalar	main.c	/^int isscalar(ctype *ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
 isshort	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isshort;$/;"	m	struct:__anon20::__anon27
 isstorespec	main.c	/^int isstorespec(int k)$/;"	f
@@ -641,6 +644,7 @@ lllen	main.c	/^int lllen(link *l)$/;"	f
 lllen	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lllen(link *l)$/;"	f
 lst	defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
+lval	defs.h	/^  int lval;$/;"	m	struct:expr
 main	dcl/main.c	/^int main()$/;"	f
 main	main.c	/^int main()$/;"	f
 main	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
@@ -782,7 +786,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon19
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1164;"	d	file:
+sever	main.c	1188;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f

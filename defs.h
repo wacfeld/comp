@@ -519,7 +519,7 @@ struct expr
   token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
   // TODO ^^
 
-  int lval
+  int lval;
   ctype *ct; // expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be
 
 };

@@ -999,6 +999,30 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 
 //{{{ parser
 
+// all chars and ints are integral types
+int isintegral(ctype *ct)
+{
+  int dt = ct->dattype;
+  return dt == CHAR_T || dt == UCHAR_T || dt == INT_T || dt == UINT_T || dt == SINT_T || dt == LINT_T || dt == USINT_T || dt == ULINT_T;
+}
+
+// integral or floating
+int isarithmetic(ctype *ct)
+{
+  int dt = ct->dattype;
+  return isintegral(ct) || dt == FLOAT_T || dt == DUB_T || dt == LDUB_T;
+}
+
+int isscalar(ctype *ct)
+{
+  if(isarithmetic(ct))
+    return 1;
+
+  if(ct->tms)
+  {
+    return ct->tms[0].gen.type == TM_PTR;
+  }
+}
 
 int eistype(expr *e, int type);
 int isasgnop(int);
@@ -2089,7 +2113,7 @@ int proctypespecs(set *ts)
     }
   }
 
-  int isintegral = (type == K_CHAR || type == K_INT);
+  int isinteg = (type == K_CHAR || type == K_INT);
 
   // only one of short and long allowed
   if(intinset(ts, K_LONG))
@@ -2108,13 +2132,13 @@ int proctypespecs(set *ts)
   // only one of signed and unsigned allowed
   if(intinset(ts, K_SIGNED))
   {
-    assert(isintegral);
+    assert(isinteg);
     assert(!intinset(ts, K_UNSIGNED));
     issigned = 1;
   }
   if(intinset(ts, K_UNSIGNED))
   {
-    assert(isintegral);
+    assert(isinteg);
     assert(!intinset(ts, K_SIGNED));
     issigned = 0;
   }
@@ -2626,6 +2650,7 @@ expr *parseexpr(link *start)
 
   assert(e2->ct);
   newe->ct = e2->ct; // inherits type from right operand
+  newe->lval = e2->lval; // inherits lvalue status
 
   return newe;
 }
@@ -2684,11 +2709,13 @@ expr *parseasgnexpr(link *start)
   if(!e2) return NULL;
 
   assert(e1->lval); // must be lval to be assigned to
-  // TODO check that lval is modifiable, not incomplete, not function
+  assert(e1->ct);
+  assert(!e1->ct->isconst);
+  // TODO check e1 not incomplete, not function, not struct with const element, etc.
   
-
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
-  assert(e1->
+  newe->ct = e1->ct;
+  // TODO checks on type (arithmetic, void pointer, etc.)
   return newe;
 }
 
