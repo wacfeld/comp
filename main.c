@@ -1000,28 +1000,29 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
 //{{{ parser
 
 // all chars and ints are integral types
-int isintegral(ctype *ct)
+int isintegral(ctype ct)
 {
-  int dt = ct->dattype;
+  if(ct->gen.type != TM_DAT)
+    return 0;
+  int dt = ct->dat.dt;
   return dt == CHAR_T || dt == UCHAR_T || dt == INT_T || dt == UINT_T || dt == SINT_T || dt == LINT_T || dt == USINT_T || dt == ULINT_T;
 }
 
 // integral or floating
-int isarithmetic(ctype *ct)
+int isarithmetic(ctype ct)
 {
-  int dt = ct->dattype;
+  if(ct->gen.type != TM_DAT)
+    return 0;
+  int dt = ct->dat.dt;
   return isintegral(ct) || dt == FLOAT_T || dt == DUB_T || dt == LDUB_T;
 }
 
-int isscalar(ctype *ct)
+int isscalar(ctype ct)
 {
   if(isarithmetic(ct))
     return 1;
 
-  if(ct->tms)
-  {
-    return ct->tms[0].gen.type == TM_PTR;
-  }
+  return ct->gen.type == TM_PTR;
 }
 
 int eistype(expr *e, int type);
@@ -1029,16 +1030,13 @@ int isasgnop(int);
 
 void puttypemod(typemod ts);
 
-void putctype(ctype *ct)
+void putctype(ctype ct)
 {
   // typemods
-  if(ct->tms)
+  // for(int i = 0; i < ct->tmlen; i++)
+  for(int i = 0; ct->tms[i].gen.type != TM_NONE; i++)
   {
-    // for(int i = 0; i < ct->tmlen; i++)
-    for(int i = 0; ct->tms[i].gen.type != TM_NONE; i++)
-    {
-      puttypemod(ct->tms[i]);
-    }
+    puttypemod(ct->tms[i]);
   }
 
   // store spec
@@ -1425,8 +1423,7 @@ int lisunaryop(link *l) // & * + - ~ !
 list *parseparamlist(link *start)
 {
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
-  // ctype *getdeclspecs(token *toks, int *i);
-  int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s);
+  int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s, typemod **dat);
 
   assert(start);
   leftend(start);
@@ -1444,16 +1441,14 @@ list *parseparamlist(link *start)
     // parse declspecs and typemods
     token *toks = ll2tokl(start);
     int i = 0;
-    // ctype *ct = getdeclspecs(toks, &i);
-    // decl *dcl = malloc(sizeof(decl));
     decl *dcl = getdeclspecs(toks, &i);
-    ctype *ct = dcl->ct;
+    ctype ct = dcl->ct;
     // param->typemods = makelist(sizeof(typemod));
-    list *l = makelist(sizeof(typemod));
-    gettypemods(toks, i, -1, l, -1, &dcl->ident);
-    ct->tms = (typemod *) l->cont;
+    // list *l = makelist(sizeof(typemod));
+    gettypemods(toks, i, -1, -1, &dcl->ident, &ct);
+    // ct->tms = (typemod *) l->cont;
 
-    dcl->ct = ct;
+    // dcl->ct = ct;
     // the only reason we use decls is to store the possible ident
 
     // // if not abstract, remove the identifier
@@ -1474,18 +1469,23 @@ list *parseparamlist(link *start)
 
 // recursive function that interprets a declarator by getting the type modifiers in order
 // returns hi + 1 (where to pick up next)
-int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
+int gettypemods(token *toks, int lo, int hi, int abs, char **s, ctype *dat)
 {
   int helpgettypemods(token *toks, int lo, int hi, list *l, int abs);
 
-  // wrapper that appends TM_NONE to signify end of typemods, and writes ident into s
+  // parse typemods, write into l
+  list *l = makelist(sizeof(typemod));
   int i = helpgettypemods(toks, lo, hi, l, abs);
   
-  typemod tm;
-  tm.gen.type = TM_NONE;
+  // typemod tm;
+  // tm.gen.type = TM_NONE;
+
+  
+
   // typemods are parsed from the outside in, so now we flip that
   reverse(l);
-  append(l, &tm);
+  // append data type onto end (e.g. const int)
+  append(l, *dat);
 
   if(((typemod*)l->cont)[0].gen.type == TM_IDENT) // if not abstract
   {
@@ -1497,6 +1497,9 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
     if(s) // if the caller knows it's abstract already, it will pass NULL
       *s = NULL;
   }
+
+  // write back into dat
+  *dat = (typemod *) l->cont;
   
   return i;
 }
@@ -2022,7 +2025,7 @@ void puttypemod(typemod ts)
 
 
 // the lowest level of sizeof. we have a type, and we run through the typemods/dattype to get its size. called by sizeofexpr()
-int sizeoftype(ctype *ct)
+int sizeoftype(ctype ct)
 {
   int helpsizeoftype(int dt, typemod *tms);
   int dtsize(int dt);
@@ -2217,17 +2220,24 @@ int isdeclspec(token t)
 }
 
 // get storespecs, typequals, and typespecs from the front of a declaration
+// storespecs go into the dcl
+// typequals, typespecs get put into a typemod list
 decl *getdeclspecs(token *toks, int *i)
 {
   decl *dcl = calloc(1, sizeof(decl));
-  ctype *ct = calloc(1, sizeof(ctype));
+  // ctype ct;
+
+  // ct is an array of typemods
+  typemod *ct = calloc(1, sizeof(typemod));
+  // first typemod is dat
+  ct->gen.type = TM_DAT;
   dcl->ct = ct;
   
-  dcl->storespec = NOSPEC;
+  dcl->storespec = NOSPEC; // 0
   set *typespecs = makeset(sizeof(int)); // temporary storage for typespecs, to be converted  into dattype
 
   // list *typemods = makelist(sizeof(typemod));
-  ct->tms = NULL;
+  // ct->tms = NULL;
 
   int n = *i; // save starting point for future reference (e.x. checking typedef)
   token t;
@@ -2246,11 +2256,11 @@ decl *getdeclspecs(token *toks, int *i)
 
     else if(k == K_CONST) // duplicate quals allowed
     {
-      ct->isconst = 1;
+      ct->dat.isconst = 1;
     }
     else if(k == K_VOLATILE)
     {
-      ct->isvolat = 1;
+      ct->dat.isvolat = 1;
     }
 
     else if(isstorespec(k))
@@ -2262,7 +2272,7 @@ decl *getdeclspecs(token *toks, int *i)
   }
 
   // condense typespecs into one integer
-  ct->dattype = proctypespecs(typespecs);
+  ct->dat.dt = proctypespecs(typespecs);
 
   // TODO perform checks on the specifiers to make sure they're allowed
   /*
@@ -2742,8 +2752,8 @@ expr *parseasgnexpr(link *start)
   newe->ct = e1->ct;
   // TODO checks on type (arithmetic, void pointer, etc.)
   
-  ctype *ct1 = e1->ct;
-  ctype *ct2 = e2->ct;
+  ctype ct1 = e1->ct;
+  ctype ct2 = e2->ct;
   // one of the following has to be true
   if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
   //else if(TODO: structures and unions);
@@ -3136,11 +3146,11 @@ expr *parsetypename(link *start)
   // decl *ct = parsedecl(abstype, 1);
   int i = 0; // set for getdeclspecs()
   decl *dcl = getdeclspecs(abstype, &i);
-  ctype *ct = dcl->ct;
+  ctype ct = dcl->ct;
   list *l = makelist(sizeof(typemod));
-  gettypemods(abstype, i, -1, l, 1, NULL); // write typemods into l; there should be no name
+  gettypemods(abstype, i, -1, 1, NULL, &ct); // write typemods into l; there should be no name
   // reverse(l);
-  ct->tms = (typemod *) l->cont;
+  // ct->tms = (typemod *) l->cont;
 
   // put into expression
   expr *newe = makeexpr(TYPENAME, -1, 0); // optype and args don't matter for TYPENAME expr

@@ -261,24 +261,34 @@ typedef union
     int type;
     char *name;
   } ident; // we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)
+
+  struct
+  {
+    int type;
+    int isconst;
+    int isvolat;
+    int dt;
+  } dat;
   // note thate this means that checking equality of types will require checking for possible identifiers
 
 } typemod; // type modifier
 
 
-typedef struct
-{
-  int dattype; // e.g. INT_T, SHORT_T, VOID_T, etc.
+// typedef struct
+// {
+//   // int dattype; // e.g. INT_T, SHORT_T, VOID_T, etc.
 
-  // int storespec; // NOSPEC, EXTERN_S, STATIC_S
+//   // int storespec; // NOSPEC, EXTERN_S, STATIC_S
 
-  int isconst;
-  int isvolat;
+//   // int isconst;
+//   // int isvolat;
 
-  typemod *tms; // end indicated by TM_NONE
-  // int tmlen;
+//   typemod *tms; // end indicated by TM_NONE
+//   // int tmlen;
 
-} ctype; // type, ALWAYS ABSTRACT.
+// } ctype; // type, ALWAYS ABSTRACT.
+
+typedef typemod *ctype;
 
 enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};
 
@@ -293,7 +303,7 @@ typedef struct
   char *ident;
 
   int storespec;
-  ctype *ct;
+  ctype ct;
   // int isconst;
   // int isvolat;
 
@@ -510,6 +520,7 @@ char *hr_expr[100] =
   [ARGLIST]="ARGLIST",
 };
 
+// HERE
 struct expr
 {
   // expr_type type;
@@ -523,7 +534,7 @@ struct expr
   // TODO ^^
 
   int lval;
-  ctype *ct; // expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be
+  ctype ct; // expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be
 
 };
 // typedef struct expr expr;
@@ -559,7 +570,9 @@ typedef struct link
 // } declaration;
 
 // typemod type
-enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};
+// enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE, TM_DAT};
+enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_DAT};
+// TM_NONE is not needed as TM_DAT will terminate the list
 
 enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};
 
@@ -568,7 +581,7 @@ int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary
 int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
-enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
+enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
 
 char *hrdt[] =
 {
