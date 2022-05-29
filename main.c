@@ -1042,15 +1042,15 @@ void putctype(ctype *ct)
   }
 
   // store spec
-  if(ct->storespec == EXTERN_S)
-    printf("etern ");
-  else if(ct->storespec == STATIC_S)
-    printf("static ");
+  // if(ct->storespec == EXTERN_S)
+  //   printf("extern ");
+  // else if(ct->storespec == STATIC_S)
+  //   printf("static ");
 
-  if(ct->isconst)
-    printf("const ");
-  if(ct->isvolat)
-    printf("volat ");
+  // if(ct->isconst)
+  //   printf("const ");
+  // if(ct->isvolat)
+  //   printf("volat ");
 
   printf("%s ", hrdt[ct->dattype]);
 }
@@ -1425,7 +1425,7 @@ int lisunaryop(link *l) // & * + - ~ !
 list *parseparamlist(link *start)
 {
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
-  ctype *getdeclspecs(token *toks, int *i);
+  // ctype *getdeclspecs(token *toks, int *i);
   int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s);
 
   assert(start);
@@ -1444,8 +1444,10 @@ list *parseparamlist(link *start)
     // parse declspecs and typemods
     token *toks = ll2tokl(start);
     int i = 0;
-    ctype *ct = getdeclspecs(toks, &i);
-    decl *dcl = malloc(sizeof(decl));
+    // ctype *ct = getdeclspecs(toks, &i);
+    // decl *dcl = malloc(sizeof(decl));
+    decl *dcl = getdeclspecs(toks, &i);
+    ctype *ct = dcl->ct;
     // param->typemods = makelist(sizeof(typemod));
     list *l = makelist(sizeof(typemod));
     gettypemods(toks, i, -1, l, -1, &dcl->ident);
@@ -1491,7 +1493,10 @@ int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)
     rem_front(l); // then remove the identifier
   }
   else // otherwise indicate abstract
-    *s = NULL;
+  {
+    if(s) // if the caller knows it's abstract already, it will pass NULL
+      *s = NULL;
+  }
   
   return i;
 }
@@ -2212,11 +2217,13 @@ int isdeclspec(token t)
 }
 
 // get storespecs, typequals, and typespecs from the front of a declaration
-ctype *getdeclspecs(token *toks, int *i)
+decl *getdeclspecs(token *toks, int *i)
 {
+  decl *dcl = calloc(1, sizeof(decl));
   ctype *ct = calloc(1, sizeof(ctype));
+  dcl->ct = ct;
   
-  ct->storespec = NOSPEC;
+  dcl->storespec = NOSPEC;
   set *typespecs = makeset(sizeof(int)); // temporary storage for typespecs, to be converted  into dattype
 
   // list *typemods = makelist(sizeof(typemod));
@@ -2248,8 +2255,8 @@ ctype *getdeclspecs(token *toks, int *i)
 
     else if(isstorespec(k))
     {
-      assert(ct->storespec == NOSPEC); // only 1 storespec allowed
-      ct->storespec = k;
+      assert(dcl->storespec == NOSPEC); // only 1 storespec allowed
+      dcl->storespec = k;
     }
     else break; // end of declaration specifiers
   }
@@ -2272,7 +2279,7 @@ ctype *getdeclspecs(token *toks, int *i)
      */
 
   // int temp = K_TYPEDEF; // because of how sets are implemented we need an address
-  if(ct->storespec == K_TYPEDEF) // special case
+  if(dcl->storespec == K_TYPEDEF) // special case
   {
     // TODO
   }
@@ -2284,7 +2291,7 @@ ctype *getdeclspecs(token *toks, int *i)
 
   // else if(enum specifier) TODO
 
-  return ct;
+  return dcl;
 }
 
 link *nexttoplevel(link *start, int dir, int num, int *atoms);
@@ -2381,141 +2388,141 @@ struct init *parseinit(link *start)
 
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
-decl * parsedecl(token *toks)
-{
-  // declaration *decl = malloc(sizeof(decl));
+// decl * parsedecl(token *toks)
+// {
+//   // declaration *decl = malloc(sizeof(decl));
   
-  static int i = 0;
-  static ctype *specs = NULL; // contains decl specs, not typemods
-  static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
-  // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
+//   static int i = 0;
+//   static ctype *specs = NULL; // contains decl specs, not typemods
+//   static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
+//   // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
 
-  if(!toks) // reset if passed NULL
-  {
-    i = 0;
-    specs = NULL;
-    return NULL; // return value doesn't matter
-  }
+//   if(!toks) // reset if passed NULL
+//   {
+//     i = 0;
+//     specs = NULL;
+//     return NULL; // return value doesn't matter
+//   }
 
-  if(toks[i].gen.type == NOTOK) // end of token stream
-  {
-    return NULL;
-  }
-  assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
+//   if(toks[i].gen.type == NOTOK) // end of token stream
+//   {
+//     return NULL;
+//   }
+//   assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
   
-  if(!specs) // read new decl specs
-  {
-    first = 1; // start anew
-    specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
-  }
+//   if(!specs) // read new decl specs
+//   {
+//     first = 1; // start anew
+//     specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
+//   }
   
-  // now deal with a single declarator + optional initializer, or function definition
+//   // now deal with a single declarator + optional initializer, or function definition
 
 
-  // get the declarator
-  list *l = makelist(sizeof(typemod));
-  char *ident;
-  i = gettypemods(toks, i, -1, l, 0, &ident); // parse one declarator and move i forward accordingly
+//   // get the declarator
+//   list *l = makelist(sizeof(typemod));
+//   char *ident;
+//   i = gettypemods(toks, i, -1, l, 0, &ident); // parse one declarator and move i forward accordingly
 
-  // write all this information into dcl
-  ctype *ct = malloc(sizeof(ctype)); // create new ctype for these typemods
-  memcpy(ct, specs, sizeof(ctype)); // copy declspecs into this
-  ct->tms = (typemod *) l->cont; // attach typemods
+//   // write all this information into dcl
+//   ctype *ct = malloc(sizeof(ctype)); // create new ctype for these typemods
+//   memcpy(ct, specs, sizeof(ctype)); // copy declspecs into this
+//   ct->tms = (typemod *) l->cont; // attach typemods
 
-  // create decl, write ident, ct into it
-  decl *dcl = malloc(sizeof(decl));
-  assert(ident); // no abstract declarators
-  dcl->ident = ident;
-  dcl->ct = ct;
+//   // create decl, write ident, ct into it
+//   decl *dcl = malloc(sizeof(decl));
+//   assert(ident); // no abstract declarators
+//   dcl->ident = ident;
+//   dcl->ct = ct;
 
-  // make typemods easier to access for following logic
-  int tmlen = l->n;
+//   // make typemods easier to access for following logic
+//   int tmlen = l->n;
 
-  if(isatom(toks+i, BRACEOP)) // function definition
-  {
-    // make sure first place
-    assert(first);
-    first = 0; // claim first place
+//   if(isatom(toks+i, BRACEOP)) // function definition
+//   {
+//     // make sure first place
+//     assert(first);
+//     first = 0; // claim first place
 
-    // check if valid function declarator: (), TM_NONE
-    assert(tmlen >= 2);
-    assert(ct->tms[0].gen.type == TM_FUNC);
+//     // check if valid function declarator: (), TM_NONE
+//     assert(tmlen >= 2);
+//     assert(ct->tms[0].gen.type == TM_FUNC);
 
-    // find matching brace
-    int bracedep = 0;
-    do
-    {
-      if(isatom(toks + i, BRACEOP)) bracedep++;
-      if(isatom(toks + i, BRACECL)) bracedep--;
-      assert(bracedep >= 0);
-      assert(toks[i].gen.type != NOTOK);
+//     // find matching brace
+//     int bracedep = 0;
+//     do
+//     {
+//       if(isatom(toks + i, BRACEOP)) bracedep++;
+//       if(isatom(toks + i, BRACECL)) bracedep--;
+//       assert(bracedep >= 0);
+//       assert(toks[i].gen.type != NOTOK);
 
-      i++;
-    } while(bracedep > 0);
+//       i++;
+//     } while(bracedep > 0);
     
-    // TODO parse compound statement
+//     // TODO parse compound statement
 
-    free(specs); // end of declaration group
-    specs = NULL;
-    return dcl;
-  }
+//     free(specs); // end of declaration group
+//     specs = NULL;
+//     return dcl;
+//   }
 
-  first = 0; // claim first place
-  if(isatom(toks + i, EQ)) // initializer follows
-  {
-    i++; // move over =
+//   first = 0; // claim first place
+//   if(isatom(toks + i, EQ)) // initializer follows
+//   {
+//     i++; // move over =
 
-    // find terminating semicolon or comma
-    // very similar to nexttoplevel, but on a token list
-    // not used often enough to warrant its own function
-    int end = i, dep = 0;
-    while(1)
-    {
-      if((isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON)) && dep == 0)
-        break;
-      // TODO assert dep!!!
+//     // find terminating semicolon or comma
+//     // very similar to nexttoplevel, but on a token list
+//     // not used often enough to warrant its own function
+//     int end = i, dep = 0;
+//     while(1)
+//     {
+//       if((isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON)) && dep == 0)
+//         break;
+//       // TODO assert dep!!!
 
-      if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
-        dep++;
-      if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
-        dep--;
+//       if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
+//         dep++;
+//       if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
+//         dep--;
 
-      assert(dep >= 0);
-      assert(toks[end].gen.type != NOTOK);
+//       assert(dep >= 0);
+//       assert(toks[end].gen.type != NOTOK);
 
-      end++;
-    }
+//       end++;
+//     }
 
-    assert(end != i);
+//     assert(end != i);
 
-    link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
+//     link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
 
-    struct init *init = parseinit(chain);
+//     struct init *init = parseinit(chain);
 
-    dcl->init = init;
-    i = end; // move over to comma or semicolon
-  }
-  else // no initializer
-  {
-    dcl->init = NULL;
-  }
+//     dcl->init = init;
+//     i = end; // move over to comma or semicolon
+//   }
+//   else // no initializer
+//   {
+//     dcl->init = NULL;
+//   }
 
-  // check what's terminating
-  assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
-  if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
-  {
-    free(specs);
-    specs = NULL;
-    i++;
-  }
-  else // comma, simply move over
-  {
-    i++;
-  }
+//   // check what's terminating
+//   assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
+//   if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
+//   {
+//     free(specs);
+//     specs = NULL;
+//     i++;
+//   }
+//   else // comma, simply move over
+//   {
+//     i++;
+//   }
 
-  return dcl;
+//   return dcl;
 
-}
+// }
 
 int lisin(link *l, int num, int *tokl)
 {
@@ -2666,6 +2673,18 @@ int isasgnop(int x)
   return 0;
 }
 
+// ct1 is the same as ct2, except ct1 possibly has stricter qualifiers
+// int supertype(ctype *ct1, ctype *ct2)
+// {
+  
+//   if(tms1->gen.type == TM_NONE && tms1->gen.type == TM_NONE) // equivalent tms, now move on to type specs
+//     return 1;
+//   else if(tms1->gen.type == TM_NONE || tms2->gen.type == TM_NONE)
+//     return 0;
+
+  
+// }
+
 expr *parseasgnexpr(link *start)
 {
   // assert(start);
@@ -2708,14 +2727,35 @@ expr *parseasgnexpr(link *start)
   expr *e2 = parseasgnexpr(op->right);
   if(!e2) return NULL;
 
+  // perform type checks
   assert(e1->lval); // must be lval to be assigned to
   assert(e1->ct);
   assert(!e1->ct->isconst);
-  // TODO check e1 not incomplete, not function, not struct with const element, etc.
+  if(e1->ct->tms)
+  {
+    assert(e1->ct->tms[0].gen.type != TM_ARR); // no arrays
+  }
+
+  // TODO incomplete type, function, struct with const element, etc.
   
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
   newe->ct = e1->ct;
   // TODO checks on type (arithmetic, void pointer, etc.)
+  
+  ctype *ct1 = e1->ct;
+  ctype *ct2 = e2->ct;
+  // one of the following has to be true
+  if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
+  //else if(TODO: structures and unions);
+  else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
+      && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
+        || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
+  //else if(TODO: lhs ptr, rhs constant 0);
+  else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
+      && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
+  // else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR && 
+  
+
   return newe;
 }
 
@@ -3095,7 +3135,8 @@ expr *parsetypename(link *start)
   // parse type
   // decl *ct = parsedecl(abstype, 1);
   int i = 0; // set for getdeclspecs()
-  ctype *ct = getdeclspecs(abstype, &i);
+  decl *dcl = getdeclspecs(abstype, &i);
+  ctype *ct = dcl->ct;
   list *l = makelist(sizeof(typemod));
   gettypemods(abstype, i, -1, l, 1, NULL); // write typemods into l; there should be no name
   // reverse(l);

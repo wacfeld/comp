@@ -1,1 +1,1 @@
-a + sizeof +x
+sizeof (int*const )

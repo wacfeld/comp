@@ -270,7 +270,7 @@ typedef struct
 {
   int dattype; // e.g. INT_T, SHORT_T, VOID_T, etc.
 
-  int storespec; // NOSPEC, EXTERN_S, STATIC_S
+  // int storespec; // NOSPEC, EXTERN_S, STATIC_S
 
   int isconst;
   int isvolat;
@@ -292,7 +292,10 @@ typedef struct
 
   char *ident;
 
+  int storespec;
   ctype *ct;
+  // int isconst;
+  // int isvolat;
 
   // list *typemods;
   // int lval; // TODO
@@ -604,6 +607,8 @@ expr *parsetypename(link *start);
 expr *parsepostexpr(link *start);
 expr *parsearglist(link *start);
 expr *parseprimexpr(link *start);
+
+decl *getdeclspecs(token *toks, int *i);
 
 
 #endif
