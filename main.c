@@ -1033,11 +1033,19 @@ void puttypemod(typemod ts);
 void putctype(ctype ct)
 {
   // typemods
-  // for(int i = 0; i < ct->tmlen; i++)
-  for(int i = 0; ct->tms[i].gen.type != TM_NONE; i++)
+  int i = 0;
+  for(; ct[i].gen.type != TM_DAT; i++)
   {
-    puttypemod(ct->tms[i]);
+    puttypemod(ct[i]);
   }
+
+  // dattype
+  if(ct[i].dat.isconst)
+    printf("const ");
+  if(ct[i].dat.isvolat)
+    printf("volatile ");
+  
+  printf("%s ", hrdt[ct[i].dat.dt]);
 
   // store spec
   // if(ct->storespec == EXTERN_S)
@@ -1050,7 +1058,7 @@ void putctype(ctype ct)
   // if(ct->isvolat)
   //   printf("volat ");
 
-  printf("%s ", hrdt[ct->dattype]);
+  // printf("%s ", hrdt[ct->dattype]);
 }
 
 void putdecl(decl *dcl)
@@ -1072,10 +1080,10 @@ void putdecl(decl *dcl)
   //   }
   // }
 
-  // if(dcl->storespec != -1)
-  // {
-  //   printf("%s ", keywords[dcl->storespec]);
-  // }
+  if(dcl->storespec != -1)
+  {
+    printf("%s ", keywords[dcl->storespec]);
+  }
 
   // int *tqs = (int *) dcl->typequals->cont;
   // int len = dcl->typequals->n;
@@ -1423,7 +1431,7 @@ int lisunaryop(link *l) // & * + - ~ !
 list *parseparamlist(link *start)
 {
   link *nexttoplevel(link *start, int dir, int num, int *atoms);
-  int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s, typemod **dat);
+  int gettypemods(token *toks, int lo, int hi, int abs, char **s, typemod **dat);
 
   assert(start);
   leftend(start);
@@ -2025,43 +2033,45 @@ void puttypemod(typemod ts)
 
 
 // the lowest level of sizeof. we have a type, and we run through the typemods/dattype to get its size. called by sizeofexpr()
-int sizeoftype(ctype ct)
-{
-  int helpsizeoftype(int dt, typemod *tms);
-  int dtsize(int dt);
+// int sizeoftype(ctype ct)
+// {
+//   int helpsizeoftype(int dt, typemod *tms);
+//   int dtsize(int dt);
 
-  if(ct->tms->gen.type == TM_NONE) // no typemods
-    return dtsize(ct->dattype);
+//   if(ct->gen.type == TM_DAT) // no typemods
+//     return dtsize(ct->dat.dt);
   
 
-  // wrapper that separates ct into relevant components
-  typemod *tms = ct->tms;
-  int dattype = ct->dattype;
-  return helpsizeoftype(dattype, tms);
-}
+//   // wrapper that separates ct into relevant components
+//   // typemod *tms = ct->tms;
+//   // int dattype = ct->dattype;
+//   return helpsizeoftype(dattype, tms);
+// }
 
-int helpsizeoftype(int dt, typemod *tms)
+// int helpsizeoftype(int dt, typemod *tms)
+int sizeoftype(ctype ct)
 {
   int dtsize(int dt);
 
-  int tmtype = tms->gen.type; // type of first typemod
-
+  int tmtype = ct->gen.type; // type of first typemod
   
   assert(tmtype != TM_FUNC); // functions have no size
   switch(tmtype)
   {
+    // should not occur under our system
     case TM_IDENT:
-      return helpsizeoftype(dt, tms+1); // not abstract declarator, just skip identifier
+      assert(!"TM_IDENT not allowed outside of initial typemod parsing");
+      // return helpsizeoftype(dt, tms+1); // not abstract declarator, just skip identifier
 
-    case TM_NONE:
-      return dtsize(dt); // no more typemods, just size of dt
+    case TM_DAT:
+      return dtsize(ct->dat.dt); // no more typemods, just size of dt
 
     case TM_PTR:
       return PTR_SIZE; // all pointers have same size regardless of what they point to
 
     case TM_ARR:
-      assert(tms->arr.len != -1); // incomplete type
-      return tms->arr.len * helpsizeoftype(dt, tms+1);
+      assert(ct->arr.len != -1); // incomplete type
+      return ct->arr.len * sizeoftype(ct+1);
   }
 
   assert(!"should not reach here");
@@ -2627,6 +2637,33 @@ expr *makeexpr(int type, int optype, int numargs, ...)
   return e;
 }
 
+// no const pointers, no const data, no arrays, functions, etc.
+int ismodifiable(ctype ct)
+{
+  // we only look at the first in the typemod list
+  
+  // direct data, must not be qualified with const
+  if(ct->gen.type == TM_DAT)
+  {
+    return !ct->dat.isconst;
+  }
+
+  // pointer, must not be const pointer
+  if(ct->gen.type == TM_PTR)
+  {
+    return !ct->ptr.isconst;
+  }
+  
+  if(ct->gen.type == TM_ARR)
+    return 0;
+
+  if(ct->gen.type == TM_FUNC)
+    return 0;
+
+  return 1;
+  // TODO structs, unions with const members, incomplete types
+}
+
 // REQUIREMENTS
 // start can be anywhere in the linked list
 // use rightend() and leftend() to get it where you want
@@ -2738,13 +2775,13 @@ expr *parseasgnexpr(link *start)
   if(!e2) return NULL;
 
   // perform type checks
-  assert(e1->lval); // must be lval to be assigned to
-  assert(e1->ct);
-  assert(!e1->ct->isconst);
-  if(e1->ct->tms)
-  {
-    assert(e1->ct->tms[0].gen.type != TM_ARR); // no arrays
-  }
+  // assert(e1->lval); // must be lval to be assigned to
+  // assert(e1->ct);
+  // assert(!e1->ct->isconst);
+  // if(e1->ct->tms)
+  // {
+  //   assert(e1->ct->tms[0].gen.type != TM_ARR); // no arrays
+  // }
 
   // TODO incomplete type, function, struct with const element, etc.
   
@@ -2754,16 +2791,17 @@ expr *parseasgnexpr(link *start)
   
   ctype ct1 = e1->ct;
   ctype ct2 = e2->ct;
-  // one of the following has to be true
-  if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
-  //else if(TODO: structures and unions);
-  else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
-      && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
-        || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
-  //else if(TODO: lhs ptr, rhs constant 0);
-  else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
-      && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
-  // else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR && 
+
+  //// one of the following has to be true
+  //if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
+  ////else if(TODO: structures and unions);
+  //else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
+  //    && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
+  //      || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
+  ////else if(TODO: lhs ptr, rhs constant 0);
+  //else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
+  //    && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
+  //// else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR && 
   
 
   return newe;
