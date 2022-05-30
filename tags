@@ -775,6 +775,7 @@ puttok	main.c	/^void puttok(token t)$/;"	f
 puttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
 puttypemod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttypemod(typemod ts)$/;"	f
+qualcmp	main.c	/^int qualcmp(int c1, int c2, int v1, int v2, int mode)$/;"	f
 qualmode	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	g
 read	defs.h	40;"	d
 read	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	40;"	d

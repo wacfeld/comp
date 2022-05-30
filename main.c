@@ -2720,21 +2720,41 @@ int isasgnop(int x)
   return 0;
 }
 
+int qualcmp(int c1, int c2, int v1, int v2, int mode)
+{
+  if(mode == QM_NOCARE)
+    return 1;
+
+  if(mode == QM_SUPERSET)
+    return c1 >= c2
+      && v1 >= v2;
+
+  if(mode == QM_STRICT)
+    return c1 == c2
+      && v1 == v2;
+
+  assert(!"invalid qualmode");
+}
+
 // types are compatible for some purpose (assignment, function params, multiple declarations)
 // purpose determined by qualmode (how qual compatibility is determined)
 int iscompat(ctype ct1, ctype ct2, int qualmode)
 {
   int t1 = ct1->gen.type;
   int t2 = ct2->gen.type;
-  if(t1 == TM_DAT && t2 == TM_DAT) // equivalent dattype and superset quals
-  {
-    return ct1->dat.dt == ct2->dat.dt
-      && ct1->dat.isconst >= ct2->dat.isconst
-      && ct1->dat.isvolat >= ct2->dat.isvolat;
-  }
 
-  else if(t1 != t2) // typemods differ, not allowed; this includes the case where one ends before the other (TM_DAT and something else)
+  if(t1 != t2) // typemods differ, not allowed; this includes the case where one ends before the other (TM_DAT and something else)
     return 0;
+
+  else if(t1 == TM_DAT && t2 == TM_DAT) // compare dattypes and quals
+  {
+    if(ct1->dat.dt != ct2->dat.dt)
+      return 0;
+    
+    return qualcmp(ct1->dat.isconst, ct2->dat.isconst,
+        ct1->dat.isvolat, ct1->dat.isvolat,
+        qualmode);
+  }
 
   else if(t1 == TM_ARR)
   {
@@ -2747,18 +2767,20 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
     
     // if incomplete type, assume compatible
     // recurse
-    return supersedes(ct1+1, ct2+1);
+    return iscompat(ct1+1, ct2+1, qualmode);
   }
 
   else if(t1 == TM_PTR)
   {
-    // check that quals are superset
-    if(ct1->ptr.isconst < ct2->ptr.isconst
-        || ct1->ptr.isvolat < ct2->ptr.isvolat)
+    // check that quals are compatible
+    if(!qualcmp(ct1->ptr.isconst, ct2->ptr.isconst,
+          ct1->ptr.isvolat, ct2->ptr.isvolat,
+          qualmode))
       return 0;
 
     // recurse
-    return supersedes(ct1+1, ct2+1);
+    // return supersedes(ct1+1, ct2+1);
+    return iscompat(ct1+1, ct2+1, qualmode);
   }
 
   else if(t1 == TM_FUNC)
@@ -2774,10 +2796,18 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
       decl *pl1 = (decl *) p1->cont;
       decl *pl2 = (decl *) p2->cont;
 
-      // recursively check parameters for superseding
+      // recursively check parameters for compatibility
+      for(int i = 0; i < p1->n; i++)
+      {
+        // params are decls, because of possible identifiers. we ignore that and only look at the ct
+        if(!iscompat(pl1[i].ct, pl2[i].ct, QM_NOCARE)) // change qualmode to nocare, because we do not care
+          return 0;
+      }
     }
+    // if one or the other is unspecified, then we let it through
 
-    // if one or other is unspecified, then we let it through
+    // recurse
+    return iscompat(ct1+1, ct2+1, qualmode);
   }
 }
 
