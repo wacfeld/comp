@@ -2721,16 +2721,66 @@ int isasgnop(int x)
 }
 
 // ct1 is the same as ct2, except ct1 possibly has stricter qualifiers
-// int supertype(ctype *ct1, ctype *ct2)
-// {
-  
-//   if(tms1->gen.type == TM_NONE && tms1->gen.type == TM_NONE) // equivalent tms, now move on to type specs
-//     return 1;
-//   else if(tms1->gen.type == TM_NONE || tms2->gen.type == TM_NONE)
-//     return 0;
+// for pointer transfer
+// const int * <- int * is fine
+// int * <- int * is fine
+// int * <- const int * is not fine
+int supersedes(ctype ct1, ctype ct2)
+{
+  int t1 = ct1->gen.type;
+  int t2 = ct2->gen.type;
+  if(t1 == TM_DAT && t2 == TM_DAT) // equivalent dattype and superset quals
+  {
+    return ct1->dat.dt == ct2->dat.dt
+      && ct1->dat.isconst >= ct2->dat.isconst
+      && ct1->dat.isvolat >= ct2->dat.isvolat;
+  }
 
-  
-// }
+  else if(t1 != t2) // typemods differ, not allowed; this includes the case where one ends before the other (TM_DAT and something else)
+    return 0;
+
+  else if(t1 == TM_ARR)
+  {
+    // both types must not be incomplete
+    if(ct1->arr.len != -1 && ct2->arr.len != -1)
+    {
+      if(ct1->arr.len != ct2->arr.len)
+        return 0;
+    }
+    
+    // if incomplete type, assume compatible
+    // recurse
+    return supersedes(ct1+1, ct2+1);
+  }
+
+  else if(t1 == TM_PTR)
+  {
+    // check that quals are superset
+    if(ct1->ptr.isconst < ct2->ptr.isconst
+        || ct1->ptr.isvolat < ct2->ptr.isvolat)
+      return 0;
+
+    // recurse
+    return supersedes(ct1+1, ct2+1);
+  }
+
+  else if(t1 == TM_FUNC)
+  {
+    list *p1 = ct->func.params;
+    list *p2 = ct->func.params;
+
+    if(p1 && p2)
+    {
+      if(p1->n != p2->n) // same length?
+        return 0;
+      
+      decl *pl1 = (decl *) p1->cont;
+      decl *pl2 = (decl *) p2->cont;
+    }
+
+    // if one or other is unspecified, then we let it through
+  }
+}
 
 expr *parseasgnexpr(link *start)
 {
@@ -2775,16 +2825,15 @@ expr *parseasgnexpr(link *start)
   if(!e2) return NULL;
 
   // perform type checks
-  // assert(e1->lval); // must be lval to be assigned to
-  // assert(e1->ct);
+  assert(e1->lval); // LHS must be lvalue
+  assert(e1->ct);
+  assert(ismodifiable(e1->ct)); // modifiable type, including ban on const qual
   // assert(!e1->ct->isconst);
   // if(e1->ct->tms)
   // {
   //   assert(e1->ct->tms[0].gen.type != TM_ARR); // no arrays
   // }
 
-  // TODO incomplete type, function, struct with const element, etc.
-  
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
   newe->ct = e1->ct;
   // TODO checks on type (arithmetic, void pointer, etc.)
@@ -2793,15 +2842,16 @@ expr *parseasgnexpr(link *start)
   ctype ct2 = e2->ct;
 
   //// one of the following has to be true
-  //if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
-  ////else if(TODO: structures and unions);
-  //else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
-  //    && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
-  //      || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
-  ////else if(TODO: lhs ptr, rhs constant 0);
-  //else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
-  //    && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
-  //// else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR && 
+
+  if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
+  //else if(TODO: structures and unions);
+  else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
+      && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
+        || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
+  //else if(TODO: lhs ptr, rhs constant 0);
+  else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
+      && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
+  else if(ct1->gen.type == TM_PTR && ct2->gen.type == TM_PTR && 
   
 
   return newe;
