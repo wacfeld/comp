@@ -2720,12 +2720,9 @@ int isasgnop(int x)
   return 0;
 }
 
-// ct1 is the same as ct2, except ct1 possibly has stricter qualifiers
-// for pointer transfer
-// const int * <- int * is fine
-// int * <- int * is fine
-// int * <- const int * is not fine
-int supersedes(ctype ct1, ctype ct2)
+// types are compatible for some purpose (assignment, function params, multiple declarations)
+// purpose determined by qualmode (how qual compatibility is determined)
+int iscompat(ctype ct1, ctype ct2, int qualmode)
 {
   int t1 = ct1->gen.type;
   int t2 = ct2->gen.type;
@@ -2776,6 +2773,8 @@ int supersedes(ctype ct1, ctype ct2)
       
       decl *pl1 = (decl *) p1->cont;
       decl *pl2 = (decl *) p2->cont;
+
+      // recursively check parameters for superseding
     }
 
     // if one or other is unspecified, then we let it through

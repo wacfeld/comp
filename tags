@@ -323,6 +323,9 @@ PSTRUCT_O	defs.h	/^  PSTRUCT_O, \/\/ ->$/;"	e	enum:optype
 PSTRUCT_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  PSTRUCT_O, \/\/ ->$/;"	e	enum:optype
 PTR_SIZE	defs.h	46;"	d
 PTR_SIZE	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	46;"	d
+QM_NOCARE	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	e	enum:qualmode
+QM_STRICT	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	e	enum:qualmode
+QM_SUPERSET	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	e	enum:qualmode
 QUESTION	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 QUESTION	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
@@ -563,6 +566,7 @@ isasgnop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isas
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isatom	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isatom(token *t, enum atom_type a)$/;"	f
+iscompat	main.c	/^int iscompat(ctype ct1, ctype ct2, int qualmode)$/;"	f
 iscompat	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int iscompat(decl *t1, decl *t2, int top, int asgn)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon12
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon16
@@ -771,6 +775,7 @@ puttok	main.c	/^void puttok(token t)$/;"	f
 puttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttok(token t)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
 puttypemod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttypemod(typemod ts)$/;"	f
+qualmode	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	g
 read	defs.h	40;"	d
 read	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	40;"	d
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
@@ -811,7 +816,6 @@ striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon24
-supersedes	main.c	/^int supersedes(ctype ct1, ctype ct2)$/;"	f
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon29
@@ -868,6 +872,7 @@ typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+x	test.c	/^const int x;$/;"	v
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f

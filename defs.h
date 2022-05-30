@@ -599,6 +599,11 @@ char *hrdt[] =
   [LDUB_T]="LDUB_T",
 };
 
+// superset: left type quals must be superset of right type quals (for assignment)
+// nocare: quals can be whatever (for function params)
+// strict: quals must match perfectly (for multiple declarations)
+enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};
+
 
 expr *parseexpr(link *start);
 expr *parseasgnexpr(link *start);
