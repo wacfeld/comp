@@ -559,6 +559,7 @@ int_len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef e
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 integer	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } integer;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon26
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
+intprom	main.c	/^expr *intprom(expr *e)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
 isarithmetic	main.c	/^int isarithmetic(ctype ct)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
@@ -659,6 +660,7 @@ main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	unused/test.s	/^main:$/;"	l
 main	unused/test2.s	/^main:$/;"	l
+makecast	main.c	/^expr *makecast(expr *e, ctype ct)$/;"	f
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f

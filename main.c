@@ -2664,62 +2664,6 @@ int ismodifiable(ctype ct)
   // TODO structs, unions with const members, incomplete types
 }
 
-// REQUIREMENTS
-// start can be anywhere in the linked list
-// use rightend() and leftend() to get it where you want
-// the left and right ends must be null terminated
-
-expr *parseexpr(link *start)
-{
-  // assert(start);
-  testerr(start, "parseexpr: null start");
-
-  rightend(start);
-  static int commaops[] = {COMMA};
-  link *comma = nexttoplevel(start, LEFT, 1, commaops);
-  // assert(start != comma); // no empty subexprs
-  testerr(start != comma, "parseexpr: empty comma subexr"); // no empty subexprs
-  
-  if(!comma) // base case, drop down
-  {
-    return parseasgnexpr(start);
-  }
-  
-  // recurse sideways
-  
-  // detach
-  start->right = NULL; // can't hurt
-  // comma->right->left = NULL;
-  // comma->left->right = NULL;
-  // putd(1);
-  here();
-  sever(comma);
-
-  expr *e1 = parseexpr(comma->left);
-  if(!e1) return NULL;
-  expr *e2 = parseasgnexpr(start);
-  if(!e2) return NULL;
-
-  expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
-
-  assert(e2->ct);
-  newe->ct = e2->ct; // inherits type from right operand
-  newe->lval = e2->lval; // inherits lvalue status
-
-  return newe;
-}
-
-int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
-
-int isasgnop(int x)
-{
-  for(int i = 0; i < sizeof(asgnops)/sizeof(int); i++)
-  {
-    if(asgnops[i] == x) return 1;
-  }
-  return 0;
-}
-
 int qualcmp(int c1, int c2, int v1, int v2, int mode)
 {
   if(mode == QM_NOCARE)
@@ -2814,6 +2758,105 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
 int tmis(typemod *tm, int type)
 {
   return tm->gen.type == type;
+}
+
+expr *makecast(expr *e, ctype ct)
+{
+  // make typename
+  expr *tn = makeexpr(TYPENAME, -1, 0);
+  tn->ct = ct;
+
+  // expr *newe = makeexpr(CAST_E, CAST_O, 2, tn, 
+}
+
+// perform integral promotion
+// wraps expression in cast if promotion necessary
+expr *intprom(expr *e)
+{
+  ctype ct = e->ct;
+  if(tmis(ct, TM_DAT)) // must be direct data to be integral
+  {
+    int dt = ct->dat.dt;
+
+    // convert to int
+    if(dt == CHAR_T
+        || dt == UCHAR_T
+        || dt == SINT_T)
+    {
+      expr *newe = makeexpr(CAST_E, CAST_O, 1, e);
+
+      ctype newct = malloc(sizeof(typemod));
+      memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
+
+      // convert
+      newct->gen.dt = INT_T;
+      
+      newe->ct = newct;
+      return newe;
+    }
+
+    // convert to unsigned int
+    else if(dt == USINT_T)
+    {
+      
+    }
+  }
+}
+
+// REQUIREMENTS
+// start can be anywhere in the linked list
+// use rightend() and leftend() to get it where you want
+// the left and right ends must be null terminated
+
+expr *parseexpr(link *start)
+{
+  // assert(start);
+  testerr(start, "parseexpr: null start");
+
+  rightend(start);
+  static int commaops[] = {COMMA};
+  link *comma = nexttoplevel(start, LEFT, 1, commaops);
+  // assert(start != comma); // no empty subexprs
+  testerr(start != comma, "parseexpr: empty comma subexr"); // no empty subexprs
+  
+  if(!comma) // base case, drop down
+  {
+    return parseasgnexpr(start);
+  }
+  
+  // recurse sideways
+  
+  // detach
+  start->right = NULL; // can't hurt
+  // comma->right->left = NULL;
+  // comma->left->right = NULL;
+  // putd(1);
+  here();
+  sever(comma);
+
+  expr *e1 = parseexpr(comma->left);
+  if(!e1) return NULL;
+  expr *e2 = parseasgnexpr(start);
+  if(!e2) return NULL;
+
+  expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
+
+  assert(e2->ct);
+  newe->ct = e2->ct; // inherits type from right operand
+  newe->lval = e2->lval; // inherits lvalue status
+
+  return newe;
+}
+
+int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
+
+int isasgnop(int x)
+{
+  for(int i = 0; i < sizeof(asgnops)/sizeof(int); i++)
+  {
+    if(asgnops[i] == x) return 1;
+  }
+  return 0;
 }
 
 expr *parseasgnexpr(link *start)
@@ -3276,6 +3319,7 @@ expr *parsetypename(link *start)
   // decl *ct = parsedecl(abstype, 1);
   int i = 0; // set for getdeclspecs()
   decl *dcl = getdeclspecs(abstype, &i);
+  assert(dcl->storespec == NOSPEC); // no storespecs allowed in casts. in fact we only cary about the ct part of the returned decl
   ctype ct = dcl->ct;
   list *l = makelist(sizeof(typemod));
   gettypemods(abstype, i, -1, 1, NULL, &ct); // write typemods into l; there should be no name
