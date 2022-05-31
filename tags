@@ -819,6 +819,7 @@ strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon24
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
+tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f
 tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon29
 tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon29
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_DAT};$/;"	g
@@ -873,7 +874,6 @@ typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^const int x;$/;"	v
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f

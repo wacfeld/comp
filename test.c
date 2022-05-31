@@ -2,8 +2,9 @@
 #define putd(x) printf(#x ": %d\n", x)
 #include <stdlib.h>
 
-const int x;
-const int x;
+int f(const int x);
+int f(int x);
+
 int main()
 {
 }

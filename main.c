@@ -2811,6 +2811,11 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
   }
 }
 
+int tmis(typemod *tm, int type)
+{
+  return tm->gen.type == type;
+}
+
 expr *parseasgnexpr(link *start)
 {
   // assert(start);
@@ -2856,7 +2861,7 @@ expr *parseasgnexpr(link *start)
   // perform type checks
   assert(e1->lval); // LHS must be lvalue
   assert(e1->ct);
-  assert(ismodifiable(e1->ct)); // modifiable type, including ban on const qual
+  assert(ismodifiable(e1->ct)); // modifiable type, including ban on const qual, etc.
   // assert(!e1->ct->isconst);
   // if(e1->ct->tms)
   // {
@@ -2865,6 +2870,7 @@ expr *parseasgnexpr(link *start)
 
   expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
   newe->ct = e1->ct;
+  newe->lval = 0;
   // TODO checks on type (arithmetic, void pointer, etc.)
   
   ctype ct1 = e1->ct;
@@ -2873,15 +2879,22 @@ expr *parseasgnexpr(link *start)
   //// one of the following has to be true
 
   if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
+
   //else if(TODO: structures and unions);
-  else if(ct1->tms[0].gen.type == TM_PTR && ct2->tms[0].gen.type == TM_PTR
-      && ((ct1->tms[1].gen.type == TM_NONE && ct1->dattype == K_VOID)
-        || (ct2->tms[1].gen.type == TM_NONE && ct2->dattype == K_VOID))); // one is pointer to any, other is pointer to void
+
+  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
+      && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
+        || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))); // one is pointer to any, other is pointer to void
+
   //else if(TODO: lhs ptr, rhs constant 0);
-  else if(ct1->tms[0].gen.type == TM_PTR && ct1->tms[1].gen.type == TM_FUNC
-      && ct2->tms[0].gen.type == TM_PTR && ct2->tms[1].gen.type == TM_FUNC); // both pointers to functions
-  else if(ct1->gen.type == TM_PTR && ct2->gen.type == TM_PTR && 
-  
+  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
+  {
+    // check compatibility, using superset qualmode
+    assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
+  }
+
+  else
+    assert(!"invalid assignment types");
 
   return newe;
 }
