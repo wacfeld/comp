@@ -2760,13 +2760,12 @@ int tmis(typemod *tm, int type)
   return tm->gen.type == type;
 }
 
-expr *makecast(expr *e, ctype ct)
+expr *makecast(ctype ct, expr *e)
 {
-  // make typename
-  expr *tn = makeexpr(TYPENAME, -1, 0);
-  tn->ct = ct;
-
-  // expr *newe = makeexpr(CAST_E, CAST_O, 2, tn, 
+  expr *newe = makeexpr(CAST_E, CAST_O, 1, e);
+  newe->ct = ct;
+  
+  return  newe;
 }
 
 // perform integral promotion
@@ -3194,12 +3193,11 @@ expr *parsecastexpr(link *start)
     sever(cl);
     // cl->left->right = NULL;
     
-    expr *e1 = parsetypename(start->right);
-    if(!e1) return NULL;
-    expr *e2 = parsecastexpr(cl->right);
-    if(!e2) return NULL;
+    ctype ct = parsetypename(start->right);
+    expr *e = parsecastexpr(cl->right);
+    if(!e) return NULL;
     
-    expr *newe = makeexpr(CAST_E, CAST_O, 2, e1, e2);
+    expr *newe = makecast(ct, e);
     return newe;
   }
 
@@ -3269,9 +3267,11 @@ expr *parseunaryexpr(link *start)
       cl->left->right = NULL;
       testerr(!cl->right, "parseunaryexpr: extra tokens after (typename)");
 
-      expr *e = parsetypename(start->right->right);
-      if(!e) return NULL;
-      e->args = NULL;
+      ctype ct = parsetypename(start->right->right);
+      // we need to put it inside a dummy expr because the ctype of newe has to be size_t (int)
+      expr *e = makeexpr(TYPENAME, -1, 0);
+      e->ct = ct;
+
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
 
       return newe;
@@ -3320,11 +3320,16 @@ ctype parsetypename(link *start)
   // decl *ct = parsedecl(abstype, 1);
   int i = 0; // set for getdeclspecs()
   decl *dcl = getdeclspecs(abstype, &i);
+
+  if(!dcl) return NULL;
   assert(dcl->storespec == NOSPEC); // no storespecs allowed in casts. in fact we only cary about the ct part of the returned decl
 
   // extract ct (containing only a TM_DAT right now)
   ctype ct = dcl->ct;
+  if(!ct) return NULL;
   gettypemods(abstype, i, -1, 1, NULL, &ct); // write typemods into ct, abstract
+
+  if(!ct) return NULL;
 
   return ct;
 }

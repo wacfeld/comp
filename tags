@@ -660,7 +660,7 @@ main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	unused/test.s	/^main:$/;"	l
 main	unused/test2.s	/^main:$/;"	l
-makecast	main.c	/^expr *makecast(expr *e, ctype ct)$/;"	f
+makecast	main.c	/^expr *makecast(ctype ct, expr *e)$/;"	f
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
