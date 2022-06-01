@@ -2765,7 +2765,7 @@ expr *makecast(ctype ct, expr *e)
   expr *newe = makeexpr(CAST_E, CAST_O, 1, e);
   newe->ct = ct;
   
-  return  newe;
+  return newe;
 }
 
 // perform integral promotion
@@ -2782,23 +2782,28 @@ expr *intprom(expr *e)
         || dt == UCHAR_T
         || dt == SINT_T)
     {
-      expr *newe = makeexpr(CAST_E, CAST_O, 1, e);
-
       ctype newct = malloc(sizeof(typemod));
       memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
+      newct->gen.dt = INT_T; // convert
 
-      // convert
-      newct->gen.dt = INT_T;
-      
-      newe->ct = newct;
+      // do implicit cast
+      expr *newe = makecast(newct, e);
       return newe;
     }
 
     // convert to unsigned int
     else if(dt == USINT_T)
     {
-      
+      ctype newct = malloc(sizeof(typemod));
+      memcpy(newct, ct, sizeof(typemod));
+      newct->gen.dt = UINT_T;
+
+      expr *newe = makecast(newct, e);
+      return newe;
     }
+
+    // no integral promotion, return unchanged
+    return e;
   }
 }
 
