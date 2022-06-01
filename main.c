@@ -3306,10 +3306,11 @@ expr *parseunaryexpr(link *start)
   }
 }
 
-expr *parsetypename(link *start)
+ctype parsetypename(link *start)
 {
   here();
   // assert(start);
+
   testerr(start, "parsetypename: empty start");
   leftend(start);
 
@@ -3320,16 +3321,12 @@ expr *parsetypename(link *start)
   int i = 0; // set for getdeclspecs()
   decl *dcl = getdeclspecs(abstype, &i);
   assert(dcl->storespec == NOSPEC); // no storespecs allowed in casts. in fact we only cary about the ct part of the returned decl
-  ctype ct = dcl->ct;
-  list *l = makelist(sizeof(typemod));
-  gettypemods(abstype, i, -1, 1, NULL, &ct); // write typemods into l; there should be no name
-  // reverse(l);
-  // ct->tms = (typemod *) l->cont;
 
-  // put into expression
-  expr *newe = makeexpr(TYPENAME, -1, 0); // optype and args don't matter for TYPENAME expr
-  newe->ct = ct;
-  return newe;
+  // extract ct (containing only a TM_DAT right now)
+  ctype ct = dcl->ct;
+  gettypemods(abstype, i, -1, 1, NULL, &ct); // write typemods into ct, abstract
+
+  return ct;
 }
 
 expr *parsepostexpr(link *start)

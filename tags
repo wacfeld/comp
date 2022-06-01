@@ -740,7 +740,7 @@ parserelexpr	unused/oldparser.c	/^link *parserelexpr(link *chain)$/;"	f
 parseshiftexpr	main.c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	unused/oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
-parsetypename	main.c	/^expr *parsetypename(link *start)$/;"	f
+parsetypename	main.c	/^ctype parsetypename(link *start)$/;"	f
 parsetypename	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsetypename(link *start)$/;"	f
 parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parseunaryexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseunaryexpr(link *start)$/;"	f
