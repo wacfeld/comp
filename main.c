@@ -2892,12 +2892,26 @@ void usualarith(expr **e1, expr **e2)
     if(makesametype(e1, e2, ULINT_T)) ; // unsigned long int
 
     // if one is long int and other is unsigned int
-    if(eisdt(*e1, LINT_T) && eisdt(*e2, UINT_T))
+    else if(eisdt(*e1, LINT_T) && eisdt(*e2, UINT_T)
+        || eisdt(*e1, UINT_T) && eisdt(*e2, LINT_T))
     {
-      *e1 = 
+      // convert both to unsigned long int
+      *e1 = makedtcast(ULINT_T, *e1);
+      *e2 = makedtcast(ULINT_T, *e2);
+    }
+
+    else if(makesametype(e1, e2, LINT_T)) ; // long int
+
+    else if(makesametype(e1, e2, UINT_T)) ; // unsigned int
+
+    else
+    {
+      // it should be logically impossible for this to fail, because of the integral promotion above
+      assert(eisdt(*e1, INT_T));
+      assert(eisdt(*e2, INT_T));
     }
   }
-  
+
 }
 
 // REQUIREMENTS
