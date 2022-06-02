@@ -668,6 +668,7 @@ makedtcast	main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
+makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
@@ -798,7 +799,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon19
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1194;"	d	file:
+sever	main.c	1197;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
@@ -878,7 +879,7 @@ typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon10
 typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon32
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
-usualarith	main.c	/^expr *usualarith(expr *e1, expr *e2)$/;"	f
+usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l

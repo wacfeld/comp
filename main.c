@@ -553,6 +553,9 @@ whitespace:
 
     else if(src[i] == '.') // float constant
     {
+      puts("Error: floating point not supported yet");
+      exit(1);
+
 leaddot:
       str[c++] = src[i++]; // write the dot
       resize(str, size, c);
@@ -2781,11 +2784,16 @@ expr *makedtcast(int dt, expr *e)
   ctype ct = e->ct;
   assert(ct->gen.type == TM_DAT);
 
+  if(ct->dat.dt == dt) // redundant cast
+  {
+    return e;
+  }
+
   // copy over isconst, isvolat, type
   ctype newct = malloc(sizeof(typemod));
   memcpy(newct, ct, sizeof(typemod));
 
-  newct->gen.dt = dt;
+  newct->dat.dt = dt;
 
   expr *newe = makecast(newct, e);
   return newe;
@@ -2796,44 +2804,46 @@ expr *makedtcast(int dt, expr *e)
 expr *intprom(expr *e)
 {
   ctype ct = e->ct;
-  if(tmis(ct, TM_DAT)) // must be direct data to be integral
+  // if(tmis(ct, TM_DAT)) // must be direct data to be integral
+
+  // must be integral
+  assert(isintegral(ct));
+
+  int dt = ct->dat.dt;
+
+  // convert to int
+  if(dt == CHAR_T
+      || dt == UCHAR_T
+      || dt == SINT_T)
   {
-    int dt = ct->dat.dt;
+    // ctype newct = malloc(sizeof(typemod));
+    // memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
+    // newct->gen.dt = INT_T; // convert
 
-    // convert to int
-    if(dt == CHAR_T
-        || dt == UCHAR_T
-        || dt == SINT_T)
-    {
-      // ctype newct = malloc(sizeof(typemod));
-      // memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
-      // newct->gen.dt = INT_T; // convert
+    // // do implicit cast
+    // expr *newe = makecast(newct, e);
+    // return newe;
 
-      // // do implicit cast
-      // expr *newe = makecast(newct, e);
-      // return newe;
-
-      expr *newe = makedtcast(INT_T, e);
-      return newe;
-    }
-
-    // convert to unsigned int
-    else if(dt == USINT_T)
-    {
-      // ctype newct = malloc(sizeof(typemod));
-      // memcpy(newct, ct, sizeof(typemod));
-      // newct->gen.dt = UINT_T;
-
-      // expr *newe = makecast(newct, e);
-      // return newe;
-
-      expr *newe = makedtcast(UINT_T, e);
-      return newe;
-    }
-
-    // no integral promotion, return unchanged
-    return e;
+    expr *newe = makedtcast(INT_T, e);
+    return newe;
   }
+
+  // convert to unsigned int
+  else if(dt == USINT_T)
+  {
+    // ctype newct = malloc(sizeof(typemod));
+    // memcpy(newct, ct, sizeof(typemod));
+    // newct->gen.dt = UINT_T;
+
+    // expr *newe = makecast(newct, e);
+    // return newe;
+
+    expr *newe = makedtcast(UINT_T, e);
+    return newe;
+  }
+
+  // no integral promotion, return unchanged
+  return e;
 }
 
 // expr is dattype
@@ -2842,14 +2852,52 @@ int eisdt(expr *e, int dt)
   return tmis(e->ct, TM_DAT) && e->ct->dat.dt == dt;
 }
 
+// if one is dt, make other dt too
+int makesametype(expr **e1, expr **e2, int dt)
+{
+  if(eisdt(*e1, dt))
+  {
+    *e2 = makedtcast(dt, *e2);
+    return 1;
+  }
+  else if(eisdt(*e2, dt))
+  {
+    *e1 = makedtcast(dt, *e1);
+    return 1;
+  }
+
+  // did not convert, neither expr is type dt
+  return 0;
+}
+
 // perform usual arithmetic conversions on two arithmetic types
 // (bring them to a common compatible type)
-expr *usualarith(expr *e1, expr *e2)
+void usualarith(expr **e1, expr **e2)
 {
-  if(eisdt(e1, LDUB_T))
+  assert(isarithmetic(*e1));
+  assert(isarithmetic(*e2));
+
+  // floating conversions
+  if(makesametype(e1, e2, LDUB_T)) ; // long double
+  else if(makesametype(e1, e2, DUB_T)) ; // double
+  else if(makesametype(e1, e2, FLOAT_T)) ; // float
+
+  // integral conversions
+  else
   {
-    
+    // perform integral promotion on both operands
+    *e1 = intprom(*e1);
+    *e2 = intprom(*e2);
+
+    if(makesametype(e1, e2, ULINT_T)) ; // unsigned long int
+
+    // if one is long int and other is unsigned int
+    if(eisdt(*e1, LINT_T) && eisdt(*e2, UINT_T))
+    {
+      *e1 = 
+    }
   }
+  
 }
 
 // REQUIREMENTS
