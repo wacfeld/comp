@@ -487,6 +487,7 @@ dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 e	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  expr *e;$/;"	m	struct:init
+eisdt	main.c	/^int eisdt(expr *e, int dt)$/;"	f
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 eistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int eistype(expr *e, int type)$/;"	f
 error	main.c	/^char *error;$/;"	v
@@ -505,6 +506,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^void f(float a)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -662,6 +664,7 @@ main	unused/test.s	/^main:$/;"	l
 main	unused/test2.s	/^main:$/;"	l
 makecast	main.c	/^expr *makecast(ctype ct, expr *e)$/;"	f
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
+makedtcast	main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
@@ -759,7 +762,7 @@ putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	23;"	d
 putd	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	3;"	d	file:
-putd	test.c	2;"	d	file:
+putd	test.c	3;"	d	file:
 putdecl	main.c	/^void putdecl(decl *dcl)$/;"	f
 putdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putdecl(decl *dcl)$/;"	f
 putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
@@ -875,6 +878,7 @@ typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon10
 typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon32
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
+usualarith	main.c	/^expr *usualarith(expr *e1, expr *e2)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l

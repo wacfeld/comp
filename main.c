@@ -2182,9 +2182,16 @@ int proctypespecs(set *ts)
       else return UINT_T;
     }
   }
-  else if(type == K_FLOAT) return FLOAT_T;
+  else if(type == K_FLOAT)
+  {
+    puts("Error: floating point not supported yet");
+    exit(1);
+    return FLOAT_T;
+  }
   else if(type == K_DOUBLE)
   {
+    puts("Error: floating point not supported yet");
+    exit(1);
     if(islong) return LDUB_T;
     else return DUB_T;
   }
@@ -2768,6 +2775,22 @@ expr *makecast(ctype ct, expr *e)
   return newe;
 }
 
+// cast one dt to another (both original and result must be dt
+expr *makedtcast(int dt, expr *e)
+{
+  ctype ct = e->ct;
+  assert(ct->gen.type == TM_DAT);
+
+  // copy over isconst, isvolat, type
+  ctype newct = malloc(sizeof(typemod));
+  memcpy(newct, ct, sizeof(typemod));
+
+  newct->gen.dt = dt;
+
+  expr *newe = makecast(newct, e);
+  return newe;
+}
+
 // perform integral promotion
 // wraps expression in cast if promotion necessary
 expr *intprom(expr *e)
@@ -2782,28 +2805,50 @@ expr *intprom(expr *e)
         || dt == UCHAR_T
         || dt == SINT_T)
     {
-      ctype newct = malloc(sizeof(typemod));
-      memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
-      newct->gen.dt = INT_T; // convert
+      // ctype newct = malloc(sizeof(typemod));
+      // memcpy(newct, ct, sizeof(typemod)); // copy over isconst, isvolat, type
+      // newct->gen.dt = INT_T; // convert
 
-      // do implicit cast
-      expr *newe = makecast(newct, e);
+      // // do implicit cast
+      // expr *newe = makecast(newct, e);
+      // return newe;
+
+      expr *newe = makedtcast(INT_T, e);
       return newe;
     }
 
     // convert to unsigned int
     else if(dt == USINT_T)
     {
-      ctype newct = malloc(sizeof(typemod));
-      memcpy(newct, ct, sizeof(typemod));
-      newct->gen.dt = UINT_T;
+      // ctype newct = malloc(sizeof(typemod));
+      // memcpy(newct, ct, sizeof(typemod));
+      // newct->gen.dt = UINT_T;
 
-      expr *newe = makecast(newct, e);
+      // expr *newe = makecast(newct, e);
+      // return newe;
+
+      expr *newe = makedtcast(UINT_T, e);
       return newe;
     }
 
     // no integral promotion, return unchanged
     return e;
+  }
+}
+
+// expr is dattype
+int eisdt(expr *e, int dt)
+{
+  return tmis(e->ct, TM_DAT) && e->ct->dat.dt == dt;
+}
+
+// perform usual arithmetic conversions on two arithmetic types
+// (bring them to a common compatible type)
+expr *usualarith(expr *e1, expr *e2)
+{
+  if(eisdt(e1, LDUB_T))
+  {
+    
   }
 }
 
