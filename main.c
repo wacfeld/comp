@@ -1509,8 +1509,13 @@ int gettypemods(token *toks, int lo, int hi, int abs, char **s, ctype *dat)
       *s = NULL;
   }
 
+
   // write back into dat
   *dat = (typemod *) l->cont;
+
+  // check ctype for validity
+  // we cannot check for incomplete type, because ex. function prototypes allow that. however we can always check for validity, and every type that appears in source code must pass through this function
+  assert(validct(*dat));
   
   return i;
 }
@@ -2554,6 +2559,37 @@ int qualcmp(int c1, int c2, int v1, int v2, int mode)
   assert(!"invalid qualmode");
 }
 
+// check for incomplete types
+int incomplete(ctype ct)
+{
+  if(ctisdt(ct, VOID_T))
+    return 1;
+
+  if(ct->gen.type == TM_PTR)
+    return 0;
+
+  if(ct->gen.type == TM_ARR && ct->arr.len == -1)
+    return 1;
+
+  return 0;
+}
+
+// disallows int arr[5][] and similar things (array of incomplete type)
+int validct(ctype ct)
+{
+  int len = getctlen(ct);
+  for(int i = 0; i < len-1; i++)
+  {
+    if(ct[i].gen.type == TM_ARR)
+    {
+      if(incomplete(ct+i+1))
+        return 0;
+    }
+  }
+
+  return 1;
+}
+
 ctype makecompos(ctype ct1, ctype ct2, int qualmode)
 {
   // regardless of qualmode, the resulting quals are the union of the input quals
@@ -2976,7 +3012,7 @@ expr *parseasgnexpr(link *start)
     }
   }
 
-  else // all other operators 
+  else // all other operators
   {
     // TODO type consistent with those allowed by the corresponding binary operator
   }

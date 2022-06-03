@@ -5,5 +5,5 @@
 
 int main()
 {
-  int (*x)[][];
+  void (*x)()[3];
 }

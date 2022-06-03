@@ -554,6 +554,7 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon30
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon32	typeref:struct:__anon32::__anon37
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon23
+incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon17	typeref:struct:__anon17::init
 init	defs.h	/^struct init$/;"	s
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon30	typeref:struct:__anon30::init
@@ -893,6 +894,7 @@ unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(
 ungetchar	fixedlithier.c	/^int ungetchar(int c) {$/;"	f
 unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
+validct	main.c	/^int validct(ctype ct)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l
