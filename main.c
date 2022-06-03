@@ -2610,20 +2610,53 @@ ctype makecompos(ctype ct1, ctype ct2, int qualmode)
       newct[i].ptr.isconst = ct1[i].ptr.isconst || ct2[i].ptr.isconst;
       newct[i].ptr.isvolat = ct1[i].ptr.isvolat || ct2[i].ptr.isvolat;
     }
+
     else if(type == TM_ARR)
     {
       newct[i].arr.len = max(ct1[i].arr.len, ct2[i].arr.len);
     }
+
     else if(type == TM_FUNC)
     {
-      int np = ct1[i].func.np;
-      list *params = makelist(sizeof(decl) * ct1[i].func.np);
-      for(int j = 0; j < ct1; j++)
+      int np1 = ct1[i].func.np;
+      int np2 = ct2[i].func.np;
+
+      if(np1 == -1 && np2 == -1) // leave params unspecified
       {
-        
+        newct[i].func.params = NULL;
+        newct[i].func.np = -1;
+      }
+
+      else
+      {
+        newct[i].func.np = max(np1, np2);
+
+        if(np1 == -1)
+          newct[i].func.params = ct2[i].func.params;
+        else if(np2 == -1)
+          newct[i].func.params = ct1[i].func.params;
+        else
+        {
+          decl *params = calloc(np1, sizeof(decl));
+
+          for(int j = 0; j < np1; j++)
+          {
+            params[j].ct = makecomposite(ct1[i].params[j], ct1[i].params[j], QM_NOCARE);
+          }
+
+          newct[i].func.params = params;
+        }
       }
     }
+
+    else if(type == TM_DAT)
+    {
+      newct[i].dat.isconst = ct1[i].dat.isconst || ct2[i].dat.isconst;
+      newct[i].dat.isvolat = ct1[i].dat.isvolat || ct2[i].dat.isvolat;
+    }
   }
+
+  return newct;
 }
 
 // types are compatible for some purpose (assignment, function params, multiple declarations)
