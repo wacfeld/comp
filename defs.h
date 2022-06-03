@@ -240,7 +240,7 @@ typedef union
   {
     int type;
     int isconst;
-    int isvolatile;
+    int isvolat;
   } ptr;
 
   struct
@@ -621,7 +621,7 @@ expr *parseaddexpr(link *start);
 expr *parsemultexpr(link *start);
 expr *parsecastexpr(link *start);
 expr *parseunaryexpr(link *start);
-expr *parsetypename(link *start);
+ctype parsetypename(link *start);
 expr *parsepostexpr(link *start);
 expr *parsearglist(link *start);
 expr *parseprimexpr(link *start);

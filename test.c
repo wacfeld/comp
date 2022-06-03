@@ -3,12 +3,9 @@
 #define putd(x) printf(#x ": %d\n", x)
 #include <stdlib.h>
 
-void f(float a)
-{
-  printf("%f\n", a);
-}
-
 int main()
 {
-  f(5);
+  int *a;
+  int const * const b;
+  (0 ? a : b);
 }

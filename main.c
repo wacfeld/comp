@@ -1012,7 +1012,7 @@ int isintegral(ctype ct)
 }
 
 // integral or floating
-int isarithmetic(ctype ct)
+int isarith(ctype ct)
 {
   if(ct->gen.type != TM_DAT)
     return 0;
@@ -1022,7 +1022,7 @@ int isarithmetic(ctype ct)
 
 int isscalar(ctype ct)
 {
-  if(isarithmetic(ct))
+  if(isarith(ct))
     return 1;
 
   return ct->gen.type == TM_PTR;
@@ -1652,7 +1652,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
     {
       if(iskeyword(toks+lo, K_VOLATILE))
       {
-        tmod->ptr.isvolatile = 1;
+        tmod->ptr.isvolat = 1;
       }
       else if(iskeyword(toks+lo, K_CONST))
       {
@@ -1830,7 +1830,7 @@ void puttypemod(typemod ts)
   {
     if(ts.ptr.isconst)
       printf("constant ");
-    if(ts.ptr.isvolatile)
+    if(ts.ptr.isvolat)
       printf("volatile ");
     printf("pointer to ");
   }
@@ -2647,6 +2647,18 @@ expr *makeexpr(int type, int optype, int numargs, ...)
   return e;
 }
 
+int isconst(ctype ct)
+{
+  return ct->gen.type == TM_DAT && ct->dat.isconst
+    || ct->gen.type == TM_PTR && ct->ptr.isconst;
+}
+
+int isvolat(ctype ct)
+{
+  return ct->gen.type == TM_DAT && ct->dat.isvolat
+    || ct->gen.type == TM_PTR && ct->ptr.isvolat;
+}
+
 // no const pointers, no const data, no arrays, functions, etc.
 int ismodifiable(ctype ct)
 {
@@ -2674,6 +2686,43 @@ int ismodifiable(ctype ct)
   // TODO structs, unions with const members, incomplete types
 }
 
+// get number of typemods in ctype
+int getctlen(ctype ct)
+{
+  int len = 1;
+  while(ct->gen.type != TM_DAT)
+  {
+    len++;
+    ct++;
+  }
+
+  return len;
+}
+
+// remove qualifiers from type
+ctype unqual(ctype ct)
+{
+  // create new ct and copy over
+  int len = getctlen(ct);
+  ctype newct = malloc(len * sizeof(typemod));
+  memcpy(newct, ct, sizeof(typemod) * len);
+
+  // remove any existing quals from first typemod
+  if(newct->gen.type == TM_PTR)
+  {
+    newct->ptr.isconst = 0;
+    newct->ptr.isvolat = 0;
+  }
+
+  else if(newct->gen.type == TM_DAT)
+  {
+    newct->dat.isconst = 0;
+    newct->dat.isvolat = 0;
+  }
+
+  return newct;
+}
+
 int qualcmp(int c1, int c2, int v1, int v2, int mode)
 {
   if(mode == QM_NOCARE)
@@ -2688,6 +2737,12 @@ int qualcmp(int c1, int c2, int v1, int v2, int mode)
       && v1 == v2;
 
   assert(!"invalid qualmode");
+}
+
+ctype makecomposite(ctype ct1, ctype ct2)
+{
+  // TODO
+  assert(!"makecomposite() has not been implemented yet");
 }
 
 // types are compatible for some purpose (assignment, function params, multiple declarations)
@@ -2739,8 +2794,8 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
 
   else if(t1 == TM_FUNC)
   {
-    list *p1 = ct->func.params;
-    list *p2 = ct->func.params;
+    list *p1 = ct1->func.params;
+    list *p2 = ct2->func.params;
 
     if(p1 && p2)
     {
@@ -2846,6 +2901,12 @@ expr *intprom(expr *e)
   return e;
 }
 
+// expr is typemod (top level)
+int eistm(expr *e, int t)
+{
+  return e->ct->gen.type == t;
+}
+
 // expr is dattype
 int eisdt(expr *e, int dt)
 {
@@ -2874,8 +2935,8 @@ int makesametype(expr **e1, expr **e2, int dt)
 // (bring them to a common compatible type)
 void usualarith(expr **e1, expr **e2)
 {
-  assert(isarithmetic(*e1));
-  assert(isarithmetic(*e2));
+  assert(isarith((*e1)->ct));
+  assert(isarith((*e2)->ct));
 
   // floating conversions
   if(makesametype(e1, e2, LDUB_T)) ; // long double
@@ -3022,25 +3083,26 @@ expr *parseasgnexpr(link *start)
   //   assert(e1->ct->tms[0].gen.type != TM_ARR); // no arrays
   // }
 
-  expr *newe = makeexpr(ASGN_E, ops[op->cont.tok->atom.cont], 2, e1, e2);
-  newe->ct = e1->ct;
-  newe->lval = 0;
-  // TODO checks on type (arithmetic, void pointer, etc.)
-  
   ctype ct1 = e1->ct;
   ctype ct2 = e2->ct;
 
-  //// one of the following has to be true
+  // one of the following has to be true
 
-  if(isarithmetic(ct1) && isarithmetic(ct2)); // both arithmetic
+  if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
 
   //else if(TODO: structures and unions);
 
   else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
       && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
         || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))); // one is pointer to any, other is pointer to void
+  {
+    // make sure left hand pointed-to quals are stricter than right
+    if(isconst(ct2+1)) assert(isconst(ct1+1));
+    if(isvolat(ct2+1)) assert(isvolat(ct1+1));
+  }
 
   //else if(TODO: lhs ptr, rhs constant 0);
+
   else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
   {
     // check compatibility, using superset qualmode
@@ -3049,6 +3111,36 @@ expr *parseasgnexpr(link *start)
 
   else
     assert(!"invalid assignment types");
+
+  // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
+  int optype = ops[op->cont.tok->atom.cont];
+
+  
+  if(optype == EQ_O) ; // no extra constrains for =
+  if(optype == PLUSEQ_O || optype == MINEQ_O)
+  {
+    // if += or -=, pointer on left implies integral on right
+    if(ct1->gen.type == TM_PTR)
+    {
+      assert(isintegral(ct2));
+    }
+  }
+
+  else // all other operators 
+  {
+    // TODO type consistent with those allowed by the corresponding binary operator
+  }
+
+  // TODO remember no double evaluation for compound assignments
+
+  // create new expression
+  expr *newe = makeexpr(ASGN_E, optype, 2, e1, e2);
+  newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
+  newe->lval = 0;
+
+  // make implicit cast of right side left
+  e2 = makecast(newe->ct, e2);
+
 
   return newe;
 }
@@ -3089,7 +3181,36 @@ expr *parsecondexpr(link *start)
   expr *e3 = parsecondexpr(colon->right);
   if(!e3) return NULL;
 
+
   expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
+  // type checks/conversions
+
+  assert(isscalar(e1->ct));
+  
+  // two arithmetic types: perform UAC
+  if(isarith(e2->ct) && isarith(e3->ct))
+  {
+    usualarith(&e2, &e3);
+    newe->ct = e2->ct;
+  }
+
+  else if(eisdt(e2, VOID_T) && eisdt(e3, VOID_T)) ; // both void: do nothing
+  
+  else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
+      &&iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) ; // pointers to compatible types
+  {
+    
+  }
+
+  // TODO one is pointer, one is nullptr constant
+  
+  else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
+      && (eisdt(e2+1, VOID_T) && eisdt(e3+1, VOID_T))) ; // one is pointer, other is pointer to void
+
+  // TODO there is a sequence point after evaluation of e1. not sure if i need to take this into account at all
+
+  newe->ct = e2->ct;
+  newe->lval = 0; // footnote on C90 standard page 52
   return newe;
 }
 
