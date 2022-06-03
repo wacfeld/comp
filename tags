@@ -474,6 +474,7 @@ ct	defs.h	/^  ctype ct; \/\/ expressions get parsed top to bottom, and then get 
 ct	defs.h	/^  ctype ct;$/;"	m	struct:__anon17
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct;$/;"	m	struct:__anon30
+ctisdt	main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	defs.h	/^typedef typemod *ctype;$/;"	t
 ctype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon29
 dat	defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
@@ -693,13 +694,14 @@ nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *ato
 nexttoplevel	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
 nline	defs.h	33;"	d
 nline	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	33;"	d
+np	defs.h	/^    int np; \/\/ number of params$/;"	m	struct:__anon10::__anon14
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 numargs	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int optype;$/;"	m	struct:expr
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum optype$/;"	g
-params	defs.h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon10::__anon14
+params	defs.h	/^    decl *params; \/\/ list of decls$/;"	m	struct:__anon10::__anon14
 params	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon32::__anon36
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseaddexpr(link *start)$/;"	f
@@ -892,8 +894,6 @@ ungetchar	fixedlithier.c	/^int ungetchar(int c) {$/;"	f
 unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^const int *x;$/;"	v
-x	test.c	/^int *x;$/;"	v
 x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f

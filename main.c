@@ -1729,12 +1729,32 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
         if(i+1 == hi) // empty list, means params unspecified
         {
           tmod->func.params = NULL; // indicate this with NULL
+          tmod->func.np = -1;
         }
         else
         {
           link *ll = tokl2ll(toks+i+1, hi-i-1);
-          list *params = parseparamlist(ll);
+          list *plist = parseparamlist(ll);
+
+          decl *params = (decl *) plist->cont;
           tmod->func.params = params;
+          int np = plist->n;
+          tmod->func.np = np;
+
+          // check for void
+          for(int j = 0; j < np; j++)
+          {
+            if(ctis(params[j].ct, VOID_T) && params[j].ident == NULL) // abstract type void -> no params
+            {
+              assert(np == 1); // void must be only param
+
+              // modify to have 0 params
+              tmod->func.params = NULL;
+              tmod->func.np = 0;
+            }
+          }
+
+          // TODO check all given types for completeness
         }
 
         append(l, tmod);
@@ -2765,7 +2785,12 @@ ctype makecompos(ctype ct1, ctype ct2, int qualmode)
     }
     else if(type == TM_FUNC)
     {
-      list *params = makelist(sizeof(decl));
+      int np = ct1[i].func.np;
+      list *params = makelist(sizeof(decl) * ct1[i].func.np);
+      for(int j = 0; j < ct1; j++)
+      {
+        
+      }
     }
   }
 }
@@ -2936,6 +2961,11 @@ int eistm(expr *e, int t)
 int eisdt(expr *e, int dt)
 {
   return tmis(e->ct, TM_DAT) && e->ct->dat.dt == dt;
+}
+
+int ctisdt(ctype ct, int dt)
+{
+  return ct->gen.type == TM_DAT && ct->dat.dt == dt;
 }
 
 // if one is dt, make other dt too

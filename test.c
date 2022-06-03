@@ -3,8 +3,7 @@
 #define putd(x) printf(#x ": %d\n", x)
 #include <stdlib.h>
 
-const int *x;
-int *x;
 int main()
 {
+  int (*x)[][];
 }

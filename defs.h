@@ -254,7 +254,9 @@ typedef union
   struct
   {
     int type;
-    list *params; // list of decls
+    // list *params; // list of decls
+    decl *params; // list of decls
+    int np; // number of params
     // TODO parameters
   } func;
 
