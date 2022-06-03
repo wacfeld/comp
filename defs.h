@@ -39,6 +39,8 @@
 // #define alloctok(str, size, c) int size = 10; int c = 0; tok *str = malloc(size*sizeof(tok));
 #define read(str, size, c, src, i) str[c++] = src[i++]; resize(str, c, size);
 
+#define max(a,b) (((a) < (b)) ? (b) : (a))
+
 #define CHAR_MAX 255
 #define CHAR_SIZE 1
 #define FLOAT_SIZE 4

@@ -2739,10 +2739,35 @@ int qualcmp(int c1, int c2, int v1, int v2, int mode)
   assert(!"invalid qualmode");
 }
 
-ctype makecomposite(ctype ct1, ctype ct2)
+ctype makecompos(ctype ct1, ctype ct2, int qualmode)
 {
-  // TODO
-  assert(!"makecomposite() has not been implemented yet");
+  // regardless of qualmode, the resulting quals are the union of the input quals
+  // qualmode is just here for the assert
+  assert(iscompat(ct1, ct2), qualmode);
+
+  // create new ctype
+  int len = getctlen(ct1);
+  ctype newct = malloc(sizeof(typemod) * len);
+
+  for(int i = 0; i < len; i++)
+  {
+    int type = ct1[i].gen.type;
+    newct[i].gen.type = type;
+    
+    if(type == TM_PTR)
+    {
+      newct[i].ptr.isconst = ct1[i].ptr.isconst || ct2[i].ptr.isconst;
+      newct[i].ptr.isvolat = ct1[i].ptr.isvolat || ct2[i].ptr.isvolat;
+    }
+    else if(type == TM_ARR)
+    {
+      newct[i].arr.len = max(ct1[i].arr.len, ct2[i].arr.len);
+    }
+    else if(type == TM_FUNC)
+    {
+      list *params = makelist(sizeof(decl));
+    }
+  }
 }
 
 // types are compatible for some purpose (assignment, function params, multiple declarations)
@@ -3197,7 +3222,7 @@ expr *parsecondexpr(link *start)
   else if(eisdt(e2, VOID_T) && eisdt(e3, VOID_T)) ; // both void: do nothing
   
   else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
-      &&iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) ; // pointers to compatible types
+      && iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) ; // pointers to compatible types
   {
     
   }
