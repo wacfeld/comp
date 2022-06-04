@@ -3101,16 +3101,16 @@ expr *parsecondexpr(link *start)
   if(!e3) return NULL;
 
 
-  expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
   // type checks/conversions
 
   assert(isscalar(e1->ct));
+  ctype newct = NULL;
   
   // two arithmetic types: perform UAC
   if(isarith(e2->ct) && isarith(e3->ct))
   {
     usualarith(&e2, &e3);
-    newe->ct = e2->ct;
+    newct = e2->ct;
   }
 
   else if(eisdt(e2, VOID_T) && eisdt(e3, VOID_T)) ; // both void: do nothing
@@ -3118,17 +3118,44 @@ expr *parsecondexpr(link *start)
   else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
       && iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) ; // pointers to compatible types
   {
-    
+    newct = makecompos(e2->ct, e3->ct, QM_NOCARE);
   }
 
   // TODO one is pointer, one is nullptr constant
-  
-  else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
-      && (eisdt(e2+1, VOID_T) && eisdt(e3+1, VOID_T))) ; // one is pointer, other is pointer to void
+
+  // otherwise must be pointers
+  else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR))
+  {
+    // one is pointer, other is pointer to void
+    // then convert the other one to pointer to void as well
+
+    if(eisdt(e2->ct+1, VOID_T))
+    {
+      e3 = makecast(e2->ct, e3);
+    }
+    else if(eisdt(e3->ct+1, VOID_T))
+    {
+      e2 = makecast(e3->ct, e2);
+    }
+    else
+    {
+      assert(!"invalid pointer targets in parecondexpr()");
+    }
+
+    newct = e2->ct;
+  }
+    // && (eisdt(e2+1, VOID_T) && eisdt(e3+1, VOID_T)))
+    // {
+
+  else
+  {
+    assert(!"invalid types for operands of parsecondexpr()");
+  }
 
   // TODO there is a sequence point after evaluation of e1. not sure if i need to take this into account at all
 
-  newe->ct = e2->ct;
+  expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
+  newe->ct = newct;
   newe->lval = 0; // footnote on C90 standard page 52
   return newe;
 }
