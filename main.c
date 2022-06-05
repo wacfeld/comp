@@ -1083,7 +1083,7 @@ void putdecl(decl *dcl)
   //   }
   // }
 
-  if(dcl->storespec != -1)
+  if(dcl->storespec != NOSPEC)
   {
     printf("%s ", keywords[dcl->storespec]);
   }
@@ -2106,7 +2106,7 @@ decl *getdeclspecs(token *toks, int *i)
     else if(isstorespec(k))
     {
       assert(dcl->storespec == NOSPEC); // only 1 storespec allowed
-      dcl->storespec = k;
+      dcl->storespec = specmap[k];
     }
     else break; // end of declaration specifiers
   }
@@ -3763,97 +3763,170 @@ void evalconstexpr(expr *e)
   
 }
 
-// void proctoplevel(token  *toks)
-// {
-//   alloc(decl *, alldecls, dsize, dn);
+// append src to dest, allocating more space as necessary
+// assumes dest can be passed to realloc()
+void strapp(char *dest, int *max, char *src)
+{
+  int len = strlen(dest) + strlen(src) + 1;
+  if(len > *max)
+  {
+    dest = realloc(dest, len);
+    *max = len;
+  }
+  strcat(dest, src);
+}
 
-//   decl *d;
-//   while((d = parsedecl(toks)) != NULL) // parse until NOTOK
-//   {
-//     putdecl(d);
+// multiappend
+void multiapp(char *dest, int *max, int n, ...)
+{
+  va_list ap;
+  char *s;
+
+  va_start(ap, n);
+  for(int i = 0; i < n; i++)
+  {
+    s = va_arg(ap, char *);
+    strapp(dest, max, s);
+  }
+}
+
+// prefix for identifiers to avoid conflict with anything
+char ident_pre[] = "var_";
+
+// read top-level decls, process function definitions
+// i.e. convert tokens to assembly
+void proctoplevel(token *toks)
+{
+  // allocat list of decls
+  alloc(decl *, alldecls, dsize, dn);
+
+  // allocate segment buffers (code, data, bss)
+  int cs_len, ds_len, bs_len;
+  cs_len = ds_len = bs_len = 100;
+  char *codeseg = malloc(cs_len);
+  char *dataseg = malloc(ds_len);
+  char *bssseg = malloc(bs_len);
+  *codeseg = *dataseg = *bssseg = 0; // empty string
+
+
+  decl *d;
+  while((d = parsedecl(toks)) != NULL) // parse until NOTOK
+  {
+    putdecl(d);
     
-//     // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
-//     assert(d->storespec != K_EXTERN);
-//     assert(d->storespec != K_STATIC);
-//     assert(d->storespec != K_AUTO);
-//     assert(d->storespec != K_REGISTER);
+    // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
+    assert(d->storespec == NOSPEC);
+    // technically extern also has a purpose within a translation unit, at top level, but i don't want to implement it
 
-//     if(d->storespec == K_TYPEDEF)
-//     {
-//       // TODO typedef
-//       assert(!"typedef isn't supported yet");
-//     }
+    if(d->storespec == K_TYPEDEF)
+    {
+      // TODO typedef
+      assert(!"typedef isn't supported yet");
+    }
     
-//     assert(d->ident); // probably not necessary but good to check that it exists
+    assert(d->ident); // probably not necessary but good to check that it exists
     
-//     // top-level lexical scope depends on where its first declaration occurs
     
-//     // search previous declarations for the same identifier. check if types conflict
-//     for(int i = 0; i < dn; i++)
-//     {
-//       if(streq(alldecls[i]->ident, d->ident)) // referring to same object
-//       {
-//         // check that the inits/fundefs don't conflict
-//         if(d->fundef) // function def
-//         {
-//           assert(!alldecls[i]->fundef); // must be unique
-//           assert(iscompat(alldecls[i], d, 0, 0)); // make sure same type!
-//         }
-//         if(d->init) // initialized
-//         {
-//           assert(!alldecls[i]->init); // musn't be prior initialization in this case
-//         }
+    assert(!d->fundef || !d->init); // can't have both
 
-//         makecomposite(alldecls[i], d); // write into alldecls[i] the composite type
-//         // TODO actually it's more complicated than that, as incomplete types, compound types, etc.
-//       }
+    if(d->fundef) // if fundef, parse now
+    {
+      // parse whatever
 
-//       else // it's the first occurrence, write into alldecls
-//       {
-//         resize(alldecls, dsize, dn);
-//         alldecls[dn++] = d;
-
-//         // TODO struct, union also lvalues
-//         typemod *tm1 = gettm(d, 0);
-//         if(isarith(d) || (tm1 && tm1->gen.type == TM_PTR))
-//         {
-//           d->lval = 1;
-//         }
-//       }
-//     }
-//   }
-
-//   // run through a second time, this time allocating storage, parsing fundefs, initializing, etc.
-//   for(int i = 0; i < dn; i++)
-//   {
-//     d = alldecls[i];
-
-//     if(d->init) // initialize
-//     {
-//       // TODO {} initializers have to be dealt with still
-//       // TODO perform evaluation on constant expr
+      // turn into assembly
       
-//     }
+      //write assembly
+    }
 
-//     else if(d->fundef) // function definition
-//     {
-//       // TODO evaluate declarations and statements
-//     }
+    // run through and merge decl with previous duplicates, or append new if unique
+    // do this even if fundef appeared above. fundefs are a declaration and a definition at the same time.
 
-//     else // tentative
-//     {
-//       // initialize to 0
+    // find initialized declarations, put in data
+    // find tentative declarations, put in bss
+
+    // search previous declarations for the same identifier
+    int merged = 0;
+    for(int i = 0; i < dn; i++)
+    {
+      if(streq(alldecls[i]->ident, d->ident)) // same ident
+      {
+        // check same type
+        assert(iscompat(alldecls[i]->ct, d->ct, QM_STRICT));
+
+        // check that the inits/fundefs don't conflict, then merge
+        if(d->fundef) // function def
+        {
+          assert(!alldecls[i]->fundef); // must be unique
+
+          alldecls[i]->fundef = d->fundef;
+        }
+        if(d->init) // initialized
+        {
+          assert(!alldecls[i]->init); // musn't be prior initialization in this case
+
+          alldecls[i]->init = d->init;
+        }
+
+        // merge types
+        ctype newct = makecompos(alldecls[i]->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
+        alldecls[i]->ct = newct;
+        
+        // indicate the decl already exists
+        merged = 1;
+        break;
+      }
+
+    }
+
+    if(!merged) // it's the first occurrence, write into alldecls
+    {
+      resize(alldecls, dsize, dn);
+      alldecls[dn++] = d;
+    }
+  }
+
+  // run through a second time, this time allocating storage, parsing fundefs, initializing, etc.
+  for(int i = 0; i < dn; i++)
+  {
+    d = alldecls[i];
+
+    if(d->init) // evaluate initializer, put in data
+    {
+      assert(!d->init->islist); // list initializers not supported yet
+
+      // TODO evaluate constant expr init
+      
+      // LEH
+      // how many bytes
+      // arrays  are important, they can have various sizes. need to extract the size of the type below the array, figure out how many, allocate many things, with commas etc.
+      // assert that array size is not incomplete at this point
+      int size = sizeoftype(d->ct);
+      strapp(dataseg, &ds_len, 3, ident_pre, d->ident, " ", 
+    }
+    else // no init, put in bss
+    {
+      
+    }
+
+    else if(d->fundef) // function definition
+    {
+      // TODO evaluate declarations and statements
+    }
+
+    else // tentative
+    {
+      // initialize to 0
       
       
-//     }
-//   }
+    }
+  }
   
-//   // because no extern or static is allowed, we reserve storage for every declared variable
+  // because no extern or static is allowed, we reserve storage for every declared variable
 
-//   // translate everything into assembly
+  // translate everything into assembly
 
   
-// }
+}
 
 ///}}}
 

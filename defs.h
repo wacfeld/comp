@@ -294,8 +294,15 @@ typedef union
 
 typedef typemod *ctype;
 
-enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};
+enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};
+int specmap[] = {
+  [K_EXTERN]=EXTERN_S,
+  [K_STATIC]=STATIC_S,
+  [K_REGISTER]=REGISTER_S,
+  [K_AUTO]=AUTO_S,
+};
 
+enum storeloc {LOCAL, GLOBAL}; // stored on stack or in data/bss
 
 typedef struct
 {

@@ -1,0 +1,13 @@
+     1                                  section .data
+     2                                  
+     3                                  section .bss
+     4                                  
+     5                                  section .text
+     6                                  
+     7                                  global _start
+     8                                  _start:
+     9                                  
+    10                                  .exit:
+    11 00000000 B801000000                mov rax, 1
+    12 00000005 BB00000000                mov rbx, 0
+    13 0000000A CD80                      int 80h

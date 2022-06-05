@@ -26,6 +26,7 @@ ASGN_E	defs.h	/^  ASGN_E,$/;"	e	enum:expr_type
 ASGN_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ASGN_E,$/;"	e	enum:expr_type
 ATOM	defs.h	/^enum tok_type {NOTOK=0, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 ATOM	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
+AUTO_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 BAND_O	defs.h	/^  BAND_O,$/;"	e	enum:optype
 BAND_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  BAND_O,$/;"	e	enum:optype
 BINMIN	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -123,7 +124,7 @@ EXPR_L	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 EXPR_L	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum link_type {EXPR_L, TOK_L};$/;"	e	enum:link_type
 EXPR_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 EXPR_S	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
-EXTERN_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
+EXTERN_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 EXTERN_S	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
 FLOATING	defs.h	/^enum tok_type {NOTOK=0, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
 FLOATING	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	e	enum:tok_type
@@ -139,6 +140,7 @@ GEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, IN
 GEQ	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 GEQ_O	defs.h	/^  GEQ_O,$/;"	e	enum:optype
 GEQ_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  GEQ_O,$/;"	e	enum:optype
+GLOBAL	defs.h	/^enum storeloc {LOCAL, GLOBAL}; \/\/ stored on stack or in data\/bss$/;"	e	enum:storeloc
 GREAT	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 GREAT	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 GT_O	defs.h	/^  GT_O,$/;"	e	enum:optype
@@ -248,6 +250,7 @@ LINT_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_
 LINT_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LNOT_O	defs.h	/^  LNOT_O,$/;"	e	enum:optype
 LNOT_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  LNOT_O,$/;"	e	enum:optype
+LOCAL	defs.h	/^enum storeloc {LOCAL, GLOBAL}; \/\/ stored on stack or in data\/bss$/;"	e	enum:storeloc
 LOGAND	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LOGAND	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LOGNOT	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -281,7 +284,7 @@ MULT_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  MULT_O,$
 NEQ_O	defs.h	/^  NEQ_O,$/;"	e	enum:optype
 NEQ_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  NEQ_O,$/;"	e	enum:optype
 NONE_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
-NOSPEC	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
+NOSPEC	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 NOSPEC	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
 NOTEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 NOTEQ	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -328,6 +331,7 @@ QM_STRICT	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	e	enum
 QM_SUPERSET	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	e	enum:qualmode
 QUESTION	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 QUESTION	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
+REGISTER_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
 RELAT_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  RELAT_E,$/;"	e	enum:expr_type
 RIGHT	main.c	27;"	d	file:
@@ -362,7 +366,7 @@ SIZEOF_O	defs.h	/^  SIZEOF_O,$/;"	e	enum:optype
 SIZEOF_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  SIZEOF_O,$/;"	e	enum:optype
 STAR	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 STAR	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
-STATIC_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
+STATIC_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 STATIC_S	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	e	enum:storespec
 STRING_O	defs.h	/^  STRING_O,$/;"	e	enum:optype
 STRING_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  STRING_O,$/;"	e	enum:optype
@@ -426,6 +430,8 @@ XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 XOR_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_O,$/;"	e	enum:optype
+_start	template/main.asm	/^_start:$/;"	l
+_start	template/test.asm	/^_start:$/;"	l
 alloc	defs.h	38;"	d
 alloc	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
@@ -518,7 +524,6 @@ fun	test.s	/^fun:$/;"	l
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon36
 fundef	defs.h	/^  void *fundef; \/\/ TODO$/;"	m	struct:__anon17
-g	test2.c	/^void g()$/;"	f
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon21
@@ -533,6 +538,8 @@ gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char 
 gettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+global	template/main.asm	/^global _start$/;"	l
+global	template/test.asm	/^global _start$/;"	l
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
@@ -554,6 +561,7 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon30
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon32	typeref:struct:__anon32::__anon37
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon23
+ident_pre	main.c	/^char ident_pre[] = "var_";$/;"	v
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon17	typeref:struct:__anon17::init
 init	defs.h	/^struct init$/;"	s
@@ -685,6 +693,7 @@ mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon19
 max	defs.h	42;"	d
+multiapp	main.c	/^void multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon19
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
@@ -765,6 +774,7 @@ parsexorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 proctokens	main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
 proctokens	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
+proctoplevel	main.c	/^void proctoplevel(token *toks)$/;"	f
 proctypespecs	main.c	/^int proctypespecs(set *ts)$/;"	f
 proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
@@ -807,6 +817,12 @@ right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	11;"	d	file:
 rightend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
+section	template/main.asm	/^section .bss$/;"	l
+section	template/main.asm	/^section .data$/;"	l
+section	template/main.asm	/^section .text$/;"	l
+section	template/test.asm	/^section .bss$/;"	l
+section	template/test.asm	/^section .data$/;"	l
+section	template/test.asm	/^section .text$/;"	l
 set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon19
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
@@ -819,14 +835,17 @@ showlithier	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void 
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon19
 sizeoftype	main.c	/^int sizeoftype(ctype ct)$/;"	f
 sizeoftype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int sizeoftype(ctype *ct)$/;"	f
+specmap	defs.h	/^int specmap[] = {$/;"	v
 splice	main.c	/^void splice(char *src)$/;"	f
 splice	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void splice(char *src)$/;"	f
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 stattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
+storeloc	defs.h	/^enum storeloc {LOCAL, GLOBAL}; \/\/ stored on stack or in data\/bss$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:__anon17
-storespec	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	g
+storespec	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	g
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum storespec storespec;$/;"	m	struct:__anon29	typeref:enum:__anon29::storespec
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	g
+strapp	main.c	/^void strapp(char *dest, int *max, char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 stray_backslash	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 streq	defs.h	27;"	d
@@ -896,7 +915,6 @@ unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test2.c	/^int x = 10;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f

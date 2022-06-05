@@ -1,0 +1,9 @@
+stack:
+p1
+p2
+p3
+eip
+old ebp <- ebp
+l1
+l2
+l3 <- esp
