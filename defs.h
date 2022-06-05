@@ -231,6 +231,8 @@ struct init
   expr *e;
 };
 
+typedef struct decl decl;
+
 typedef union
 {
   struct
@@ -304,7 +306,7 @@ int specmap[] = {
 
 enum storeloc {LOCAL, GLOBAL}; // stored on stack or in data/bss
 
-typedef struct
+typedef struct decl
 {
   // set *typespecs;
   // int dattype;
@@ -638,6 +640,13 @@ expr *parsearglist(link *start);
 expr *parseprimexpr(link *start);
 
 decl *getdeclspecs(token *toks, int *i);
+
+int validct(ctype ct);
+int incomplete(ctype ct);
+int ctisdt(ctype ct, int dt);
+int iscompat(ctype ct1, ctype ct2, int qualmode);
+int getctlen(ctype ct);
+
 
 
 #endif

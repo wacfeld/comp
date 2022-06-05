@@ -1749,7 +1749,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
           // check for void
           for(int j = 0; j < np; j++)
           {
-            if(ctis(params[j].ct, VOID_T) && params[j].ident == NULL) // abstract type void -> no params
+            if(ctisdt(params[j].ct, VOID_T) && params[j].ident == NULL) // abstract type void -> no params
             {
               assert(np == 1); // void must be only param
 
@@ -2238,141 +2238,137 @@ struct init *parseinit(link *start)
 
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
-// decl * parsedecl(token *toks)
-// {
-//   // declaration *decl = malloc(sizeof(decl));
+decl * parsedecl(token *toks)
+{
+  // declaration *decl = malloc(sizeof(decl));
   
-//   static int i = 0;
-//   static ctype *specs = NULL; // contains decl specs, not typemods
-//   static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
-//   // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
+  static int i = 0;
+  static decl *specs = NULL; // contains decl specs, not typemods
+  static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
+  // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
 
-//   if(!toks) // reset if passed NULL
-//   {
-//     i = 0;
-//     specs = NULL;
-//     return NULL; // return value doesn't matter
-//   }
+  if(!toks) // reset if passed NULL
+  {
+    i = 0;
+    specs = NULL;
+    return NULL; // return value doesn't matter
+  }
 
-//   if(toks[i].gen.type == NOTOK) // end of token stream
-//   {
-//     return NULL;
-//   }
-//   assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
+  if(toks[i].gen.type == NOTOK) // end of token stream
+  {
+    return NULL;
+  }
+  assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
   
-//   if(!specs) // read new decl specs
-//   {
-//     first = 1; // start anew
-//     specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
-//   }
+  if(!specs) // read new decl specs
+  {
+    first = 1; // start anew
+    specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
+  }
   
-//   // now deal with a single declarator + optional initializer, or function definition
+  // now deal with a single declarator + optional initializer, or function definition
 
 
-//   // get the declarator
-//   list *l = makelist(sizeof(typemod));
-//   char *ident;
-//   i = gettypemods(toks, i, -1, l, 0, &ident); // parse one declarator and move i forward accordingly
+  // get the declarator, put everything into a new decl including a copy of the specs
+  // list *l = makelist(sizeof(typemod));
+  char *ident;
+  decl *dcl = malloc(sizeof(decl));
+  memcpy(dcl, specs, sizeof(decl));
+  i = gettypemods(toks, i, -1, 0, &ident, &dcl->ct); // parse one declarator and move i forward accordingly, write declarator into dcl->ct
+  assert(ident); // no abstract declarators
+  dcl->ident = ident;
 
-//   // write all this information into dcl
-//   ctype *ct = malloc(sizeof(ctype)); // create new ctype for these typemods
-//   memcpy(ct, specs, sizeof(ctype)); // copy declspecs into this
-//   ct->tms = (typemod *) l->cont; // attach typemods
+  int tmlen = getctlen(dcl->ct);
 
-//   // create decl, write ident, ct into it
-//   decl *dcl = malloc(sizeof(decl));
-//   assert(ident); // no abstract declarators
-//   dcl->ident = ident;
-//   dcl->ct = ct;
+  if(isatom(toks+i, BRACEOP)) // function definition
+  {
+    // make sure first place
+    assert(first);
+    first = 0; // claim first place
 
-//   // make typemods easier to access for following logic
-//   int tmlen = l->n;
+    // check if valid function declarator: TM_FUNC, return type
+    assert(tmlen >= 2);
+    assert(dcl->ct->gen.type == TM_FUNC);
 
-//   if(isatom(toks+i, BRACEOP)) // function definition
-//   {
-//     // make sure first place
-//     assert(first);
-//     first = 0; // claim first place
+    // find matching brace
+    int bracedep = 0;
+    do
+    {
+      if(isatom(toks + i, BRACEOP)) bracedep++;
+      if(isatom(toks + i, BRACECL)) bracedep--;
+      assert(bracedep >= 0);
+      assert(toks[i].gen.type != NOTOK);
 
-//     // check if valid function declarator: (), TM_NONE
-//     assert(tmlen >= 2);
-//     assert(ct->tms[0].gen.type == TM_FUNC);
-
-//     // find matching brace
-//     int bracedep = 0;
-//     do
-//     {
-//       if(isatom(toks + i, BRACEOP)) bracedep++;
-//       if(isatom(toks + i, BRACECL)) bracedep--;
-//       assert(bracedep >= 0);
-//       assert(toks[i].gen.type != NOTOK);
-
-//       i++;
-//     } while(bracedep > 0);
+      i++;
+    } while(bracedep > 0);
     
-//     // TODO parse compound statement
+    // TODO parse compound statement
 
-//     free(specs); // end of declaration group
-//     specs = NULL;
-//     return dcl;
-//   }
+    free(specs); // end of declaration group
+    specs = NULL;
+    return dcl;
+  }
+  else
+  {
+    dcl->fundef = NULL;
+  }
 
-//   first = 0; // claim first place
-//   if(isatom(toks + i, EQ)) // initializer follows
-//   {
-//     i++; // move over =
+  first = 0; // claim first place
+  if(isatom(toks + i, EQ)) // initializer follows
+  {
+    i++; // move over =
 
-//     // find terminating semicolon or comma
-//     // very similar to nexttoplevel, but on a token list
-//     // not used often enough to warrant its own function
-//     int end = i, dep = 0;
-//     while(1)
-//     {
-//       if((isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON)) && dep == 0)
-//         break;
-//       // TODO assert dep!!!
+    // find terminating semicolon or comma
+    // very similar to nexttoplevel, but on a token list
+    // not used often enough to warrant its own function
+    int end = i, dep = 0;
+    while(1)
+    {
+      if((isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON)) && dep == 0)
+        break;
+      // TODO assert dep!!!
 
-//       if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
-//         dep++;
-//       if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
-//         dep--;
+      if(isatom(toks + end, PARENOP) || isatom(toks + end, BRACKOP) || isatom(toks + end, BRACEOP) || isatom(toks + end, QUESTION))
+        dep++;
+      if(isatom(toks + end, PARENCL) || isatom(toks + end, BRACKCL) || isatom(toks + end, BRACECL) || isatom(toks + end, COLON))
+        dep--;
 
-//       assert(dep >= 0);
-//       assert(toks[end].gen.type != NOTOK);
+      assert(dep >= 0);
+      assert(toks[end].gen.type != NOTOK);
 
-//       end++;
-//     }
+      end++;
+    }
 
-//     assert(end != i);
+    assert(end != i);
 
-//     link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
+    link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
 
-//     struct init *init = parseinit(chain);
+    struct init *init = parseinit(chain);
 
-//     dcl->init = init;
-//     i = end; // move over to comma or semicolon
-//   }
-//   else // no initializer
-//   {
-//     dcl->init = NULL;
-//   }
+    dcl->init = init;
+    i = end; // move over to comma or semicolon
+  }
+  else // no initializer
+  {
+    dcl->init = NULL;
+  }
 
-//   // check what's terminating
-//   assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
-//   if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
-//   {
-//     free(specs);
-//     specs = NULL;
-//     i++;
-//   }
-//   else // comma, simply move over
-//   {
-//     i++;
-//   }
+  // check what's terminating
+  assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
+  if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
+  {
+    free(specs);
+    specs = NULL;
+    i++;
+  }
+  else // comma, simply move over
+  {
+    i++;
+  }
 
-//   return dcl;
+  return dcl;
 
-// }
+}
 
 int lisin(link *l, int num, int *tokl)
 {
@@ -2594,7 +2590,7 @@ ctype makecompos(ctype ct1, ctype ct2, int qualmode)
 {
   // regardless of qualmode, the resulting quals are the union of the input quals
   // qualmode is just here for the assert
-  assert(iscompat(ct1, ct2), qualmode);
+  assert(iscompat(ct1, ct2, qualmode));
 
   // create new ctype
   int len = getctlen(ct1);
@@ -2641,7 +2637,7 @@ ctype makecompos(ctype ct1, ctype ct2, int qualmode)
 
           for(int j = 0; j < np1; j++)
           {
-            params[j].ct = makecomposite(ct1[i].params[j], ct1[i].params[j], QM_NOCARE);
+            params[j].ct = makecompos(ct1[i].func.params[j].ct, ct1[i].func.params[j].ct, QM_NOCARE);
           }
 
           newct[i].func.params = params;
@@ -2708,22 +2704,22 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
 
   else if(t1 == TM_FUNC)
   {
-    list *p1 = ct1->func.params;
-    list *p2 = ct2->func.params;
+    decl *p1 = ct1->func.params;
+    decl *p2 = ct2->func.params;
 
     if(p1 && p2)
     {
-      if(p1->n != p2->n) // same length?
+      if(ct1->func.np != ct2->func.np) // same length?
         return 0;
       
-      decl *pl1 = (decl *) p1->cont;
-      decl *pl2 = (decl *) p2->cont;
+      // decl *pl1 = (decl *) p1->cont;
+      // decl *pl2 = (decl *) p2->cont;
 
       // recursively check parameters for compatibility
-      for(int i = 0; i < p1->n; i++)
+      for(int i = 0; i < ct1->func.np; i++)
       {
         // params are decls, because of possible identifiers. we ignore that and only look at the ct
-        if(!iscompat(pl1[i].ct, pl2[i].ct, QM_NOCARE)) // change qualmode to nocare, because we do not care
+        if(!iscompat(p1[i].ct, p2[i].ct, QM_NOCARE)) // change qualmode to nocare, because we do not care
           return 0;
       }
     }
@@ -3013,7 +3009,7 @@ expr *parseasgnexpr(link *start)
 
   else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
       && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
-        || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))); // one is pointer to any, other is pointer to void
+        || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))) // one is pointer to any, other is pointer to void
   {
     // make sure left hand pointed-to quals are stricter than right
     if(isconst(ct2+1)) assert(isconst(ct1+1));
@@ -3116,7 +3112,7 @@ expr *parsecondexpr(link *start)
   else if(eisdt(e2, VOID_T) && eisdt(e3, VOID_T)) ; // both void: do nothing
   
   else if(eistm(e2, TM_PTR) && eistm(e3, TM_PTR)
-      && iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) ; // pointers to compatible types
+      && iscompat(e2->ct+1, e3->ct+1, QM_NOCARE)) // pointers to compatible types
   {
     newct = makecompos(e2->ct, e3->ct, QM_NOCARE);
   }
@@ -3129,11 +3125,11 @@ expr *parsecondexpr(link *start)
     // one is pointer, other is pointer to void
     // then convert the other one to pointer to void as well
 
-    if(eisdt(e2->ct+1, VOID_T))
+    if(ctisdt(e2->ct+1, VOID_T))
     {
       e3 = makecast(e2->ct, e3);
     }
-    else if(eisdt(e3->ct+1, VOID_T))
+    else if(ctisdt(e3->ct+1, VOID_T))
     {
       e2 = makecast(e3->ct, e2);
     }
@@ -3790,6 +3786,55 @@ void multiapp(char *dest, int *max, int n, ...)
   }
 }
 
+
+// convert a size (in bytes) to the corresponding x86 pseudo-instruction (db and friends)
+// NOT for array sizes. e.x. for int arr[5], sizeof(int) should be passed here, not sizeof(int)*5
+char *initx86(int size)
+{
+  switch(size)
+  {
+    case 1:
+      return "db";
+    case 2:
+      return "dw";
+    case 4:
+      return "dd";
+    // no more than 4 bytes used in this implementation
+    // case 8:
+    //   return "dq";
+    // case 10:
+    //   return "dt";
+    // case 16:
+    //   return "do";
+    default:
+      assert(!"initx86: invalid data size");
+  }
+}
+
+// same as above, but for bss
+char *resx86(int size)
+{
+  switch(size)
+  {
+    case 1:
+      return "resb";
+    case 2:
+      return "resw";
+    case 4:
+      return "resd";
+    // no more than 4 bytes used in this implementation
+    // case 8:
+    //   return "resq";
+    // case 10:
+    //   return "rest";
+    // case 16:
+    //   return "reso";
+    default:
+      assert(!"resx86: invalid data size");
+  }
+}
+
+
 // prefix for identifiers to avoid conflict with anything
 char ident_pre[] = "var_";
 
@@ -3885,47 +3930,57 @@ void proctoplevel(token *toks)
     }
   }
 
-  // run through a second time, this time allocating storage, parsing fundefs, initializing, etc.
+  // run through a second time, this time allocating storage, initializing, etc.
   for(int i = 0; i < dn; i++)
   {
     d = alldecls[i];
+    if(d->ct->gen.type == TM_FUNC) // function decl, nothing to initialize
+    {
+      continue;
+    }
 
     if(d->init) // evaluate initializer, put in data
     {
       assert(!d->init->islist); // list initializers not supported yet
+      assert(d->ct->gen.type != TM_ARR); // lists not supported, therefore arrays with init not supported
+      // this also saves us the problem of more complicated memory reservations
 
       // TODO evaluate constant expr init
       
-      // LEH
-      // how many bytes
-      // arrays  are important, they can have various sizes. need to extract the size of the type below the array, figure out how many, allocate many things, with commas etc.
-      // assert that array size is not incomplete at this point
       int size = sizeoftype(d->ct);
-      strapp(dataseg, &ds_len, 3, ident_pre, d->ident, " ", 
+      char *def = initx86(size); // db, dw, etc.
+      multiapp(dataseg, &ds_len, 6, ident_pre, d->ident, " ", def, "1", "\n"); // TODO replace "1" with actual init value
     }
     else // no init, put in bss
     {
-      
-    }
+      int count = 0; // arrays have to reserve multiple. everything else only reserves one
+      int size = 0;
 
-    else if(d->fundef) // function definition
-    {
-      // TODO evaluate declarations and statements
-    }
+      if(d->ct->gen.type == TM_ARR)
+      {
+        if(d->ct->arr.len == -1)
+        {
+          d->ct->arr.len = 1; // default to 1
+        }
+        count = d->ct->arr.len;
+        size = sizeoftype(d->ct+1); // remove TM_ARR, get size
+      }
 
-    else // tentative
-    {
-      // initialize to 0
-      
-      
+      else // not array, get type directly
+      {
+        count = 1;
+        size = sizeoftype(d->ct);
+      }
+
+      char countstr[100]; // no way count is over 100 digits
+      sprintf(countstr, "%d", count); // write count into countstr
+
+      char *res = resx86(size);
+      multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
     }
   }
   
-  // because no extern or static is allowed, we reserve storage for every declared variable
-
-  // translate everything into assembly
-
-  
+  printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
 }
 
 ///}}}
@@ -3981,14 +4036,14 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
-  // proctoplevel(toks);
+  proctoplevel(toks);
 
-  puts("---");
-  putd(trans_unit->n);
-  link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  // puts("---");
+  // putd(trans_unit->n);
+  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  expr *e = parseexpr(chain);
-  putexpr(e,0);
+  // expr *e = parseexpr(chain);
+  // putexpr(e,0);
 
 }
 //}}}

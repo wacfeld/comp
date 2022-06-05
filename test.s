@@ -1,43 +1,31 @@
 	.file	"test.c"
 	.text
-	.globl	fun
-	.type	fun, @function
-
-fun:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	movl	%edi, -20(%rbp) ; c
-	movl	$5, -8(%rbp) ; x
-	movl	$6, -4(%rbp) ; y
-
-	movl	-4(%rbp), %eax
-	addl	%eax, -8(%rbp)
-	movl	-8(%rbp), %edx
-	movl	-20(%rbp), %eax
-	addl	%edx, %eax
-	popq	%rbp
-	ret
-
-.LFE0:
-	.size	fun, .-fun
+	.globl	x
+	.data
+	.align 32
+	.type	x, @object
+	.size	x, 400000
+x:
+	.long	5
+	.zero	399996
+	.text
 	.globl	main
 	.type	main, @function
 main:
+.LFB0:
+	.cfi_startproc
+	endbr64
 	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-	subq	$16, %rsp
-
-	movl	$6, %edi
-	call	fun
-	movl	%eax, -4(%rbp)
-	movl	$1, %eax
-	
-
-	leave
+	.cfi_def_cfa_register 6
+	movl	$0, %eax
+	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE1:
+.LFE0:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits
