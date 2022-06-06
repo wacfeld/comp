@@ -2300,9 +2300,9 @@ decl * parsedecl(token *toks)
     assert(dcl->ct->gen.type == TM_FUNC);
 
     // put the range of the whole function definition into fd
-    struct stat fd;
-    fd.toks = toks;
-    fd.lo = i;
+    struct stat *fd = malloc(sizeof(struct stat));
+    fd->toks = toks;
+    fd->lo = i;
 
     // find matching brace
     int bracedep = 0;
@@ -2317,7 +2317,7 @@ decl * parsedecl(token *toks)
     } while(bracedep > 0);
 
     fd->hi = i; // therefore hi is exclusive, not inclusive
-    decl.fundef = fd;
+    dcl->fundef = fd;
 
     free(specs); // end of declaration group
     specs = NULL;
@@ -3940,6 +3940,8 @@ void proctoplevel(token *toks)
       // parse whatever
 
       // turn into assembly
+      char *s = parsestat(d->fundef, scope);
+      strapp(codeseg, &cs_len, s);
       
       //write assembly
       // end function
@@ -4055,6 +4057,11 @@ void proctoplevel(token *toks)
   }
   
   printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
+}
+
+char *parsestat(struct stat *stat, stack *scope)
+{
+  
 }
 
 ///}}}

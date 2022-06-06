@@ -340,7 +340,7 @@ typedef struct decl
   // int lval; // TODO
 
   struct init *init; // e.g. {1,2, {3,4,5}}
-  struct stat fundef; // TODO
+  struct stat *fundef; // TODO
 
 } decl;
 
@@ -662,6 +662,8 @@ int incomplete(ctype ct);
 int ctisdt(ctype ct, int dt);
 int iscompat(ctype ct1, ctype ct2, int qualmode);
 int getctlen(ctype ct);
+
+char *parsestat(struct stat *stat, stack *scope);
 
 
 
