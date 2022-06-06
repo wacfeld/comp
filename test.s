@@ -1,18 +1,63 @@
 	.file	"test.c"
 	.text
-	.globl	x
-	.data
-	.align 32
-	.type	x, @object
-	.size	x, 400000
-x:
-	.long	5
-	.zero	399996
-	.text
+	.globl	g
+	.type	g, @function
+g:
+.LFB0:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$14, -4(%rbp)
+	nop
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	g, .-g
+	.globl	f
+	.type	f, @function
+f:
+.LFB1:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movl	$6, -20(%rbp)
+	movl	$7, -16(%rbp)
+	movl	$8, -12(%rbp)
+	cmpl	$7, -16(%rbp)
+	jne	.L3
+	movl	$9, -4(%rbp)
+	movl	$0, %eax
+	call	g
+	jmp	.L4
+.L3:
+	movl	$10, -8(%rbp)
+	movl	$0, %eax
+	call	g
+.L4:
+	movl	$0, %eax
+	call	g
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	f, .-f
 	.globl	main
 	.type	main, @function
 main:
-.LFB0:
+.LFB2:
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -25,7 +70,7 @@ main:
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE0:
+.LFE2:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits

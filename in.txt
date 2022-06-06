@@ -1,1 +1,6 @@
-int (x);
+char *x;
+int f()
+{
+
+}
+char *(x);

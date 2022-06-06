@@ -305,6 +305,12 @@ int specmap[] = {
 };
 
 // enum storeloc {LOCAL, GLOBAL}; // stored on stack or in data/bss
+struct location
+{
+  int global; // whether it's global (top level, bss/data) or local (stack)
+  char *globloc; // label
+  int locloc; // offset from ebp
+};
 
 typedef struct decl
 {
@@ -314,9 +320,13 @@ typedef struct decl
   // int storespec;
 
   char *ident;
+  struct location locat;
 
   int storespec;
   ctype ct;
+
+  enum storeloc loc; // local or global
+
   // int isconst;
   // int isvolat;
 

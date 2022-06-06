@@ -1810,8 +1810,8 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
     }
 
     // else, we should have reached the identifier (should not be possible for abstract declarator to reach this part of the code)
-    putd(lo);
-    putd(hi);
+    // putd(lo);
+    // putd(hi);
     assert(lo == hi);
     assert(toks[lo].gen.type == IDENT);
 
@@ -2312,9 +2312,14 @@ decl * parsedecl(token *toks)
     } while(bracedep > 0);
     
     // TODO parse compound statement
+    
 
     free(specs); // end of declaration group
     specs = NULL;
+
+    // TODO: duh
+    // int temp;
+    // dcl->fundef = &temp;
     return dcl;
   }
   else
@@ -3800,10 +3805,26 @@ void multiapp(char *dest, int *max, int n, ...)
   }
 }
 
+char *strnew(int n, ...)
+{
+  va_list ap;
+
+  int max = 1;
+  char *dest = malloc(max);
+  char *s;
+
+  va_start(ap, n);
+  for(int i = 0; i < n; i++)
+  {
+    s = va_arg(ap, char *);
+    strapp(dest, &max, s);
+  }
+}
+
 
 // convert a size (in bytes) to the corresponding x86 pseudo-instruction (db and friends)
 // NOT for array sizes. e.x. for int arr[5], sizeof(int) should be passed here, not sizeof(int)*5
-char *initx86(int size)
+char *initnasm(int size)
 {
   switch(size)
   {
@@ -3821,12 +3842,12 @@ char *initx86(int size)
     // case 16:
     //   return "do";
     default:
-      assert(!"initx86: invalid data size");
+      assert(!"initnasm: invalid data size");
   }
 }
 
 // same as above, but for bss
-char *resx86(int size)
+char *resnasm(int size)
 {
   switch(size)
   {
@@ -3844,13 +3865,19 @@ char *resx86(int size)
     // case 16:
     //   return "reso";
     default:
-      assert(!"resx86: invalid data size");
+      assert(!"resnasm: invalid data size");
   }
 }
 
 
-// prefix for identifiers to avoid conflict with anything
+// prefix for act as namespaces to avoid conflicting with each other and builtin features of nasm
 char ident_pre[] = "var_";
+char function_pre[] = "fun_";
+
+// create a new stack frame at start of function
+char create_sframe[] = "push ebp\nmov ebp,esp";
+// destray a stack frame at end of function
+char destroy_sframe[] = "mov esp,ebp\npop ebp";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -3880,10 +3907,16 @@ void proctoplevel(token *toks)
   while((d = parsedecl(toks)) != NULL) // parse until NOTOK
   {
     putdecl(d);
-    
+
+    assert(d->ident); // probably not necessary but good to check that it exists
+
+    // set location and identifier
+    d->locat.global = 1;
+    d->locat.globloc = strnew(2, ident_pre, d->ident);
+
     // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
     assert(d->storespec == NOSPEC);
-    // technically extern also has a purpose within a translation unit, at top level, but i don't want to implement it
+    // technically extern also has a purpose within a translation unit, but i don't want to implement it
 
     if(d->storespec == K_TYPEDEF)
     {
@@ -3891,18 +3924,23 @@ void proctoplevel(token *toks)
       assert(!"typedef isn't supported yet");
     }
     
-    assert(d->ident); // probably not necessary but good to check that it exists
     
     
     assert(!d->fundef || !d->init); // can't have both
 
+    puts("hey!");
+    puts(d->ident);
     if(d->fundef) // if fundef, parse now
     {
+      // start function
+      multiapp(codeseg, &cs_len, 4, function_pre, d->ident, ":\n", create_sframe);
       // parse whatever
 
       // turn into assembly
       
       //write assembly
+      // end function
+      multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
     }
 
     // run through and merge decl with previous duplicates, or append new if unique
@@ -3913,7 +3951,7 @@ void proctoplevel(token *toks)
 
     // search previous declarations for the same identifier
     int merged = 0;
-    putd(scope->n);
+    // putd(scope->n);
     decl **scopearr = (decl **) scope->cont; // extract list from scope stack
     for(int i = 0; i < scope->n; i++)
     {
@@ -3981,8 +4019,8 @@ void proctoplevel(token *toks)
       // TODO evaluate constant expr init
       
       int size = sizeoftype(d->ct);
-      char *def = initx86(size); // db, dw, etc.
-      multiapp(dataseg, &ds_len, 6, ident_pre, d->ident, " ", def, "1", "\n"); // TODO replace "1" with actual init value
+      char *def = initnasm(size); // db, dw, etc.
+      multiapp(dataseg, &ds_len, 5, d->locat.globloc, " ", def, "1", "\n"); // TODO replace "1" with actual init value
     }
     else // no init, put in bss
     {
@@ -4008,7 +4046,7 @@ void proctoplevel(token *toks)
       char countstr[100]; // no way count is over 100 digits
       sprintf(countstr, "%d", count); // write count into countstr
 
-      char *res = resx86(size);
+      char *res = resnasm(size);
       multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
     }
   }

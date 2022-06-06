@@ -474,6 +474,7 @@ cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon30
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
+create_sframe	main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp";$/;"	v
 ct	defs.h	/^  ctype ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	defs.h	/^  ctype ct;$/;"	m	struct:decl
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
@@ -490,6 +491,7 @@ decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl
 decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon29
+destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp";$/;"	v
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
@@ -515,7 +517,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.c	/^int (*f);$/;"	v
+f	test.c	/^void f()$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -523,7 +525,9 @@ floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floa
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
+function_pre	main.c	/^char function_pre[] = "fun_";$/;"	v
 fundef	defs.h	/^  void *fundef; \/\/ TODO$/;"	m	struct:decl
+g	test.c	/^void g()$/;"	f
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
@@ -538,8 +542,10 @@ gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char 
 gettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+global	defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data) or local (stack)$/;"	m	struct:location
 global	template/main.asm	/^global _start$/;"	l
 global	template/test.asm	/^global _start$/;"	l
+globloc	defs.h	/^  char *globloc; \/\/ label$/;"	m	struct:location
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
@@ -567,7 +573,7 @@ init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	ty
 init	defs.h	/^struct init$/;"	s
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon29	typeref:struct:__anon29::init
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^struct init$/;"	s
-initx86	main.c	/^char *initx86(int size)$/;"	f
+initnasm	main.c	/^char *initnasm(int size)$/;"	f
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 int_len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
@@ -667,6 +673,10 @@ ll2tokl	main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated t
 ll2tokl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 lllen	main.c	/^int lllen(link *l)$/;"	f
 lllen	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lllen(link *l)$/;"	f
+loc	defs.h	/^  enum storeloc loc; \/\/ local or global$/;"	m	struct:decl	typeref:enum:decl::storeloc
+locat	defs.h	/^  struct location locat;$/;"	m	struct:decl	typeref:struct:decl::location
+location	defs.h	/^struct location$/;"	s
+locloc	defs.h	/^  int locloc; \/\/ offset from ebp$/;"	m	struct:location
 lst	defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lval	defs.h	/^  int lval;$/;"	m	struct:expr
@@ -818,7 +828,7 @@ rem_comments	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void
 rem_front	datastruct.c	/^void rem_front(list *l)$/;"	f
 resize	defs.h	36;"	d
 resize	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	36;"	d
-resx86	main.c	/^char *resx86(int size)$/;"	f
+resnasm	main.c	/^char *resnasm(int size)$/;"	f
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
@@ -861,6 +871,7 @@ striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
+strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f
