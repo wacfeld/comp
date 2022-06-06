@@ -524,8 +524,7 @@ floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floa
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
-fundef	defs.h	/^  struct fundef *fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::fundef
-fundef	defs.h	/^struct fundef$/;"	s
+fundef	defs.h	/^  struct stat fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::stat
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
@@ -549,7 +548,7 @@ helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^i
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
 here	defs.h	32;"	d
 here	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	32;"	d
-hi	defs.h	/^  int hi; \/\/ inlcusive? who knows$/;"	m	struct:fundef
+hi	defs.h	/^  int hi; \/\/ inlcusive? who knows$/;"	m	struct:stat
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hr_expr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *hr_expr[100] = $/;"	v
 hrat	defs.h	/^char *hrat[100] = {$/;"	v
@@ -672,7 +671,7 @@ ll2tokl	main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated t
 ll2tokl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 lllen	main.c	/^int lllen(link *l)$/;"	f
 lllen	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lllen(link *l)$/;"	f
-lo	defs.h	/^  int lo;$/;"	m	struct:fundef
+lo	defs.h	/^  int lo;$/;"	m	struct:stat
 locat	defs.h	/^  struct location locat;$/;"	m	struct:decl	typeref:struct:decl::location
 location	defs.h	/^struct location$/;"	s
 locloc	defs.h	/^  int locloc; \/\/ offset from ebp$/;"	m	struct:location
@@ -855,6 +854,7 @@ specmap	defs.h	/^int specmap[] = {$/;"	v
 splice	main.c	/^void splice(char *src)$/;"	f
 splice	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void splice(char *src)$/;"	f
 stack	datastruct.h	/^typedef set stack; \/\/ idem$/;"	t
+stat	defs.h	/^struct stat$/;"	s
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 stattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:decl
@@ -890,7 +890,7 @@ token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
 token	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} token;$/;"	t	typeref:union:__anon19
 tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokl2ll	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
-toks	defs.h	/^  token *toks;$/;"	m	struct:fundef
+toks	defs.h	/^  token *toks;$/;"	m	struct:stat
 trysever	main.c	/^void trysever(link *l)$/;"	f
 trysever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void trysever(link *l)$/;"	f
 type	defs.h	/^    int type;$/;"	m	struct:__anon10::__anon11

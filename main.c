@@ -2300,7 +2300,7 @@ decl * parsedecl(token *toks)
     assert(dcl->ct->gen.type == TM_FUNC);
 
     // put the range of the whole function definition into fd
-    struct fundef fd;
+    struct stat fd;
     fd.toks = toks;
     fd.lo = i;
 

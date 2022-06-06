@@ -312,7 +312,7 @@ struct location
   int locloc; // offset from ebp
 };
 
-struct fundef
+struct stat
 {
   token *toks;
   int lo;
@@ -340,7 +340,7 @@ typedef struct decl
   // int lval; // TODO
 
   struct init *init; // e.g. {1,2, {3,4,5}}
-  struct fundef *fundef; // TODO
+  struct stat fundef; // TODO
 
 } decl;
 
