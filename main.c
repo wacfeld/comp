@@ -1096,6 +1096,12 @@ void putdecl(decl *dcl)
 
   // printf("%s ", hrdt[dcl->dattype]);
 
+  if(dcl->ct)
+  {
+    putctype(dcl->ct);
+    puts("");
+  }
+
   if(dcl->init)
   {
     printf(":= \n");
@@ -1110,6 +1116,7 @@ void putdecl(decl *dcl)
   }
   else
     putchar('\n');
+
 
   // int *tss = (int *) dcl->typespecs->cont;
   // len = dcl->typespecs->n;

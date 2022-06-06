@@ -835,7 +835,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1197;"	d	file:
+sever	main.c	1204;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f

@@ -3,4 +3,4 @@ int f()
 {
 
 }
-int (f);
+int (x);
