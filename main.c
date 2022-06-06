@@ -1722,6 +1722,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
 
           else fun = 0; // otherwise must be enclosing
         }
+        else fun = 0; // not abs, back where we started -> enclosing
 
         if(!fun) // enclosing
         {
@@ -1809,8 +1810,8 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
     }
 
     // else, we should have reached the identifier (should not be possible for abstract declarator to reach this part of the code)
-    // putd(lo);
-    // putd(hi);
+    putd(lo);
+    putd(hi);
     assert(lo == hi);
     assert(toks[lo].gen.type == IDENT);
 

@@ -436,11 +436,11 @@ append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 args	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon13
-arr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } arr;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon35
+arr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } arr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon34
 asgnops	main.c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 asgnops	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
-atom	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } atom;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon28
+atom	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } atom;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon27
 atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 atom_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 attach	main.c	7;"	d	file:
@@ -451,11 +451,11 @@ canbeunary	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int ca
 cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 cbulen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
-character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon20	typeref:struct:__anon20::__anon25
+character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
@@ -464,32 +464,32 @@ cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
 cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
 cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon17
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon20::__anon23
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon20::__anon24
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char cont;$/;"	m	struct:__anon20::__anon25
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    enum atom_type cont;$/;"	m	struct:__anon20::__anon28	typeref:enum:__anon20::__anon28::atom_type
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    float cont;$/;"	m	struct:__anon20::__anon27
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int cont;$/;"	m	struct:__anon20::__anon22
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_t cont;$/;"	m	struct:__anon20::__anon26
-cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon31
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon19::__anon22
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon19::__anon23
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char cont;$/;"	m	struct:__anon19::__anon24
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    enum atom_type cont;$/;"	m	struct:__anon19::__anon27	typeref:enum:__anon19::__anon27::atom_type
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    float cont;$/;"	m	struct:__anon19::__anon26
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int cont;$/;"	m	struct:__anon19::__anon21
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_t cont;$/;"	m	struct:__anon19::__anon25
+cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon30
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 ct	defs.h	/^  ctype ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	defs.h	/^  ctype ct;$/;"	m	struct:decl
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
-ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct;$/;"	m	struct:__anon30
+ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct;$/;"	m	struct:__anon29
 ctisdt	main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	defs.h	/^typedef typemod *ctype;$/;"	t
-ctype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon29
+ctype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon28
 dat	defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
-dattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon29
+dattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon28
 dattypes	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dattypes	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl
-decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon30
+decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon29
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
@@ -506,7 +506,7 @@ etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void ety
 evalconstexpr	main.c	/^void evalconstexpr(expr *e)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
-exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon31
+exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon30
 expr	defs.h	/^struct expr$/;"	s
 expr	defs.h	/^typedef struct expr expr;$/;"	t	typeref:struct:expr
 expr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^struct expr$/;"	s
@@ -519,16 +519,15 @@ f	test.c	/^int (*f);$/;"	v
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
-floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floating;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon27
+floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floating;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon26
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
-fun	test.s	/^fun:$/;"	l
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
-func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon36
+func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
 fundef	defs.h	/^  void *fundef; \/\/ TODO$/;"	m	struct:decl
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
-gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon21
-gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon33
+gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
+gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon32
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
 getctlen	main.c	/^int getctlen(ctype ct)$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
@@ -559,21 +558,21 @@ hrtok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *hrtok
 ident	defs.h	/^  char *ident;$/;"	m	struct:decl
 ident	defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon10	typeref:struct:__anon10::__anon15
 ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
-ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon30
-ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon32	typeref:struct:__anon32::__anon37
-ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon23
+ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon29
+ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon31	typeref:struct:__anon31::__anon36
+ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
 ident_pre	main.c	/^char ident_pre[] = "var_";$/;"	v
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	typeref:struct:decl::init
 init	defs.h	/^struct init$/;"	s
-init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon30	typeref:struct:__anon30::init
+init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon29	typeref:struct:__anon29::init
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^struct init$/;"	s
 initx86	main.c	/^char *initx86(int size)$/;"	f
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 int_len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
-integer	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } integer;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon26
+integer	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } integer;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon25
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
 intprom	main.c	/^expr *intprom(expr *e)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
@@ -588,10 +587,10 @@ iscompat	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isco
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon12
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon16
 isconst	main.c	/^int isconst(ctype ct)$/;"	f
-isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isconst;$/;"	m	struct:__anon32::__anon34
-isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isconst;$/;"	m	struct:__anon29
+isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isconst;$/;"	m	struct:__anon31::__anon33
+isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isconst;$/;"	m	struct:__anon28
 isdecimal	defs.h	/^    int isdecimal;$/;"	m	struct:__anon1::__anon7
-isdecimal	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isdecimal;$/;"	m	struct:__anon20::__anon26
+isdecimal	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isdecimal;$/;"	m	struct:__anon19::__anon25
 isdeclspec	main.c	/^int isdeclspec(token t)$/;"	f
 isdeclspec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
@@ -608,27 +607,27 @@ islist	defs.h	/^  int islist;$/;"	m	struct:init
 islist	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int islist;$/;"	m	struct:init
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon7
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
-islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon20::__anon26
-islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon20::__anon27
+islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon25
+islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon26
 ismodifiable	main.c	/^int ismodifiable(ctype ct)$/;"	f
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
-isshort	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isshort;$/;"	m	struct:__anon20::__anon27
+isshort	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isshort;$/;"	m	struct:__anon19::__anon26
 isstorespec	main.c	/^int isstorespec(int k)$/;"	f
 issub	datastruct.c	/^int issub(set *sub, set *sup)$/;"	f
 istypequal	main.c	/^int istypequal(int k)$/;"	f
 istypespec	main.c	/^int istypespec(int k)$/;"	f
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
-isunsigned	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isunsigned;$/;"	m	struct:__anon20::__anon26
+isunsigned	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isunsigned;$/;"	m	struct:__anon19::__anon25
 isvolat	defs.h	/^    int isvolat;$/;"	m	struct:__anon10::__anon12
 isvolat	defs.h	/^    int isvolat;$/;"	m	struct:__anon10::__anon16
 isvolat	main.c	/^int isvolat(ctype ct)$/;"	f
-isvolat	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isvolat;$/;"	m	struct:__anon29
-isvolatile	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isvolatile;$/;"	m	struct:__anon32::__anon34
+isvolat	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isvolat;$/;"	m	struct:__anon28
+isvolatile	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isvolatile;$/;"	m	struct:__anon31::__anon33
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon3
 keyword	defs.h	/^enum keyword { K_NONE = 0, K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
-keyword	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } keyword;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon22
+keyword	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } keyword;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon21
 keyword	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum keyword {K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keywords	defs.h	/^char *keywords[] =$/;"	v
 keywords	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *keywords[] =$/;"	v
@@ -643,8 +642,8 @@ leistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int leis
 len	defs.h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon1::__anon5
 len	defs.h	/^    int len;$/;"	m	struct:__anon10::__anon13
 len	defs.h	/^  int len;$/;"	m	struct:init
-len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon20::__anon24
-len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int len;$/;"	m	struct:__anon32::__anon35
+len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon19::__anon23
+len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int len;$/;"	m	struct:__anon31::__anon34
 len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int len;$/;"	m	struct:init
 link	defs.h	/^typedef struct link$/;"	s
 link	defs.h	/^} link;$/;"	t	typeref:struct:link
@@ -694,13 +693,13 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	42;"	d
 multiapp	main.c	/^void multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
-name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon32::__anon37
+name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon31::__anon36
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
@@ -715,7 +714,7 @@ optype	defs.h	/^enum optype$/;"	g
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int optype;$/;"	m	struct:expr
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum optype$/;"	g
 params	defs.h	/^    decl *params; \/\/ list of decls$/;"	m	struct:__anon10::__anon14
-params	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon32::__anon36
+params	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon31::__anon35
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
@@ -784,7 +783,7 @@ proctoplevel	main.c	/^void proctoplevel(token *toks)$/;"	f
 proctypespecs	main.c	/^int proctypespecs(set *ts)$/;"	f
 proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
-ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon34
+ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon33
 push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
 putctype	main.c	/^void putctype(ctype ct)$/;"	f
 putctype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putctype(ctype *ct)$/;"	f
@@ -831,7 +830,7 @@ section	template/main.asm	/^section .text$/;"	l
 section	template/test.asm	/^section .bss$/;"	l
 section	template/test.asm	/^section .data$/;"	l
 section	template/test.asm	/^section .text$/;"	l
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
@@ -840,7 +839,7 @@ sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 sizeoftype	main.c	/^int sizeoftype(ctype ct)$/;"	f
 sizeoftype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int sizeoftype(ctype *ct)$/;"	f
 specmap	defs.h	/^int specmap[] = {$/;"	v
@@ -851,7 +850,7 @@ stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$
 stattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 storespec	defs.h	/^  int storespec;$/;"	m	struct:decl
 storespec	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	g
-storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum storespec storespec;$/;"	m	struct:__anon29	typeref:enum:__anon29::storespec
+storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum storespec storespec;$/;"	m	struct:__anon28	typeref:enum:__anon28::storespec
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	g
 strapp	main.c	/^void strapp(char *dest, int *max, char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
@@ -861,24 +860,24 @@ streq	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	27;"	d
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
-strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon20	typeref:struct:__anon20::__anon24
+strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f
-tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon29
-tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon29
+tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon28
+tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon28
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_DAT};$/;"	g
 tmt	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon17
 tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
-tok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    token *tok;$/;"	m	union:link::__anon31
+tok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    token *tok;$/;"	m	union:link::__anon30
 tok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok_type	defs.h	/^enum tok_type {NOTOK=0, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	defs.h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tok_type {NOTOK, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
 tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
-token	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} token;$/;"	t	typeref:union:__anon20
+token	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} token;$/;"	t	typeref:union:__anon19
 tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokl2ll	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 trysever	main.c	/^void trysever(link *l)$/;"	f
@@ -899,23 +898,23 @@ type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon8
 type	defs.h	/^    tok_type type;$/;"	m	struct:__anon1::__anon9
 type	defs.h	/^  enum link_type type;$/;"	m	struct:link	typeref:enum:link::link_type
 type	defs.h	/^  set *type; \/\/ multiple types at once are possible$/;"	m	struct:expr
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon32::__anon33
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon32::__anon34
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon32::__anon35
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon32::__anon36
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon32::__anon37
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon21
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon22
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon23
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon24
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon25
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon26
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon27
-type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon20::__anon28
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon31::__anon32
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon31::__anon33
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon31::__anon34
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon31::__anon35
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int type;$/;"	m	struct:__anon31::__anon36
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon20
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon21
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon22
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon23
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon24
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon25
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon26
+type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    tok_type type;$/;"	m	struct:__anon19::__anon27
 type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum link_type type;$/;"	m	struct:link	typeref:enum:link::link_type
 type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  set *type; \/\/ multiple types at once are possible$/;"	m	struct:expr
 typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon10
-typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon32
+typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon31
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 ungetchar	fixedlithier.c	/^int ungetchar(int c) {$/;"	f
@@ -923,6 +922,7 @@ unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
+x	test.s	/^x:$/;"	l
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f
