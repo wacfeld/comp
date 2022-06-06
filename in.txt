@@ -1,1 +1,1 @@
-int x;
+char *x;

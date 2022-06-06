@@ -3842,9 +3842,10 @@ char ident_pre[] = "var_";
 // i.e. convert tokens to assembly
 void proctoplevel(token *toks)
 {
-  // allocat list of decls
+  // allocate list of decls
   alloc(decl *, alldecls, dsize, dn);
 
+  // LEH stack stack stack
   // allocate segment buffers (code, data, bss)
   int cs_len, ds_len, bs_len;
   cs_len = ds_len = bs_len = 100;

@@ -304,7 +304,7 @@ int specmap[] = {
   [K_AUTO]=AUTO_S,
 };
 
-enum storeloc {LOCAL, GLOBAL}; // stored on stack or in data/bss
+// enum storeloc {LOCAL, GLOBAL}; // stored on stack or in data/bss
 
 typedef struct decl
 {

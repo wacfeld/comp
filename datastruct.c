@@ -23,6 +23,7 @@ set *makeset(int size)
   s->cont = malloc(size * s->max);
   s->size = size;
   s->n = 0;
+  return s;
 }
 
 int setins(set *s, void* m) // set insert, returns 1 if already in set
@@ -193,3 +194,12 @@ void intsetins(set *s, int x)
 //   return t;
 // }
 
+
+stack *makestack(int size)
+{
+  stack *s = malloc(sizeof(stack));;
+  s->max = 10;
+  s->cont = malloc(size * s->max);
+  s->size = size;
+  s->n = 0;
+}

@@ -9,8 +9,11 @@ typedef struct
 } set;
 
 typedef set list; // same data structure, different functions
+typedef set stack; // idem
 
 // lists tend to be used when we are reading data and don't know the length yet. they are clumsy to use because of the variable type size, so after everything is read, it should be converted to a more direct data type (e.g. makelist(sizeof(int)) -> int *)
+
+stack *makestack(int size);
 
 set *makeset(int size);
 int setins(set *s, void * m);
