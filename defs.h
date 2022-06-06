@@ -308,8 +308,15 @@ int specmap[] = {
 struct location
 {
   int global; // whether it's global (top level, bss/data) or local (stack)
-  char *globloc; // label
+  char *globloc; // nasm label
   int locloc; // offset from ebp
+};
+
+struct fundef
+{
+  token *toks;
+  int lo;
+  int hi; // inlcusive? who knows
 };
 
 typedef struct decl
@@ -325,7 +332,6 @@ typedef struct decl
   int storespec;
   ctype ct;
 
-  enum storeloc loc; // local or global
 
   // int isconst;
   // int isvolat;
@@ -334,7 +340,7 @@ typedef struct decl
   // int lval; // TODO
 
   struct init *init; // e.g. {1,2, {3,4,5}}
-  void *fundef; // TODO
+  struct fundef *fundef; // TODO
 
 } decl;
 

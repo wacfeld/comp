@@ -2299,6 +2299,11 @@ decl * parsedecl(token *toks)
     assert(tmlen >= 2);
     assert(dcl->ct->gen.type == TM_FUNC);
 
+    // put the range of the whole function definition into fd
+    struct fundef fd;
+    fd.toks = toks;
+    fd.lo = i;
+
     // find matching brace
     int bracedep = 0;
     do
@@ -2310,16 +2315,13 @@ decl * parsedecl(token *toks)
 
       i++;
     } while(bracedep > 0);
-    
-    // TODO parse compound statement
-    
+
+    fd->hi = i; // therefore hi is exclusive, not inclusive
+    decl.fundef = fd;
 
     free(specs); // end of declaration group
     specs = NULL;
 
-    // TODO: duh
-    // int temp;
-    // dcl->fundef = &temp;
     return dcl;
   }
   else
@@ -3871,8 +3873,8 @@ char *resnasm(int size)
 
 
 // prefix for act as namespaces to avoid conflicting with each other and builtin features of nasm
-char ident_pre[] = "var_";
-char function_pre[] = "fun_";
+char ident_pre[] = "ident_";
+// char function_pre[] = "fun_";
 
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp";
@@ -3916,7 +3918,8 @@ void proctoplevel(token *toks)
 
     // we do not allow top-level storage class specs, because this implementation does not support multiple translation units. linkage is irrelevant
     assert(d->storespec == NOSPEC);
-    // technically extern also has a purpose within a translation unit, but i don't want to implement it
+
+    // this implementation does not support static or extern at all, for the moment.
 
     if(d->storespec == K_TYPEDEF)
     {
@@ -3933,7 +3936,7 @@ void proctoplevel(token *toks)
     if(d->fundef) // if fundef, parse now
     {
       // start function
-      multiapp(codeseg, &cs_len, 4, function_pre, d->ident, ":\n", create_sframe);
+      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
       // parse whatever
 
       // turn into assembly
