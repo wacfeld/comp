@@ -515,6 +515,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^int (*f);$/;"	v
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -775,6 +776,8 @@ parseunaryexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^ex
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
+peek	datastruct.c	/^void peek(stack *s, void *m)$/;"	f
+pop	datastruct.c	/^void pop(stack *s, void *m)$/;"	f
 proctokens	main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
 proctokens	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
 proctoplevel	main.c	/^void proctoplevel(token *toks)$/;"	f
@@ -782,6 +785,7 @@ proctypespecs	main.c	/^int proctypespecs(set *ts)$/;"	f
 proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
 ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon32	typeref:struct:__anon32::__anon34
+push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
 putctype	main.c	/^void putctype(ctype ct)$/;"	f
 putctype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putctype(ctype *ct)$/;"	f
 putd	dcl/main.c	16;"	d	file:

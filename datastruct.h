@@ -14,6 +14,9 @@ typedef set stack; // idem
 // lists tend to be used when we are reading data and don't know the length yet. they are clumsy to use because of the variable type size, so after everything is read, it should be converted to a more direct data type (e.g. makelist(sizeof(int)) -> int *)
 
 stack *makestack(int size);
+void peek(stack *s, void *m);
+void pop(stack *s, void *m);
+void push(stack *s, void *m);
 
 set *makeset(int size);
 int setins(set *s, void * m);

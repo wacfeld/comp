@@ -1,5 +1,7 @@
 all: main.c
 	cc main.c datastruct.c -o main -g -pg
+warn: main.c
+	cc main.c datastruct.c -o main -g -pg -Wextra -Wall
 test: test.c
 	gcc test.c -o test -ansi -pedantic -Wextra -Wall
 disas:

@@ -197,9 +197,29 @@ void intsetins(set *s, int x)
 
 stack *makestack(int size)
 {
-  stack *s = malloc(sizeof(stack));;
-  s->max = 10;
-  s->cont = malloc(size * s->max);
-  s->size = size;
-  s->n = 0;
+  return makeset(size);
+}
+
+void push(stack *s, void *m)
+{
+  // resize if necessary
+  if(s->n >= s->max)
+  {
+    s->max *= 2;
+    s->cont = realloc(s->cont, s->max * s->size);
+  }
+
+  memcpy(s->cont + s->n * s->size, m, s->size);
+  s->n += 1;
+}
+
+void pop(stack *s, void *m)
+{
+  s->n -= 1;
+  memcpy(m, s->cont + s->n * s->size, s->size);
+}
+
+void peek(stack *s, void *m)
+{
+  memcpy(m, s->cont + (s->n-1) * s->size, s->size);
 }

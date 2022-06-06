@@ -1921,6 +1921,7 @@ int dtsize(int dt)
     case FLOAT_T: return FLOAT_SIZE;
     case DUB_T: return FLOAT_SIZE;
     case LDUB_T: return FLOAT_SIZE;
+    default: assert(!"invalid dattype"); return -1;
   }
 }
 
@@ -2727,6 +2728,11 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
 
     // recurse
     return iscompat(ct1+1, ct2+1, qualmode);
+  }
+  else
+  {
+    assert(!"impossible!");
+    return 0;
   }
 }
 
@@ -3843,9 +3849,16 @@ char ident_pre[] = "var_";
 void proctoplevel(token *toks)
 {
   // allocate list of decls
-  alloc(decl *, alldecls, dsize, dn);
+  // alloc(decl *, alldecls, dsize, dn);
 
-  // LEH stack stack stack
+  // create a stack of decls to be in scope
+  stack *scope = makestack(sizeof(decl *));
+
+  // NULL is a scope separator. it tells us where blocks start, which allows inner identifiers to cover 'hide' outer ones
+  // this initial NULL is there for convenience
+  void *null = NULL;
+  push(scope, &null);
+  
   // allocate segment buffers (code, data, bss)
   int cs_len, ds_len, bs_len;
   cs_len = ds_len = bs_len = 100;
@@ -3892,30 +3905,35 @@ void proctoplevel(token *toks)
 
     // search previous declarations for the same identifier
     int merged = 0;
-    for(int i = 0; i < dn; i++)
+    putd(scope->n);
+    decl **scopearr = (decl **) scope->cont; // extract list from scope stack
+    for(int i = 0; i < scope->n; i++)
     {
-      if(streq(alldecls[i]->ident, d->ident)) // same ident
+      if(!scopearr[i]) // skip separators
+        continue;
+
+      if(streq(scopearr[i]->ident, d->ident)) // same ident
       {
         // check same type
-        assert(iscompat(alldecls[i]->ct, d->ct, QM_STRICT));
+        assert(iscompat(scopearr[i]->ct, d->ct, QM_STRICT));
 
         // check that the inits/fundefs don't conflict, then merge
         if(d->fundef) // function def
         {
-          assert(!alldecls[i]->fundef); // must be unique
+          assert(!scopearr[i]->fundef); // must be unique
 
-          alldecls[i]->fundef = d->fundef;
+          scopearr[i]->fundef = d->fundef;
         }
         if(d->init) // initialized
         {
-          assert(!alldecls[i]->init); // musn't be prior initialization in this case
+          assert(!scopearr[i]->init); // musn't be prior initialization in this case
 
-          alldecls[i]->init = d->init;
+          scopearr[i]->init = d->init;
         }
 
         // merge types
-        ctype newct = makecompos(alldecls[i]->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
-        alldecls[i]->ct = newct;
+        ctype newct = makecompos(scopearr[i]->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
+        scopearr[i]->ct = newct;
         
         // indicate the decl already exists
         merged = 1;
@@ -3926,15 +3944,21 @@ void proctoplevel(token *toks)
 
     if(!merged) // it's the first occurrence, write into alldecls
     {
-      resize(alldecls, dsize, dn);
-      alldecls[dn++] = d;
+      // resize(alldecls, dsize, scope->n);
+      // alldecls[scope->n++] = d;
+      push(scope, &d);
     }
   }
 
+  decl **scopearr = (decl **) scope->cont; // extract list from scope stack
   // run through a second time, this time allocating storage, initializing, etc.
-  for(int i = 0; i < dn; i++)
+  for(int i = 0; i < scope->n; i++)
   {
-    d = alldecls[i];
+    d = scopearr[i];
+
+    if(!d) // skip separators
+      continue;
+
     if(d->ct->gen.type == TM_FUNC) // function decl, nothing to initialize
     {
       continue;
