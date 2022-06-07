@@ -1,8 +1,40 @@
 	.file	"test.c"
 	.text
-	.globl	g
-	.type	g, @function
-g:
+	.data
+	.align 2
+	.type	.Lubsan_type0, @object
+	.size	.Lubsan_type0, 10
+.Lubsan_type0:
+	.value	0
+	.value	11
+	.string	"'int'"
+	.align 2
+	.type	.Lubsan_type1, @object
+	.size	.Lubsan_type1, 14
+.Lubsan_type1:
+	.value	0
+	.value	11
+	.string	"'int [5]'"
+	.section	.rodata
+.LC0:
+	.string	"test.c"
+	.section	.data.rel.local,"aw"
+	.align 32
+	.type	.Lubsan_data0, @object
+	.size	.Lubsan_data0, 32
+.Lubsan_data0:
+	.quad	.LC0
+	.long	10
+	.long	18
+	.quad	.Lubsan_type1
+	.quad	.Lubsan_type0
+	.section	.rodata
+.LC1:
+	.string	"%d\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -11,66 +43,34 @@ g:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$14, -4(%rbp)
-	nop
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE0:
-	.size	g, .-g
-	.globl	f
-	.type	f, @function
-f:
-.LFB1:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
 	subq	$32, %rsp
-	movl	$6, -20(%rbp)
-	movl	$7, -16(%rbp)
-	movl	$8, -12(%rbp)
-	cmpl	$7, -16(%rbp)
-	jne	.L3
-	movl	$9, -4(%rbp)
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	movl	$1, -32(%rbp)
+	movl	$2, -28(%rbp)
+	movl	$3, -24(%rbp)
+	movl	$4, -20(%rbp)
+	movl	$5, -16(%rbp)
+	movq	$-1, %rsi
+	leaq	.Lubsan_data0(%rip), %rdi
+	call	__ubsan_handle_out_of_bounds@PLT
+	movl	-36(%rbp), %eax
+	movl	%eax, %esi
+	leaq	.LC1(%rip), %rdi
 	movl	$0, %eax
-	call	g
-	jmp	.L4
+	call	printf@PLT
+	movl	$0, %eax
+	movq	-8(%rbp), %rdx
+	xorq	%fs:40, %rdx
+	je	.L3
+	call	__stack_chk_fail@PLT
 .L3:
-	movl	$10, -8(%rbp)
-	movl	$0, %eax
-	call	g
-.L4:
-	movl	$0, %eax
-	call	g
-	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE1:
-	.size	f, .-f
-	.globl	main
-	.type	main, @function
-main:
-.LFB2:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$0, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE2:
+.LFE0:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits

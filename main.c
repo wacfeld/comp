@@ -2846,6 +2846,12 @@ int eistm(expr *e, int t)
   return e->ct->gen.type == t;
 }
 
+// returns a typemod list of one element which is a dt
+ctype makedt(int dt)
+{
+  
+}
+
 // expr is dattype
 int eisdt(expr *e, int dt)
 {
@@ -3294,7 +3300,9 @@ expr *parselorexpr(link *start)
   here();
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
-  return parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
+
+  expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
+  
 }
 
 expr *parselandexpr(link *start)

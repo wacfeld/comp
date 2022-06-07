@@ -459,10 +459,10 @@ cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
+cont	defs.h	/^    dword cont;$/;"	m	struct:__anon1::__anon7
 cont	defs.h	/^    enum atom_type cont;$/;"	m	struct:__anon1::__anon9	typeref:enum:__anon1::__anon9::atom_type
 cont	defs.h	/^    float cont;$/;"	m	struct:__anon1::__anon8
 cont	defs.h	/^    int cont;$/;"	m	struct:__anon1::__anon3
-cont	defs.h	/^    u_int32_t cont;$/;"	m	struct:__anon1::__anon7
 cont	defs.h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon17
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon19::__anon22
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *cont;$/;"	m	struct:__anon19::__anon23
@@ -524,6 +524,9 @@ findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floating;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon26
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined$/;"	m
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined$/;"	m
+fsanitize	Makefile	/^	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitize=undefined$/;"	m
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
 fundef	defs.h	/^  struct stat *fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::stat
@@ -693,6 +696,7 @@ main	unused/test2.s	/^main:$/;"	l
 makecast	main.c	/^expr *makecast(ctype ct, expr *e)$/;"	f
 makecompos	main.c	/^ctype makecompos(ctype ct1, ctype ct2, int qualmode)$/;"	f
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
+makedt	main.c	/^ctype makedt(int dt)$/;"	f
 makedtcast	main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f

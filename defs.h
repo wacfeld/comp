@@ -97,7 +97,7 @@ typedef union
   struct
   {
     tok_type type;
-    u_int32_t cont;
+    dword cont;
     int islong;
     int isunsigned;
     int isdecimal;

@@ -6,13 +6,8 @@
 
 int main()
 {
-  int *x;
-  int y = 5;
-  int *z;
-  y++;
-  if(y+x == z)
-  {
-    putd(5);
-  }
+  int x = 5;
+  int y = 31;
+  printf("%d\n",x << y);
   return 0;
 }
