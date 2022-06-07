@@ -1,0 +1,33 @@
+|----------------+---------------------------------------------|
+| op             | constraints                                 |
+|----------------+---------------------------------------------|
+| lor            | both scalar                                 |
+|----------------+---------------------------------------------|
+| land           | both scalar                                 |
+|----------------+---------------------------------------------|
+| or             | both integral                               |
+|----------------+---------------------------------------------|
+| xor            | both integral                               |
+|----------------+---------------------------------------------|
+| and            | both integral                               |
+|----------------+---------------------------------------------|
+| eq &c.         | both arithmetic                             |
+|                | both pointers to compat (nocare)            |
+|                | pointer and pointer to void                 |
+|                | pointer and nullptr constant                |
+|----------------+---------------------------------------------|
+| rel            | both arithmetic                             |
+|                | both pointers to compat object (nocare)     |
+|                | both pointers to compat incomplete (nocare) |
+|----------------+---------------------------------------------|
+| shift          | both integral                               |
+|----------------+---------------------------------------------|
+| additive       | both arithmetic                             |
+|                | both pointers to compat object (nocare)     |
+|                | one pointer to object, one integral         |
+|----------------+---------------------------------------------|
+| multiplicative | both arithmetic                             |
+|                | for modulo, both integral                   |
+|----------------+---------------------------------------------|
+
+

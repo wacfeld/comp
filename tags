@@ -495,6 +495,7 @@ destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp";$/;"	v
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
+dword	defs.h	/^typedef u_int32_t dword; \/\/ double word, 32 bits, which can hold all primitive types in this implementation$/;"	t
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 e	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  expr *e;$/;"	m	struct:init
 eisdt	main.c	/^int eisdt(expr *e, int dt)$/;"	f
@@ -938,7 +939,6 @@ unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	test.c	/^int x = 5;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f

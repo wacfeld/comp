@@ -504,7 +504,7 @@ whitespace:
       }
 
       // we either don't check for overflows or do so later
-      u_int32_t num = 0;
+      dword num = 0;
 
       // assert(tolower(str[1]) != 'x' || str[2] != 0); // if there's an x, then the string can't just terminate right after the x
 

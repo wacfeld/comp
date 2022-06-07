@@ -60,6 +60,7 @@ enum atom_type {/*FCALL, ARRIND,*/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS,
 typedef enum tok_type tok_type;
 typedef enum int_len int_len;
 
+typedef u_int32_t dword; // double word, 32 bits, which can hold all primitive types in this implementation
 
 typedef union
 {

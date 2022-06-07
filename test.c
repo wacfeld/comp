@@ -6,11 +6,13 @@
 
 int main()
 {
-  int x = 6;
+  int *x;
+  int y = 5;
+  int *z;
+  y++;
+  if(y+x == z)
   {
-    extern int x;
-  putd(x);
+    putd(5);
   }
   return 0;
 }
-int x = 5;
