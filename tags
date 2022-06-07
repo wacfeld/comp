@@ -876,6 +876,8 @@ strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 testerr	main.c	22;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
+tisatom	main.c	/^int tisatom(token t, enum atom_type a)$/;"	f
+tiskeyword	main.c	/^int tiskeyword(token t, enum keyword k)$/;"	f
 tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f
 tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon28
 tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon28

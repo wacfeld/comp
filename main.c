@@ -1317,9 +1317,17 @@ int iskeyword(token *t, enum keyword k)
 {
   return t != NULL && t->gen.type == KEYWORD && t->keyword.cont == k;
 }
+int tiskeyword(token t, enum keyword k)
+{
+  return t.gen.type == KEYWORD && t.keyword.cont == k;
+}
 int isatom(token *t, enum atom_type a)
 {
   return t != NULL && t->gen.type == ATOM && t->atom.cont == a;
+}
+int tisatom(token t, enum atom_type a)
+{
+  return t.gen.type == ATOM && t.atom.cont == a;
 }
 
 int lisop(link *l, int o)
@@ -2316,7 +2324,7 @@ decl * parsedecl(token *toks)
       i++;
     } while(bracedep > 0);
 
-    fd->hi = i; // therefore hi is exclusive, not inclusive
+    fd->hi = i-1; // therefore hi is inclusize, not exclusive
     dcl->fundef = fd;
 
     free(specs); // end of declaration group
@@ -4061,7 +4069,99 @@ void proctoplevel(token *toks)
 
 char *parsestat(struct stat *stat, stack *scope)
 {
+  int lo = stat->lo;
+  int hi = stat->hi;
+  token *toks = stat->toks;
+  int toklen = lo - hi + 1;
+
+  assert(toklen >= 1); // no empty statements
+
+  // labeled statements
+  // case label
+  if(tiskeyword(toks[lo], K_CASE))
+  {
+    // TODO only in switch. need to pass information downward.
+  }
+
+  // default label
+  if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
+  {
+    
+  }
+
+  // regular label
+  if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
+  {
+    
+  }
+
+
+  // compound statement
+  if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
+  {
+    
+  }
+
+
+  // selection statements
+  // if
+  if(tiskeyword(toks[lo], K_IF))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+  // TODO if-else form
+
+  // switch
+  if(tiskeyword(toks[lo], K_SWITCH))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
+
+  // iteration statements
+  // while
+  if(tiskeyword(toks[lo], K_WHILE))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
+  // do/while
+  if(tiskeyword(toks[lo], K_DO))
+  {
+    
+  }
+
+  // for
+  if(tiskeyword(toks[lo], K_FOR))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
   
+  // jump statements
+  // goto
+  if(tiskeyword(toks[lo], K_GOTO))
+  {
+    
+  }
+
+  // continue
+  if(tiskeyword(toks[lo], K_CONTINUE))
+  {
+    
+  }
+
+  // braek
+  if(tiskeyword(toks[lo], K_BREAK))
+  {
+    
+  }
+  
+  // return
+  if(tiskeyword(toks[lo], K_RETURN))
+  {
+    
+  }
 }
 
 ///}}}
