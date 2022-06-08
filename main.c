@@ -3744,6 +3744,8 @@ expr *parseunaryexpr(link *start)
   // sizeof
   else if(lisatom(start, SIZEOF))
   {
+    // type checks are performed already in sizeoftype
+
     // puts("hi");
     testerr(start->right, "parseunaryexpr: sizeof has no argument");
     // puts("hi");
@@ -3761,6 +3763,7 @@ expr *parseunaryexpr(link *start)
       e->ct = ct;
 
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+      newe->ct = makedt(INT_T);
 
       return newe;
     }
@@ -3772,7 +3775,9 @@ expr *parseunaryexpr(link *start)
       expr *e = parseunaryexpr(start->right);
       if(!e) return NULL;
       e->ct = NULL;
+
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+      newe->ct = makedt(INT_T);
 
       return newe;
     }
