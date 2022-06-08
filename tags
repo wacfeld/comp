@@ -518,6 +518,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^int f(const int x)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -618,6 +619,7 @@ islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon25
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon26
 ismodifiable	main.c	/^int ismodifiable(ctype ct)$/;"	f
+isobject	main.c	/^int isobject(ctype ct)$/;"	f
 isptr	main.c	/^int isptr(ctype ct)$/;"	f
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
@@ -723,7 +725,6 @@ nline	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	33;"	d
 np	defs.h	/^    int np; \/\/ number of params$/;"	m	struct:__anon10::__anon14
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 numargs	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
-object	main.c	/^int object(ctype ct)$/;"	f
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
 optype	defs.h	/^enum optype$/;"	g
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int optype;$/;"	m	struct:expr

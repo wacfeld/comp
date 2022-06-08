@@ -2161,8 +2161,6 @@ decl *getdeclspecs(token *toks, int *i)
   return dcl;
 }
 
-link *nexttoplevel(link *start, int dir, int num, int *atoms);
-expr *parseasgnexpr(link *start);
 
 struct init *parseinit(link *start)
 {
@@ -2598,7 +2596,7 @@ int incomplete(ctype ct)
   return 0;
 }
 
-int object(ctype ct)
+int isobject(ctype ct)
 {
   return (!incomplete(ct)) && (!tmis(ct, TM_FUNC));
 }
@@ -3928,6 +3926,32 @@ expr *parsepostexpr(link *start)
       // printf("%p\n", start->left);
 
       expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
+
+      ctype ct1 = newe->args[0]->ct;
+      ctype ct2 = newe->args[1]->ct;
+      // first arg:
+      assert(isptr(ct1)); // pointer
+      assert(tmis(ct1+1, TM_FUNC)); // to function
+      assert(ctisdt(ct1+2, VOID_T) // returning void
+          || (isobject(ct1+2) && !tmis(ct1+2, TM_ARR))); // or object type other than array type
+
+      // check function prototype (params) against args
+      int np = ct1[1].func.np;
+      if(np == -1) ; // unspecified params, let through
+      else
+      {
+        assert(e2->numargs == np); // same number of args
+        for(int i = 0; i < np; i++)
+        {
+          decl *p = ct1[1].func.params + i;
+
+          // types must agree as if by assignment (superset)
+          assert(iscompat(p->ct, e2->args[i]->ct, QM_SUPERSET));
+        }
+      }
+
+      newe->ct = ct1 + 2; // * fun ret -> ret
+      
       return newe;
     }
   }
@@ -3955,7 +3979,7 @@ expr *parsepostexpr(link *start)
     if(isptr(ct1) && isintegral(ct2))
     {
       // must be object type
-      assert(object(ct+1));
+      assert(isobject(ct+1));
 
       newe->ct = ct1+1;
       newe->lval = 1;
@@ -3963,7 +3987,7 @@ expr *parsepostexpr(link *start)
 
     else if(isintegral(ct1) && isptr(ct2))
     {
-      assert(object(ct+1));
+      assert(isobject(ct+1));
 
       newe->ct = ct2+1;
       newe->lval = 1;

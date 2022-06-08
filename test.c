@@ -5,10 +5,15 @@
 #include <alloca.h>
 #include <stddef.h>
 
+int f(const int x)
+{
+  x++;
+  return x;
+}
 
 int main()
 {
-  char x[5][6];
-  1+x;
+  putd(f(6));
   return 0;
 }
+

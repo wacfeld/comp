@@ -635,6 +635,7 @@ char *hrdt[] =
 enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};
 
 
+link *nexttoplevel(link *start, int dir, int num, int *atoms);
 expr *parseexpr(link *start);
 expr *parseasgnexpr(link *start);
 expr *parsecondexpr(link *start);
