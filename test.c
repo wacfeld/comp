@@ -8,6 +8,6 @@
 
 int main()
 {
-  putd(sizeof(ptrdiff_t));
+  int x = (void) 1;
   return 0;
 }

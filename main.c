@@ -3603,6 +3603,12 @@ expr *parsecastexpr(link *start)
     ctype ct = parsetypename(start->right);
     expr *e = parsecastexpr(cl->right);
     if(!e) return NULL;
+
+    // cast type must be scalar type or void
+    assert(ctisdt(ct, VOID_T) || isscalar(ct));
+
+    // cast target must be scalar
+    assert(isscalar(e->ct));
     
     expr *newe = makecast(ct, e);
     return newe;
