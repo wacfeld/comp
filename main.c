@@ -2806,7 +2806,8 @@ expr *intprom(expr *e)
   // if(tmis(ct, TM_DAT)) // must be direct data to be integral
 
   // must be integral
-  assert(isintegral(ct));
+  // assert(isintegral(ct));
+  // we leave it to other functions to check this because eu.x. unary + - do integral promotion on arithmetic type, which could be floating
 
   int dt = ct->dat.dt;
 
@@ -3666,6 +3667,8 @@ expr *parseunaryexpr(link *start)
 
     ctype ct = e->ct;
 
+    expr *newe = makeexpr(UNAR_E, optype, 1, e);
+
     // type checking
     // &
     if(optype == ADDR_O)
@@ -3678,17 +3681,62 @@ expr *parseunaryexpr(link *start)
       // TODO no register storeclass in declaration
       else assert(!"parseunaryexpr: bad type");
 
-          
+      // newct is pointer to ct
+      int len = getctlen(ct);
+      ctype newct = calloc(len + 1, sizeof(typemod));
+      memcpy(newct + 1, ct, len * sizeof(typemod));
+      newct->gen.type == TM_PTR;
+
+      newe->ct = newct;
     }
 
     // *
     else if(optype == POINT_O)
     {
       assert(isptr(ct));
+      
+      // assert(tmis(ct+1, TM_FUNC) || incomplete(ct+1));
+      
+      // result is lvalue
+      newe->lval = 1;
+      newe->ct = ct+1; // pointer to type -> type
     }
-    
-    expr *newe = makeexpr(UNAR_E, optype, 1, e);
 
+    // + -
+    else if(optype == UPLUS_O || optype == UMIN_O)
+    {
+      // arithmetic
+      assert(isarith(ct));
+
+      // perform integral promotion
+      newe->args[0] = intprom(newe->args[0]);
+
+      // inherit promoted
+      newe->ct = newe->args[0]->ct;
+    }
+
+    // ~
+    else if(optype == BNOT_O)
+    {
+      // integral
+      assert(isintegral(ct));
+
+      // intprom
+      newe->args[0] = intprom(newe->args[0]);
+
+      // inherit promoted
+      newe->ct = newe->args[0]->ct;
+    }
+
+    // !
+    else if(optype == LNOT_O)
+    {
+      // scalar
+      assert(isscalar(ct));
+
+      // result is int
+      newe->ct = makedt(INT_T);
+    }
 
     return newe;
   }
