@@ -659,6 +659,8 @@ expr *parseprimexpr(link *start);
 
 decl *getdeclspecs(token *toks, int *i);
 
+int tmis(typemod *tm, int type);
+
 int validct(ctype ct);
 int incomplete(ctype ct);
 int ctisdt(ctype ct, int dt);

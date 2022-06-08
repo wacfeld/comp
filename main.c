@@ -3707,7 +3707,7 @@ expr *parseunaryexpr(link *start)
       // result is lvalue, if not func
       
       // if not pointing to function and not incomplete (object), then lvalue
-      if(!tmis(ct1+1, TM_FUNC) && !incomplete(ct1+1))
+      if(!tmis(ct+1, TM_FUNC) && !incomplete(ct+1))
       {
         newe->lval = 1;
       }
@@ -3997,7 +3997,7 @@ expr *parsepostexpr(link *start)
     if(isptr(ct1) && isintegral(ct2))
     {
       // must be object type
-      assert(isobject(ct+1));
+      assert(isobject(ct1+1));
 
       newe->ct = ct1+1;
       newe->lval = 1;
@@ -4005,7 +4005,7 @@ expr *parsepostexpr(link *start)
 
     else if(isintegral(ct1) && isptr(ct2))
     {
-      assert(isobject(ct+1));
+      assert(isobject(ct2+1));
 
       newe->ct = ct2+1;
       newe->lval = 1;
