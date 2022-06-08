@@ -2503,6 +2503,10 @@ int isvolat(ctype ct)
 int ismodifiable(ctype ct)
 {
   // we only look at the first in the typemod list
+
+  // incomplete type
+  if(incomplete(ct))
+    return 0;
   
   // direct data, must not be qualified with const
   if(ct->gen.type == TM_DAT)
@@ -2592,6 +2596,11 @@ int incomplete(ctype ct)
     return 1;
 
   return 0;
+}
+
+int object(ctype ct)
+{
+  return (!incomplete(ct)) && (!tmis(ct, TM_FUNC));
 }
 
 // disallows int arr[5][] and similar things (array of incomplete type)
@@ -3697,8 +3706,13 @@ expr *parseunaryexpr(link *start)
       
       // assert(tmis(ct+1, TM_FUNC) || incomplete(ct+1));
       
-      // result is lvalue
-      newe->lval = 1;
+      // result is lvalue, if not func
+      
+      // if not pointing to function and not incomplete (object), then lvalue
+      if(!tmis(ct1+1, TM_FUNC) && !incomplete(ct1+1))
+      {
+        newe->lval = 1;
+      }
       newe->ct = ct+1; // pointer to type -> type
     }
 
@@ -3932,7 +3946,35 @@ expr *parsepostexpr(link *start)
     expr *e2 = parseexpr(start->left);
     if(!e2) return NULL;
 
-    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);    return newe;
+    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
+
+    ctype ct1 = e1->ct;
+    ctype ct2 = e2->ct;
+
+    // one pointer to object, other integral
+    if(isptr(ct1) && isintegral(ct2))
+    {
+      // must be object type
+      assert(object(ct+1));
+
+      newe->ct = ct1+1;
+      newe->lval = 1;
+    }
+
+    else if(isintegral(ct1) && isptr(ct2))
+    {
+      assert(object(ct+1));
+
+      newe->ct = ct2+1;
+      newe->lval = 1;
+    }
+
+    else
+    {
+      assert(!"parsepostexpr, ARR_O: bad types");
+    }
+    
+    return newe;
   }
 
   else // primary expr
