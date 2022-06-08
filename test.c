@@ -3,16 +3,11 @@
 #define putd(x) printf(#x ": %d\n", x)
 #include <stdlib.h>
 #include <alloca.h>
+#include <stddef.h>
 
 
 int main()
 {
-  int y = 5;
-  int x[y];
-  int i;
-  for(i = 0; i < 6; i++)
-  {
-    putd(x[i]);
-  }
+  putd(sizeof(ptrdiff_t));
   return 0;
 }

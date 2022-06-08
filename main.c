@@ -2759,6 +2759,11 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
   }
 }
 
+int isptr(ctype ct)
+{
+  return ct->gen.type == TM_PTR;
+}
+
 int tmis(typemod *tm, int type)
 {
   return tm->gen.type == type;
@@ -3441,13 +3446,14 @@ expr *parseshiftexpr(link *start)
   expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
 
   // both integral
-  assert(isintegral(newe->args[0], newe->args[1]));
+  assert(isintegral(newe->args[0]));
+  assert(isintegral(newe->args[1]));
 
   // perform integral promotions
   newe->args[0] = intprom(newe->args[0]);
   newe->args[1] = intprom(newe->args[1]);
 
-  // inheret type from left promoted arg
+  // inherit type from left promoted arg
   newe->ct = newe->args[0]->ct;
 
   return newe;
@@ -3470,11 +3476,68 @@ expr *parseaddexpr(link *start)
     // both arithmetic
     if(isarith(ct1) && isarith(ct2))
     {
-      
+      usualarith(&newe->args[0], &newe->args[1]);
+
+      newe->ct = newe->args[0]->ct;
     }
 
-    if(tmis(ct1, 
-          }
+    // both pointer to compat object
+    else if(isptr(ct1) && isptr(ct2) && iscompat(ct1+1, ct2+2, QM_NOCARE))
+    {
+      // must be objects, not incomplete
+      assert(!incomplete(ct1+1));
+      assert(!incomplete(ct2+1));
+
+      newe->ct = makedt(INT_T); // no ptrdiff_t in this implementation, just int (32 bits)
+    }
+
+    // pointer (to object) minus integral
+    else if(isptr(ct1) && isintegral(ct1))
+    {
+      // must be object, not incomplete
+      assert(!incomplete(ct1+1));
+
+      // inherit type of pointer
+      newe->ct = ct1;
+    }
+
+    else
+    {
+      assert(!"parseaddexpr, SUB_O: bad types");
+    }
+  }
+
+  else if(newe->optype == ADD_O)
+  {
+    // both arithmetic
+    if(isarith(ct1) && isarith(ct2))
+    {
+      usualarith(&newe->args[0], &newe->args[1]);
+
+      newe->ct = newe->args[0]->ct;
+    }
+
+    // one integral, one pointer to object
+    else if(isintegral(ct1) && isptr(ct2))
+    {
+      assert(!incomplete(ct2+1));
+
+      // inherit type of pointer
+      newe->ct = ct2;
+    }
+    else if(isptr(ct1) && isintegral(ct2))
+    {
+      assert(!incomplete(ct1+1));
+
+      // inherit type of pointer
+      newe->ct = ct1;
+    }
+
+    else
+    {
+      assert(!"parseaddexpr, ADD_O: bad types");
+    }
+  }
 
   return newe;
 }
@@ -3485,6 +3548,26 @@ expr *parsemultexpr(link *start)
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
+
+  ctype ct1 = newe->args[0]->ct;
+  ctype ct2 = newe->args[1]->ct;
+
+  // must both be arithmetic
+  assert(isarith(ct1));
+  assert(isarith(ct2));
+  
+  // if mod, must both be integral
+  if(newe->optype == MOD_O)
+  {
+    assert(isintegral(ct1));
+    assert(isintegral(ct2));
+  }
+
+  // perform UAC
+  usualarith(&newe->args[0], &newe->args[1]);
+
+  // inherit type
+  newe->ct = newe->args[0]->ct;
   
   return newe;
 }

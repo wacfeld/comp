@@ -620,6 +620,7 @@ islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon25
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon26
 ismodifiable	main.c	/^int ismodifiable(ctype ct)$/;"	f
+isptr	main.c	/^int isptr(ctype ct)$/;"	f
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
