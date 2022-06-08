@@ -8,6 +8,8 @@
 
 int main()
 {
-  int x = (void) 1;
+  char x = 5;
+  putd(sizeof(x+1));
+  putd(sizeof(x++));
   return 0;
 }

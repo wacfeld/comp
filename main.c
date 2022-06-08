@@ -3650,6 +3650,7 @@ expr *parseunaryexpr(link *start)
   else if(lisatom(start, BITNOT)) optype = BNOT_O;
   else if(lisatom(start, LOGNOT)) optype = LNOT_O;
 
+  // &, *, +, -, ~, !
   if(lisunaryop(start))
   {
     // here();
@@ -3662,11 +3663,37 @@ expr *parseunaryexpr(link *start)
     expr *e = parsecastexpr(start->right);
     // testerr(e, "parseunaryexpr: null castexpr below unary op");
     if(!e) return NULL;
+
+    ctype ct = e->ct;
+
+    // type checking
+    // &
+    if(optype == ADDR_O)
+    {
+      // must be one of the following, or error:
+      // function designater
+      if(tmis(ct, TM_FUNC)) ;
+      // lvalue, object, not register
+      else if(e->lval && !incomplete(ct)) ;
+      // TODO no register storeclass in declaration
+      else assert(!"parseunaryexpr: bad type");
+
+          
+    }
+
+    // *
+    else if(optype == POINT_O)
+    {
+      assert(isptr(ct));
+    }
+    
     expr *newe = makeexpr(UNAR_E, optype, 1, e);
+
 
     return newe;
   }
 
+  // sizeof
   else if(lisatom(start, SIZEOF))
   {
     // puts("hi");
@@ -3703,12 +3730,29 @@ expr *parseunaryexpr(link *start)
     }
   }
 
+  // ++, --
   else if(optype == PREINC_O || optype == PREDEC_O)
   {
     start->right->left = NULL;
     expr *e = parseunaryexpr(start->right);
     if(!e) return NULL;
+
+    // modifiable lvalue
+    assert(e->lval);
+    assert(ismodifiable(e->ct));
+
+    // scalar
+    assert(isscalar(e->ct));
+    
     expr *newe = makeexpr(UNAR_E, optype, 1, e);
+    newe->ct = e->ct; // inherit type
+
+    // note that integral promotion does not occur. consider
+    /*
+  char x = 5;
+  putd(sizeof(x+1)); // sizeof(int)
+  putd(sizeof(x++)); // 1
+    */ 
 
     return newe;
   }
