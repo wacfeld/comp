@@ -3446,8 +3446,8 @@ expr *parseshiftexpr(link *start)
   expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
 
   // both integral
-  assert(isintegral(newe->args[0]));
-  assert(isintegral(newe->args[1]));
+  assert(isintegral(newe->args[0]->ct));
+  assert(isintegral(newe->args[1]->ct));
 
   // perform integral promotions
   newe->args[0] = intprom(newe->args[0]);
