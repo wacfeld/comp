@@ -3870,6 +3870,14 @@ expr *parsepostexpr(link *start)
     if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTINC_O, 1, e);
+
+    e = newe->args[0];
+    assert(e->lval);
+    assert(ismodifiable(e->ct));
+    assert(isscalar(e->ct));
+
+    newe->ct = e->ct;
+    
     return newe;
   }
   if(lisatom(start, DEC)) // a--
@@ -3879,11 +3887,20 @@ expr *parsepostexpr(link *start)
     if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTDEC_O, 1, e);
+
+    e = newe->args[0];
+    assert(e->lval);
+    assert(ismodifiable(e->ct));
+    assert(isscalar(e->ct));
+
+    newe->ct = e->ct;
+    
     return newe;
   }
 
   if(lisatom(start->left, DOT)) // a.b
   {
+    assert(!"structs not supported");
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
     if(!e1) return NULL;
@@ -3896,6 +3913,7 @@ expr *parsepostexpr(link *start)
   }
   if(lisatom(start->left, ARROW)) // a->b
   {
+    assert(!"structs not supported");
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
     if(!e1) return NULL;

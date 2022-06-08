@@ -7,13 +7,12 @@
 
 int f(const int x)
 {
-  x++;
   return x;
 }
 
 int main()
 {
-  putd(f(6));
+  assert(0);
   return 0;
 }
 
