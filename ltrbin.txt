@@ -20,7 +20,7 @@
 |                | both pointers to compat object (nocare)     |             |               |
 |                | both pointers to compat incomplete (nocare) |             |               |
 |----------------+---------------------------------------------+-------------+---------------|
-| shift          | both integral                               | UAC         | promoted left |
+| shift          | both integral                               | int prom    | promoted left |
 |----------------+---------------------------------------------+-------------+---------------|
 | additive       | complicated                                 | complicated | complicated   |
 |                |                                             |             |               |

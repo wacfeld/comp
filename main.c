@@ -2849,7 +2849,10 @@ int eistm(expr *e, int t)
 // returns a typemod list of one element which is a dt
 ctype makedt(int dt)
 {
-  
+  ctype ct = calloc(1, sizeof(typemod));
+  ct->gen.type == TM_DAT;
+  ct->dat.dt = dt;
+  return ct;
 }
 
 // expr is dattype
@@ -2864,6 +2867,7 @@ int ctisdt(ctype ct, int dt)
 }
 
 // if one is dt, make other dt too
+// only used in usualarith()
 int makesametype(expr **e1, expr **e2, int dt)
 {
   if(eisdt(*e1, dt))
@@ -3302,7 +3306,8 @@ expr *parselorexpr(link *start)
   static int op[] = {LOR_O};
 
   expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
-  
+  newe->ct = makedt(INT_T); // type is always int
+  return newe;
 }
 
 expr *parselandexpr(link *start)
@@ -3310,7 +3315,9 @@ expr *parselandexpr(link *start)
   here();
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
-  return parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
+  expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
+  newe->ct = makedt(INT_T);
+  return newe;
 }
 
 expr *parseorexpr(link *start)
@@ -3318,7 +3325,16 @@ expr *parseorexpr(link *start)
   here();
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
-  return parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
+
+  expr *newe = parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
+  
+  // perform UAC on args
+  usualarith(&newe->args[0], &newe->args[1]);
+
+  // copy type of parents
+  newe->ct = newe->args[0]->ct;
+
+  return newe;
 }
 
 expr *parsexorexpr(link *start)
@@ -3326,7 +3342,13 @@ expr *parsexorexpr(link *start)
   here();
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
-  return parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
+
+  expr *newe = parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
+  usualarith(&newe->args[0], &newe->args[1]);
+
+  newe->ct = newe->args[0]->ct;
+
+  return newe;
 }
 
 expr *parseandexpr(link *start)
@@ -3334,7 +3356,12 @@ expr *parseandexpr(link *start)
   here();
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
-  return parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
+  expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
+  usualarith(&newe->args[0], &newe->args[1]);
+
+  newe->ct = newe->args[0]->ct;
+
+  return newe;
 }
 
 expr *parseeqexpr(link *start)
@@ -3342,7 +3369,39 @@ expr *parseeqexpr(link *start)
   here();
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
-  return parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
+  expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
+
+  newe->ct = makedt(INT_T);
+
+  ctype *ct1 = &newe->args[0]->ct;
+  ctype *ct2 = &newe->args[1]->ct;
+
+  // both arithmetic
+  if(isarith(*ct1) && isarith(*ct2))
+  {
+    usualarith(&newe->args[0], &newe->args[1]);
+  }
+
+  // pointers to compatible types
+  else if((*ct1)->gen.type == TM_PTR && (*ct2)->gen.type == TM_PTR && iscompat(*ct1+1, *ct2+1, QM_NOCARE));
+
+  else if((*ct1)->gen.type == TM_PTR && ctisdt(*ct1+1, VOID_T) && (*ct2)->gen.type == TM_PTR)
+  {
+    // cast non void* to void*
+    newe->args[1] = makecast(*ct1, newe->args[1]);
+  }
+  else if((*ct2)->gen.type == TM_PTR && ctisdt(*ct2+1, VOID_T) && (*ct1)->gen.type == TM_PTR)
+  {
+    newe->args[0] = makecast(*ct2, newe->args[0]);
+  }
+
+  // TODO pointer and nullptr constant
+  else
+  {
+    assert(!"parseeqexpr: bad types");
+  }
+
+  return newe;
 }
 
 expr *parserelexpr(link *start)
@@ -3350,7 +3409,28 @@ expr *parserelexpr(link *start)
   here();
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
-  return parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
+  expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
+
+  newe->ct = makedt(INT_T);
+
+  ctype *ct1 = &newe->args[0]->ct;
+  ctype *ct2 = &newe->args[1]->ct;
+
+  // both arithmetic
+  if(isarith(*ct1) && isarith(*ct2))
+  {
+    usualarith(&newe->args[0], &newe->args[1]);
+  }
+
+  // pointers to compatible types
+  else if((*ct1)->gen.type == TM_PTR && (*ct2)->gen.type == TM_PTR && iscompat(*ct1+1, *ct2+1, QM_NOCARE));
+
+  else
+  {
+    assert(!"parserelexpr: bad types");
+  }
+
+  return newe;
 }
 
 expr *parseshiftexpr(link *start)
@@ -3358,7 +3438,19 @@ expr *parseshiftexpr(link *start)
   here();
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
-  return parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
+  expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
+
+  // both integral
+  assert(isintegral(newe->args[0], newe->args[1]));
+
+  // perform integral promotions
+  newe->args[0] = intprom(newe->args[0]);
+  newe->args[1] = intprom(newe->args[1]);
+
+  // inheret type from left promoted arg
+  newe->ct = newe->args[0]->ct;
+
+  return newe;
 }
 
 expr *parseaddexpr(link *start)
@@ -3366,7 +3458,25 @@ expr *parseaddexpr(link *start)
   here();
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
-  return parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
+  expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
+
+  ctype ct1 = newe->args[0]->ct;
+  ctype ct2 = newe->args[1]->ct;
+
+
+  // subtraction:
+  if(newe->optype == SUB_O)
+  {
+    // both arithmetic
+    if(isarith(ct1) && isarith(ct2))
+    {
+      
+    }
+
+    if(tmis(ct1, 
+          }
+
+  return newe;
 }
 
 expr *parsemultexpr(link *start)
@@ -3374,7 +3484,9 @@ expr *parsemultexpr(link *start)
   here();
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
-  return parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
+  expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
+  
+  return newe;
 }
 
 expr *parsecastexpr(link *start)
