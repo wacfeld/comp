@@ -1176,8 +1176,9 @@ void putexpr(expr *e, int space)
 
   if(eistype(e, PRIM_E))
   {
-    // printf(" : ");
+    printf(" : ");
     // puttok(*e->tok);
+    printf("%x", e->dat);
   }
   if(eistype(e, TYPENAME))
   {
@@ -2891,7 +2892,7 @@ int eistm(expr *e, int t)
 ctype makedt(int dt)
 {
   ctype ct = calloc(1, sizeof(typemod));
-  ct->gen.type == TM_DAT;
+  ct->gen.type = TM_DAT;
   ct->dat.dt = dt;
   return ct;
 }
