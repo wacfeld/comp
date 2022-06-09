@@ -22,6 +22,9 @@ char *error;
 // e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
+// the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
+#define contifours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
+
 void puttok(token t);
 
 
@@ -3353,8 +3356,9 @@ expr *parselorexpr(link *start)
   static int op[] = {LOR_O};
 
   expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
-  if(!eistype(newe, LOR_E))
-    return newe;
+  // if(!eistype(newe, LOR_E))
+  //   return newe;
+  contifours(newe, LOR_E);
   
   newe->ct = makedt(INT_T); // type is always int
   return newe;
@@ -3366,8 +3370,9 @@ expr *parselandexpr(link *start)
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
-  if(!eistype(newe, LAND_E))
-    return newe;
+  // if(!eistype(newe, LAND_E))
+  //   return newe;
+  contifours(newe, LAND_E);
   
   newe->ct = makedt(INT_T);
   return newe;
@@ -3380,8 +3385,9 @@ expr *parseorexpr(link *start)
   static int op[] = {BOR_O};
 
   expr *newe = parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
-  if(!eistype(newe, OR_E))
-    return newe;
+  // if(!eistype(newe, OR_E))
+  //   return newe;
+  contifours(newe, OR_E);
   
   
   // perform UAC on args
@@ -3400,8 +3406,9 @@ expr *parsexorexpr(link *start)
   static int op[] = {XOR_O};
 
   expr *newe = parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
-  if(!eistype(newe, XOR_E))
-    return newe;
+  // if(!eistype(newe, XOR_E))
+  //   return newe;
+  contifours(newe, XOR_E);
   
   usualarith(&newe->args[0], &newe->args[1]);
 
@@ -3416,8 +3423,9 @@ expr *parseandexpr(link *start)
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
-  if(!eistype(newe, AND_E))
-    return newe;
+  // if(!eistype(newe, AND_E))
+  //   return newe;
+  contifours(newe, AND_E);
   
   usualarith(&newe->args[0], &newe->args[1]);
 
@@ -3432,8 +3440,9 @@ expr *parseeqexpr(link *start)
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
-  if(!eistype(newe, EQUAL_E))
-    return newe;
+  // if(!eistype(newe, EQUAL_E))
+  //   return newe;
+  contifours(newe, EQUAL_E);
   
 
   newe->ct = makedt(INT_T);
@@ -3475,8 +3484,9 @@ expr *parserelexpr(link *start)
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
-  if(!eistype(newe, RELAT_E))
-    return newe;
+  // if(!eistype(newe, RELAT_E))
+  //   return newe;
+  contifours(newe, RELAT_E);
   
 
   newe->ct = makedt(INT_T);
@@ -3507,8 +3517,9 @@ expr *parseshiftexpr(link *start)
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
-  if(!eistype(newe, SHIFT_E))
-    return newe;
+  // if(!eistype(newe, SHIFT_E))
+  //   return newe;
+  contifours(newe, SHIFT_E);
   
 
   // both integral
@@ -3532,8 +3543,9 @@ expr *parseaddexpr(link *start)
   static int op[] = {ADD_O, SUB_O};
   expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
 
-  if(!eistype(newe, ADD_E))
-    return newe;
+  // if(!eistype(newe, ADD_E))
+  //   return newe;
+  contifours(newe, ADD_E);
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;
@@ -3618,8 +3630,9 @@ expr *parsemultexpr(link *start)
   static int op[] = {MULT_O, DIV_O, MOD_O};
   expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
 
-  if(!eistype(newe, MULT_E))
-    return newe;
+  // if(!eistype(newe, MULT_E))
+  //   return newe;
+  contifours(newe, MULT_E);
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;
@@ -4754,8 +4767,8 @@ int main()
 
   // proctoplevel(toks);
 
-  puts("---");
-  putd(trans_unit->n);
+  // puts("---");
+  // putd(trans_unit->n);
   link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
   expr *e = parseexpr(chain);
