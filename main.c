@@ -1193,7 +1193,7 @@ void putexpr(expr *e, int space)
     else
       printf("0x%08x", e->dat);
   }
-  if(eistype(e, TYPENAME))
+  // if(eistype(e, TYPENAME))
   {
     printf(" : ");
     putctype(e->ct);
@@ -1697,6 +1697,10 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
     }
   }
 
+  // aside from hi==-1, hi < lo indicates we are done
+  if(hi < lo)
+    return hi+1;
+
   // get one typemod then recurse
   typemod *tmod = calloc(1,sizeof(typemod));
 
@@ -1874,6 +1878,8 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
   {
     // moreover, functions are dealt with above, so it must be an array
     assert(abs);
+    putd(lo);
+    putd(hi);
     assert(isatom(toks+lo, BRACKOP));
 
     // find matching bracket
