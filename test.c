@@ -8,7 +8,7 @@
 
 int main()
 {
-#include <stdio.h>
+  putd(sizeof 'a');
   return 0;
 }
 

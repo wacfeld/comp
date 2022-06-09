@@ -237,7 +237,7 @@ LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
 LAND_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  LAND_O,$/;"	e	enum:optype
 LDUB_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LDUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
-LEFT	main.c	32;"	d	file:
+LEFT	main.c	34;"	d	file:
 LEFT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	28;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -332,7 +332,7 @@ QUESTION	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum ato
 REGISTER_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
 RELAT_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  RELAT_E,$/;"	e	enum:expr_type
-RIGHT	main.c	31;"	d	file:
+RIGHT	main.c	33;"	d	file:
 RIGHT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	27;"	d	file:
 SEL_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 SEL_S	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
@@ -454,7 +454,7 @@ character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	type
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
-checkours	main.c	26;"	d	file:
+checkours	main.c	28;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
 cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
@@ -854,7 +854,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1228;"	d	file:
+sever	main.c	1230;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
@@ -886,6 +886,7 @@ strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 testerr	main.c	23;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
+throw	main.c	25;"	d	file:
 tisatom	main.c	/^int tisatom(token t, enum atom_type a)$/;"	f
 tiskeyword	main.c	/^int tiskeyword(token t, enum keyword k)$/;"	f
 tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f

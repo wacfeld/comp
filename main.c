@@ -22,6 +22,8 @@ char *error;
 // e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
+#define throw(msg) {puts(msg);exit(1)}
+
 // the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
 #define checkours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
 
@@ -163,7 +165,7 @@ void unesc(char *src)
       }
       else
       {
-        assert(!"invalid escape sequence");
+        throw("invalid escape sequence");
       }
     }
     else
@@ -504,7 +506,7 @@ whitespace:
           i++;
         }
         else
-          assert(!"invalid integer suffix");
+          throw("invalid integer suffix");
       }
 
       // we either don't check for overflows or do so later
@@ -633,7 +635,7 @@ leaddot:
       return t;
     }
 
-    assert(!"this assert should never run");
+    throw("this assert should never run");
   }
 
   else if(src[i] == '"') // string literal
@@ -1244,7 +1246,7 @@ int corresp(int num, int *a, int *b, int x)
       return b[i];
   }
   // testerr(0, "corresp: x not in a");
-  assert(!"corresp: x not in a");
+  throw("corresp: x not in a");
 }
 
 void etypeadd(expr *e, int type)
@@ -1296,7 +1298,7 @@ token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
     else // expression
     {
       // expression parsing has changed, this should never happen
-      assert(!"links should not contain expression");
+      throw("links should not contain expression");
       // tokl[i++] = *ll->cont.exp->tok;
     }
     ll = ll->right;
@@ -1927,7 +1929,7 @@ int sizeoftype(ctype ct)
   {
     // should not occur under our system
     case TM_IDENT:
-      assert(!"TM_IDENT not allowed outside of initial typemod parsing");
+      throw("TM_IDENT not allowed outside of initial typemod parsing");
       // return helpsizeoftype(dt, tms+1); // not abstract declarator, just skip identifier
 
     case TM_DAT:
@@ -1941,7 +1943,7 @@ int sizeoftype(ctype ct)
       return ct->arr.len * sizeoftype(ct+1);
   }
 
-  assert(!"should not reach here");
+  throw("should not reach here");
 }
 
 // get size of dattype
@@ -1965,7 +1967,7 @@ int dtsize(int dt)
     case FLOAT_T: return FLOAT_SIZE;
     case DUB_T: return FLOAT_SIZE;
     case LDUB_T: return FLOAT_SIZE;
-    default: assert(!"invalid dattype"); return -1;
+    default: throw("invalid dattype"); return -1;
   }
 }
 
@@ -2064,7 +2066,7 @@ int proctypespecs(set *ts)
     else return DUB_T;
   }
 
-  assert(!"should not reach here");
+  throw("should not reach here");
 }
 
 //{{{1 decls
@@ -2610,7 +2612,7 @@ int qualcmp(int c1, int c2, int v1, int v2, int mode)
     return c1 == c2
       && v1 == v2;
 
-  assert(!"invalid qualmode");
+  throw("invalid qualmode");
 }
 
 // check for incomplete types
@@ -2793,7 +2795,7 @@ int iscompat(ctype ct1, ctype ct2, int qualmode)
   }
   else
   {
-    assert(!"impossible!");
+    throw("impossible!");
     return 0;
   }
 }
@@ -3114,7 +3116,7 @@ expr *parseasgnexpr(link *start)
   }
 
   else
-    assert(!"invalid assignment types");
+    throw("invalid assignment types");
 
   // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
   int optype = ops[op->cont.tok->atom.cont];
@@ -3224,7 +3226,7 @@ expr *parsecondexpr(link *start)
     }
     else
     {
-      assert(!"invalid pointer targets in parecondexpr()");
+      throw("invalid pointer targets in parecondexpr()");
     }
 
     newct = e2->ct;
@@ -3234,7 +3236,7 @@ expr *parsecondexpr(link *start)
 
   else
   {
-    assert(!"invalid types for operands of parsecondexpr()");
+    throw("invalid types for operands of parsecondexpr()");
   }
 
   // TODO there is a sequence point after evaluation of e1. not sure if i need to take this into account at all
@@ -3475,7 +3477,7 @@ expr *parseeqexpr(link *start)
   // TODO pointer and nullptr constant
   else
   {
-    assert(!"parseeqexpr: bad types");
+    throw("parseeqexpr: bad types");
   }
 
   return newe;
@@ -3508,7 +3510,7 @@ expr *parserelexpr(link *start)
 
   else
   {
-    assert(!"parserelexpr: bad types");
+    throw("parserelexpr: bad types");
   }
 
   return newe;
@@ -3587,7 +3589,7 @@ expr *parseaddexpr(link *start)
 
     else
     {
-      assert(!"parseaddexpr, SUB_O: bad types");
+      throw("parseaddexpr, SUB_O: bad types");
     }
   }
 
@@ -3619,7 +3621,7 @@ expr *parseaddexpr(link *start)
 
     else
     {
-      assert(!"parseaddexpr, ADD_O: bad types");
+      throw("parseaddexpr, ADD_O: bad types");
     }
   }
 
@@ -3766,7 +3768,7 @@ expr *parseunaryexpr(link *start)
       // lvalue, object, not register
       else if(e->lval && !incomplete(ct)) ;
       // TODO no register storeclass in declaration
-      else assert(!"parseunaryexpr: bad type");
+      else throw("parseunaryexpr: bad type");
 
       // newct is pointer to ct
       int len = getctlen(ct);
@@ -3980,7 +3982,7 @@ expr *parsepostexpr(link *start)
 
   if(lisatom(start->left, DOT)) // a.b
   {
-    assert(!"structs not supported");
+    throw("structs not supported");
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
     if(!e1) return NULL;
@@ -3993,7 +3995,7 @@ expr *parsepostexpr(link *start)
   }
   if(lisatom(start->left, ARROW)) // a->b
   {
-    assert(!"structs not supported");
+    throw("structs not supported");
     start->left->left->right = NULL;
     expr *e1 = parsepostexpr(start->left->left);
     if(!e1) return NULL;
@@ -4093,7 +4095,7 @@ expr *parsepostexpr(link *start)
 
     else
     {
-      assert(!"parsepostexpr, ARR_O: bad types");
+      throw("parsepostexpr, ARR_O: bad types");
     }
     
     return newe;
@@ -4404,7 +4406,7 @@ char *initnasm(int size)
     // case 16:
     //   return "do";
     default:
-      assert(!"initnasm: invalid data size");
+      throw("initnasm: invalid data size");
   }
 }
 
@@ -4427,7 +4429,7 @@ char *resnasm(int size)
     // case 16:
     //   return "reso";
     default:
-      assert(!"resnasm: invalid data size");
+      throw("resnasm: invalid data size");
   }
 }
 
@@ -4484,7 +4486,7 @@ void proctoplevel(token *toks)
     if(d->storespec == K_TYPEDEF)
     {
       // TODO typedef
-      assert(!"typedef isn't supported yet");
+      throw("typedef isn't supported yet");
     }
     
     
