@@ -23,7 +23,7 @@ char *error;
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
 // the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
-#define contifours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
+#define checkours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
 
 void puttok(token t);
 
@@ -1181,7 +1181,7 @@ void putexpr(expr *e, int space)
   {
     printf(" : ");
     // puttok(*e->tok);
-    printf("%x", e->dat);
+    printf("0x%08x", e->dat);
   }
   if(eistype(e, TYPENAME))
   {
@@ -3246,7 +3246,7 @@ expr *parsecondexpr(link *start)
 }
 
 // parse LTR binary expression, a very common expression type, which can be generalized
-expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))
+expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *), expr *(*side)(link *))
 {
   // assert(start);
   testerr(start, "parseltrbinexpr: empty start");
@@ -3301,7 +3301,10 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
     // puts("about to call");
     // putd(op->left);
-    expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
+    // expr *e1 = parseltrbinexpr(op->left, etype, num, atoms, optypes, down); // recurse sideways
+
+    // recurse sideways
+    expr *e1 = side(op->left);
 
     if(!e1) // parsing left branch failed
     {
@@ -3355,10 +3358,10 @@ expr *parselorexpr(link *start)
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
 
-  expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
+  expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr, parselorexpr);
   // if(!eistype(newe, LOR_E))
   //   return newe;
-  contifours(newe, LOR_E);
+  checkours(newe, LOR_E);
   
   newe->ct = makedt(INT_T); // type is always int
   return newe;
@@ -3369,10 +3372,10 @@ expr *parselandexpr(link *start)
   here();
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
-  expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
+  expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr, parselandexpr);
   // if(!eistype(newe, LAND_E))
   //   return newe;
-  contifours(newe, LAND_E);
+  checkours(newe, LAND_E);
   
   newe->ct = makedt(INT_T);
   return newe;
@@ -3384,10 +3387,10 @@ expr *parseorexpr(link *start)
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
 
-  expr *newe = parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
+  expr *newe = parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr, parseorexpr);
   // if(!eistype(newe, OR_E))
   //   return newe;
-  contifours(newe, OR_E);
+  checkours(newe, OR_E);
   
   
   // perform UAC on args
@@ -3405,10 +3408,10 @@ expr *parsexorexpr(link *start)
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
 
-  expr *newe = parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
+  expr *newe = parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr, parsexorexpr);
   // if(!eistype(newe, XOR_E))
   //   return newe;
-  contifours(newe, XOR_E);
+  checkours(newe, XOR_E);
   
   usualarith(&newe->args[0], &newe->args[1]);
 
@@ -3422,10 +3425,10 @@ expr *parseandexpr(link *start)
   here();
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
-  expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
+  expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr, parseandexpr);
   // if(!eistype(newe, AND_E))
   //   return newe;
-  contifours(newe, AND_E);
+  checkours(newe, AND_E);
   
   usualarith(&newe->args[0], &newe->args[1]);
 
@@ -3439,10 +3442,10 @@ expr *parseeqexpr(link *start)
   here();
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
-  expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
+  expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr, parseeqexpr);
   // if(!eistype(newe, EQUAL_E))
   //   return newe;
-  contifours(newe, EQUAL_E);
+  checkours(newe, EQUAL_E);
   
 
   newe->ct = makedt(INT_T);
@@ -3483,10 +3486,10 @@ expr *parserelexpr(link *start)
   here();
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
-  expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
+  expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr, parserelexpr);
   // if(!eistype(newe, RELAT_E))
   //   return newe;
-  contifours(newe, RELAT_E);
+  checkours(newe, RELAT_E);
   
 
   newe->ct = makedt(INT_T);
@@ -3516,10 +3519,10 @@ expr *parseshiftexpr(link *start)
   here();
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
-  expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
+  expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr, parseshiftexpr);
   // if(!eistype(newe, SHIFT_E))
   //   return newe;
-  contifours(newe, SHIFT_E);
+  checkours(newe, SHIFT_E);
   
 
   // both integral
@@ -3541,11 +3544,11 @@ expr *parseaddexpr(link *start)
   here();
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
-  expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
+  expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr, parseaddexpr);
 
   // if(!eistype(newe, ADD_E))
   //   return newe;
-  contifours(newe, ADD_E);
+  checkours(newe, ADD_E);
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;
@@ -3628,11 +3631,11 @@ expr *parsemultexpr(link *start)
   here();
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
-  expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
+  expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr, parsemultexpr);
 
   // if(!eistype(newe, MULT_E))
   //   return newe;
-  contifours(newe, MULT_E);
+  checkours(newe, MULT_E);
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;

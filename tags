@@ -454,6 +454,7 @@ character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	type
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
+checkours	main.c	26;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
 cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
@@ -472,7 +473,6 @@ cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    float co
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int cont;$/;"	m	struct:__anon19::__anon21
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_t cont;$/;"	m	struct:__anon19::__anon25
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon30
-contifours	main.c	26;"	d	file:
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 create_sframe	main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp";$/;"	v
@@ -763,7 +763,7 @@ parselandexpr	unused/oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
 parselorexpr	main.c	/^expr *parselorexpr(link *start)$/;"	f
 parselorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parselorexpr(link *start)$/;"	f
 parselorexpr	unused/oldparser.c	/^link *parselorexpr(link *chain)$/;"	f
-parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))$/;"	f
+parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *), expr *(*side)(link *))$/;"	f
 parseltrbinexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))$/;"	f
 parsemultexpr	main.c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsemultexpr(link *start)$/;"	f

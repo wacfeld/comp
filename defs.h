@@ -645,7 +645,7 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms);
 expr *parseexpr(link *start);
 expr *parseasgnexpr(link *start);
 expr *parsecondexpr(link *start);
-expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *));
+expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *), expr *(*side)(link *));
 expr *parselorexpr(link *start);
 expr *parselandexpr(link *start);
 expr *parseorexpr(link *start);
