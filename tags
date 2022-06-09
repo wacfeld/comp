@@ -454,6 +454,7 @@ character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	type
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
+checkasgncompat	main.c	/^void checkasgncompat(ctype ct1, ctype ct2)$/;"	f
 checkours	main.c	28;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
 cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
@@ -521,6 +522,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^char f(char x)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8

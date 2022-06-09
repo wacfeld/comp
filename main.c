@@ -3052,6 +3052,35 @@ int isasgnop(int x)
   return 0;
 }
 
+// check if ct1 = ct2 is a valid assignment expression
+void checkasgncompat(ctype ct1, ctype ct2)
+{
+  if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
+
+  //else if(TODO: structures and unions);
+
+  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
+      && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
+        || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))) // one is pointer to any, other is pointer to void
+  {
+    // make sure left hand pointed-to quals are stricter than right
+    if(isconst(ct2+1)) assert(isconst(ct1+1));
+    if(isvolat(ct2+1)) assert(isvolat(ct1+1));
+  }
+
+  //else if(TODO: lhs ptr, rhs constant 0);
+
+  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
+  {
+    // check compatibility, using superset qualmode
+    assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
+  }
+
+  else
+    throw("invalid assignment types");
+  
+}
+
 expr *parseasgnexpr(link *start)
 {
   // assert(start);
@@ -3109,35 +3138,38 @@ expr *parseasgnexpr(link *start)
 
   // one of the following has to be true
 
-  if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
+  // we throw the below logic into a function so that FUN_O can use it to check for arg->param compatibility
+  checkasgncompat(ct1, ct2);
+  
+  //if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
 
-  //else if(TODO: structures and unions);
+  ////else if(TODO: structures and unions);
 
-  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
-      && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
-        || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))) // one is pointer to any, other is pointer to void
-  {
-    // make sure left hand pointed-to quals are stricter than right
-    if(isconst(ct2+1)) assert(isconst(ct1+1));
-    if(isvolat(ct2+1)) assert(isvolat(ct1+1));
-  }
+  //else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
+  //    && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
+  //      || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))) // one is pointer to any, other is pointer to void
+  //{
+  //  // make sure left hand pointed-to quals are stricter than right
+  //  if(isconst(ct2+1)) assert(isconst(ct1+1));
+  //  if(isvolat(ct2+1)) assert(isvolat(ct1+1));
+  //}
 
-  //else if(TODO: lhs ptr, rhs constant 0);
+  ////else if(TODO: lhs ptr, rhs constant 0);
 
-  else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
-  {
-    // check compatibility, using superset qualmode
-    assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
-  }
+  //else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
+  //{
+  //  // check compatibility, using superset qualmode
+  //  assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
+  //}
 
-  else
-    throw("invalid assignment types");
+  //else
+  //  throw("invalid assignment types");
 
   // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
   int optype = ops[op->cont.tok->atom.cont];
 
   
-  if(optype == EQ_O) ; // no extra constrains for =
+  if(optype == EQ_O) ; // no extra constraints for =
   if(optype == PLUSEQ_O || optype == MINEQ_O)
   {
     // if += or -=, pointer on left implies integral on right
@@ -4060,8 +4092,10 @@ expr *parsepostexpr(link *start)
         {
           decl *p = ct1[1].func.params + i;
 
-          // types must agree as if by assignment (superset)
-          assert(iscompat(p->ct, e2->args[i]->ct, QM_SUPERSET));
+          // types must agree as if by assignment
+          // assert(iscompat(p->ct, e2->args[i]->ct, QM_SUPERSET));
+          checkasgncompat(p->ct, e2->args[i]->ct);
+          e2->args[i] = makecast(p->ct, e2->args[i]);
         }
       }
 

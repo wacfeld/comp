@@ -4,11 +4,16 @@
 #include <stdlib.h>
 #include <alloca.h>
 #include <stddef.h>
+char f(char x)
+{
+  putd(sizeof(x));
+  return x+1;
+}
 
 
 int main()
 {
-  putd(sizeof 'a');
+  f(500);
   return 0;
 }
 
