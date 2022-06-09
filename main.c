@@ -1175,7 +1175,7 @@ void putexpr(expr *e, int space)
   // }
   // else
   // {
-  if(!eistype(e, TYPENAME))
+  if(!eistype(e, TYPENAME) && e->optype != -1)
     printf(": %s", hropt[e->optype]);
   // }
 
@@ -1194,6 +1194,7 @@ void putexpr(expr *e, int space)
       printf("0x%08x", e->dat);
   }
   // if(eistype(e, TYPENAME))
+  if(!eistype(e, ARGLIST)) // arglists do not have a ctype
   {
     printf(" : ");
     putctype(e->ct);
