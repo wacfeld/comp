@@ -22,7 +22,7 @@ char *error;
 // e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
-#define throw(msg) {puts(msg);exit(1)}
+#define throw(msg) {puts(msg);exit(1);}
 
 // the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
 #define checkours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
@@ -1183,7 +1183,15 @@ void putexpr(expr *e, int space)
   {
     printf(" : ");
     // puttok(*e->tok);
-    printf("0x%08x", e->dat);
+    if(e->optype == STRING_O)
+    {
+      for(int i = 0; i < e->ct->arr.len; i++)
+      {
+        printf("%02x ", e->strlit[i]);
+      }
+    }
+    else
+      printf("0x%08x", e->dat);
   }
   if(eistype(e, TYPENAME))
   {
