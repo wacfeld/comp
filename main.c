@@ -3352,6 +3352,9 @@ expr *parselorexpr(link *start)
   static int op[] = {LOR_O};
 
   expr *newe = parseltrbinexpr(start, LOR_E, 1, at, op, parselandexpr);
+  if(!eistype(newe, LOR_E))
+    return newe;
+  
   newe->ct = makedt(INT_T); // type is always int
   return newe;
 }
@@ -3362,6 +3365,9 @@ expr *parselandexpr(link *start)
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr);
+  if(!eistype(newe, LAND_E))
+    return newe;
+  
   newe->ct = makedt(INT_T);
   return newe;
 }
@@ -3373,6 +3379,9 @@ expr *parseorexpr(link *start)
   static int op[] = {BOR_O};
 
   expr *newe = parseltrbinexpr(start, OR_E, 1, at, op, parsexorexpr);
+  if(!eistype(newe, OR_E))
+    return newe;
+  
   
   // perform UAC on args
   usualarith(&newe->args[0], &newe->args[1]);
@@ -3390,6 +3399,9 @@ expr *parsexorexpr(link *start)
   static int op[] = {XOR_O};
 
   expr *newe = parseltrbinexpr(start, XOR_E, 1, at, op, parseandexpr);
+  if(!eistype(newe, XOR_E))
+    return newe;
+  
   usualarith(&newe->args[0], &newe->args[1]);
 
   newe->ct = newe->args[0]->ct;
@@ -3403,6 +3415,9 @@ expr *parseandexpr(link *start)
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr);
+  if(!eistype(newe, AND_E))
+    return newe;
+  
   usualarith(&newe->args[0], &newe->args[1]);
 
   newe->ct = newe->args[0]->ct;
@@ -3416,6 +3431,9 @@ expr *parseeqexpr(link *start)
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr);
+  if(!eistype(newe, EQUAL_E))
+    return newe;
+  
 
   newe->ct = makedt(INT_T);
 
@@ -3456,6 +3474,9 @@ expr *parserelexpr(link *start)
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr);
+  if(!eistype(newe, RELAT_E))
+    return newe;
+  
 
   newe->ct = makedt(INT_T);
 
@@ -3485,6 +3506,9 @@ expr *parseshiftexpr(link *start)
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr);
+  if(!eistype(newe, SHIFT_E))
+    return newe;
+  
 
   // both integral
   assert(isintegral(newe->args[0]->ct));
@@ -3506,6 +3530,9 @@ expr *parseaddexpr(link *start)
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
   expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr);
+
+  if(!eistype(newe, ADD_E))
+    return newe;
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;
@@ -3589,6 +3616,9 @@ expr *parsemultexpr(link *start)
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr);
+
+  if(!eistype(newe, MULT_E))
+    return newe;
 
   ctype ct1 = newe->args[0]->ct;
   ctype ct2 = newe->args[1]->ct;
@@ -4721,13 +4751,13 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
-  proctoplevel(toks);
+  // proctoplevel(toks);
 
-  // puts("---");
-  // putd(trans_unit->n);
-  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  puts("---");
+  putd(trans_unit->n);
+  link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  // expr *e = parseexpr(chain);
-  // putexpr(e,0);
+  expr *e = parseexpr(chain);
+  putexpr(e,0);
 
 }
