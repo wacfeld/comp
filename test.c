@@ -8,11 +8,7 @@
 
 int main()
 {
-  float f = -1.40129846432e-45;
-  int c = 0;
-  
-  memcpy(&c, &f, 4);
-  printf("%x\n", c);
+#include <stdio.h>
   return 0;
 }
 

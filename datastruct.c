@@ -106,6 +106,11 @@ void *get(list *l, int i) // list get
   return m;
 }
 
+void listget(list *l, int  i, void *m)
+{
+  memcpy(m, l->cont + i*l->size, l->size);
+}
+
 
 void *last(list *l)
 {

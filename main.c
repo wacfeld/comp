@@ -4174,13 +4174,21 @@ expr *parseprimexpr(link *start)
 
   // primary expression can't be atom
   testerr(t->gen.type != ATOM, "parseprimexpr: given atom");
+  testerr(t->gen.type != KEYWORD, "parseprimexpr: given keyword");
 
   // idents
   if(t->gen.type == IDENT)
   {
     newe->optype = IDENT_O;
 
-    // search the scope from top to bottom for the identifier
+    // search the scope stack from top to bottom for the identifier
+    decl *d = searchscope(t->ident.cont);
+
+    // ident must exist in scope
+    assert(d);
+
+    newe->ct = d->ct;
+    newe->dcl = d;
   }
 
   // constants & string literals
@@ -4241,10 +4249,10 @@ expr *parseprimexpr(link *start)
     else if(t->floating.isshort)
       newe->ct = makedt(FLOAT_T);
     else
-      newe->ct = makedt(DOUBLE_T);
+      newe->ct = makedt(DUB_T);
 
     // not sure if this well-defined C, but it works in my tests
-    memcpy(&newe->dat, &t->floating.cont);
+    memcpy(&newe->dat, &t->floating.cont, sizeof(float));
     // it would be better to create some interface functions and then store the real thing in an array of 4 bytes, or just a 32 bit field but i don't want to do that
   }
   
@@ -4262,6 +4270,28 @@ void evalconstexpr(expr *e)
 }
 
 //{{{1 statement parser
+
+decl *searchscope(char *ident)
+{
+  decl **dcls = (decl **) scope->cont;
+  decl *d;
+  
+  // search stack from newest (innermost) to oldest (outermost)
+  for(int i = scope->n - 1; i >= 0; i--)
+  {
+    if(!dcls[i]) // NULL separator
+      continue;
+
+    // found same ident
+    if(streq(dcls[i]->ident, ident))
+    {
+      return dcls[i];
+    }
+  }
+
+  // couldn't find
+  return NULL;
+}
 
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()

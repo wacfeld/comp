@@ -565,6 +565,7 @@ struct expr
 
   dword dat; // 32 bits of data, for compile-time constants
   char *strlit; // string literals! only used occasionally
+  decl * dcl; // for objects, functions, etc. which can appear from primary expressions
 
   // TODO ^^
 
@@ -665,6 +666,7 @@ expr *parseprimexpr(link *start);
 decl *getdeclspecs(token *toks, int *i);
 
 int tmis(typemod *tm, int type);
+decl *searchscope(char *ident);
 
 int validct(ctype ct);
 int incomplete(ctype ct);
