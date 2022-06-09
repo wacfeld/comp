@@ -1,3 +1,4 @@
+//{{{1 overhead
 #include "defs.h"
 #include "datastruct.h"
 
@@ -998,10 +999,30 @@ void check_stray(char *src, char *esc, char *quot, char *banned)
     assert(strchr(banned, src[i]) == NULL || quot[i]);
   }
 }
-///}}}
 
-//{{{ parser
+list *proctokens(char *src, char *esc, char *quot)
+{
+  list *trans_unit = makelist(sizeof(token));
 
+  // turn text into tokens
+  do
+  {
+    // resize(trans_unit, tsize, tcount);
+    token *t = nexttok(src, esc, quot);
+    append(trans_unit, t);
+    free(t);
+    // nexttok(src, esc, quot, trans_unit+tcount);
+    // puttok(trans_unit[tcount]);
+    // puttok(*(token *)last(trans_unit));
+
+  }
+  while(((token *)last(trans_unit))->gen.type != NOTOK);
+  
+  return trans_unit;
+}
+
+
+//{{{1 tools
 // all chars and ints are integral types
 int isintegral(ctype ct)
 {
@@ -1191,7 +1212,6 @@ void putinit(struct init *init, int space)
     }
   }
 }
-
 
 // not as severe as sever; does not give error if it encounters NULL
 void trysever(link *l)
@@ -1443,6 +1463,8 @@ int lisunaryop(link *l) // & * + - ~ !
 //   }
 //   return 0;
 // }
+
+// types, expressions
 
 // parse the list of parameters in a function type
 // we don't support ... parameters
@@ -2039,6 +2061,7 @@ int proctypespecs(set *ts)
   assert(!"should not reach here");
 }
 
+//{{{1 decls
 // gets a single decl spec in form of integer
 int getspec(token t)
 {
@@ -2392,6 +2415,7 @@ decl * parsedecl(token *toks)
 
 }
 
+//{{{1 linked list tools
 int lisin(link *l, int num, int *tokl)
 {
   for(int i = 0; i < num; i++)
@@ -2461,6 +2485,7 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 }
 
 
+//{{{1 makeexpr
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
   expr *e = calloc(1, sizeof(expr));
@@ -2485,6 +2510,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
   return e;
 }
 
+//{{{1 type checking tools
 int isconst(ctype ct)
 {
   return ct->gen.type == TM_DAT && ct->dat.isconst
@@ -2941,6 +2967,8 @@ void usualarith(expr **e1, expr **e2)
   }
 
 }
+
+//{{{1 expression parser
 
 // REQUIREMENTS
 // start can be anywhere in the linked list
@@ -4151,32 +4179,14 @@ expr *parseprimexpr(link *start)
   return newe;
 }
 
-list *proctokens(char *src, char *esc, char *quot)
-{
-  list *trans_unit = makelist(sizeof(token));
-
-  // turn text into tokens
-  do
-  {
-    // resize(trans_unit, tsize, tcount);
-    token *t = nexttok(src, esc, quot);
-    append(trans_unit, t);
-    free(t);
-    // nexttok(src, esc, quot, trans_unit+tcount);
-    // puttok(trans_unit[tcount]);
-    // puttok(*(token *)last(trans_unit));
-
-  }
-  while(((token *)last(trans_unit))->gen.type != NOTOK);
-  
-  return trans_unit;
-}
 
 // check that expression only contains valid constant operators and evaluate constant expression at compile time
 void evalconstexpr(expr *e)
 {
   
 }
+
+//{{{1 statement parser
 
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
@@ -4554,9 +4564,8 @@ char *parsestat(struct stat *stat, stack *scope)
   }
 }
 
-///}}}
 
-//{{{ main
+//{{{1 main
 int main()
 {
 
@@ -4617,4 +4626,3 @@ int main()
   // putexpr(e,0);
 
 }
-//}}}

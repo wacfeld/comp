@@ -237,7 +237,7 @@ LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
 LAND_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  LAND_O,$/;"	e	enum:optype
 LDUB_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LDUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
-LEFT	main.c	28;"	d	file:
+LEFT	main.c	29;"	d	file:
 LEFT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	28;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -332,7 +332,7 @@ QUESTION	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum ato
 REGISTER_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
 RELAT_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  RELAT_E,$/;"	e	enum:expr_type
-RIGHT	main.c	27;"	d	file:
+RIGHT	main.c	28;"	d	file:
 RIGHT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	27;"	d	file:
 SEL_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
 SEL_S	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
@@ -443,7 +443,7 @@ atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
 atom	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } atom;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon27
 atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 atom_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
-attach	main.c	7;"	d	file:
+attach	main.c	8;"	d	file:
 attach	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	7;"	d	file:
 bool	fixedlithier.c	/^typedef int bool;$/;"	t	file:
 canbeunary	defs.h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
@@ -646,7 +646,7 @@ last	datastruct.c	/^void *last(list *l)$/;"	f
 lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
-leftend	main.c	13;"	d	file:
+leftend	main.c	14;"	d	file:
 leftend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	13;"	d	file:
 leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 leistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int leistype(link *l, int type)$/;"	f
@@ -839,7 +839,7 @@ resnasm	main.c	/^char *resnasm(int size)$/;"	f
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
-rightend	main.c	11;"	d	file:
+rightend	main.c	12;"	d	file:
 rightend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
 section	template/main.asm	/^section .bss$/;"	l
 section	template/main.asm	/^section .data$/;"	l
@@ -851,7 +851,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1204;"	d	file:
+sever	main.c	1224;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
@@ -880,7 +880,7 @@ striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int 
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
-testerr	main.c	22;"	d	file:
+testerr	main.c	23;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 tisatom	main.c	/^int tisatom(token t, enum atom_type a)$/;"	f
 tiskeyword	main.c	/^int tiskeyword(token t, enum keyword k)$/;"	f
