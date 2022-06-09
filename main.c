@@ -1176,8 +1176,8 @@ void putexpr(expr *e, int space)
 
   if(eistype(e, PRIM_E))
   {
-    printf(" : ");
-    puttok(*e->tok);
+    // printf(" : ");
+    // puttok(*e->tok);
   }
   if(eistype(e, TYPENAME))
   {
@@ -1263,10 +1263,10 @@ int eistype(expr *e, int type)
   }
 }
 
-int leistype(link *l, int type)
-{
-  return l != NULL && l->type == EXPR_L && eistype(l->cont.exp, type);
-}
+// int leistype(link *l, int type)
+// {
+//   return l != NULL && l->type == EXPR_L && eistype(l->cont.exp, type);
+// }
 
 
 token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
@@ -1291,7 +1291,9 @@ token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
       tokl[i++] = *ll->cont.tok;
     else // expression
     {
-      tokl[i++] = *ll->cont.exp->tok;
+      // expression parsing has changed, this should never happen
+      assert(!"links should not contain expression");
+      // tokl[i++] = *ll->cont.exp->tok;
     }
     ll = ll->right;
   }
@@ -1350,10 +1352,10 @@ int tisatom(token t, enum atom_type a)
   return t.gen.type == ATOM && t.atom.cont == a;
 }
 
-int lisop(link *l, int o)
-{
-  return l != NULL && l->type == EXPR_L && l->cont.exp->optype == o;
-}
+// int lisop(link *l, int o)
+// {
+//   return l != NULL && l->type == EXPR_L && l->cont.exp->optype == o;
+// }
 // int lisexpr(link *l, expr_type e)
 // {
 //   return l != NULL && l->type == EXPR_L && l->cont.exp->type == e;
@@ -2970,6 +2972,9 @@ void usualarith(expr **e1, expr **e2)
 
 //{{{1 expression parser
 
+// will be initialized in proctoplevel
+stack *scope;
+
 // REQUIREMENTS
 // start can be anywhere in the linked list
 // use rightend() and leftend() to get it where you want
@@ -4161,19 +4166,89 @@ expr *parseprimexpr(link *start)
   testerr(!start->right, "parseprimexpr: extra tokens on right");
 
   expr *newe = makeexpr(PRIM_E, -1, 0);
-  // not sure if the following _Os are necessary
-  if(listok(start, IDENT))
+
+  // should not be expr, which is no longer used
+  assert(start->type == TOK_L);
+
+  token *t = start->cont.tok;
+
+  // primary expression can't be atom
+  testerr(t->gen.type != ATOM, "parseprimexpr: given atom");
+
+  // idents
+  if(t->gen.type == IDENT)
+  {
     newe->optype = IDENT_O;
-  if(listok(start, INTEGER))
+
+    // search the scope from top to bottom for the identifier
+  }
+
+  // constants & string literals
+  if(t->gen.type == INTEGER)
+  {
     newe->optype = INT_O;
-  if(listok(start, CHAR))
+
+    // figure out dt
+    if(t->integer.islong)
+    {
+      if(t->integer.isunsigned)
+        newe->ct = makedt(ULINT_T);
+      else
+        newe->ct = makedt(LINT_T);
+    }
+
+    else if(t->integer.isunsigned)
+      newe->ct = makedt(UINT_T);
+    else
+      newe->ct = makedt(INT_T);
+
+    newe->dat = t->integer.cont;
+  }
+
+  if(t->gen.type == CHAR)
+  {
     newe->optype = CHAR_O;
-  if(listok(start, STRLIT))
+    newe->ct = makedt(CHAR_T);
+
+    newe->dat = t->character.cont;
+  }
+
+  if(t->gen.type == STRLIT)
+  {
     newe->optype = STRING_O;
-  if(listok(start, FLOATING))
+    
+    // array of char
+    ctype ct = calloc(2, sizeof(typemod));
+    ct->gen.type == TM_ARR;
+    ct->arr.len = t->strlit.len; // length of array, not of string
+    ct[1].gen.type == TM_DAT;
+    ct[1].dat.dt = CHAR_T;
+
+    // no modifying the string literal
+    ct[1].dat.isconst = 1;
+    newe->ct = ct;
+
+    newe->strlit = t->strlit.cont;
+  }
+
+  if(t->gen.type == FLOATING)
+  {
     newe->optype = FLOAT_O;
+
+    // figure out dt
+    if(t->floating.islong)
+      newe->ct = makedt(LDUB_T);
+    else if(t->floating.isshort)
+      newe->ct = makedt(FLOAT_T);
+    else
+      newe->ct = makedt(DOUBLE_T);
+
+    // not sure if this well-defined C, but it works in my tests
+    memcpy(&newe->dat, &t->floating.cont);
+    // it would be better to create some interface functions and then store the real thing in an array of 4 bytes, or just a 32 bit field but i don't want to do that
+  }
   
-  newe->tok = start->cont.tok;
+  // newe->tok = start->cont.tok;
   // printf("%p\n", newe->tok);
   // puttok(*newe->tok);
   return newe;
@@ -4297,7 +4372,7 @@ void proctoplevel(token *toks)
   // alloc(decl *, alldecls, dsize, dn);
 
   // create a stack of decls to be in scope
-  stack *scope = makestack(sizeof(decl *));
+  scope = makestack(sizeof(decl *));
 
   // NULL is a scope separator. it tells us where blocks start, which allows inner identifiers to cover 'hide' outer ones
   // this initial NULL is there for convenience

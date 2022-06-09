@@ -5,14 +5,14 @@
 #include <alloca.h>
 #include <stddef.h>
 
-int f(const int x)
-{
-  return x;
-}
 
 int main()
 {
-  assert(0);
+  float f = -1.40129846432e-45;
+  int c = 0;
+  
+  memcpy(&c, &f, 4);
+  printf("%x\n", c);
   return 0;
 }
 

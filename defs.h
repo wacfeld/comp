@@ -86,6 +86,7 @@ typedef union
     tok_type type;
     char *cont;
     int len; // we need len because it might have user-added \0's in the string
+    // len includes the automatically added terminating null
   } strlit;
 
   struct
@@ -560,7 +561,11 @@ struct expr
   struct expr **args;
   int numargs; // sometimes necessary, eg. function arguments
 
-  token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
+  // token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
+
+  dword dat; // 32 bits of data, for compile-time constants
+  char *strlit; // string literals! only used occasionally
+
   // TODO ^^
 
   int lval;

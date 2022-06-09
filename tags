@@ -482,6 +482,7 @@ ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct;$/
 ctisdt	main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	defs.h	/^typedef typemod *ctype;$/;"	t
 ctype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon28
+dat	defs.h	/^  dword dat; \/\/ 32 bits of data, for compile-time constants$/;"	m	struct:expr
 dat	defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
 dattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon28
 dattypes	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
@@ -518,7 +519,6 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.c	/^int f(const int x)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -648,7 +648,6 @@ left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	14;"	d	file:
 leftend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	13;"	d	file:
-leistype	main.c	/^int leistype(link *l, int type)$/;"	f
 leistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int leistype(link *l, int type)$/;"	f
 len	defs.h	/^    int len; \/\/ we need len because it might have user-added \\0's in the string$/;"	m	struct:__anon1::__anon5
 len	defs.h	/^    int len;$/;"	m	struct:__anon10::__anon13
@@ -667,7 +666,6 @@ lisatom	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisat
 liscomma	unused/is.c	/^int liscomma(link *l)$/;"	f
 lisin	main.c	/^int lisin(link *l, int num, int *tokl)$/;"	f
 lisin	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisin(link *l, int num, int *tokl)$/;"	f
-lisop	main.c	/^int lisop(link *l, int o)$/;"	f
 lisop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
@@ -841,6 +839,7 @@ right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 rightend	main.c	12;"	d	file:
 rightend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
+scope	main.c	/^stack *scope;$/;"	v
 section	template/main.asm	/^section .bss$/;"	l
 section	template/main.asm	/^section .data$/;"	l
 section	template/main.asm	/^section .text$/;"	l
@@ -877,6 +876,7 @@ streq	defs.h	27;"	d
 streq	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	27;"	d
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int striskeyword(char *s)$/;"	f
+strlit	defs.h	/^  char *strlit; \/\/ string literals! only used occasionally$/;"	m	struct:expr
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
@@ -890,7 +890,6 @@ tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tm
 tmt	defs.h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_DAT};$/;"	g
 tmt	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tmt {TM_PTR, TM_ARR, TM_FUNC, TM_IDENT, TM_NONE};$/;"	g
 tok	defs.h	/^    token *tok;$/;"	m	union:link::__anon17
-tok	defs.h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    token *tok;$/;"	m	union:link::__anon30
 tok	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  token *tok; \/\/ probably only for constants \/\/ temporary solution, may need more general\/specific way to encode the relevant data$/;"	m	struct:expr
 tok_type	defs.h	/^enum tok_type {NOTOK=0, ERRTOK, KEYWORD, IDENT, STRLIT, CHAR, UNCERTAIN, INTEGER, FLOATING, ATOM};$/;"	g
