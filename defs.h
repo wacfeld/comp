@@ -524,6 +524,7 @@ typedef enum expr_type
   CONST_E,
   TYPENAME, // special case: for casts
   ARGLIST, // special case: for function calls
+  DECAY, // decay to pointer or nullptr
 } expr_type;
 
 char *hr_expr[100] = 

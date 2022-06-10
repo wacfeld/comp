@@ -88,6 +88,7 @@ DEBUG	defs.h	31;"	d
 DEBUG	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	31;"	d
 DEC	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 DEC	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
+DECAY	defs.h	/^  DECAY, \/\/ decay to pointer or nullptr$/;"	e	enum:expr_type
 DEFS	defs.h	2;"	d
 DEFS	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	2;"	d
 DEREF	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -528,9 +529,9 @@ findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floating;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon26
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
-fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined$/;"	m
-fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined$/;"	m
-fsanitize	Makefile	/^	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitize=undefined$/;"	m
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined -fsanitize=address$/;"	m
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined -fsanitize=address$/;"	m
+fsanitize	Makefile	/^	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitize=undefined -fsanitize=address$/;"	m
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
 fundef	defs.h	/^  struct stat *fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::stat

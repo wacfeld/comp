@@ -2511,26 +2511,55 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 //{{{1 makeexpr
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
-  expr *e = calloc(1, sizeof(expr));
-  etypeadd(e, type);
-  e->optype = optype;
+  expr *newe = calloc(1, sizeof(expr));
+  etypeadd(newe, type);
+  newe->optype = optype;
   // putd(optype);
-  e->numargs = numargs;
+  newe->numargs = numargs;
 
   // if numargs == 0 then don't do this
   if(numargs)
   {
-    e->args = malloc(sizeof(expr) * numargs);
+    newe->args = malloc(sizeof(expr) * numargs);
     va_list ap;
     va_start(ap, numargs);
+
+    expr *e;
+    // run through the args
     for(int i = 0; i < numargs; i++)
     {
-      e->args[i] = va_arg(ap, expr *);
+      e = va_arg(ap, expr *);
+      
+      // check if fulfills decay conditions
+      if(e->lval) // lvalue
+      {
+        // array decay to pointer
+        if(tmis(e->ct, TM_ARR))
+        {
+          // copy into new typemod,
+          int len = getctlen(e->ct);
+          ctype newct = malloc(len, sizeof(typemod));
+          memcpy(newct, e->ct, len);
+          
+          // turn array into pointer
+          newct->gen.type == TM_PTR;
+          newct->ptr.isconst = 0;
+          newct->ptr.
+        }
+
+        // non-array decay to value
+        else
+        {
+          
+        }
+      }
+      
+      newe->args[i] = e;
     }
     va_end(ap);
   }
 
-  return e;
+  return newe;
 }
 
 //{{{1 type checking tools
@@ -4287,6 +4316,8 @@ expr *parseprimexpr(link *start)
 
     newe->ct = d->ct;
     newe->dcl = d;
+
+    newe->lval  = 1;
   }
 
   // constants & string literals
