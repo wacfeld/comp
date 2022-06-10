@@ -2513,10 +2513,12 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 // create expr of type INT_T containing x for data
 expr *makeintexpr(int x)
 {
-  // expr *e = calloc(sizeof(expr));
-  
-  
-  // ctype ct = makedt(INT_T);
+  // create new expression to hold it
+  expr *e = makeexpr(PRIM_E, INT_O, 0);
+  e->ct = makedt(INT_T);
+  e->dat = x;
+
+  return e;
 }
 
 expr *makeexpr(int type, int optype, int numargs, ...)
@@ -4002,12 +4004,18 @@ expr *parseunaryexpr(link *start)
       testerr(!cl->right, "parseunaryexpr: extra tokens after (typename)");
 
       ctype ct = parsetypename(start->right->right);
-      // we need to put it inside a dummy expr because the ctype of newe has to be size_t (int)
-      expr *e = makeexpr(TYPENAME, -1, 0);
-      e->ct = ct;
 
-      expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
-      newe->ct = makedt(INT_T);
+      testerr(ct, "parseunaryexpr, sizeof type: ct is NULL");
+      // evaluate size now
+      int size = sizeoftype(ct);
+      expr *newe = makeintexpr(size);
+
+      // we need to put it inside a dummy expr because the ctype of newe has to be size_t (int)
+      // expr *e = makeexpr(TYPENAME, -1, 0);
+      // e->ct = ct;
+
+      // expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+      // newe->ct = makedt(INT_T);
 
       return newe;
     }
@@ -4018,10 +4026,15 @@ expr *parseunaryexpr(link *start)
 
       expr *e = parseunaryexpr(start->right);
       if(!e) return NULL;
-      e->ct = NULL;
+      // e->ct = NULL;
 
-      expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
-      newe->ct = makedt(INT_T);
+      
+      testerr(e->ct, "parseunaryexpr, sizeof unary: ct is NULL");
+      int size = sizeoftype(e->ct);
+      expr *newe = makeintexpr(size);
+
+      // expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
+      // newe->ct = makedt(INT_T);
 
       return newe;
     }

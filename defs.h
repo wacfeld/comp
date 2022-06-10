@@ -671,6 +671,10 @@ expr *parsepostexpr(link *start);
 expr *parsearglist(link *start);
 expr *parseprimexpr(link *start);
 
+expr *makeexpr(int type, int optype, int numargs, ...);
+ctype makedt(int dt);
+
+
 decl *getdeclspecs(token *toks, int *i);
 
 int tmis(typemod *tm, int type);

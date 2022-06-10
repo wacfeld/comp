@@ -1,1 +1,1 @@
-((int (*)(char))5)(6)
+sizeof(char)+3
