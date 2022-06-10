@@ -2510,10 +2510,14 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 
 //{{{1 makeexpr, makeint
 
-// expr *makeintexpr(int x)
-// {
+// create expr of type INT_T containing x for data
+expr *makeintexpr(int x)
+{
+  // expr *e = calloc(sizeof(expr));
   
-// }
+  
+  // ctype ct = makedt(INT_T);
+}
 
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
@@ -2526,7 +2530,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
   // if numargs == 0 then don't do this
   if(numargs)
   {
-    newe->args = malloc(sizeof(expr) * numargs);
+    newe->args = malloc(sizeof(expr *) * numargs);
     va_list ap;
     va_start(ap, numargs);
 
@@ -3999,8 +4003,8 @@ expr *parseunaryexpr(link *start)
 
       ctype ct = parsetypename(start->right->right);
       // we need to put it inside a dummy expr because the ctype of newe has to be size_t (int)
-      // expr *e = makeexpr(TYPENAME, -1, 0);
-      // e->ct = ct;
+      expr *e = makeexpr(TYPENAME, -1, 0);
+      e->ct = ct;
 
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
       newe->ct = makedt(INT_T);

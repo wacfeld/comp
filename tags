@@ -708,6 +708,7 @@ makedt	main.c	/^ctype makedt(int dt)$/;"	f
 makedtcast	main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
+makeintexpr	main.c	/^expr *makeintexpr(int x)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
