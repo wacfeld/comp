@@ -2534,25 +2534,89 @@ expr *makeexpr(int type, int optype, int numargs, ...)
       if(e->lval) // lvalue
       {
         // array decay to pointer
-        if(tmis(e->ct, TM_ARR))
+        if(tmis(e->ct, TM_ARR) // is array
+            // but not operand of these things which require an array
+            && optype != SIZEOF_O
+            && optype != ADDR_O
+            // TODO strlit initializer remains array
+            )
         {
           // copy into new typemod,
           int len = getctlen(e->ct);
-          ctype newct = malloc(len, sizeof(typemod));
+          ctype newct = calloc(len, sizeof(typemod));
           memcpy(newct, e->ct, len);
           
           // turn array into pointer
           newct->gen.type == TM_PTR;
           newct->ptr.isconst = 0;
-          newct->ptr.
+          newct->ptr.isvolat = 0;
+
+          // dece (decay expression) wraps around e, using newct as front
+          expr *dece = calloc(1, sizeof(expr));
+          dece->ct = newct;
+          etypeadd(dece, DECAY);
+          dece->optype = ARR2PTR_O;
+          dece->numargs = 1;
+          dece->args = &e;
+          dece->lval = 0;
+
+          e = dece; // pass on to newe
         }
 
         // non-array decay to value
-        else
+        else if(// not array
+            // and not operand of these things which require an lvalue
+            optype != SIZEOF_O
+            && optype != ADDR_O
+            && optype != PREINC_O
+            && optype != POSTINC_O
+            && optype != PREDEC_O
+            && optype != POSTDEC_O)
+            // TODO left of .
         {
-          
+          // we do no ctype modifying, we just tell 2ASM to get the data out of there
+          expr *dece = calloc(1, sizeof(expr));
+          dece->ct = e->ct;
+          etypeadd(dece, DECAY);
+          dece->optype = LVAL2DAT_O;
+          dece->numargs = 1;
+          dece->args = &e;
+          dece->lval = 0;
+
+          e = dece;
         }
       }
+
+      // function designator
+      else if(tmis(e->ct, TM_FUNC))
+      {
+        if(// but not operand of any of these things
+            optype != SIZEOF_O
+            && optype != ADDR_O)
+        {
+          // copy into new typemod, offset by 1 to make room for pointer
+          int len = getctlen(e->ct);
+          ctype newct = calloc(len+1, sizeof(typemod));
+          memcpy(newct+1, e->ct, len);
+          
+          // turn function into pointer to function
+          newct->gen.type == TM_PTR;
+          newct->ptr.isconst = 0;
+          newct->ptr.isvolat = 0;
+
+          // dece (decay expression) wraps around e, using newct as front
+          expr *dece = calloc(1, sizeof(expr));
+          dece->ct = newct;
+          etypeadd(dece, DECAY);
+          dece->optype = FUN2PTR_O;
+          dece->numargs = 1;
+          dece->args = &e;
+          dece->lval = 0;
+
+          e = dece;
+        }
+      }
+      // otherwise not lvalue, carry on
       
       newe->args[i] = e;
     }
@@ -4317,7 +4381,13 @@ expr *parseprimexpr(link *start)
     newe->ct = d->ct;
     newe->dcl = d;
 
-    newe->lval  = 1;
+    // double check this dcl is not type void
+    assert(!ctisdt(newe->ct, VOID_T));
+
+    if(newe->ct->gen.type != TM_FUNC)
+    {
+      newe->lval  = 1;
+    }
   }
 
   // constants & string literals

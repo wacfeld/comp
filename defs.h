@@ -440,12 +440,18 @@ enum optype
   XOREQ_O,
   OREQ_O,
 
-  COMMA_O
+  COMMA_O,
+  ARR2PTR_O,
+  LVAL2DAT_O,
+  FUN2PTR_O,
 };
 
 char *hropt[1000] =
 {
+  [FUN2PTR_O]="FUN2PTR_O",
   [IDENT_O]="IDENT_O",
+  [ARR2PTR_O]="ARR2PTR_O",
+  [LVAL2DAT_O]="LVAL2DAT_O",
   [STRING_O]="STRING_O",
   [INT_O]="INT_O",
   [FLOAT_O]="FLOAT_O",
@@ -531,6 +537,7 @@ char *hr_expr[100] =
 {
   [EXPR]="EXPR",
   [PRIM_E]="PRIM_E",
+  [DECAY]="DECAY",
   [POST_E]="POST_E",
   [UNAR_E]="UNAR_E",
   [CAST_E]="CAST_E",
