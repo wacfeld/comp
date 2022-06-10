@@ -495,6 +495,7 @@ dattypes	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UIN
 dattypes	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 dcl	defs.h	/^  decl * dcl; \/\/ for objects, functions, etc. which can appear from primary expressions$/;"	m	struct:expr
+decay	main.c	/^expr *decay(int optype, expr *e)$/;"	f
 decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl

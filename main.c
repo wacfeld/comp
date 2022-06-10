@@ -2521,6 +2521,99 @@ expr *makeintexpr(int x)
   return e;
 }
 
+expr *decay(int optype, expr *e)
+{
+  // check if fulfills decay conditions
+  if(e->lval) // lvalue
+  {
+    // array decay to pointer
+    if(e->ct && tmis(e->ct, TM_ARR) // is array
+                                    // but not operand of these things which require an array
+        && optype != SIZEOF_O
+        && optype != ADDR_O
+        // TODO strlit initializer remains array
+      )
+    {
+      // copy into new typemod,
+      int len = getctlen(e->ct);
+      ctype newct = calloc(len, sizeof(typemod));
+      memcpy(newct, e->ct, len);
+
+      // turn array into pointer
+      newct->gen.type == TM_PTR;
+      newct->ptr.isconst = 0;
+      newct->ptr.isvolat = 0;
+
+      // dece (decay expression) wraps around e, using newct as front
+      expr *dece = calloc(1, sizeof(expr));
+      dece->ct = newct;
+      etypeadd(dece, DECAY);
+      dece->optype = ARR2PTR_O;
+      dece->numargs = 1;
+      dece->args = &e;
+      dece->lval = 0;
+
+      e = dece; // pass on to newe
+    }
+
+    // non-array decay to value
+    else if(// not array
+            // and not operand of these things which require an lvalue
+        optype != SIZEOF_O
+        && optype != ADDR_O
+        && optype != PREINC_O
+        && optype != POSTINC_O
+        && optype != PREDEC_O
+        && optype != POSTDEC_O)
+      // TODO left of .
+    {
+      // we do no ctype modifying, we just tell 2ASM to get the data out of there
+      expr *dece = calloc(1, sizeof(expr));
+      dece->ct = e->ct;
+      etypeadd(dece, DECAY);
+      dece->optype = LVAL2DAT_O;
+      dece->numargs = 1;
+      dece->args = &e;
+      dece->lval = 0;
+
+      e = dece;
+    }
+  }
+
+  // function designator
+  else if(e->ct && tmis(e->ct, TM_FUNC))
+  {
+    if(// but not operand of any of these things
+        optype != SIZEOF_O
+        && optype != ADDR_O)
+    {
+      // copy into new typemod, offset by 1 to make room for pointer
+      int len = getctlen(e->ct);
+      ctype newct = calloc(len+1, sizeof(typemod));
+      memcpy(newct+1, e->ct, len);
+
+      // turn function into pointer to function
+      newct->gen.type == TM_PTR;
+      newct->ptr.isconst = 0;
+      newct->ptr.isvolat = 0;
+
+      // dece (decay expression) wraps around e, using newct as front
+      expr *dece = calloc(1, sizeof(expr));
+      dece->ct = newct;
+      etypeadd(dece, DECAY);
+      dece->optype = FUN2PTR_O;
+      dece->numargs = 1;
+      dece->args = &e;
+      dece->lval = 0;
+
+      e = dece;
+    }
+  }
+  // otherwise not lvalue, carry on
+
+  return e;
+}
+
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
   expr *newe = calloc(1, sizeof(expr));
@@ -2542,93 +2635,8 @@ expr *makeexpr(int type, int optype, int numargs, ...)
     {
       e = va_arg(ap, expr *);
       
-      // check if fulfills decay conditions
-      if(e->lval) // lvalue
-      {
-        // array decay to pointer
-        if(e->ct && tmis(e->ct, TM_ARR) // is array
-            // but not operand of these things which require an array
-            && optype != SIZEOF_O
-            && optype != ADDR_O
-            // TODO strlit initializer remains array
-            )
-        {
-          // copy into new typemod,
-          int len = getctlen(e->ct);
-          ctype newct = calloc(len, sizeof(typemod));
-          memcpy(newct, e->ct, len);
-          
-          // turn array into pointer
-          newct->gen.type == TM_PTR;
-          newct->ptr.isconst = 0;
-          newct->ptr.isvolat = 0;
-
-          // dece (decay expression) wraps around e, using newct as front
-          expr *dece = calloc(1, sizeof(expr));
-          dece->ct = newct;
-          etypeadd(dece, DECAY);
-          dece->optype = ARR2PTR_O;
-          dece->numargs = 1;
-          dece->args = &e;
-          dece->lval = 0;
-
-          e = dece; // pass on to newe
-        }
-
-        // non-array decay to value
-        else if(// not array
-            // and not operand of these things which require an lvalue
-            optype != SIZEOF_O
-            && optype != ADDR_O
-            && optype != PREINC_O
-            && optype != POSTINC_O
-            && optype != PREDEC_O
-            && optype != POSTDEC_O)
-            // TODO left of .
-        {
-          // we do no ctype modifying, we just tell 2ASM to get the data out of there
-          expr *dece = calloc(1, sizeof(expr));
-          dece->ct = e->ct;
-          etypeadd(dece, DECAY);
-          dece->optype = LVAL2DAT_O;
-          dece->numargs = 1;
-          dece->args = &e;
-          dece->lval = 0;
-
-          e = dece;
-        }
-      }
-
-      // function designator
-      else if(e->ct && tmis(e->ct, TM_FUNC))
-      {
-        if(// but not operand of any of these things
-            optype != SIZEOF_O
-            && optype != ADDR_O)
-        {
-          // copy into new typemod, offset by 1 to make room for pointer
-          int len = getctlen(e->ct);
-          ctype newct = calloc(len+1, sizeof(typemod));
-          memcpy(newct+1, e->ct, len);
-          
-          // turn function into pointer to function
-          newct->gen.type == TM_PTR;
-          newct->ptr.isconst = 0;
-          newct->ptr.isvolat = 0;
-
-          // dece (decay expression) wraps around e, using newct as front
-          expr *dece = calloc(1, sizeof(expr));
-          dece->ct = newct;
-          etypeadd(dece, DECAY);
-          dece->optype = FUN2PTR_O;
-          dece->numargs = 1;
-          dece->args = &e;
-          dece->lval = 0;
-
-          e = dece;
-        }
-      }
-      // otherwise not lvalue, carry on
+      // certain types trigger decays, which are prevented by certain optypes
+      e = decay(optype, e);
       
       newe->args[i] = e;
     }
@@ -3138,6 +3146,9 @@ expr *parseexpr(link *start)
   if(!e2) return NULL;
 
   expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
+  e1 = newe->args[0];
+  e2 = newe->args[0];
+
 
   assert(e2->ct);
   newe->ct = e2->ct; // inherits type from right operand
@@ -3228,6 +3239,13 @@ expr *parseasgnexpr(link *start)
   expr *e2 = parseasgnexpr(op->right);
   if(!e2) return NULL;
 
+  int optype = ops[op->cont.tok->atom.cont];
+
+  // create new expression
+  expr *newe = makeexpr(ASGN_E, optype, 2, e1, e2);
+  e1 = newe->args[0];
+  e2 = newe->args[1];
+
   // perform type checks
   assert(e1->lval); // LHS must be lvalue
   assert(e1->ct);
@@ -3271,7 +3289,6 @@ expr *parseasgnexpr(link *start)
   //  throw("invalid assignment types");
 
   // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
-  int optype = ops[op->cont.tok->atom.cont];
 
   
   if(optype == EQ_O) ; // no extra constraints for =
@@ -3291,13 +3308,11 @@ expr *parseasgnexpr(link *start)
 
   // TODO remember no double evaluation for compound assignments
 
-  // create new expression
-  expr *newe = makeexpr(ASGN_E, optype, 2, e1, e2);
-  newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
-  newe->lval = 0;
-
   // make implicit cast of right side left
   e2 = makecast(newe->ct, e2);
+
+  newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
+  newe->lval = 0;
 
 
   return newe;
@@ -3339,6 +3354,10 @@ expr *parsecondexpr(link *start)
   expr *e3 = parsecondexpr(colon->right);
   if(!e3) return NULL;
 
+  expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
+  e1 = newe->args[0];
+  e2 = newe->args[1];
+  e3 = newe->args[2];
 
   // type checks/conversions
 
@@ -3393,7 +3412,6 @@ expr *parsecondexpr(link *start)
 
   // TODO there is a sequence point after evaluation of e1. not sure if i need to take this into account at all
 
-  expr *newe = makeexpr(COND_E, TERN_O, 3, e1, e2, e3);
   newe->ct = newct;
   newe->lval = 0; // footnote on C90 standard page 52
   return newe;
@@ -3906,9 +3924,11 @@ expr *parseunaryexpr(link *start)
     // testerr(e, "parseunaryexpr: null castexpr below unary op");
     if(!e) return NULL;
 
+    expr *newe = makeexpr(UNAR_E, optype, 1, e);
+    e = newe->args[0];
+
     ctype ct = e->ct;
 
-    expr *newe = makeexpr(UNAR_E, optype, 1, e);
 
     // type checking
     // &
@@ -4047,6 +4067,9 @@ expr *parseunaryexpr(link *start)
     expr *e = parseunaryexpr(start->right);
     if(!e) return NULL;
 
+    expr *newe = makeexpr(UNAR_E, optype, 1, e);
+    e = newe->args[0];
+
     // modifiable lvalue
     assert(e->lval);
     assert(ismodifiable(e->ct));
@@ -4054,7 +4077,6 @@ expr *parseunaryexpr(link *start)
     // scalar
     assert(isscalar(e->ct));
     
-    expr *newe = makeexpr(UNAR_E, optype, 1, e);
     newe->ct = e->ct; // inherit type
 
     // note that integral promotion does not occur. consider
@@ -4115,8 +4137,8 @@ expr *parsepostexpr(link *start)
     if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTINC_O, 1, e);
-
     e = newe->args[0];
+
     assert(e->lval);
     assert(ismodifiable(e->ct));
     assert(isscalar(e->ct));
@@ -4132,8 +4154,8 @@ expr *parsepostexpr(link *start)
     if(!e) return NULL;
 
     expr *newe = makeexpr(POST_E, POSTDEC_O, 1, e);
-
     e = newe->args[0];
+
     assert(e->lval);
     assert(ismodifiable(e->ct));
     assert(isscalar(e->ct));
@@ -4189,6 +4211,8 @@ expr *parsepostexpr(link *start)
       // printf("%p\n", start->left);
 
       expr *newe = makeexpr(POST_E, FUN_O, 2, e1, e2);
+      e1 = newe->args[0];
+      e2 = newe->args[1];
 
       ctype ct1 = newe->args[0]->ct;
       ctype ct2 = newe->args[1]->ct;
@@ -4236,6 +4260,8 @@ expr *parsepostexpr(link *start)
     if(!e2) return NULL;
 
     expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
+    e1 = newe->args[0];
+    e2 = newe->args[1];
 
     ctype ct1 = e1->ct;
     ctype ct2 = e2->ct;
@@ -4321,6 +4347,10 @@ expr *parsearglist(link *start)
 
     expr *e = parseasgnexpr(start);
     if(!e) return NULL;
+
+    // decay if necessary
+    e = decay(-1, e);
+
     newe->args[i] = e;
 
     if(comma) // if not end, move on
