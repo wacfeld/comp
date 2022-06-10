@@ -2508,7 +2508,7 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 }
 
 
-//{{{1 makeexpr, makeint
+//{{{1 expr manipulation
 
 // create expr of type INT_T containing x for data
 expr *makeintexpr(int x)
@@ -3147,7 +3147,7 @@ expr *parseexpr(link *start)
 
   expr *newe = makeexpr(EXPR, COMMA_O, 2, e1, e2);
   e1 = newe->args[0];
-  e2 = newe->args[0];
+  e2 = newe->args[1];
 
 
   assert(e2->ct);
@@ -4515,10 +4515,18 @@ expr *parseprimexpr(link *start)
 }
 
 
-// check that expression only contains valid constant operators and evaluate constant expression at compile time
+// evaluate a constant expression at compile time. throw error if invalid operators are used
 void evalconstexpr(expr *e)
 {
-  
+  /*
+    may NOT contain:
+    assignment
+    increment
+    decrement
+    function call
+    comma
+*/
+
 }
 
 //{{{1 statement parser
