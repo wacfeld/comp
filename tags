@@ -526,14 +526,14 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.c	/^char f(char x)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 floating	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } floating;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon26
 freeset	datastruct.c	/^void freeset(set *s)$/;"	f
 fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined -fsanitize=address$/;"	m
-fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined -fsanitize=address$/;"	m
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined$/;"	m
+fsanitize	Makefile	/^	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined$/;"	m
 fsanitize	Makefile	/^	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitize=undefined -fsanitize=address$/;"	m
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35

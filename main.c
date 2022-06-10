@@ -2508,7 +2508,13 @@ link *nexttoplevel(link *start, int dir, int num, int *atoms)
 }
 
 
-//{{{1 makeexpr
+//{{{1 makeexpr, makeint
+
+// expr *makeintexpr(int x)
+// {
+  
+// }
+
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
   expr *newe = calloc(1, sizeof(expr));
@@ -2534,7 +2540,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
       if(e->lval) // lvalue
       {
         // array decay to pointer
-        if(tmis(e->ct, TM_ARR) // is array
+        if(e->ct && tmis(e->ct, TM_ARR) // is array
             // but not operand of these things which require an array
             && optype != SIZEOF_O
             && optype != ADDR_O
@@ -2588,7 +2594,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
       }
 
       // function designator
-      else if(tmis(e->ct, TM_FUNC))
+      else if(e->ct && tmis(e->ct, TM_FUNC))
       {
         if(// but not operand of any of these things
             optype != SIZEOF_O
@@ -3993,8 +3999,8 @@ expr *parseunaryexpr(link *start)
 
       ctype ct = parsetypename(start->right->right);
       // we need to put it inside a dummy expr because the ctype of newe has to be size_t (int)
-      expr *e = makeexpr(TYPENAME, -1, 0);
-      e->ct = ct;
+      // expr *e = makeexpr(TYPENAME, -1, 0);
+      // e->ct = ct;
 
       expr *newe = makeexpr(UNAR_E, SIZEOF_O, 1, e);
       newe->ct = makedt(INT_T);

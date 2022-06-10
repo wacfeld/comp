@@ -1,6 +1,8 @@
-all: main.c
-	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined -fsanitize=address
-warn: main.c
+all: main.c datastruct.c
+	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined
+warn: main.c datastruct.c
+	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined
+sanit: main.c datastruct.c
 	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined -fsanitize=address
 test: test.c
 	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitize=undefined -fsanitize=address
