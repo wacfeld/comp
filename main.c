@@ -2569,12 +2569,12 @@ expr *decay(int optype, expr *e)
     {
       // we do no ctype modifying, we just tell 2ASM to get the data out of there
       expr *dece = calloc(1, sizeof(expr));
-      dece->ct = e->ct;
+      dece->ct = unqual(e->ct); // loses qualifiers
       etypeadd(dece, DECAY);
       dece->optype = LVAL2DAT_O;
       dece->numargs = 1;
       dece->args = &e;
-      dece->lval = 0;
+      dece->lval = 0; // no longer lvalue
 
       e = dece;
     }
@@ -4516,16 +4516,9 @@ expr *parseprimexpr(link *start)
 
 
 // evaluate a constant expression at compile time. throw error if invalid operators are used
-void evalconstexpr(expr *e)
+void evalconstexpr(expr *e, int integral)
 {
-  /*
-    may NOT contain:
-    assignment
-    increment
-    decrement
-    function call
-    comma
-*/
+  
 
 }
 

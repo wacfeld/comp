@@ -515,7 +515,7 @@ error	main.c	/^char *error;$/;"	v
 error	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^char *error;$/;"	v
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
-evalconstexpr	main.c	/^void evalconstexpr(expr *e)$/;"	f
+evalconstexpr	main.c	/^void evalconstexpr(expr *e, int integral)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
 exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon30
