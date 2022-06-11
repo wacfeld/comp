@@ -1088,6 +1088,7 @@ void putctype(ctype ct)
   //   printf("volat ");
 
   // printf("%s ", hrdt[ct->dattype]);
+  fflush(stdout);
 }
 
 void putdecl(decl *dcl)
@@ -1154,18 +1155,19 @@ void putdecl(decl *dcl)
 
 void putexpr(expr *e, int space)
 {
-  int *types = (int *) e->type->cont;
-  int nt = e->type->n;
+  // int *types = (int *) e->type->cont;
+  // int nt = e->type->n;
 
   for(int i = 0; i < space; i++)
   {
     putchar(' ');
   }
 
-  for(int i = 0; i < nt; i++)
-  {
-    printf("%s ", hr_expr[types[i]]);
-  }
+  printf("%s ", hr_expr[e->type]);
+  // for(int i = 0; i < nt; i++)
+  // {
+  //   printf("%s ", hr_expr[types[i]]);
+  // }
 
   // putd(e->optype);
   // putd(SUB_O);
@@ -1260,22 +1262,24 @@ int corresp(int num, int *a, int *b, int x)
 
 void etypeadd(expr *e, int type)
 {
-  if(e->type == NULL)
-    e->type = makeset(sizeof(int));
-  setins(e->type, &type);
+  // if(e->type == NULL)
+  //   e->type = makeset(sizeof(int));
+  // setins(e->type, &type);
+  e->type = type;
 }
 
 // DONE eistype is sometimes broken, sometimes not
 int eistype(expr *e, int type)
 {
-  if(e->type == NULL)
-    return 0;
+  // if(e->type == NULL)
+  //   return 0;
 
-  else
-  {
-  // putd(type);
-    return inset(e->type, &type);
-  }
+  // else
+  // {
+  // // putd(type);
+  //   return inset(e->type, &type);
+  // }
+  return e->type == type;
 }
 
 // int leistype(link *l, int type)
@@ -4514,12 +4518,34 @@ expr *parseprimexpr(link *start)
   return newe;
 }
 
+//{{{1 constant expressions
 
-// evaluate a constant expression at compile time. throw error if invalid operators are used
-void evalconstexpr(expr *e, int integral)
+// evaluate a constant expression at compile time
+// returns NULL if invalid operators, operands, etc.
+expr *evalconstexpr(expr *e, int integral)
 {
-  
+  // check against blacklisted ops
+  int t = e->type;
+  int o = e->optype;
+  if
+    ( // no assignment, increment/decrement, function calls, commas
+     t == ASGN_E
+     || o == POSTINC_O
+     || o == POSTDEC_O
+     || o == PREINC_O
+     || o == PREDEC_O
+     || o == FUN_O
+     || o == COMMA_O
+    )
+    {
+      return NULL;
+    }
 
+  // try integral ops first
+  if(o == INT_O)
+  {
+    
+  }
 }
 
 //{{{1 statement parser

@@ -564,7 +564,10 @@ struct expr
 {
   // expr_type type;
   // the bottom-up evaluation apparatus required that an expr could be multiple types. this is no longer the case but it remains a set for consistency
-  set *type; // multiple types at once are possible
+  // set *type; // multiple types at once are possible
+
+  int type;
+  
   int optype;
   struct expr **args;
   int numargs; // sometimes necessary, eg. function arguments
@@ -685,6 +688,8 @@ int incomplete(ctype ct);
 int ctisdt(ctype ct, int dt);
 int iscompat(ctype ct1, ctype ct2, int qualmode);
 int getctlen(ctype ct);
+
+ctype unqual(ctype ct);
 
 char *parsestat(struct stat *stat, stack *scope);
 
