@@ -4522,31 +4522,31 @@ expr *parseprimexpr(link *start)
 
 // evaluate a constant expression at compile time
 // returns NULL if invalid operators, operands, etc.
-expr *evalconstexpr(expr *e, int integral)
-{
-  // check against blacklisted ops
-  int t = e->type;
-  int o = e->optype;
-  if
-    ( // no assignment, increment/decrement, function calls, commas
-     t == ASGN_E
-     || o == POSTINC_O
-     || o == POSTDEC_O
-     || o == PREINC_O
-     || o == PREDEC_O
-     || o == FUN_O
-     || o == COMMA_O
-    )
-    {
-      return NULL;
-    }
+// expr *evalconstexpr(expr *e, int integral)
+// {
+//   // check against blacklisted ops
+//   int t = e->type;
+//   int o = e->optype;
+//   if
+//     ( // no assignment, increment/decrement, function calls, commas
+//      t == ASGN_E
+//      || o == POSTINC_O
+//      || o == POSTDEC_O
+//      || o == PREINC_O
+//      || o == PREDEC_O
+//      || o == FUN_O
+//      || o == COMMA_O
+//     )
+//     {
+//       return NULL;
+//     }
 
-  // try integral ops first
-  if(o == INT_O)
-  {
+//   // try integral ops first
+//   if(o == INT_O)
+//   {
     
-  }
-}
+//   }
+// }
 
 //{{{1 statement parser
 

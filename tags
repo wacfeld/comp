@@ -533,7 +533,6 @@ error	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^char *error
 etypeadd	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
-evalconstexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *evalconstexpr(expr *e, int integral)$/;"	f
 evalconstexpr	main.c	/^expr *evalconstexpr(expr *e, int integral)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
