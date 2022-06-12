@@ -29,9 +29,6 @@ char *error;
 
 void puttok(token t);
 
-// push NULL separator onto stack
-#define pushnull() {void *null = NULL; push(scope, &null);}
-
 
 #define RIGHT 1
 #define LEFT 0
@@ -4749,7 +4746,7 @@ void proctoplevel(token *toks)
       char *s = parsestat(d->fundef, scope);
       strapp(codeseg, &cs_len, s);
       
-      //write assembly
+      // write assembly
       // end function
       multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
     }
@@ -4891,8 +4888,23 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
   return i - dir;
 }
 
+// push NULL separator onto stack
+#define pushnull() {void *null = NULL; push(scope, &null);}
+
+// delete everything up to and including next NULL separator on scope stack
+void remtonull()
+{
+  decl *d;
+
+  // pop until NULL is popped
+  do
+  {
+    pop(scope, &d);
+  } while(d != NULL);
+}
+
 // take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code
-char *parsestat(struct stat *stat, stack *scope)
+char *parsestat(struct stat *stat)
 {
   int lo = stat->lo;
   int hi = stat->hi;
@@ -4901,120 +4913,135 @@ char *parsestat(struct stat *stat, stack *scope)
 
   assert(toklen >= 1); // non empty
 
-  // if starting fundef, next statement MUST be block statement
-  if(startfundef)
-    assert(tisatom(toks[lo], BRACEOP));
+  // all assembly code from the statements to be parsed will be appended to this buffer
+  int asm_len = 100;
+  char *asm = malloc(asm_len);
+  *asm = 0;
 
-  // block statements
-  if(tisatom(toks[lo], BRACEOP))
+  while(lo <= hi) // while there are tokens left in the given range
   {
-    // push separator to scope if not at start of function definition block
-    if(startfundef)
-    {
-      startfundef = 0;
-    }
-    else
-    {
-      pushnull();
-    }
 
-    // find matching brace
-    int end = tokmatch(toks, lo, 1, BRACEOP, BRACECL);
-
-    // we do not confine this implementation to disallowing mixed declarations and statements. it adds no complexity to allow mixing
+    // TODO declarations mixed in with statements
     
-    // run through statements
-    while(lo < end)
+    // if starting fundef, next statement MUST be block statement
+    if(startfundef)
+      assert(tisatom(toks[lo], BRACEOP));
+
+    // block statements
+    if(tisatom(toks[lo], BRACEOP))
+    {
+      // push separator to scope if not at start of function definition block
+      if(startfundef)
+      {
+        startfundef = 0;
+      }
+      else
+      {
+        pushnull();
+      }
+
+      // find matching brace
+      int end = tokmatch(toks, lo, 1, BRACEOP, BRACECL);
+
+      // we do not confine this implementation to disallowing mixed declarations and statements. it adds no complexity to allow mixing
+
+      // run through statements
+      struct stat newstat = {toks, lo+1, end-1};
+      char *newasm = parsestat(&newstat);
+
+      // append newasm to asm
+      strapp(asm, asm_len, newasm);
+
+      // roll back scope
+      remtonull();
+    }
+
+    // labeled statements
+    // case label
+    if(tiskeyword(toks[lo], K_CASE))
+    {
+      // TODO only in switch. need to pass information downward.
+      // find matching colon, isolate constant expression
+    }
+
+    // default label
+    if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
+    {
+
+    }
+
+    // regular label
+    if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
+    {
+
+    }
+
+    // compound statement
+    if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
+    {
+
+    }
+
+
+    // selection statements
+    // if
+    if(tiskeyword(toks[lo], K_IF))
+    {
+      assert(tiskeyword(toks[lo+1], PARENOP));
+    }
+    // TODO if-else form
+
+    // switch
+    if(tiskeyword(toks[lo], K_SWITCH))
+    {
+      assert(tiskeyword(toks[lo+1], PARENOP));
+    }
+
+
+    // iteration statements
+    // while
+    if(tiskeyword(toks[lo], K_WHILE))
+    {
+      assert(tiskeyword(toks[lo+1], PARENOP));
+    }
+
+    // do/while
+    if(tiskeyword(toks[lo], K_DO))
+    {
+
+    }
+
+    // for
+    if(tiskeyword(toks[lo], K_FOR))
+    {
+      assert(tiskeyword(toks[lo+1], PARENOP));
+    }
+
+
+    // jump statements
+    // goto
+    if(tiskeyword(toks[lo], K_GOTO))
+    {
+
+    }
+
+    // continue
+    if(tiskeyword(toks[lo], K_CONTINUE))
+    {
+
+    }
+
+    // braek
+    if(tiskeyword(toks[lo], K_BREAK))
+    {
+
+    }
+
+    // return
+    if(tiskeyword(toks[lo], K_RETURN))
     {
       
     }
-  }
-
-  // labeled statements
-  // case label
-  if(tiskeyword(toks[lo], K_CASE))
-  {
-    // TODO only in switch. need to pass information downward.
-    // find matching colon, isolate constant expression
-  }
-
-  // default label
-  if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
-  {
-    
-  }
-
-  // regular label
-  if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
-  {
-    
-  }
-
-  // compound statement
-  if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
-  {
-    
-  }
-
-
-  // selection statements
-  // if
-  if(tiskeyword(toks[lo], K_IF))
-  {
-    assert(tiskeyword(toks[lo+1], PARENOP));
-  }
-  // TODO if-else form
-
-  // switch
-  if(tiskeyword(toks[lo], K_SWITCH))
-  {
-    assert(tiskeyword(toks[lo+1], PARENOP));
-  }
-
-
-  // iteration statements
-  // while
-  if(tiskeyword(toks[lo], K_WHILE))
-  {
-    assert(tiskeyword(toks[lo+1], PARENOP));
-  }
-
-  // do/while
-  if(tiskeyword(toks[lo], K_DO))
-  {
-    
-  }
-
-  // for
-  if(tiskeyword(toks[lo], K_FOR))
-  {
-    assert(tiskeyword(toks[lo+1], PARENOP));
-  }
-
-  
-  // jump statements
-  // goto
-  if(tiskeyword(toks[lo], K_GOTO))
-  {
-    
-  }
-
-  // continue
-  if(tiskeyword(toks[lo], K_CONTINUE))
-  {
-    
-  }
-
-  // braek
-  if(tiskeyword(toks[lo], K_BREAK))
-  {
-    
-  }
-  
-  // return
-  if(tiskeyword(toks[lo], K_RETURN))
-  {
-    
   }
 }
 

@@ -221,7 +221,12 @@ void push(stack *s, void *m)
 void pop(stack *s, void *m)
 {
   s->n -= 1;
-  memcpy(m, s->cont + s->n * s->size, s->size);
+
+  // if passed NULL for m, don't write the value out
+  if(m)
+  {
+    memcpy(m, s->cont + s->n * s->size, s->size);
+  }
 }
 
 void peek(stack *s, void *m)
