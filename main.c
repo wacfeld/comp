@@ -29,6 +29,9 @@ char *error;
 
 void puttok(token t);
 
+// push NULL separator onto stack
+#define pushnull() {void *null = NULL; push(scope, &null);}
+
 
 #define RIGHT 1
 #define LEFT 0
@@ -4864,6 +4867,31 @@ void proctoplevel(token *toks)
 
 //{{{1 statement parser
 
+// return index of matching atom (e.x. BRACEOP and BRACECL) in token list
+// gives error if goes out of bounds
+int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end)
+{
+  int dep = 0;
+
+  // check that we've been given a proper starting index
+  assert(tisatom(toks[i], beg));
+  
+  do
+  {
+    if(tisatom(toks[i], beg)) dep++;
+    if(tisatom(toks[i], end)) dep--;
+
+    assert(dep >= 0);
+    assert(toks[i].gen.type != NOTOK);
+    assert(i >= 0);
+
+    i += dir;
+  } while(dep != 0);
+
+  return i - dir;
+}
+
+// take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code
 char *parsestat(struct stat *stat, stack *scope)
 {
   int lo = stat->lo;
@@ -4871,12 +4899,35 @@ char *parsestat(struct stat *stat, stack *scope)
   token *toks = stat->toks;
   int toklen = lo - hi + 1;
 
-  assert(toklen >= 1); // no empty statements
+  assert(toklen >= 1); // non empty
+
+  // if starting fundef, next statement MUST be block statement
+  if(startfundef)
+    assert(tisatom(toks[lo], BRACEOP));
 
   // block statements
-  if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
+  if(tisatom(toks[lo], BRACEOP))
   {
+    // push separator to scope if not at start of function definition block
+    if(startfundef)
+    {
+      startfundef = 0;
+    }
+    else
+    {
+      pushnull();
+    }
+
+    // find matching brace
+    int end = tokmatch(toks, lo, 1, BRACEOP, BRACECL);
+
+    // we do not confine this implementation to disallowing mixed declarations and statements. it adds no complexity to allow mixing
     
+    // run through statements
+    while(lo < end)
+    {
+      
+    }
   }
 
   // labeled statements

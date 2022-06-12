@@ -314,11 +314,12 @@ struct location
   int locloc; // offset from ebp
 };
 
+// one or more statements, in the form of a token array
 struct stat
 {
   token *toks;
   int lo;
-  int hi; // inlcusive? who knows
+  int hi; // inlcusive
 };
 
 typedef struct decl
