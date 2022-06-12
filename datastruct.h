@@ -50,4 +50,6 @@ void shift_front(list *l); // non-destructive, just moves pointer forward and de
 int intinset(set *s, int x);
 void intsetins(set *s, int x);
 
+int listlen(list *l);
+
 #endif

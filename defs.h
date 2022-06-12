@@ -692,8 +692,10 @@ int getctlen(ctype ct);
 
 ctype unqual(ctype ct);
 
-char *parsestat(struct stat *stat, stack *scope);
+char *parsestat(struct stat *stat);
 
 
+void pushnull();
+void remtonull();
 
 #endif

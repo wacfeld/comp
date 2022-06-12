@@ -15,6 +15,10 @@
 #include <string.h>
 // #include <time.h>
 
+int listlen(list *l)
+{
+  return l->n;
+}
 
 set *makeset(int size)
 {

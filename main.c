@@ -4692,8 +4692,7 @@ void proctoplevel(token *toks)
 
   // NULL is a scope separator. it tells us where blocks start, which allows inner identifiers to cover 'hide' outer ones
   // this initial NULL is there for convenience
-  void *null = NULL;
-  push(scope, &null);
+  pushnull();
   
   // allocate segment buffers (code, data, bss)
   int cs_len, ds_len, bs_len;
@@ -4727,23 +4726,24 @@ void proctoplevel(token *toks)
     }
     
     
-    
     assert(!d->fundef || !d->init); // can't have both
 
     puts("hey!");
     puts(d->ident);
     if(d->fundef) // if fundef, parse now
     {
-      // start function
-      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
-      // parse whatever
-
       // look at prototype, put declarations into scope
+      
+      
+      // start function, create stack frame
+      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
+
+      
       // figure out how to assign the arguments to parameters in funcalls
       // set startfundef to 1
 
       // turn into assembly
-      char *s = parsestat(d->fundef, scope);
+      char *s = parsestat(d->fundef);
       strapp(codeseg, &cs_len, s);
       
       // write assembly
@@ -4759,35 +4759,36 @@ void proctoplevel(token *toks)
 
     // search previous declarations for the same identifier
     int merged = 0;
-    // putd(scope->n);
-    decl **scopearr = (decl **) scope->cont; // extract list from scope stack
-    for(int i = 0; i < scope->n; i++)
+    // decl **scopearr = (decl **) scope->cont; // extract list from scope stack
+    decl *scopedcl;
+    for(int i = 0; i < listlen(scope); i++)
     {
-      if(!scopearr[i]) // skip separators
+      listget(scope, i, &scopedcl);
+      if(!scopedcl) // skip separators
         continue;
 
-      if(streq(scopearr[i]->ident, d->ident)) // same ident
+      if(streq(scopedcl->ident, d->ident)) // same ident
       {
         // check same type
-        assert(iscompat(scopearr[i]->ct, d->ct, QM_STRICT));
+        assert(iscompat(scopedcl->ct, d->ct, QM_STRICT));
 
         // check that the inits/fundefs don't conflict, then merge
         if(d->fundef) // function def
         {
-          assert(!scopearr[i]->fundef); // must be unique
+          assert(!scopedcl->fundef); // must be unique
 
-          scopearr[i]->fundef = d->fundef;
+          scopedcl->fundef = d->fundef;
         }
         if(d->init) // initialized
         {
-          assert(!scopearr[i]->init); // musn't be prior initialization in this case
+          assert(!scopedcl->init); // musn't be prior initialization in this case
 
-          scopearr[i]->init = d->init;
+          scopedcl->init = d->init;
         }
 
         // merge types
-        ctype newct = makecompos(scopearr[i]->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
-        scopearr[i]->ct = newct;
+        ctype newct = makecompos(scopedcl->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
+        scopedcl->ct = newct;
         
         // indicate the decl already exists
         merged = 1;
@@ -4804,11 +4805,12 @@ void proctoplevel(token *toks)
     }
   }
 
-  decl **scopearr = (decl **) scope->cont; // extract list from scope stack
+  // decl **scopearr = (decl **) scope->cont; // extract list from scope stack
   // run through a second time, this time allocating storage, initializing, etc.
-  for(int i = 0; i < scope->n; i++)
+  for(int i = 0; i < listlen(scope); i++)
   {
-    d = scopearr[i];
+    // d = scopearr[i];
+    listget(scope, i, &d);
 
     if(!d) // skip separators
       continue;
@@ -4888,8 +4890,14 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
   return i - dir;
 }
 
+
+// #define pushnull() {void *null = NULL; push(scope, &null);}
 // push NULL separator onto stack
-#define pushnull() {void *null = NULL; push(scope, &null);}
+void pushnull()
+{
+  void *null = NULL;
+  push(scope, &null);
+}
 
 // delete everything up to and including next NULL separator on scope stack
 void remtonull()
@@ -4914,9 +4922,9 @@ char *parsestat(struct stat *stat)
   assert(toklen >= 1); // non empty
 
   // all assembly code from the statements to be parsed will be appended to this buffer
-  int asm_len = 100;
-  char *asm = malloc(asm_len);
-  *asm = 0;
+  int assem_len = 100;
+  char *assem = malloc(assem_len);
+  *assem = 0;
 
   while(lo <= hi) // while there are tokens left in the given range
   {
@@ -4947,10 +4955,10 @@ char *parsestat(struct stat *stat)
 
       // run through statements
       struct stat newstat = {toks, lo+1, end-1};
-      char *newasm = parsestat(&newstat);
+      char *newassem = parsestat(&newstat);
 
-      // append newasm to asm
-      strapp(asm, asm_len, newasm);
+      // append newassem to assem
+      strapp(assem, &assem_len, newassem);
 
       // roll back scope
       remtonull();
