@@ -240,7 +240,6 @@ LAND_O	defs.h	/^  LAND_O,$/;"	e	enum:optype
 LAND_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  LAND_O,$/;"	e	enum:optype
 LDUB_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LDUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
-LEFT	/home/wacfeld/Dropbox/matrix/comp/main.c	34;"	d	file:
 LEFT	main.c	34;"	d	file:
 LEFT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	28;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -337,7 +336,6 @@ QUESTION	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum ato
 REGISTER_S	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	e	enum:storespec
 RELAT_E	defs.h	/^  RELAT_E,$/;"	e	enum:expr_type
 RELAT_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  RELAT_E,$/;"	e	enum:expr_type
-RIGHT	/home/wacfeld/Dropbox/matrix/comp/main.c	33;"	d	file:
 RIGHT	main.c	33;"	d	file:
 RIGHT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	27;"	d	file:
 SEL_S	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	e	enum:stattype
@@ -443,14 +441,12 @@ args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 args	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon13
 arr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } arr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon34
-asgnops	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 asgnops	main.c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 asgnops	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};$/;"	v
 atom	defs.h	/^  } atom;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon9
 atom	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } atom;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon27
 atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 atom_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
-attach	/home/wacfeld/Dropbox/matrix/comp/main.c	8;"	d	file:
 attach	main.c	8;"	d	file:
 attach	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	7;"	d	file:
 bool	fixedlithier.c	/^typedef int bool;$/;"	t	file:
@@ -460,12 +456,9 @@ cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 cbulen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
-check_stray	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
 check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
-checkasgncompat	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void checkasgncompat(ctype ct1, ctype ct2)$/;"	f
 checkasgncompat	main.c	/^void checkasgncompat(ctype ct1, ctype ct2)$/;"	f
-checkours	/home/wacfeld/Dropbox/matrix/comp/main.c	28;"	d	file:
 checkours	main.c	28;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
 cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
@@ -485,16 +478,13 @@ cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    float co
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int cont;$/;"	m	struct:__anon19::__anon21
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_t cont;$/;"	m	struct:__anon19::__anon25
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon30
-corresp	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
-create_sframe	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp";$/;"	v
 create_sframe	main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp";$/;"	v
 ct	defs.h	/^  ctype ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	defs.h	/^  ctype ct;$/;"	m	struct:decl
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct;$/;"	m	struct:__anon29
-ctisdt	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctisdt	main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	defs.h	/^typedef typemod *ctype;$/;"	t
 ctype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon28
@@ -505,35 +495,26 @@ dattypes	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UIN
 dattypes	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 dcl	defs.h	/^  decl * dcl; \/\/ for objects, functions, etc. which can appear from primary expressions$/;"	m	struct:expr
-decay	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *decay(int optype, expr *e)$/;"	f
 decay	main.c	/^expr *decay(int optype, expr *e)$/;"	f
 decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl
 decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon29
-destroy_sframe	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp";$/;"	v
 destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp";$/;"	v
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
-dtsize	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int dtsize(int dt)$/;"	f
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
 dword	defs.h	/^typedef u_int32_t dword; \/\/ double word, 32 bits, which can hold all primitive types in this implementation$/;"	t
 e	defs.h	/^  expr *e;$/;"	m	struct:init
 e	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  expr *e;$/;"	m	struct:init
-eisdt	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int eisdt(expr *e, int dt)$/;"	f
 eisdt	main.c	/^int eisdt(expr *e, int dt)$/;"	f
-eistm	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int eistm(expr *e, int t)$/;"	f
 eistm	main.c	/^int eistm(expr *e, int t)$/;"	f
-eistype	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int eistype(expr *e, int type)$/;"	f
 eistype	main.c	/^int eistype(expr *e, int type)$/;"	f
 eistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int eistype(expr *e, int type)$/;"	f
-error	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *error;$/;"	v
 error	main.c	/^char *error;$/;"	v
 error	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^char *error;$/;"	v
-etypeadd	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
-evalconstexpr	main.c	/^expr *evalconstexpr(expr *e, int integral)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
 exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon30
@@ -545,7 +526,6 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-findmatch	/home/wacfeld/Dropbox/matrix/comp/main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 floating	defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
@@ -563,15 +543,11 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon32
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
-getctlen	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int getctlen(ctype ct)$/;"	f
 getctlen	main.c	/^int getctlen(ctype ct)$/;"	f
-getdeclspecs	/home/wacfeld/Dropbox/matrix/comp/main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getdeclspecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
-getspec	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int getspec(token t)$/;"	f
 getspec	main.c	/^int getspec(token t)$/;"	f
 getstorespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int getstorespec(token t) \/\/ get storage class specifier$/;"	f
-gettypemods	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char **s, ctype *dat)$/;"	f
 gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char **s, ctype *dat)$/;"	f
 gettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
@@ -580,7 +556,6 @@ global	defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data) or
 global	template/main.asm	/^global _start$/;"	l
 global	template/test.asm	/^global _start$/;"	l
 globloc	defs.h	/^  char *globloc; \/\/ nasm label$/;"	m	struct:location
-helpgettypemods	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
@@ -603,15 +578,12 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon29
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon31	typeref:struct:__anon31::__anon36
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
-ident_pre	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char ident_pre[] = "ident_";$/;"	v
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
-incomplete	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int incomplete(ctype ct)$/;"	f
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	typeref:struct:decl::init
 init	defs.h	/^struct init$/;"	s
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:__anon29	typeref:struct:__anon29::init
 init	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^struct init$/;"	s
-initnasm	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *initnasm(int size)$/;"	f
 initnasm	main.c	/^char *initnasm(int size)$/;"	f
 inset	datastruct.c	/^int inset(set *s, void *m)$/;"	f
 int_len	defs.h	/^typedef enum int_len int_len;$/;"	t	typeref:enum:int_len
@@ -619,22 +591,16 @@ int_len	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef e
 integer	defs.h	/^  } integer;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon7
 integer	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } integer;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon25
 intinset	datastruct.c	/^int intinset(set *s, int x)$/;"	f
-intprom	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *intprom(expr *e)$/;"	f
 intprom	main.c	/^expr *intprom(expr *e)$/;"	f
 intsetins	datastruct.c	/^void intsetins(set *s, int x)$/;"	f
-isarith	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isarith(ctype ct)$/;"	f
 isarith	main.c	/^int isarith(ctype ct)$/;"	f
-isasgnop	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	main.c	/^int isasgnop(int x)$/;"	f
 isasgnop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isasgnop(int x)$/;"	f
 isasgnop	unused/is.c	/^int isasgnop(link *l)$/;"	f
-isatom	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isatom	main.c	/^int isatom(token *t, enum atom_type a)$/;"	f
 isatom	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isatom(token *t, enum atom_type a)$/;"	f
-iscompat	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int iscompat(ctype ct1, ctype ct2, int qualmode)$/;"	f
 iscompat	main.c	/^int iscompat(ctype ct1, ctype ct2, int qualmode)$/;"	f
 iscompat	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int iscompat(decl *t1, decl *t2, int top, int asgn)$/;"	f
-isconst	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isconst(ctype ct)$/;"	f
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon12
 isconst	defs.h	/^    int isconst;$/;"	m	struct:__anon10::__anon16
 isconst	main.c	/^int isconst(ctype ct)$/;"	f
@@ -642,22 +608,16 @@ isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int i
 isconst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isconst;$/;"	m	struct:__anon28
 isdecimal	defs.h	/^    int isdecimal;$/;"	m	struct:__anon1::__anon7
 isdecimal	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isdecimal;$/;"	m	struct:__anon19::__anon25
-isdeclspec	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isdeclspec(token t)$/;"	f
 isdeclspec	main.c	/^int isdeclspec(token t)$/;"	f
 isdeclspec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isdeclspec(token t) \/\/ get declaration specifier, -1 if it's not that$/;"	f
 isempty	datastruct.c	/^int isempty(list *l)$/;"	f
-isfloatsuffix	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isfloatsuffix(char c)$/;"	f
 isfloatsuffix	main.c	/^int isfloatsuffix(char c)$/;"	f
 isfloatsuffix	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isfloatsuffix(char c)$/;"	f
-isintegral	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isintegral(ctype ct)$/;"	f
 isintegral	main.c	/^int isintegral(ctype ct)$/;"	f
-isintsuffix	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isintsuffix(char c)$/;"	f
 isintsuffix	main.c	/^int isintsuffix(char c)$/;"	f
 isintsuffix	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isintsuffix(char c)$/;"	f
-iskeyword	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 iskeyword	main.c	/^int iskeyword(token *t, enum keyword k)$/;"	f
 iskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int iskeyword(token *t, enum keyword k)$/;"	f
-isletter	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isletter(char c)$/;"	f
 isletter	main.c	/^int isletter(char c)$/;"	f
 isletter	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int isletter(char c)$/;"	f
 islist	defs.h	/^  int islist;$/;"	m	struct:init
@@ -666,27 +626,19 @@ islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon7
 islong	defs.h	/^    int islong;$/;"	m	struct:__anon1::__anon8
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon25
 islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int islong;$/;"	m	struct:__anon19::__anon26
-ismodifiable	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int ismodifiable(ctype ct)$/;"	f
 ismodifiable	main.c	/^int ismodifiable(ctype ct)$/;"	f
-isobject	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isobject(ctype ct)$/;"	f
 isobject	main.c	/^int isobject(ctype ct)$/;"	f
-isptr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isptr(ctype ct)$/;"	f
 isptr	main.c	/^int isptr(ctype ct)$/;"	f
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
-isscalar	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isscalar(ctype ct)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
 isshort	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isshort;$/;"	m	struct:__anon19::__anon26
-isstorespec	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isstorespec(int k)$/;"	f
 isstorespec	main.c	/^int isstorespec(int k)$/;"	f
 issub	datastruct.c	/^int issub(set *sub, set *sup)$/;"	f
-istypequal	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int istypequal(int k)$/;"	f
 istypequal	main.c	/^int istypequal(int k)$/;"	f
-istypespec	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int istypespec(int k)$/;"	f
 istypespec	main.c	/^int istypespec(int k)$/;"	f
 isunsigned	defs.h	/^    int isunsigned;$/;"	m	struct:__anon1::__anon7
 isunsigned	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isunsigned;$/;"	m	struct:__anon19::__anon25
-isvolat	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int isvolat(ctype ct)$/;"	f
 isvolat	defs.h	/^    int isvolat;$/;"	m	struct:__anon10::__anon12
 isvolat	defs.h	/^    int isvolat;$/;"	m	struct:__anon10::__anon16
 isvolat	main.c	/^int isvolat(ctype ct)$/;"	f
@@ -702,7 +654,6 @@ last	datastruct.c	/^void *last(list *l)$/;"	f
 lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
-leftend	/home/wacfeld/Dropbox/matrix/comp/main.c	14;"	d	file:
 leftend	main.c	14;"	d	file:
 leftend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	13;"	d	file:
 leistype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int leistype(link *l, int type)$/;"	f
@@ -718,26 +669,20 @@ link	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef stru
 link	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} link;$/;"	t	typeref:struct:link
 link_type	defs.h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
 link_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum link_type {EXPR_L, TOK_L};$/;"	g
-lisatom	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
 lisatom	main.c	/^int lisatom(link *l, enum atom_type a)$/;"	f
 lisatom	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisatom(link *l, enum atom_type a)$/;"	f
 liscomma	unused/is.c	/^int liscomma(link *l)$/;"	f
-lisin	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int lisin(link *l, int num, int *tokl)$/;"	f
 lisin	main.c	/^int lisin(link *l, int num, int *tokl)$/;"	f
 lisin	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisin(link *l, int num, int *tokl)$/;"	f
 lisop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisop(link *l, int o)$/;"	f
 list	datastruct.h	/^typedef set list; \/\/ same data structure, different functions$/;"	t
 listget	datastruct.c	/^void listget(list *l, int  i, void *m)$/;"	f
-listok	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int listok(link *l, enum tok_type t)$/;"	f
 listok	main.c	/^int listok(link *l, enum tok_type t)$/;"	f
 listok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int listok(link *l, enum tok_type t)$/;"	f
-lisunaryop	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int lisunaryop(link *l) \/\/ & * + - ~ !$/;"	f
 lisunaryop	main.c	/^int lisunaryop(link *l) \/\/ & * + - ~ !$/;"	f
 lisunaryop	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lisunaryop(link *l) \/\/ & * + - ~ !$/;"	f
-ll2tokl	/home/wacfeld/Dropbox/matrix/comp/main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 ll2tokl	main.c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
 ll2tokl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token *ll2tokl(link *ll) \/\/ linked list to NOTOK-terminated token list$/;"	f
-lllen	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int lllen(link *l)$/;"	f
 lllen	main.c	/^int lllen(link *l)$/;"	f
 lllen	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int lllen(link *l)$/;"	f
 lo	defs.h	/^  int lo;$/;"	m	struct:stat
@@ -747,7 +692,6 @@ locloc	defs.h	/^  int locloc; \/\/ offset from ebp$/;"	m	struct:location
 lst	defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lst	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lval	defs.h	/^  int lval;$/;"	m	struct:expr
-main	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int main()$/;"	f
 main	dcl/main.c	/^int main()$/;"	f
 main	fixedlithier.c	/^int main(void) {$/;"	f
 main	main.c	/^int main()$/;"	f
@@ -757,43 +701,31 @@ main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	unused/test.s	/^main:$/;"	l
 main	unused/test2.s	/^main:$/;"	l
-makecast	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *makecast(ctype ct, expr *e)$/;"	f
 makecast	main.c	/^expr *makecast(ctype ct, expr *e)$/;"	f
-makecompos	/home/wacfeld/Dropbox/matrix/comp/main.c	/^ctype makecompos(ctype ct1, ctype ct2, int qualmode)$/;"	f
 makecompos	main.c	/^ctype makecompos(ctype ct1, ctype ct2, int qualmode)$/;"	f
 makecomposite	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void makecomposite(decl *t1, decl *t2)$/;"	f
-makedt	/home/wacfeld/Dropbox/matrix/comp/main.c	/^ctype makedt(int dt)$/;"	f
 makedt	main.c	/^ctype makedt(int dt)$/;"	f
-makedtcast	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
 makedtcast	main.c	/^expr *makedtcast(int dt, expr *e)$/;"	f
-makeexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	main.c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
 makeexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *makeexpr(int type, int optype, int numargs, ...)$/;"	f
-makeintexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *makeintexpr(int x)$/;"	f
 makeintexpr	main.c	/^expr *makeintexpr(int x)$/;"	f
 makelist	datastruct.c	/^list *makelist(int size)$/;"	f
-makesametype	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 makestack	datastruct.c	/^stack *makestack(int size)$/;"	f
-mark_esc	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
-mark_quot	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	42;"	d
-multiapp	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void multiapp(char *dest, int *max, int n, ...)$/;"	f
 multiapp	main.c	/^void multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
 name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon31::__anon36
-nexttok	/home/wacfeld/Dropbox/matrix/comp/main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
-nexttoplevel	/home/wacfeld/Dropbox/matrix/comp/main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
 nexttoplevel	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
 nline	defs.h	33;"	d
@@ -807,156 +739,116 @@ optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int opty
 optype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum optype$/;"	g
 params	defs.h	/^    decl *params; \/\/ list of decls$/;"	m	struct:__anon10::__anon14
 params	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    list *params; \/\/ list of decls$/;"	m	struct:__anon31::__anon35
-parseaddexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	main.c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseaddexpr(link *start)$/;"	f
 parseaddexpr	unused/oldparser.c	/^link *parseaddexpr(link *chain)$/;"	f
-parseandexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseandexpr(link *start)$/;"	f
 parseandexpr	main.c	/^expr *parseandexpr(link *start)$/;"	f
 parseandexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseandexpr(link *start)$/;"	f
 parseandexpr	unused/oldparser.c	/^link *parseandexpr(link *chain)$/;"	f
-parsearglist	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsearglist(link *start)$/;"	f
 parsearglist	main.c	/^expr *parsearglist(link *start)$/;"	f
 parsearglist	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsearglist(link *start)$/;"	f
-parseasgnexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseasgnexpr(link *start)$/;"	f
 parseasgnexpr	main.c	/^expr *parseasgnexpr(link *start)$/;"	f
 parseasgnexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseasgnexpr(link *start)$/;"	f
-parsecastexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsecastexpr(link *start)$/;"	f
 parsecastexpr	main.c	/^expr *parsecastexpr(link *start)$/;"	f
 parsecastexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsecastexpr(link *start)$/;"	f
 parsecastunaryexpr	unused/oldparser.c	/^link *parsecastunaryexpr(link *chain)$/;"	f
-parsecondexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	main.c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	unused/oldparser.c	/^link *parsecondexpr(link *chain)$/;"	f
-parsedecl	/home/wacfeld/Dropbox/matrix/comp/main.c	/^decl * parsedecl(token *toks)$/;"	f
 parsedecl	main.c	/^decl * parsedecl(token *toks)$/;"	f
 parsedecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl * parsedecl(token *toks)$/;"	f
-parseeqexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	main.c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	unused/oldparser.c	/^link *parseeqexpr(link *chain)$/;"	f
-parseexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseexpr(link *start)$/;"	f
 parseexpr	main.c	/^expr *parseexpr(link *start)$/;"	f
 parseexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseexpr(link *start)$/;"	f
-parseinit	/home/wacfeld/Dropbox/matrix/comp/main.c	/^struct init *parseinit(link *start)$/;"	f
 parseinit	main.c	/^struct init *parseinit(link *start)$/;"	f
 parseinit	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^struct init *parseinit(link *start)$/;"	f
-parselandexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parselandexpr(link *start)$/;"	f
 parselandexpr	main.c	/^expr *parselandexpr(link *start)$/;"	f
 parselandexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parselandexpr(link *start)$/;"	f
 parselandexpr	unused/oldparser.c	/^link *parselandexpr(link *chain)$/;"	f
-parselorexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parselorexpr(link *start)$/;"	f
 parselorexpr	main.c	/^expr *parselorexpr(link *start)$/;"	f
 parselorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parselorexpr(link *start)$/;"	f
 parselorexpr	unused/oldparser.c	/^link *parselorexpr(link *chain)$/;"	f
-parseltrbinexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *), expr *(*side)(link *))$/;"	f
 parseltrbinexpr	main.c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *), expr *(*side)(link *))$/;"	f
 parseltrbinexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes, expr *(*down)(link *))$/;"	f
-parsemultexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	main.c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsemultexpr(link *start)$/;"	f
 parsemultexpr	unused/oldparser.c	/^link *parsemultexpr(link *chain)$/;"	f
-parseorexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	main.c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseorexpr(link *start)$/;"	f
 parseorexpr	unused/oldparser.c	/^link *parseorexpr(link *chain)$/;"	f
-parseparamlist	/home/wacfeld/Dropbox/matrix/comp/main.c	/^list *parseparamlist(link *start)$/;"	f
 parseparamlist	main.c	/^list *parseparamlist(link *start)$/;"	f
 parseparamlist	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^list *parseparamlist(link *start)$/;"	f
-parsepostexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	main.c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsepostexpr(link *start)$/;"	f
 parsepostexpr	unused/oldparser.c	/^link *parsepostexpr(link *chain)$/;"	f
-parseprimexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseprimexpr(link *start)$/;"	f
 parseprimexpr	main.c	/^expr *parseprimexpr(link *start)$/;"	f
 parseprimexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseprimexpr(link *start)$/;"	f
 parseprimexpr	unused/oldparser.c	/^link *parseprimexpr(link *chain)$/;"	f
-parserelexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parserelexpr(link *start)$/;"	f
 parserelexpr	main.c	/^expr *parserelexpr(link *start)$/;"	f
 parserelexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parserelexpr(link *start)$/;"	f
 parserelexpr	unused/oldparser.c	/^link *parserelexpr(link *chain)$/;"	f
-parseshiftexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	main.c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	unused/oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
-parsestat	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *parsestat(struct stat *stat, stack *scope)$/;"	f
 parsestat	main.c	/^char *parsestat(struct stat *stat, stack *scope)$/;"	f
-parsetypename	/home/wacfeld/Dropbox/matrix/comp/main.c	/^ctype parsetypename(link *start)$/;"	f
 parsetypename	main.c	/^ctype parsetypename(link *start)$/;"	f
 parsetypename	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsetypename(link *start)$/;"	f
-parseunaryexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f
 parseunaryexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseunaryexpr(link *start)$/;"	f
-parsexorexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	main.c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsexorexpr(link *start)$/;"	f
 parsexorexpr	unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 peek	datastruct.c	/^void peek(stack *s, void *m)$/;"	f
 pop	datastruct.c	/^void pop(stack *s, void *m)$/;"	f
-proctokens	/home/wacfeld/Dropbox/matrix/comp/main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
 proctokens	main.c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
 proctokens	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^list *proctokens(char *src, char *esc, char *quot)$/;"	f
-proctoplevel	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void proctoplevel(token *toks)$/;"	f
 proctoplevel	main.c	/^void proctoplevel(token *toks)$/;"	f
-proctypespecs	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int proctypespecs(set *ts)$/;"	f
 proctypespecs	main.c	/^int proctypespecs(set *ts)$/;"	f
 proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void proctypespecs(decl *ct)$/;"	f
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
 ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon33
 push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
-putctype	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void putctype(ctype ct)$/;"	f
 putctype	main.c	/^void putctype(ctype ct)$/;"	f
 putctype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putctype(ctype *ct)$/;"	f
 putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	23;"	d
 putd	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	3;"	d	file:
-putdecl	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void putdecl(decl *dcl)$/;"	f
 putdecl	main.c	/^void putdecl(decl *dcl)$/;"	f
 putdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putdecl(decl *dcl)$/;"	f
-putexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void putexpr(expr *e, int space)$/;"	f
 putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
 putexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putexpr(expr *e, int space)$/;"	f
 putf	defs.h	25;"	d
 putf	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	25;"	d
-putinit	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void putinit(struct init *init, int space)$/;"	f
 putinit	main.c	/^void putinit(struct init *init, int space)$/;"	f
 putinit	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putinit(struct init *init, int space)$/;"	f
-putll	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putll	main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putll	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	defs.h	24;"	d
 putp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	24;"	d
 putp	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	4;"	d	file:
-puttok	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void puttok(token t)$/;"	f
 puttok	main.c	/^void puttok(token t)$/;"	f
 puttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttok(token t)$/;"	f
-puttypemod	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void puttypemod(typemod ts)$/;"	f
 puttypemod	main.c	/^void puttypemod(typemod ts)$/;"	f
 puttypemod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttypemod(typemod ts)$/;"	f
-qualcmp	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int qualcmp(int c1, int c2, int v1, int v2, int mode)$/;"	f
 qualcmp	main.c	/^int qualcmp(int c1, int c2, int v1, int v2, int mode)$/;"	f
 qualmode	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	g
 read	defs.h	40;"	d
 read	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	40;"	d
-rem_comments	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_comments	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_front	datastruct.c	/^void rem_front(list *l)$/;"	f
 resize	defs.h	36;"	d
 resize	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	36;"	d
-resnasm	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *resnasm(int size)$/;"	f
 resnasm	main.c	/^char *resnasm(int size)$/;"	f
 reverse	datastruct.c	/^void reverse(list *l)$/;"	f
 right	defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
 right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::link
-rightend	/home/wacfeld/Dropbox/matrix/comp/main.c	12;"	d	file:
 rightend	main.c	12;"	d	file:
 rightend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
-scope	/home/wacfeld/Dropbox/matrix/comp/main.c	/^stack *scope;$/;"	v
-scope	main.c	/^stack *scope;$/;"	v
-searchscope	/home/wacfeld/Dropbox/matrix/comp/main.c	/^decl *searchscope(char *ident)$/;"	f
+scope	main.c	/^stack *scope = NULL;$/;"	v
 searchscope	main.c	/^decl *searchscope(char *ident)$/;"	f
 section	template/main.asm	/^section .bss$/;"	l
 section	template/main.asm	/^section .data$/;"	l
@@ -968,22 +860,19 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	/home/wacfeld/Dropbox/matrix/comp/main.c	1241;"	d	file:
-sever	main.c	1241;"	d	file:
+sever	main.c	1251;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
-showlithier	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
-sizeoftype	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int sizeoftype(ctype ct)$/;"	f
 sizeoftype	main.c	/^int sizeoftype(ctype ct)$/;"	f
 sizeoftype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int sizeoftype(ctype *ct)$/;"	f
 specmap	defs.h	/^int specmap[] = {$/;"	v
-splice	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void splice(char *src)$/;"	f
 splice	main.c	/^void splice(char *src)$/;"	f
 splice	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void splice(char *src)$/;"	f
 stack	datastruct.h	/^typedef set stack; \/\/ idem$/;"	t
+startfundef	main.c	/^int startfundef = 0;$/;"	v
 stat	defs.h	/^struct stat$/;"	s
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
 stattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
@@ -991,31 +880,22 @@ storespec	defs.h	/^  int storespec;$/;"	m	struct:decl
 storespec	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, AUTO_S};$/;"	g
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum storespec storespec;$/;"	m	struct:__anon28	typeref:enum:__anon28::storespec
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	g
-strapp	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void strapp(char *dest, int *max, char *src)$/;"	f
 strapp	main.c	/^void strapp(char *dest, int *max, char *src)$/;"	f
-stray_backslash	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 stray_backslash	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 streq	defs.h	27;"	d
 streq	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	27;"	d
-striskeyword	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	main.c	/^int striskeyword(char *s)$/;"	f
 striskeyword	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int striskeyword(char *s)$/;"	f
 strlit	defs.h	/^  char *strlit; \/\/ string literals! only used occasionally$/;"	m	struct:expr
 strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
-strnew	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *strnew(int n, ...)$/;"	f
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
-testerr	/home/wacfeld/Dropbox/matrix/comp/main.c	23;"	d	file:
 testerr	main.c	23;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
-throw	/home/wacfeld/Dropbox/matrix/comp/main.c	25;"	d	file:
 throw	main.c	25;"	d	file:
-tisatom	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int tisatom(token t, enum atom_type a)$/;"	f
 tisatom	main.c	/^int tisatom(token t, enum atom_type a)$/;"	f
-tiskeyword	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int tiskeyword(token t, enum keyword k)$/;"	f
 tiskeyword	main.c	/^int tiskeyword(token t, enum keyword k)$/;"	f
-tmis	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int tmis(typemod *tm, int type)$/;"	f
 tmis	main.c	/^int tmis(typemod *tm, int type)$/;"	f
 tmlen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int tmlen;$/;"	m	struct:__anon28
 tms	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  typemod *tms;$/;"	m	struct:__anon28
@@ -1030,11 +910,9 @@ tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tok
 tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
 token	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} token;$/;"	t	typeref:union:__anon19
-tokl2ll	/home/wacfeld/Dropbox/matrix/comp/main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokl2ll	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 toks	defs.h	/^  token *toks;$/;"	m	struct:stat
-trysever	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void trysever(link *l)$/;"	f
 trysever	main.c	/^void trysever(link *l)$/;"	f
 trysever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void trysever(link *l)$/;"	f
 type	defs.h	/^    int type;$/;"	m	struct:__anon10::__anon11
@@ -1070,19 +948,14 @@ type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum link_
 type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  set *type; \/\/ multiple types at once are possible$/;"	m	struct:expr
 typemod	defs.h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon10
 typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod; \/\/ type modifier$/;"	t	typeref:union:__anon31
-unesc	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void unesc(char *src)$/;"	f
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 ungetchar	fixedlithier.c	/^int ungetchar(int c) {$/;"	f
-unqual	/home/wacfeld/Dropbox/matrix/comp/main.c	/^ctype unqual(ctype ct)$/;"	f
 unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
-usualarith	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
-validct	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int validct(ctype ct)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	unused/test.s	/^x:$/;"	l
-xtod	/home/wacfeld/Dropbox/matrix/comp/main.c	/^int xtod(char c)$/;"	f
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f
 y	test.c	/^int y = (1, 2);$/;"	v

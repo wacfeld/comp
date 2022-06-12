@@ -35,6 +35,16 @@ void puttok(token t);
 
 int isdeclspec(token t);
 
+//{{{1 global mutables
+// variables which indicate the state of the parser, to provide context for different parsing modules
+
+// stack of all active declarations in lexical scope, with separators to allow masking
+// gets initialized in proctoplevel
+stack *scope = NULL;
+
+// 1 when we just entered a fundef's block statement, to indicate that a separator should not be created
+int startfundef = 0;
+
 
 //{{{ lexer
 // replaces backslash + newline with nothing
@@ -3110,9 +3120,6 @@ void usualarith(expr **e1, expr **e2)
 
 //{{{1 expression parser
 
-// will be initialized in proctoplevel
-stack *scope;
-
 // REQUIREMENTS
 // start can be anywhere in the linked list
 // use rightend() and leftend() to get it where you want
@@ -4548,7 +4555,7 @@ expr *parseprimexpr(link *start)
 //   }
 // }
 
-//{{{1 statement parser
+//{{{1 toplevel
 
 decl *searchscope(char *ident)
 {
@@ -4731,6 +4738,10 @@ void proctoplevel(token *toks)
       multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
       // parse whatever
 
+      // look at prototype, put declarations into scope
+      // figure out how to assign the arguments to parameters in funcalls
+      // set startfundef to 1
+
       // turn into assembly
       char *s = parsestat(d->fundef, scope);
       strapp(codeseg, &cs_len, s);
@@ -4851,6 +4862,8 @@ void proctoplevel(token *toks)
   printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
 }
 
+//{{{1 statement parser
+
 char *parsestat(struct stat *stat, stack *scope)
 {
   int lo = stat->lo;
@@ -4860,11 +4873,18 @@ char *parsestat(struct stat *stat, stack *scope)
 
   assert(toklen >= 1); // no empty statements
 
+  // block statements
+  if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
+  {
+    
+  }
+
   // labeled statements
   // case label
   if(tiskeyword(toks[lo], K_CASE))
   {
     // TODO only in switch. need to pass information downward.
+    // find matching colon, isolate constant expression
   }
 
   // default label
@@ -4878,7 +4898,6 @@ char *parsestat(struct stat *stat, stack *scope)
   {
     
   }
-
 
   // compound statement
   if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
@@ -4947,7 +4966,6 @@ char *parsestat(struct stat *stat, stack *scope)
     
   }
 }
-
 
 //{{{1 main
 int main()
