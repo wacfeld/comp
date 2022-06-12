@@ -4732,6 +4732,8 @@ void proctoplevel(token *toks)
     puts(d->ident);
     if(d->fundef) // if fundef, parse now
     {
+      // push separator
+      pushnull();
       // look at prototype, put declarations into scope
       
       
@@ -4864,6 +4866,46 @@ void proctoplevel(token *toks)
   printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
 }
 
+
+//{{{1 scope operations
+
+// #define pushnull() {void *null = NULL; push(scope, &null);}
+// push NULL separator onto stack
+void pushnull()
+{
+  void *null = NULL;
+  push(scope, &null);
+}
+
+// delete everything up to and including next NULL separator on scope stack
+void remtonull()
+{
+  decl *d;
+
+  // pop until NULL is popped
+  do
+  {
+    pop(scope, &d);
+  } while(d != NULL);
+}
+
+void pushdecl(decl *d)
+{
+  decl *curdcl;
+  // search backward until separator for declaration for the same identifier
+  for(int i = listlen(scope) - 1; i >= 0; i--)
+  {
+    listget(scope, i, &curdcl);
+    
+    // make sure identifiers don't equal
+    assert(!streq(curdcl->ident, d->ident));
+  }
+
+  // push new decl
+  push(scope, &d);
+}
+
+
 //{{{1 statement parser
 
 // return index of matching atom (e.x. BRACEOP and BRACECL) in token list
@@ -4888,27 +4930,6 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
   } while(dep != 0);
 
   return i - dir;
-}
-
-
-// #define pushnull() {void *null = NULL; push(scope, &null);}
-// push NULL separator onto stack
-void pushnull()
-{
-  void *null = NULL;
-  push(scope, &null);
-}
-
-// delete everything up to and including next NULL separator on scope stack
-void remtonull()
-{
-  decl *d;
-
-  // pop until NULL is popped
-  do
-  {
-    pop(scope, &d);
-  } while(d != NULL);
 }
 
 // take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code

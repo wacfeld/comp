@@ -1,7 +1,7 @@
 #include <stdio.h>
 
+int f(int y, int y);
 int main()
 {
-  printf("%d\n", asm);
 }
 

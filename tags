@@ -811,6 +811,7 @@ proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^voi
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
 ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon33
 push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
+pushdecl	main.c	/^void pushdecl(decl *d)$/;"	f
 pushnull	main.c	/^void pushnull()$/;"	f
 putctype	main.c	/^void putctype(ctype ct)$/;"	f
 putctype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putctype(ctype *ct)$/;"	f
