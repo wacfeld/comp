@@ -22,7 +22,7 @@ char *error;
 // e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
-#define throw(msg) {puts(msg);exit(1);}
+#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);exit(1);}
 
 // the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
 #define checkours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
@@ -44,6 +44,7 @@ stack *scope = NULL;
 
 // 1 when we just entered a fundef's block statement, to indicate that a separator should not be created
 int startfundef = 0;
+ctype funret = NULL;
 
 
 //{{{ lexer
@@ -2349,7 +2350,7 @@ decl * parsedecl(token *toks)
   char *ident;
   decl *dcl = malloc(sizeof(decl));
   memcpy(dcl, specs, sizeof(decl));
-  i = gettypemods(toks, i, -1, 0, &ident, &dcl->ct); // parse one declarator and move i forward accordingly, write declarator into dcl->ct
+  i = gettypemods(toks, i, -1, 0, &ident, &dcl->ct); // parse one declarator and move i forward accordingly, write type into dcl->ct
   assert(ident); // no abstract declarators
   dcl->ident = ident;
 
@@ -2777,15 +2778,46 @@ int isobject(ctype ct)
   return (!incomplete(ct)) && (!tmis(ct, TM_FUNC));
 }
 
-// disallows int arr[5][] and similar things (array of incomplete type)
+// return 1 if toplevel is qualified ptr or dat
+int isqual(ctype ct)
+{
+  if(ct->gen.type == TM_PTR)
+  {
+    return ct->ptr.isconst || ct->ptr.isvolat;
+  }
+  if(ct->gen.type == TM_DAT)
+  {
+    return ct->dat.isconst || ct->dat.isvolat;
+  }
+  return 0;
+}
+
+// disallows array of incomplete type, function returning bad type, etc.
 int validct(ctype ct)
 {
   int len = getctlen(ct);
   for(int i = 0; i < len-1; i++)
   {
+    // array of incomplete
     if(ct[i].gen.type == TM_ARR)
     {
       if(incomplete(ct+i+1))
+        return 0;
+    }
+
+    // function returning qualified type
+    if(ct[i].gen.type == TM_FUNC)
+    {
+      // no returning qualified type
+      if(isqual(ct+i+1))
+        return 0;
+
+      // no returning array
+      if(ct[i+1].gen.type == TM_ARR)
+        return 0;
+
+      // no returning function
+      if(ct[i+1].gen.type == TM_FUNC)
         return 0;
     }
   }
@@ -4806,9 +4838,13 @@ void proctoplevel(token *toks)
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
       startfundef = 1;
+      // indicate desired return type
+      funret = ct+1;
 
       // convert function body to assembly
       char *s = parsestat(d->fundef);
+
+      funret = NULL; // not necessary, but safer
 
       // append assembly to code segment
       strapp(codeseg, &cs_len, s);
@@ -4996,6 +5032,9 @@ char *parsestat(struct stat *stat)
 
       // roll back scope
       remtonull();
+
+      // move on to next statement
+      lo = end + 1;
     }
 
     // labeled statements
@@ -5082,6 +5121,26 @@ char *parsestat(struct stat *stat)
     // return
     if(tiskeyword(toks[lo], K_RETURN))
     {
+      // find semicolon
+      int end = lo + 1;
+      while(!tisatom(toks[end], SEMICOLON))
+        end++;
+
+      // expression is present
+      if(end > lo + 1)
+      {
+        // TODO
+        // evaluate exprssion, place result in eax
+        // check that type matches return type
+        throw("not supported yet");
+      }
+
+      // no expression is present
+      else
+      {
+        assert(funret); // make sure a return type has been provided
+        checkasgncompat(funret, VOID_T);
+      }
       
     }
   }

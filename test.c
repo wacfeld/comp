@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+int f()();
 
 int main()
 {
-  int x;
-  {
-    int x;
-  }
+  printf("%d\n", __STDC__);
+  
+  return 0;
 }
 

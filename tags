@@ -461,7 +461,7 @@ check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void 
 checkasgncompat	main.c	/^void checkasgncompat(ctype ct1, ctype ct2)$/;"	f
 checkours	main.c	28;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
-cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon1
+cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
 cont	defs.h	/^    char cont;$/;"	m	struct:__anon1::__anon6
@@ -538,6 +538,7 @@ fsanitize	Makefile	/^	gcc test.c -o test -ansi -pedantic -Wextra -Wall -fsanitiz
 func	defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 func	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
 fundef	defs.h	/^  struct stat *fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::stat
+funret	main.c	/^ctype funret = NULL;$/;"	v
 gen	defs.h	/^  } gen;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon2
 gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
@@ -629,6 +630,7 @@ islong	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int is
 ismodifiable	main.c	/^int ismodifiable(ctype ct)$/;"	f
 isobject	main.c	/^int isobject(ctype ct)$/;"	f
 isptr	main.c	/^int isptr(ctype ct)$/;"	f
+isqual	main.c	/^int isqual(ctype ct)$/;"	f
 isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
@@ -718,11 +720,11 @@ mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
-max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon1
+max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	42;"	d
 multiapp	main.c	/^void multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
-n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon1
+n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
 name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon31::__anon36
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
@@ -860,16 +862,16 @@ section	template/main.asm	/^section .text$/;"	l
 section	template/test.asm	/^section .bss$/;"	l
 section	template/test.asm	/^section .data$/;"	l
 section	template/test.asm	/^section .text$/;"	l
-set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon1
+set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1251;"	d	file:
+sever	main.c	1252;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
-size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon1
+size	datastruct.h	/^  int size; \/\/ size of data type$/;"	m	struct:__anon18
 sizeoftype	main.c	/^int sizeoftype(ctype ct)$/;"	f
 sizeoftype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int sizeoftype(ctype *ct)$/;"	f
 specmap	defs.h	/^int specmap[] = {$/;"	v
