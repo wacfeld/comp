@@ -1,7 +1,10 @@
 #include <stdio.h>
 
-int f(int y, int y);
 int main()
 {
+  int x;
+  {
+    int x;
+  }
 }
 

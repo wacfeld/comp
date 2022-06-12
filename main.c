@@ -4676,9 +4676,9 @@ char ident_pre[] = "ident_";
 // char function_pre[] = "fun_";
 
 // create a new stack frame at start of function
-char create_sframe[] = "push ebp\nmov ebp,esp";
+char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // destray a stack frame at end of function
-char destroy_sframe[] = "mov esp,ebp\npop ebp";
+char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -4728,30 +4728,6 @@ void proctoplevel(token *toks)
     
     assert(!d->fundef || !d->init); // can't have both
 
-    puts("hey!");
-    puts(d->ident);
-    if(d->fundef) // if fundef, parse now
-    {
-      // push separator
-      pushnull();
-      // look at prototype, put declarations into scope
-      
-      
-      // start function, create stack frame
-      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
-
-      
-      // figure out how to assign the arguments to parameters in funcalls
-      // set startfundef to 1
-
-      // turn into assembly
-      char *s = parsestat(d->fundef);
-      strapp(codeseg, &cs_len, s);
-      
-      // write assembly
-      // end function
-      multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
-    }
 
     // run through and merge decl with previous duplicates, or append new if unique
     // do this even if fundef appeared above. fundefs are a declaration and a definition at the same time.
@@ -4805,6 +4781,43 @@ void proctoplevel(token *toks)
       // alldecls[scope->n++] = d;
       push(scope, &d);
     }
+
+    // fundefs are parsed after their declaration is considered above, so that recursion is possible (the function is in its own scope)
+    if(d->fundef) // if fundef, parse now
+    {
+      // double check it's a function
+      assert(d->ct->gen.type == TM_FUNC);
+
+      // push separator
+      pushnull();
+
+      // look at prototype, put declarations into scope
+      decl *curdcl;
+      ctype ct = d->ct;
+      for(int j = 0; j < ct->func.np; j++)
+      {
+        curdcl = ct->func.params + j;
+        pushdecl(curdcl);
+      }
+      
+      // start function, create stack frame
+      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
+
+      
+      // indicate that a function is just starting (must be block statement, no pushing another separator
+      startfundef = 1;
+
+      // convert function body to assembly
+      char *s = parsestat(d->fundef);
+
+      // append assembly to code segment
+      strapp(codeseg, &cs_len, s);
+      
+      // write assembly
+      // end function (in case falls off the end)
+      multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
+    }
+    
   }
 
   // decl **scopearr = (decl **) scope->cont; // extract list from scope stack

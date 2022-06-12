@@ -480,7 +480,7 @@ cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    u_int32_
 cont	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } cont;$/;"	m	struct:link	typeref:union:link::__anon30
 corresp	main.c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
 corresp	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int corresp(int num, int *a, int *b, int x)$/;"	f
-create_sframe	main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp";$/;"	v
+create_sframe	main.c	/^char create_sframe[] = "push ebp\\nmov ebp,esp\\n";$/;"	v
 ct	defs.h	/^  ctype ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
 ct	defs.h	/^  ctype ct;$/;"	m	struct:decl
 ct	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ctype *ct; \/\/ expressions get parsed top to bottom, and then get assembled bottom to top. we get the ctypes of primary expressions and then build up, so that we always know what type everything should be$/;"	m	struct:expr
@@ -500,7 +500,7 @@ decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl
 decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon29
-destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp";$/;"	v
+destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp\\n";$/;"	v
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f

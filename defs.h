@@ -694,6 +694,8 @@ ctype unqual(ctype ct);
 
 char *parsestat(struct stat *stat);
 
+void pushdecl(decl *d);
+
 
 void pushnull();
 void remtonull();
