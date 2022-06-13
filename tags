@@ -517,6 +517,7 @@ error	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^char *error
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
+evalsimpleconstintexpr	main.c	/^dword evalsimpleconstintexpr(expr *e)$/;"	f
 exit	out/main.asm	/^exit:$/;"	l
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
 exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon30
@@ -547,6 +548,7 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon32
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
+getbits	main.c	/^char *getbits(dword dat, int size)$/;"	f
 getctlen	main.c	/^int getctlen(ctype ct)$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getdeclspecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
@@ -641,6 +643,7 @@ isquest	unused/is.c	/^int isquest(link *l)$/;"	f
 isscalar	main.c	/^int isscalar(ctype ct)$/;"	f
 isshort	defs.h	/^    int isshort;$/;"	m	struct:__anon1::__anon8
 isshort	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isshort;$/;"	m	struct:__anon19::__anon26
+issigned	main.c	/^int issigned(ctype ct)$/;"	f
 isstorespec	main.c	/^int isstorespec(int k)$/;"	f
 issub	datastruct.c	/^int issub(set *sub, set *sup)$/;"	f
 istypequal	main.c	/^int istypequal(int k)$/;"	f
@@ -766,7 +769,7 @@ parsecastunaryexpr	unused/oldparser.c	/^link *parsecastunaryexpr(link *chain)$/;
 parsecondexpr	main.c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsecondexpr(link *start)$/;"	f
 parsecondexpr	unused/oldparser.c	/^link *parsecondexpr(link *chain)$/;"	f
-parsedecl	main.c	/^decl * parsedecl(token *toks)$/;"	f
+parsedecl	main.c	/^decl * parsedecl(token *toks, int *i, int *sc)$/;"	f
 parsedecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl * parsedecl(token *toks)$/;"	f
 parseeqexpr	main.c	/^expr *parseeqexpr(link *start)$/;"	f
 parseeqexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseeqexpr(link *start)$/;"	f
@@ -881,7 +884,7 @@ set	datastruct.h	/^} set;$/;"	t	typeref:struct:__anon18
 seteq	datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	datastruct.c	/^int setrem(set *s, void *m)$/;"	f
-sever	main.c	1269;"	d	file:
+sever	main.c	1278;"	d	file:
 sever	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
 shift_front	datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
@@ -902,7 +905,6 @@ storespec	defs.h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S, REGISTER_S, A
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  enum storespec storespec;$/;"	m	struct:__anon28	typeref:enum:__anon28::storespec
 storespec	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum storespec {NOSPEC = 0, EXTERN_S, STATIC_S};$/;"	g
 strapp	main.c	/^char *strapp(char *dest, int *max, char *src)$/;"	f
-strapp	test.c	/^void strapp(char *dest, int *max, char *src)$/;"	f
 stray_backslash	main.c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 stray_backslash	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void stray_backslash(char *src, char *esc, char *quot)$/;"	f
 streq	defs.h	27;"	d

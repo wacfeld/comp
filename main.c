@@ -64,7 +64,8 @@ int startfundef = 0;
 ctype funret = NULL;
 
 
-//{{{ lexer
+//{{{1 lexer
+
 // replaces backslash + newline with nothing
 void splice(char *src)
 {
@@ -581,6 +582,7 @@ whitespace:
       free(str); // no memory leaks to be found here, maybe
 
       t->integer.cont = num;
+      // assigning any smaller type to dword (u_int32_t) automatically does sign extension
 
       return t;
     }
@@ -716,7 +718,7 @@ leaddot:
     unesc(str); // convert escape sequences into the real deal
     assert(strlen(str) == 1); // the final literalized character should be unaccompanied
 
-    char chr;
+    unsigned char chr;
     chr = str[0];
     
     t->gen.type = CHAR;
@@ -1063,6 +1065,13 @@ int isintegral(ctype ct)
     return 0;
   int dt = ct->dat.dt;
   return dt == CHAR_T || dt == UCHAR_T || dt == INT_T || dt == UINT_T || dt == SINT_T || dt == LINT_T || dt == USINT_T || dt == ULINT_T;
+}
+
+// check if integral type is of the signed variety
+int issigned(ctype ct)
+{
+  assert(isintegral(ct));
+  return dt == CHAR_T == dt == INT_T == dt == SINT_T == dt == LINT_T;
 }
 
 // integral or floating
@@ -2329,34 +2338,36 @@ struct init *parseinit(link *start)
 }
 
 
+
 // read first declaration from array of tokens, and do things about it
 // returns NULL if runs into NOTOK
-decl * parsedecl(token *toks)
+decl * parsedecl(token *toks, int *i, int *sc)
 {
   // declaration *decl = malloc(sizeof(decl));
   
-  static int i = 0;
+  // static int i = 0;
   static decl *specs = NULL; // contains decl specs, not typemods
   static int first = 1; // indicates if this can be a function definition (must be first and only declarator)
   // when we encounter a semicolon we reset it to NULL, indicating that the decl-spec decl-init grouping has ended (e.x. int a=5, *b; is one grouping)
 
-  if(!toks) // reset if passed NULL
-  {
-    i = 0;
-    specs = NULL;
-    return NULL; // return value doesn't matter
-  }
+  assert(toks);
+  // if(!toks) // reset if passed NULL
+  // {
+  //   i = 0;
+  //   specs = NULL;
+  //   return NULL; // return value doesn't matter
+  // }
 
-  if(toks[i].gen.type == NOTOK) // end of token stream
+  if(toks[*i].gen.type == NOTOK) // end of token stream
   {
     return NULL;
   }
-  assert(!isatom(toks+i, SEMICOLON)); // not allowed in C90
+  assert(!isatom(toks+*i, SEMICOLON)); // not allowed in C90
   
   if(!specs) // read new decl specs
   {
     first = 1; // start anew
-    specs = getdeclspecs(toks, &i); // parse declaration specifiers and move i forward past them all
+    specs = getdeclspecs(toks, i); // parse declaration specifiers and move i forward past them all
   }
   
   // now deal with a single declarator + optional initializer, or function definition
@@ -2367,13 +2378,13 @@ decl * parsedecl(token *toks)
   char *ident;
   decl *dcl = malloc(sizeof(decl));
   memcpy(dcl, specs, sizeof(decl));
-  i = gettypemods(toks, i, -1, 0, &ident, &dcl->ct); // parse one declarator and move i forward accordingly, write type into dcl->ct
+  *i = gettypemods(toks, *i, -1, 0, &ident, &dcl->ct); // parse one declarator and move i forward accordingly, write type into dcl->ct
   assert(ident); // no abstract declarators
   dcl->ident = ident;
 
   int tmlen = getctlen(dcl->ct);
 
-  if(isatom(toks+i, BRACEOP)) // function definition
+  if(isatom(toks+ *i, BRACEOP)) // function definition
   {
     // make sure first place
     assert(first);
@@ -2386,21 +2397,21 @@ decl * parsedecl(token *toks)
     // put the range of the whole function definition into fd
     struct stat *fd = malloc(sizeof(struct stat));
     fd->toks = toks;
-    fd->lo = i;
+    fd->lo = *i;
 
     // find matching brace
     int bracedep = 0;
     do
     {
-      if(isatom(toks + i, BRACEOP)) bracedep++;
-      if(isatom(toks + i, BRACECL)) bracedep--;
+      if(isatom(toks + *i, BRACEOP)) bracedep++;
+      if(isatom(toks + *i, BRACECL)) bracedep--;
       assert(bracedep >= 0);
-      assert(toks[i].gen.type != NOTOK);
+      assert(toks[*i].gen.type != NOTOK);
 
-      i++;
+      (*i)++;
     } while(bracedep > 0);
 
-    fd->hi = i-1; // therefore hi is inclusize, not exclusive
+    fd->hi = *i -1; // therefore hi is inclusive, not exclusive
     dcl->fundef = fd;
 
     free(specs); // end of declaration group
@@ -2414,14 +2425,14 @@ decl * parsedecl(token *toks)
   }
 
   first = 0; // claim first place
-  if(isatom(toks + i, EQ)) // initializer follows
+  if(isatom(toks + *i, EQ)) // initializer follows
   {
-    i++; // move over =
+    (*i)++; // move over =
 
     // find terminating semicolon or comma
     // very similar to nexttoplevel, but on a token list
     // not used often enough to warrant its own function
-    int end = i, dep = 0;
+    int end = *i, dep = 0;
     while(1)
     {
       if((isatom(toks + end, COMMA) || isatom(toks + end, SEMICOLON)) && dep == 0)
@@ -2439,14 +2450,14 @@ decl * parsedecl(token *toks)
       end++;
     }
 
-    assert(end != i);
+    assert(end != *i);
 
-    link *chain = tokl2ll(toks + i, end - i); // turn the initializer into a token list
+    link *chain = tokl2ll(toks + *i, end - *i); // turn the initializer into a token list
 
     struct init *init = parseinit(chain);
 
     dcl->init = init;
-    i = end; // move over to comma or semicolon
+    *i = end; // move over to comma or semicolon
   }
   else // no initializer
   {
@@ -2454,16 +2465,22 @@ decl * parsedecl(token *toks)
   }
 
   // check what's terminating
-  assert(isatom(toks + i, COMMA) || isatom(toks + i, SEMICOLON));
-  if(isatom(toks + i, SEMICOLON)) // end of declaration grouping
+  assert(isatom(toks + *i, COMMA) || isatom(toks + *i, SEMICOLON));
+  if(isatom(toks + *i, SEMICOLON)) // end of declaration grouping
   {
     free(specs);
     specs = NULL;
-    i++;
+    *i++;
+
+    // indicate semicolon was reached, if the caller requested to be notified of it
+    if(sc)
+    {
+      *sc = 1;
+    }
   }
   else // comma, simply move over
   {
-    i++;
+    *i++;
   }
 
   return dcl;
@@ -4524,7 +4541,9 @@ expr *parseprimexpr(link *start)
     else
       newe->ct = makedt(INT_T);
 
-    newe->dat = t->integer.cont;
+    // newe->dat = t->integer.cont;
+    newe->dat = 0;
+    memcpy(&newe->dat, &t->integer.cont, 
   }
 
   if(t->gen.type == CHAR)
@@ -4578,6 +4597,21 @@ expr *parseprimexpr(link *start)
 
 //{{{1 constant expressions
 
+// special case, for our limited implementation: all integral constants must be a single primary expression
+dword evalsimpleconstintexpr(expr *e)
+{
+  assert(isintegral(e->ct)); // i.e. INT_O or CHAR_O
+
+  dword dat = e->dat;
+
+  // sign extension has already been performed automatically if necessary
+
+  // get size of the integral type it is (short, long, char, etc.)
+  int size = sizeoftype(e->ct);
+  
+  return dat;
+}
+
 // evaluate a constant expression at compile time
 // returns NULL if invalid operators, operands, etc.
 // expr *evalconstexpr(expr *e, int integral)
@@ -4606,29 +4640,7 @@ expr *parseprimexpr(link *start)
 //   }
 // }
 
-//{{{1 toplevel
-
-decl *searchscope(char *ident)
-{
-  decl **dcls = (decl **) scope->cont;
-  decl *d;
-  
-  // search stack from newest (innermost) to oldest (outermost)
-  for(int i = scope->n - 1; i >= 0; i--)
-  {
-    if(!dcls[i]) // NULL separator
-      continue;
-
-    // found same ident
-    if(streq(dcls[i]->ident, ident))
-    {
-      return dcls[i];
-    }
-  }
-
-  // couldn't find
-  return NULL;
-}
+//{{{1 string operations
 
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
@@ -4726,6 +4738,50 @@ char *resnasm(int size)
   }
 }
 
+// getbits(256+1, 1) -> "0b00000001"
+// getbits(256+1, 4) -> "0b[lots of 0s]100000001"
+// size is in bytes
+char *getbits(dword dat, int size)
+{
+  int bitsize = size * 8;
+
+  char *s = malloc(bitsize + 1); // number of bits + null terminator
+  
+  // write bits one at a time backwards into s
+  for(int i = 1; i <= bitsize; i++)
+  {
+    s[bitsize - i] = dat % 2;
+    dat >>= 1;
+  }
+
+  s[bitsize] = 0; // null terminate
+}
+
+
+//{{{1 toplevel
+
+decl *searchscope(char *ident)
+{
+  decl **dcls = (decl **) scope->cont;
+  decl *d;
+  
+  // search stack from newest (innermost) to oldest (outermost)
+  for(int i = scope->n - 1; i >= 0; i--)
+  {
+    if(!dcls[i]) // NULL separator
+      continue;
+
+    // found same ident
+    if(streq(dcls[i]->ident, ident))
+    {
+      return dcls[i];
+    }
+  }
+
+  // couldn't find
+  return NULL;
+}
+
 
 // prefix for act as namespaces to avoid conflicting with each other and builtin features of nasm
 char ident_pre[] = "ident_";
@@ -4760,7 +4816,8 @@ void proctoplevel(token *toks)
 
 
   decl *d;
-  while((d = parsedecl(toks)) != NULL) // parse until NOTOK
+  int tokind = 0;
+  while((d = parsedecl(toks, &tokind, NULL)) != NULL) // parse until NOTOK
   {
     // putdecl(d);
 
@@ -4907,7 +4964,7 @@ void proctoplevel(token *toks)
       char *def = initnasm(size); // db, dw, etc.
       dataseg = multiapp(dataseg, &ds_len, 5, d->locat.globloc, " ", def, "1", "\n"); // TODO replace "1" with actual init value
     }
-    else // no init, put in bss
+    else // no init (all tentative -> 0), put in bss
     {
       int count = 0; // arrays have to reserve multiple. everything else only reserves one
       int size = 0;
@@ -5195,7 +5252,21 @@ char *parsestat(struct stat *stat)
     // penultimate: declaration
     else if(isdeclspec(toks[lo])) // decl spec -> declaration
     {
-      
+      // find terminating semicolon
+      int end = findatom(toks, lo, 1, SEMICOLON);
+
+      // while no semicolon reached, parse declarations
+      int sc = 0;
+      decl *d;
+      do
+      {
+        d = parsedecl(toks, lo, &sc);
+
+        // no fundefs indoors
+        assert(!d->fundef);
+        
+        // push the declaration
+      } while(!sc);
     }
 
     // lastly, if none of those things, expression
