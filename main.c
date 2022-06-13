@@ -1071,6 +1071,7 @@ int isintegral(ctype ct)
 int issigned(ctype ct)
 {
   assert(isintegral(ct));
+  int dt = ct->dat.dt;
   return dt == CHAR_T == dt == INT_T == dt == SINT_T == dt == LINT_T;
 }
 
@@ -2470,7 +2471,7 @@ decl * parsedecl(token *toks, int *i, int *sc)
   {
     free(specs);
     specs = NULL;
-    *i++;
+    (*i)++;
 
     // indicate semicolon was reached, if the caller requested to be notified of it
     if(sc)
@@ -2480,7 +2481,7 @@ decl * parsedecl(token *toks, int *i, int *sc)
   }
   else // comma, simply move over
   {
-    *i++;
+    (*i)++;
   }
 
   return dcl;
@@ -4541,9 +4542,7 @@ expr *parseprimexpr(link *start)
     else
       newe->ct = makedt(INT_T);
 
-    // newe->dat = t->integer.cont;
-    newe->dat = 0;
-    memcpy(&newe->dat, &t->integer.cont, 
+    newe->dat = t->integer.cont;
   }
 
   if(t->gen.type == CHAR)
@@ -4823,6 +4822,7 @@ void proctoplevel(token *toks)
   while((d = parsedecl(toks, &tokind, NULL)) != NULL) // parse until NOTOK
   {
     // putdecl(d);
+    // putd(tokind);
 
     assert(d->ident); // probably not necessary but good to check that it exists
 
@@ -4963,11 +4963,12 @@ void proctoplevel(token *toks)
 
       // TODO evaluate constant expr init
 
-      
-      
       int size = sizeoftype(d->ct);
+      expr *e = d->init->e;
+      char *value = getbits(e->dat, size);
+
       char *def = initnasm(size); // db, dw, etc.
-      dataseg = multiapp(dataseg, &ds_len, 5, d->locat.globloc, " ", def, "1", "\n"); // TODO replace "1" with actual init value
+      dataseg = multiapp(dataseg, &ds_len, 6, d->locat.globloc, " ", def, " ", value, "\n"); // TODO replace "1" with actual init value
     }
     else // no init (all tentative -> 0), put in bss
     {
@@ -5029,6 +5030,7 @@ void remtonull()
   } while(d != NULL);
 }
 
+// push declaration to stack, search until separator for identifier collisions
 void pushdecl(decl *d)
 {
   decl *curdcl;
@@ -5257,7 +5259,7 @@ char *parsestat(struct stat *stat)
     // penultimate: declaration
     else if(isdeclspec(toks[lo])) // decl spec -> declaration
     {
-      // find terminating semicolon
+      // find terminating semicolon, just to confirm that it exists
       int end = findatom(toks, lo, 1, SEMICOLON);
 
       // while no semicolon reached, parse declarations
@@ -5265,7 +5267,7 @@ char *parsestat(struct stat *stat)
       decl *d;
       do
       {
-        d = parsedecl(toks, lo, &sc);
+        d = parsedecl(toks, &lo, &sc);
 
         // no fundefs indoors
         assert(!d->fundef);

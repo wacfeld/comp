@@ -1,5 +1,6 @@
 # unsupported features (incomplete)
 - floating point
+- array literal initializers (int a[] = {1,2,3})
 - comments
 - enums
 - structs, unions
