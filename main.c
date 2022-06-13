@@ -62,6 +62,7 @@ stack *scope = NULL;
 // 1 when we just entered a fundef's block statement, to indicate that a separator should not be created
 int startfundef = 0;
 ctype funret = NULL;
+int framesize = 0;
 
 
 //{{{1 lexer
@@ -4914,6 +4915,7 @@ void proctoplevel(token *toks)
       {
         curdcl = ct->func.params + j;
         pushdecl(curdcl);
+        // LEH have to modify the real stack too, set locats
       }
       
       // start function, create stack frame
@@ -4924,6 +4926,9 @@ void proctoplevel(token *toks)
       startfundef = 1;
       // indicate desired return type
       funret = ct+1;
+
+      // indicate start of new stack frame
+      framesize = 0;
 
       // convert function body to assembly
       char *s = parsestat(d->fundef);
@@ -5268,11 +5273,22 @@ char *parsestat(struct stat *stat)
       do
       {
         d = parsedecl(toks, &lo, &sc);
+        assert(d);
+        ctype ct = d->ct;
+        int size = sizeoftype(ct);
 
         // no fundefs indoors
         assert(!d->fundef);
         
-        // push the declaration
+        // push the declaration onto the scope stack
+        pushdecl(d);
+        
+        // figure out where it goes on the real stack
+        framesize += size;
+        d->locat = {0, NULL, -framesize}; // give local location, offset from base pointer
+
+
+        // initialize if necessary
       } while(!sc);
     }
 

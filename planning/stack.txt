@@ -1,9 +1,9 @@
 stack:
-p1
-p2
-p3
-eip
-old ebp <- ebp
-l1
-l2
-l3 <- esp
+  p1
+  p2
+8 p3
+4 eip
+0 old ebp <- ebp
+  l1
+  l2
+  l3 <- esp
