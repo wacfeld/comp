@@ -1,6 +1,7 @@
 //{{{1 overhead
 #include "defs.h"
 #include "datastruct.h"
+#include <execinfo.h>
 
 // list *dam = makelist(sizeof(void *)); // dynamically allocated memory, to be freed all at once later
 
@@ -22,7 +23,6 @@ char *error;
 // e.x. sizeof * a
 #define testerr(e, msg) {if(!(e)) {error = msg; return NULL;}}
 
-#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);exit(1);}
 
 // the ltr bins need to check if parseltrbinexpr just went down() or found an op of its type. also it needs to check if null because we want to operate
 #define checkours(e, et) {if(!(e)) return NULL; if(!eistype((e), (et))) return (e);}
@@ -34,6 +34,23 @@ void puttok(token t);
 #define LEFT 0
 
 int isdeclspec(token t);
+
+//{{{1 debugging
+
+#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);trace();exit(1);}
+
+void trace()
+{
+  void* callstack[128];
+  int i, frames = backtrace(callstack, 128);
+  char** strs = backtrace_symbols(callstack, frames);
+  puts("===========================");
+  for (i = 0; i < frames; ++i) {
+    printf("%s\n", strs[i]);
+  }
+  puts("===========================");
+  free(strs);
+}
 
 //{{{1 global mutables
 // variables which indicate the state of the parser, to provide context for different parsing modules
@@ -3236,7 +3253,9 @@ void checkasgncompat(ctype ct1, ctype ct2)
   }
 
   else
+  {
     throw("invalid assignment types");
+  }
   
 }
 
@@ -4613,7 +4632,7 @@ decl *searchscope(char *ident)
 
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
-void strapp(char *dest, int *max, char *src)
+char *strapp(char *dest, int *max, char *src)
 {
   int len = strlen(dest) + strlen(src) + 1;
   if(len > *max)
@@ -4622,10 +4641,11 @@ void strapp(char *dest, int *max, char *src)
     *max = len;
   }
   strcat(dest, src);
+  return dest;
 }
 
 // multiappend
-void multiapp(char *dest, int *max, int n, ...)
+char *multiapp(char *dest, int *max, int n, ...)
 {
   va_list ap;
   char *s;
@@ -4634,8 +4654,9 @@ void multiapp(char *dest, int *max, int n, ...)
   for(int i = 0; i < n; i++)
   {
     s = va_arg(ap, char *);
-    strapp(dest, max, s);
+    dest = strapp(dest, max, s);
   }
+  return dest;
 }
 
 char *strnew(int n, ...)
@@ -4644,14 +4665,17 @@ char *strnew(int n, ...)
 
   int max = 1;
   char *dest = malloc(max);
+  *dest = 0;
   char *s;
 
   va_start(ap, n);
   for(int i = 0; i < n; i++)
   {
     s = va_arg(ap, char *);
-    strapp(dest, &max, s);
+    dest = strapp(dest, &max, s);
   }
+
+  return dest;
 }
 
 
@@ -4738,7 +4762,7 @@ void proctoplevel(token *toks)
   decl *d;
   while((d = parsedecl(toks)) != NULL) // parse until NOTOK
   {
-    putdecl(d);
+    // putdecl(d);
 
     assert(d->ident); // probably not necessary but good to check that it exists
 
@@ -4833,7 +4857,7 @@ void proctoplevel(token *toks)
       }
       
       // start function, create stack frame
-      multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
+      codeseg = multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
 
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
@@ -4847,11 +4871,11 @@ void proctoplevel(token *toks)
       funret = NULL; // not necessary, but safer
 
       // append assembly to code segment
-      strapp(codeseg, &cs_len, s);
+      codeseg = strapp(codeseg, &cs_len, s);
       
       // write assembly
       // end function (in case falls off the end)
-      multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
+      codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
     }
     
   }
@@ -4881,7 +4905,7 @@ void proctoplevel(token *toks)
       
       int size = sizeoftype(d->ct);
       char *def = initnasm(size); // db, dw, etc.
-      multiapp(dataseg, &ds_len, 5, d->locat.globloc, " ", def, "1", "\n"); // TODO replace "1" with actual init value
+      dataseg = multiapp(dataseg, &ds_len, 5, d->locat.globloc, " ", def, "1", "\n"); // TODO replace "1" with actual init value
     }
     else // no init, put in bss
     {
@@ -4908,9 +4932,14 @@ void proctoplevel(token *toks)
       sprintf(countstr, "%d", count); // write count into countstr
 
       char *res = resnasm(size);
-      multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+      bssseg = multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
     }
   }
+
+  // write _start function which calls main
+  
+  codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
+  
   
   printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
 }
@@ -4945,6 +4974,10 @@ void pushdecl(decl *d)
   for(int i = listlen(scope) - 1; i >= 0; i--)
   {
     listget(scope, i, &curdcl);
+
+    // reached separator, stop checking for conflicts
+    if(!curdcl)
+      break;
     
     // make sure identifiers don't equal
     assert(!streq(curdcl->ident, d->ident));
@@ -4956,6 +4989,16 @@ void pushdecl(decl *d)
 
 
 //{{{1 statement parser
+
+int findatom(token *toks, int i, int dir, enum atom_type t)
+{
+  while(!tisatom(toks[i], t))
+  {
+    i += dir;
+  }
+
+  return i;
+}
 
 // return index of matching atom (e.x. BRACEOP and BRACECL) in token list
 // gives error if goes out of bounds
@@ -4982,19 +5025,25 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
 }
 
 // take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code
+// also deals with internal declarations, which can appear mixed with statements
 char *parsestat(struct stat *stat)
 {
   int lo = stat->lo;
   int hi = stat->hi;
   token *toks = stat->toks;
-  int toklen = lo - hi + 1;
-
-  assert(toklen >= 1); // non empty
+  int toklen = hi - lo + 1;
 
   // all assembly code from the statements to be parsed will be appended to this buffer
   int assem_len = 100;
   char *assem = malloc(assem_len);
   *assem = 0;
+
+  // putd(lo);
+  // putd(hi);
+  // putd(toklen);
+  // assert(toklen >= 1); // non empty
+  // e.x. empty block statement, can start empty
+
 
   while(lo <= hi) // while there are tokens left in the given range
   {
@@ -5028,7 +5077,7 @@ char *parsestat(struct stat *stat)
       char *newassem = parsestat(&newstat);
 
       // append newassem to assem
-      strapp(assem, &assem_len, newassem);
+      assem = strapp(assem, &assem_len, newassem);
 
       // roll back scope
       remtonull();
@@ -5039,41 +5088,34 @@ char *parsestat(struct stat *stat)
 
     // labeled statements
     // case label
-    if(tiskeyword(toks[lo], K_CASE))
+    else if(tiskeyword(toks[lo], K_CASE))
     {
       // TODO only in switch. need to pass information downward.
       // find matching colon, isolate constant expression
     }
 
     // default label
-    if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
+    else if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
     {
 
     }
 
     // regular label
-    if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
+    else if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
     {
 
     }
-
-    // compound statement
-    if(tisatom(toks[lo], BRACEOP) && tisatom(toks[hi], BRACECL))
-    {
-
-    }
-
 
     // selection statements
     // if
-    if(tiskeyword(toks[lo], K_IF))
+    else if(tiskeyword(toks[lo], K_IF))
     {
       assert(tiskeyword(toks[lo+1], PARENOP));
     }
     // TODO if-else form
 
     // switch
-    if(tiskeyword(toks[lo], K_SWITCH))
+    else if(tiskeyword(toks[lo], K_SWITCH))
     {
       assert(tiskeyword(toks[lo+1], PARENOP));
     }
@@ -5081,19 +5123,19 @@ char *parsestat(struct stat *stat)
 
     // iteration statements
     // while
-    if(tiskeyword(toks[lo], K_WHILE))
+    else if(tiskeyword(toks[lo], K_WHILE))
     {
       assert(tiskeyword(toks[lo+1], PARENOP));
     }
 
     // do/while
-    if(tiskeyword(toks[lo], K_DO))
+    else if(tiskeyword(toks[lo], K_DO))
     {
 
     }
 
     // for
-    if(tiskeyword(toks[lo], K_FOR))
+    else if(tiskeyword(toks[lo], K_FOR))
     {
       assert(tiskeyword(toks[lo+1], PARENOP));
     }
@@ -5101,30 +5143,28 @@ char *parsestat(struct stat *stat)
 
     // jump statements
     // goto
-    if(tiskeyword(toks[lo], K_GOTO))
+    else if(tiskeyword(toks[lo], K_GOTO))
     {
 
     }
 
     // continue
-    if(tiskeyword(toks[lo], K_CONTINUE))
+    else if(tiskeyword(toks[lo], K_CONTINUE))
     {
 
     }
 
-    // braek
-    if(tiskeyword(toks[lo], K_BREAK))
+    // break
+    else if(tiskeyword(toks[lo], K_BREAK))
     {
 
     }
 
     // return
-    if(tiskeyword(toks[lo], K_RETURN))
+    else if(tiskeyword(toks[lo], K_RETURN))
     {
       // find semicolon
-      int end = lo + 1;
-      while(!tisatom(toks[end], SEMICOLON))
-        end++;
+      int end = findatom(toks, lo, 1, SEMICOLON);
 
       // expression is present
       if(end > lo + 1)
@@ -5139,11 +5179,33 @@ char *parsestat(struct stat *stat)
       else
       {
         assert(funret); // make sure a return type has been provided
-        checkasgncompat(funret, VOID_T);
+
+        // must be void
+        assert(ctisdt(funret, VOID_T));
       }
+      
+      // destroy stack frame, return
+      assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
+      
+      // move on
+      // we CANNOT ignore stuff after a return, because of gotos, etc.
+      lo = end + 1;
+    }
+
+    // penultimate: declaration
+    else if(isdeclspec(toks[lo])) // decl spec -> declaration
+    {
+      
+    }
+
+    // lastly, if none of those things, expression
+    else
+    {
       
     }
   }
+
+  return assem;
 }
 
 //{{{1 main
@@ -5171,8 +5233,8 @@ int main()
     resize(src, srcsize, i);
   }
   src[i] = 0; // null terminate
-  printf("%s", src);
-  puts("-------------------");
+  // printf("%s", src);
+  // puts("-------------------");
 
   char *quot = malloc(i);
   char *esc = malloc(i);
@@ -5197,13 +5259,13 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
-  // proctoplevel(toks);
+  proctoplevel(toks);
 
   // puts("---");
   // putd(trans_unit->n);
-  link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  expr *e = parseexpr(chain);
-  putexpr(e,0);
+  // expr *e = parseexpr(chain);
+  // putexpr(e,0);
 
 }

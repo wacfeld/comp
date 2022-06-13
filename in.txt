@@ -1,1 +1,9 @@
-1+2*3+3
+void f(int x)
+{
+  return;
+}
+
+void main()
+{
+  
+}

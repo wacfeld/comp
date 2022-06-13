@@ -1,5 +1,5 @@
 all: main.c datastruct.c
-	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined
+	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined -Wreturn-type
 warn: main.c datastruct.c
 	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined
 sanit: main.c datastruct.c
