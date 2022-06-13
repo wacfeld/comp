@@ -4738,23 +4738,26 @@ char *resnasm(int size)
   }
 }
 
-// getbits(256+1, 1) -> "0b00000001"
-// getbits(256+1, 4) -> "0b[lots of 0s]100000001"
+// getbits(256+1, 1) -> "00000001b"
+// getbits(256+1, 4) -> "[lots of 0s]100000001b"
 // size is in bytes
-char *getbits(dword dat, int size)
+char *getbits(u_int32_t dat, int size)
 {
   int bitsize = size * 8;
 
-  char *s = malloc(bitsize + 1); // number of bits + null terminator
+  char *s = malloc(bitsize + 2); // number of bits + b + null terminator
   
   // write bits one at a time backwards into s
   for(int i = 1; i <= bitsize; i++)
   {
-    s[bitsize - i] = dat % 2;
+    s[bitsize - i] = dat % 2 + '0';
     dat >>= 1;
   }
 
-  s[bitsize] = 0; // null terminate
+  s[bitsize] = 'b';
+  s[bitsize+1] = 0; // null terminate
+
+  return s;
 }
 
 
@@ -4959,6 +4962,8 @@ void proctoplevel(token *toks)
       // this also saves us the problem of more complicated memory reservations
 
       // TODO evaluate constant expr init
+
+      
       
       int size = sizeoftype(d->ct);
       char *def = initnasm(size); // db, dw, etc.
@@ -5289,7 +5294,8 @@ int main()
 
   // errors = makelist(sizeof(char *));
 
-  assert(sizeof(float) == 4); // there is no int32_t analog for floats. we rely on the system the compiler is running on to make sure floats work
+  // TODO
+  // assert(sizeof(float) == 4); // there is no int32_t analog for floats. we rely on the system the compiler is running on to make sure floats work
   assert(sizeof(int) >= 4); // similar but less strict because longer ints are easy to convert to shorter
 
   // for marking quoted and escaped sections

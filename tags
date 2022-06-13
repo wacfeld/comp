@@ -548,7 +548,7 @@ gen	defs.h	/^  } gen;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon20
 gen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } gen;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon32
 get	datastruct.c	/^void *get(list *l, int i) \/\/ list get$/;"	f
-getbits	main.c	/^char *getbits(dword dat, int size)$/;"	f
+getbits	main.c	/^char *getbits(u_int32_t dat, int size)$/;"	f
 getctlen	main.c	/^int getctlen(ctype ct)$/;"	f
 getdeclspecs	main.c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
 getdeclspecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^decl *getdeclspecs(token *toks, int *i)$/;"	f
@@ -834,7 +834,6 @@ putd	dcl/main.c	16;"	d	file:
 putd	defs.h	23;"	d
 putd	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	23;"	d
 putd	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	3;"	d	file:
-putd	test.c	5;"	d	file:
 putdecl	main.c	/^void putdecl(decl *dcl)$/;"	f
 putdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putdecl(decl *dcl)$/;"	f
 putexpr	main.c	/^void putexpr(expr *e, int space)$/;"	f
