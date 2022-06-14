@@ -708,4 +708,6 @@ void remtonull();
 
 void helpputexpr(expr *e, int space);
 
+expr *tokl2expr(token *toks, int lo, int hi);
+
 #endif

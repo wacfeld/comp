@@ -1892,7 +1892,18 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
       i++; // back onto last [
 
       tmod->gen.type = TM_ARR;
-      tmod->arr.len = -1; // signify incomplete type for now
+
+      if(hi-i == 1) // empty length, incomplete type
+        tmod->arr.len = -1;
+      else // otherwise calculate type now
+      {
+        expr *e = tokl2expr(toks, i+1, i+1);
+        assert(e->type == PRIM_E); // for now only trivial expressions allowed
+        assert(isintegral(e->ct));
+        tmod->arr.len = e->dat;
+      }
+      
+      // tmod->arr.len = -1; // signify incomplete type for now
       // TODO evaluate and store length (should be constant expression)
       // also make sure len > 0
 
@@ -4741,7 +4752,7 @@ char *initnasm(int size)
     // case 16:
     //   return "do";
     default:
-      throw("initnasm: invalid data size");
+      throw("invalid data size");
   }
 }
 
@@ -4763,7 +4774,7 @@ char *sizenasm(int size)
     // case 16:
     //   return "do";
     default:
-      throw("initnasm: invalid data size");
+      throw("invalid data size");
   }
 }
 
@@ -4786,7 +4797,7 @@ char *resnasm(int size)
     // case 16:
     //   return "reso";
     default:
-      throw("resnasm: invalid data size");
+      throw("invalid data size");
   }
 }
 
@@ -5414,8 +5425,7 @@ char *parsestat(struct stat *stat)
       }
 
       // convert expression to assembly, append
-      char *s = tokexpr2asm(toks, lo, end-1);
-      appmac(assem, s);
+      expr *e = tokl2expr(toks, lo, end-1);
 
       lo = end + 1;
     }
@@ -5424,17 +5434,16 @@ char *parsestat(struct stat *stat)
   return assem;
 }
 
-// token subarray -> linked list -> expr -> asm
-char *tokexpr2asm(token *toks, int lo, int hi)
+// token subarray -> linked list -> expr
+expr *tokl2expr(token *toks, int lo, int hi)
 {
   // incnlusive
-  assert lo <= hi; // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
+  assert(lo <= hi); // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
 
-  link *ll = tok2ll(toks + lo, hi - lo + 1);
+  link *ll = tokl2ll(toks + lo, hi - lo + 1);
   expr *e = parseexpr(ll);
-  char *s = evalexpr(e);
   
-  return s;
+  return e;
 }
 
 
