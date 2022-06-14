@@ -19,6 +19,7 @@
 
 #include "datastruct.h"
 
+#define fanfare(s) {puts("================");puts(s);puts("================");}
 
 #define putd(x) printf(#x ": %d\n", x)
 #define putp(x) printf(#x ": %p\n", x)

@@ -4715,6 +4715,28 @@ char *initnasm(int size)
   }
 }
 
+char *sizenasm(int size)
+{
+  switch(size)
+  {
+    case 1:
+      return "byte";
+    case 2:
+      return "word";
+    case 4:
+      return "dword";
+    // no more than 4 bytes used in this implementation
+    // case 8:
+    //   return "dq";
+    // case 10:
+    //   return "dt";
+    // case 16:
+    //   return "do";
+    default:
+      throw("initnasm: invalid data size");
+  }
+}
+
 // same as above, but for bss
 char *resnasm(int size)
 {
@@ -4736,6 +4758,30 @@ char *resnasm(int size)
     default:
       throw("resnasm: invalid data size");
   }
+}
+
+// 4 -> "+4"
+// -4 -> "-4"
+// need the sign in front for the offset
+// no bothering with converting to binary because it doesn't matter
+char *getoffstr(int off)
+{
+  // largest displacement is 32 bits -> 10 decimal digits. add on sign and null term, 12 digits
+  char *s = malloc(12);
+
+  // sign
+  if(off >= 0)
+    s[0] = '+';
+  else
+  {
+    s[0] = '-';
+    off = -off; // take absolute value
+  }
+
+  // write number in after sign
+  sprintf(s+1, "%d", off);
+
+  return s;
 }
 
 // getbits(256+1, 1) -> "00000001b"
@@ -4922,7 +4968,7 @@ void proctoplevel(token *toks)
         pushdecl(curdcl);
 
         // set location to offset, increase offset by size
-        ct->func.params[j].locat = {.global = 0, .locloc = offset};
+        ct->func.params[j].locat = (struct location) {.global = 0, .locloc = offset};
         offset += sizeoftype(ct->func.params[j].ct);
       }
 
@@ -5290,11 +5336,29 @@ char *parsestat(struct stat *stat)
         
         // figure out where it goes on the real stack
         framesize += size;
-        d->locat = {0, NULL, -framesize}; // give local location, offset from base pointer
-
+        d->locat = (struct location) {.global = 0, .locloc = -framesize}; // give local location, offset from base pointer
 
         // initialize if necessary
+        if(d->init)
+        {
+          // no lists for now
+          assert(!d->init->islist);
+          assert(d->ct->gen.type != TM_ARR);
+          
+          // string for init
+          char *initstr = getbits(d->init->e->dat, size);
+          // string for offset, incnluding plus or minus
+          char *offstr = getoffstr(d->locat.locloc);
+          // string for size (byte, word, dword)
+          char *sizestr = sizenasm(size);
+          
+          assem = multiapp(assem, &assem_len, 7,
+              "mov ", sizestr, " [ebp", offstr, "], ", initstr, "\n");
+        }
+        
       } while(!sc);
+
+      // lo is automatically moved over the semicolon by parsedecl()
     }
 
     // lastly, if none of those things, expression
