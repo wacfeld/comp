@@ -4861,7 +4861,7 @@ char ident_pre[] = "ident_";
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // destray a stack frame at end of function
-char destroy_sframe[] = "mov esp,ebp\npop ebp\n\n";
+char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -5018,7 +5018,7 @@ void proctoplevel(token *toks)
       // write assembly
       // end function (in case falls off the end)
       // codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
-      mapmac(codeseg, destroy_sframe, "ret\n");
+      mapmac(codeseg, destroy_sframe, "ret\n\n");
     }
     
   }

@@ -508,7 +508,7 @@ decl	defs.h	/^typedef struct decl decl;$/;"	t	typeref:struct:decl
 decl	defs.h	/^typedef struct decl$/;"	s
 decl	defs.h	/^} decl;$/;"	t	typeref:struct:decl
 decl	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} decl;$/;"	t	typeref:struct:__anon29
-destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp\\n\\n";$/;"	v
+destroy_sframe	main.c	/^char destroy_sframe[] = "mov esp,ebp\\npop ebp\\n";$/;"	v
 dt	defs.h	/^    int dt;$/;"	m	struct:__anon10::__anon16
 dtsize	main.c	/^int dtsize(int dt)$/;"	f
 dtsize	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int dtsize(int dt)$/;"	f
