@@ -1,7 +1,11 @@
-/* vim:filetype=c */
+/* vim:filetype=c
+*/
 int x = -5;
 
 int main()
 {
   int y = 5;
+  int z = 10;
+  char c;
+  int k = 15;
 }

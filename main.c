@@ -4848,7 +4848,7 @@ char ident_pre[] = "ident_";
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // destray a stack frame at end of function
-char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
+char destroy_sframe[] = "mov esp,ebp\npop ebp\n\n";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -4982,7 +4982,7 @@ void proctoplevel(token *toks)
       }
 
       // start function, create stack frame
-      codeseg = multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
+      codeseg = multiapp(codeseg, &cs_len, 4, "\n", d->locat.globloc, ":\n", create_sframe);
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
       startfundef = 1;
@@ -5154,6 +5154,16 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
 
   return i - dir;
 }
+
+// shortcut for strapp
+#define appmac(dest, src) {dest = strapp(dest, &dest##_len, src);}
+
+// count arguments
+#define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, N, ...) N
+#define COUNT_ARGS(...) _GET_NTH_ARG("ignored", ##__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+
+// shortcut for multiapp using COUNT_ARGS
+#define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__}
 
 // take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code
 // also deals with internal declarations, which can appear mixed with statements
@@ -5356,22 +5366,24 @@ char *parsestat(struct stat *stat)
           assert(!d->init->islist);
           assert(d->ct->gen.type != TM_ARR);
           
-          // string for init
-          char *initstr = getbits(d->init->e->dat, size);
-          // string for offset, incnluding plus or minus
-          char *offstr = getoffstr(d->locat.locloc);
-          // string for size (byte, word, dword)
-          char *sizestr = sizenasm(size);
+          appmac(assem, stackalloc(d));
+          appmac(assem, imm2stack(d, d->init->e->dat));
+          //// string for init
+          //char *initstr = getbits(d->init->e->dat, size);
+          //// string for offset, incnluding plus or minus
+          //char *offstr = getoffstr(d->locat.locloc);
+          //// string for size (byte, word, dword)
+          //char *sizestr = sizenasm(size);
 
-          // 4 -> "4"
-          char *sizenum = num2str(size);
+          //// 4 -> "4"
+          //char *sizenum = num2str(size);
           
-          // move stack pointer down
-          assem = multiapp(assem, &assem_len, 3,
-              "sub esp, ", sizenum, "\n");
-          // 
-          assem = multiapp(assem, &assem_len, 7,
-              "mov ", sizestr, " [ebp", offstr, "], ", initstr, "\n");
+          //// move stack pointer down
+          //assem = multiapp(assem, &assem_len, 3,
+          //    "sub esp, ", sizenum, "\n");
+          //// 
+          //assem = multiapp(assem, &assem_len, 7,
+          //    "mov ", sizestr, " [ebp", offstr, "], ", initstr, "\n");
         }
         
       } while(!sc);
@@ -5389,7 +5401,6 @@ char *parsestat(struct stat *stat)
   return assem;
 }
 
-#define appmac(dest, src) {char *s = src; dest = strapp(dest, &dest##_len, s);}
 
 // "sub esp, 4"
 char *stackalloc(decl *d)

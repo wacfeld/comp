@@ -4,13 +4,19 @@ ident_x dd 00000000000000000000000000000000b
 section .bss
 
 section .text
+
 ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov eax, [ebp-4]
+mov dword [ebp-4], 5
+sub esp, 4
+mov dword [ebp-8], 10
+sub esp, 4
+mov dword [ebp-13], 15
 mov esp,ebp
 pop ebp
+
 ret
 global _start
 _start:
