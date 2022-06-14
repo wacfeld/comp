@@ -85,7 +85,6 @@ COND_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  COND_E,$
 CONST_E	defs.h	/^  CONST_E,$/;"	e	enum:expr_type
 CONST_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  CONST_E,$/;"	e	enum:expr_type
 COUNT_ARGS	main.c	4668;"	d	file:
-COUNT_ARGS	test.c	11;"	d	file:
 DATASTRUCT	datastruct.h	2;"	d
 DEBUG	defs.h	32;"	d
 DEBUG	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	31;"	d
@@ -435,17 +434,14 @@ XOR_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_E,$/;
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 XOR_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_O,$/;"	e	enum:optype
 _GET_NTH_ARG	main.c	4667;"	d	file:
-_GET_NTH_ARG	test.c	10;"	d	file:
 _start	out/main.asm	/^_start:$/;"	l
 _start	template/main.asm	/^_start:$/;"	l
 _start	template/test.asm	/^_start:$/;"	l
 a	template/main.asm	/^a dd 5$/;"	d
-add1	test.c	5;"	d	file:
 alloc	defs.h	39;"	d
 alloc	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
 appmac	main.c	4663;"	d	file:
-appmac	test.c	7;"	d	file:
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 args	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon13
@@ -741,7 +737,6 @@ makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 makestack	datastruct.c	/^stack *makestack(int size)$/;"	f
 mapmac	main.c	4672;"	d	file:
-mapmac	test.c	14;"	d	file:
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
@@ -957,6 +952,7 @@ tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum tok
 tok_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum tok_type tok_type;$/;"	t	typeref:enum:tok_type
 token	defs.h	/^} token;$/;"	t	typeref:union:__anon1
 token	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} token;$/;"	t	typeref:union:__anon19
+tokexpr2asm	main.c	/^char *tokexpr2asm(token *toks, int lo, int hi)$/;"	f
 tokl2ll	main.c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokl2ll	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *tokl2ll(token *tokl, int len) \/\/ NOTOK-terminated token list to linked list$/;"	f
 tokmatch	main.c	/^int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end)$/;"	f

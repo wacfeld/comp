@@ -5413,15 +5413,28 @@ char *parsestat(struct stat *stat)
         continue;
       }
 
-      link *ll = tokl2ll(toks+lo, end-lo);
-      expr *e = parseexpr(ll);
-      putexpr(e);
+      // convert expression to assembly, append
+      char *s = tokexpr2asm(toks, lo, end-1);
+      appmac(assem, s);
 
       lo = end + 1;
     }
   }
 
   return assem;
+}
+
+// token subarray -> linked list -> expr -> asm
+char *tokexpr2asm(token *toks, int lo, int hi)
+{
+  // incnlusive
+  assert lo <= hi; // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
+
+  link *ll = tok2ll(toks + lo, hi - lo + 1);
+  expr *e = parseexpr(ll);
+  char *s = evalexpr(e);
+  
+  return s;
 }
 
 
