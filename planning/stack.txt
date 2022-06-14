@@ -1,7 +1,7 @@
 stack:
-  p1
+  p3
   p2
-8 p3
+8 p1
 4 eip
 0 old ebp <- ebp
   l1

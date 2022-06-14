@@ -4911,15 +4911,20 @@ void proctoplevel(token *toks)
       // look at prototype, put declarations into scope
       decl *curdcl;
       ctype ct = d->ct;
+
+      // offset is how far above the base pointer we are
+      // starts with the sizes of ebp and eip which are already on the stack
+      int offset = PTR_SIZE + PTR_SIZE;
+
       for(int j = 0; j < ct->func.np; j++)
       {
         curdcl = ct->func.params + j;
         pushdecl(curdcl);
-        // LEH have to modify the real stack too, set locats
+
+        // set location to offset, increase offset by size
+        ct->func.params[j].locat = {.global = 0, .locloc = offset};
+        offset += sizeoftype(ct->func.params[j].ct);
       }
-      
-      // start function, create stack frame
-      codeseg = multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
 
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
