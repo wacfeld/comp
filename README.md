@@ -33,7 +33,7 @@
 
 # build
 ```
-mkdir build
+mkdir -p build
 gcc src/main.c src/datastruct.c -o build/comp
 ```
 

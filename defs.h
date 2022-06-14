@@ -706,4 +706,6 @@ char *stack2reg(char *reg, decl *d)  ;
 void pushnull();
 void remtonull();
 
+void helpputexpr(expr *e, int space);
+
 #endif

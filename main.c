@@ -1192,7 +1192,12 @@ void putdecl(decl *dcl)
   // }
 }
 
-void putexpr(expr *e, int space)
+void putexpr(expr *e)
+{
+  helpputexpr(e, 0);
+}
+
+void helpputexpr(expr *e, int space)
 {
   // int *types = (int *) e->type->cont;
   // int nt = e->type->n;
@@ -1246,7 +1251,7 @@ void putexpr(expr *e, int space)
 
   for(int i = 0; i < e->numargs; i++)
   {
-    putexpr(e->args[i], space+2);
+    helpputexpr(e->args[i], space+2);
   }
 }
 
@@ -1257,7 +1262,7 @@ void putinit(struct init *init, int space)
 
   if(!init->islist)
   {
-    putexpr(init->e, space-2);
+    helpputexpr(init->e, space-2);
   }
   else
   {
@@ -5379,22 +5384,6 @@ char *parsestat(struct stat *stat)
           
           appmac(assem, stackalloc(d));
           appmac(assem, imm2stack(d, d->init->e->dat));
-          //// string for init
-          //char *initstr = getbits(d->init->e->dat, size);
-          //// string for offset, incnluding plus or minus
-          //char *offstr = getoffstr(d->locat.locloc);
-          //// string for size (byte, word, dword)
-          //char *sizestr = sizenasm(size);
-
-          //// 4 -> "4"
-          //char *sizenum = num2str(size);
-          
-          //// move stack pointer down
-          //assem = multiapp(assem, &assem_len, 3,
-          //    "sub esp, ", sizenum, "\n");
-          //// 
-          //assem = multiapp(assem, &assem_len, 7,
-          //    "mov ", sizestr, " [ebp", offstr, "], ", initstr, "\n");
         }
         
       } while(!sc);
@@ -5405,7 +5394,18 @@ char *parsestat(struct stat *stat)
     // lastly, if none of those things, expression
     else
     {
-      
+      int end = findatom(toks, lo, 1, SEMICOLON);
+      if(lo == end) // empty expression, move over
+      {
+        lo++;
+        continue;
+      }
+
+      link *ll = tokl2ll(toks+lo, end-lo);
+      expr *e = parseexpr(ll);
+      putexpr(e);
+
+      lo = end + 1;
     }
   }
 
