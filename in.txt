@@ -1,12 +1,9 @@
 /* vim:filetype=c
 */
-int x = -5;
-int a;
+int x = 5;
+char a;
 
 int main()
 {
-  int y = 5;
-  int z = 10;
-  char c;
-  int k = 15;
+  x+a;
 }

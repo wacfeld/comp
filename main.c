@@ -2606,7 +2606,11 @@ expr *decay(int optype, expr *e)
       etypeadd(dece, DECAY);
       dece->optype = ARR2PTR_O;
       dece->numargs = 1;
-      dece->args = &e;
+
+      // dece->args = &e;
+      dece->args = malloc(sizeof(expr *));
+      dece->args[0] = e;
+
       dece->lval = 0;
 
       e = dece; // pass on to newe
@@ -2629,7 +2633,11 @@ expr *decay(int optype, expr *e)
       etypeadd(dece, DECAY);
       dece->optype = LVAL2DAT_O;
       dece->numargs = 1;
-      dece->args = &e;
+
+      // dece->args = &e;
+      dece->args = malloc(sizeof(expr*));
+      dece->args[0] = e;
+
       dece->lval = 0; // no longer lvalue
 
       e = dece;
@@ -2659,7 +2667,11 @@ expr *decay(int optype, expr *e)
       etypeadd(dece, DECAY);
       dece->optype = FUN2PTR_O;
       dece->numargs = 1;
-      dece->args = &e;
+
+      // dece->args = &e;
+      dece->args = malloc(sizeof(expr*));
+      dece->args[0] = e;
+
       dece->lval = 0;
 
       e = dece;
