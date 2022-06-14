@@ -5389,6 +5389,45 @@ char *parsestat(struct stat *stat)
   return assem;
 }
 
+#define appmac(dest, src) {char *s = src; dest = strapp(dest, &dest##_len, s);}
+
+// "sub esp, 4"
+char *stackalloc(decl *d)
+{
+  int size = sizeoftype(d->ct);
+  char *sizestr = num2str(size);
+  
+  return strnew(3, "sub esp, ", sizestr, "\n");
+}
+
+// "mov dword [ebp-4], 3"
+char *imm2stack(decl *d, int imm)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+  char *immstr = num2str(imm);
+  
+  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", immstr, "\n");
+}
+
+// "mov dword [ebp-4], eax"
+char *reg2stack(decl *d, char *reg)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+
+  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", reg, "\n");
+}
+
+// "mov eax, dword [ebp-4]
+char *stack2reg(char *reg, decl *d)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+
+  return strnew(8, "mov ", reg, ", ", sizestr, " [ebp", offstr, "]", "\n");
+}
+
 //{{{1 main
 int main()
 {

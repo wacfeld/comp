@@ -8,7 +8,7 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov dword [ebp-4], 00000000000000000000000000000101b
+mov eax, [ebp-4]
 mov esp,ebp
 pop ebp
 ret
