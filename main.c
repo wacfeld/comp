@@ -4646,11 +4646,13 @@ dword evalsimpleconstintexpr(expr *e)
 #define appmac(dest, src) {dest = strapp(dest, &dest##_len, src);}
 
 // count arguments
+// supports up to 20 arguments
 #define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, N, ...) N
 #define COUNT_ARGS(...) _GET_NTH_ARG("ignored", ##__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
 
 // shortcut for multiapp using COUNT_ARGS
-#define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)}
+// supports up to 20 variadic arguments
+#define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__);}
 
     
 // append src to dest, allocating more space as necessary
@@ -4876,11 +4878,11 @@ void proctoplevel(token *toks)
   pushnull();
   
   // allocate segment buffers (code, data, bss)
-  int cs_len, ds_len, bs_len;
-  cs_len = ds_len = bs_len = 100;
-  char *codeseg = malloc(cs_len);
-  char *dataseg = malloc(ds_len);
-  char *bssseg = malloc(bs_len);
+  int codeseg_len, dataseg_len, bssseg_len;
+  codeseg_len = dataseg_len = bssseg_len = 100;
+  char *codeseg = malloc(codeseg_len);
+  char *dataseg = malloc(dataseg_len);
+  char *bssseg = malloc(bssseg_len);
   *codeseg = *dataseg = *bssseg = 0; // empty string
 
 
@@ -4993,7 +4995,8 @@ void proctoplevel(token *toks)
       }
 
       // start function, create stack frame
-      codeseg = multiapp(codeseg, &cs_len, 4, "\n", d->locat.globloc, ":\n", create_sframe);
+      // codeseg = multiapp(codeseg, &cs_len, 4, "\n", d->locat.globloc, ":\n", create_sframe);
+      mapmac(codeseg, "\n", d->locat.globloc, ":\n", create_sframe);
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
       startfundef = 1;
@@ -5009,11 +5012,13 @@ void proctoplevel(token *toks)
       funret = NULL; // not necessary, but safer
 
       // append assembly to code segment
-      codeseg = strapp(codeseg, &cs_len, s);
+      // codeseg = strapp(codeseg, &cs_len, s);
+      appmac(codeseg, s);
       
       // write assembly
       // end function (in case falls off the end)
-      codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
+      // codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
+      mapmac(codeseg, destroy_sframe, "ret\n");
     }
     
   }
@@ -5046,7 +5051,8 @@ void proctoplevel(token *toks)
       char *value = getbits(e->dat, size);
 
       char *def = initnasm(size); // db, dw, etc.
-      dataseg = multiapp(dataseg, &ds_len, 6, d->locat.globloc, " ", def, " ", value, "\n"); // TODO replace "1" with actual init value
+      // dataseg = multiapp(dataseg, &ds_len, 6, d->locat.globloc, " ", def, " ", value, "\n"); // TODO replace "1" with actual init value
+      mapmac(dataseg, d->locat.globloc, " ", def, " ", value, "\n");
     }
     else // no init (all tentative -> 0), put in bss
     {
@@ -5073,13 +5079,15 @@ void proctoplevel(token *toks)
       sprintf(countstr, "%d", count); // write count into countstr
 
       char *res = resnasm(size);
-      bssseg = multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+      // bssseg = multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+      mapmac(bssseg, ident_pre, d->ident, " ", res, " ", countstr, "\n");
     }
   }
 
   // write _start function which calls main
   
-  codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
+  // codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
+  appmac(codeseg, "global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
   
   
   printf("section .data\n%s\nsection .bss\n%s\nsection .text\n%s\n", dataseg, bssseg, codeseg);
@@ -5219,7 +5227,8 @@ char *parsestat(struct stat *stat)
       char *newassem = parsestat(&newstat);
 
       // append newassem to assem
-      assem = strapp(assem, &assem_len, newassem);
+      // assem = strapp(assem, &assem_len, newassem);
+      appmac(assem, newassem);
 
       // roll back scope
       remtonull();
@@ -5327,7 +5336,8 @@ char *parsestat(struct stat *stat)
       }
       
       // destroy stack frame, return
-      assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
+      // assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
+      mapmac(assem, destroy_sframe, "ret\n");
       
       // move on
       // we CANNOT ignore stuff after a return, because of gotos, etc.
