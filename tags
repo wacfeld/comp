@@ -84,7 +84,7 @@ COND_E	defs.h	/^  COND_E,$/;"	e	enum:expr_type
 COND_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  COND_E,$/;"	e	enum:expr_type
 CONST_E	defs.h	/^  CONST_E,$/;"	e	enum:expr_type
 CONST_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  CONST_E,$/;"	e	enum:expr_type
-COUNT_ARGS	main.c	5163;"	d	file:
+COUNT_ARGS	main.c	4650;"	d	file:
 COUNT_ARGS	test.c	11;"	d	file:
 DATASTRUCT	datastruct.h	2;"	d
 DEBUG	defs.h	32;"	d
@@ -434,7 +434,7 @@ XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 XOR_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_O,$/;"	e	enum:optype
-_GET_NTH_ARG	main.c	5162;"	d	file:
+_GET_NTH_ARG	main.c	4649;"	d	file:
 _GET_NTH_ARG	test.c	10;"	d	file:
 _start	out/main.asm	/^_start:$/;"	l
 _start	template/main.asm	/^_start:$/;"	l
@@ -443,7 +443,7 @@ add1	test.c	5;"	d	file:
 alloc	defs.h	39;"	d
 alloc	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
-appmac	main.c	5159;"	d	file:
+appmac	main.c	4646;"	d	file:
 appmac	test.c	7;"	d	file:
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 args	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
@@ -738,7 +738,7 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 makestack	datastruct.c	/^stack *makestack(int size)$/;"	f
-mapmac	main.c	5166;"	d	file:
+mapmac	main.c	4653;"	d	file:
 mapmac	test.c	14;"	d	file:
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
