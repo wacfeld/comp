@@ -3,7 +3,11 @@ ident_x dd 00000000000000000000000000000000b
 
 section .bss
 
-section .code
+section .text
+ident_main:
+push ebp
+mov ebp,esp
+sub esp, 4
 mov dword [ebp-4], 00000000000000000000000000000101b
 mov esp,ebp
 pop ebp

@@ -3,5 +3,5 @@ int x = -5;
 
 int main()
 {
-  /*int y = 5;*/
+  int y = 5;
 }

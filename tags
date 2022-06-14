@@ -538,6 +538,7 @@ evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^voi
 evalsimpleconstintexpr	/home/wacfeld/Dropbox/matrix/comp/main.c	/^dword evalsimpleconstintexpr(expr *e)$/;"	f
 evalsimpleconstintexpr	main.c	/^dword evalsimpleconstintexpr(expr *e)$/;"	f
 exit	out/main.asm	/^exit:$/;"	l
+exit	template/main.asm	/^exit:$/;"	l
 exp	defs.h	/^    expr *exp;$/;"	m	union:link::__anon17
 exp	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    expr *exp;$/;"	m	union:link::__anon30
 expr	defs.h	/^struct expr$/;"	s
@@ -620,6 +621,7 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon29
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon31	typeref:struct:__anon31::__anon36
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
+ident_main	out/main.asm	/^ident_main:$/;"	l
 ident_pre	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char ident_pre[] = "ident_";$/;"	v
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
 ident_x	out/main.asm	/^ident_x dd 00000000000000000000000000000000b$/;"	d
@@ -807,7 +809,7 @@ mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	43;"	d
-mov	out/main.asm	/^mov dword [ebp-4], 00000000000000000000000000000101b$/;"	l
+mov	out/main.asm	/^mov ebp,esp$/;"	l
 mov	out/main.asm	/^mov esp,ebp$/;"	l
 multiapp	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *multiapp(char *dest, int *max, int n, ...)$/;"	f
 multiapp	main.c	/^char *multiapp(char *dest, int *max, int n, ...)$/;"	f
@@ -824,6 +826,7 @@ nexttoplevel	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link
 nline	defs.h	34;"	d
 nline	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	33;"	d
 np	defs.h	/^    int np; \/\/ number of params$/;"	m	struct:__anon10::__anon14
+num2str	/home/wacfeld/Dropbox/matrix/comp/main.c	/^char *num2str(int num)$/;"	f
 numargs	defs.h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 numargs	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int numargs; \/\/ sometimes necessary, eg. function arguments$/;"	m	struct:expr
 optype	defs.h	/^  int optype;$/;"	m	struct:expr
@@ -931,6 +934,7 @@ proctypespecs	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^voi
 ptr	defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
 ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon33
 push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
+push	out/main.asm	/^push ebp$/;"	l
 pushdecl	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void pushdecl(decl *d)$/;"	f
 pushdecl	main.c	/^void pushdecl(decl *d)$/;"	f
 pushnull	/home/wacfeld/Dropbox/matrix/comp/main.c	/^void pushnull()$/;"	f

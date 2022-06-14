@@ -4760,6 +4760,15 @@ char *resnasm(int size)
   }
 }
 
+// 4 -> "4"
+// -4 -> "-4"
+char *num2str(int num)
+{
+  char *s = malloc(12);
+  sprintf(s, "%d", num);
+  return s;
+}
+
 // 4 -> "+4"
 // -4 -> "-4"
 // need the sign in front for the offset
@@ -4972,6 +4981,8 @@ void proctoplevel(token *toks)
         offset += sizeoftype(ct->func.params[j].ct);
       }
 
+      // start function, create stack frame
+      codeseg = multiapp(codeseg, &cs_len, 3, d->locat.globloc, ":\n", create_sframe);
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
       startfundef = 1;
@@ -5060,7 +5071,7 @@ void proctoplevel(token *toks)
   codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
   
   
-  printf("section .data\n%s\nsection .bss\n%s\nsection .code\n%s\n", dataseg, bssseg, codeseg);
+  printf("section .data\n%s\nsection .bss\n%s\nsection .text\n%s\n", dataseg, bssseg, codeseg);
 }
 
 
@@ -5351,7 +5362,14 @@ char *parsestat(struct stat *stat)
           char *offstr = getoffstr(d->locat.locloc);
           // string for size (byte, word, dword)
           char *sizestr = sizenasm(size);
+
+          // 4 -> "4"
+          char *sizenum = num2str(size);
           
+          // move stack pointer down
+          assem = multiapp(assem, &assem_len, 3,
+              "sub esp, ", sizenum, "\n");
+          // 
           assem = multiapp(assem, &assem_len, 7,
               "mov ", sizestr, " [ebp", offstr, "], ", initstr, "\n");
         }
