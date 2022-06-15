@@ -107,6 +107,14 @@ DOT	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, IN
 DOT	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 DUB_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 DUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
+EAX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
+EAX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
+EBX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
+EBX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
+ECX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
+ECX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
+EDX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
+EDX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
 ENUM_O	defs.h	/^  ENUM_O,$/;"	e	enum:optype
 ENUM_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ENUM_O,$/;"	e	enum:optype
 EQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -438,7 +446,7 @@ _start	out/main.asm	/^_start:$/;"	l
 _start	template/main.asm	/^_start:$/;"	l
 _start	template/test.asm	/^_start:$/;"	l
 a	template/main.asm	/^a dd 5$/;"	d
-add	out/main.asm	/^add esp, 20$/;"	l
+add	out/main.asm	/^add esp, 4$/;"	l
 alloc	defs.h	39;"	d
 alloc	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
@@ -455,6 +463,7 @@ atom_type	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITN
 atom_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	g
 attach	main.c	9;"	d	file:
 attach	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	7;"	d	file:
+b	template/main.asm	/^b db 'a'$/;"	d
 bool	fixedlithier.c	/^typedef int bool;$/;"	t	file:
 canbeunary	defs.h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
 canbeunary	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
@@ -574,6 +583,10 @@ global	out/main.asm	/^global _start$/;"	l
 global	template/main.asm	/^global _start$/;"	l
 global	template/test.asm	/^global _start$/;"	l
 globloc	defs.h	/^  char *globloc; \/\/ nasm label$/;"	m	struct:location
+gpr_ref	defs.h	/^char *gpr_ref[4][5] =$/;"	v
+gpr_ref	test.c	/^char *gpr_ref[4][5] =$/;"	v
+gpreg	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	g
+gpreg	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	g	file:
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpputexpr	main.c	/^void helpputexpr(expr *e, int space)$/;"	f
@@ -599,7 +612,6 @@ ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; 
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
 ident_main	out/main.asm	/^ident_main:$/;"	l
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
-ident_x	out/main.asm	/^ident_x resb 4$/;"	l
 imm2stack	main.c	/^char *imm2stack(decl *d, int imm)$/;"	f
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	typeref:struct:decl::init
@@ -745,7 +757,7 @@ mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	43;"	d
-mov	out/main.asm	/^mov dword [esp], ident_x$/;"	l
+mov	out/main.asm	/^mov dword [esp], [ebp-4]$/;"	l
 mov	out/main.asm	/^mov ebp,esp$/;"	l
 mov	out/main.asm	/^mov esp,ebp$/;"	l
 multiapp	main.c	/^char *multiapp(char *dest, int *max, int n, ...)$/;"	f
@@ -872,6 +884,8 @@ qualmode	defs.h	/^enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};$/;"	g
 read	defs.h	41;"	d
 read	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	40;"	d
 reg2stack	main.c	/^char *reg2stack(decl *d, char *reg)$/;"	f
+regstr	main.c	/^char *regstr(enum gpreg gpr, int size)$/;"	f
+regstr	test.c	/^char *regstr(enum gpreg gpr, int size)$/;"	f
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_comments	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_front	datastruct.c	/^void rem_front(list *l)$/;"	f

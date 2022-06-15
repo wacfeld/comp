@@ -1,17 +1,17 @@
      1                                  section .data
      2 00000000 05000000                a dd 5
-     3                                  
-     4                                  section .bss
-     5 00000000 <res 00000004>          x resd 1
-     6                                  
-     7                                  section .text
-     8                                  global _start
-     9                                  _start:
-    10 00000000 83EC04                    sub esp, 4
-    11 00000003 83042404                  add dword [esp], +4
+     3 00000004 61                      b db 'a'
+     4                                  
+     5                                  section .bss
+     6 00000000 <res 00000004>          x resd 1
+     7                                  
+     8                                  section .text
+     9                                  global _start
+    10                                  _start:
+    11 00000000 A0[04000000]              mov al, byte [b]
     12                                  
     13                                  exit:
-    14 00000007 B801000000                mov eax, 1
-    15 0000000C BB00000000                mov ebx, 0
-    16 00000011 CD80                      int 80h
+    14 00000005 B801000000                mov eax, 1
+    15 0000000A BB00000000                mov ebx, 0
+    16 0000000F CD80                      int 80h
     17                                  

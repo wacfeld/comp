@@ -13,6 +13,9 @@ disas:
 in:
 	make all
 	./main < in.txt
+comp:
+	./main < in.txt > out/main.asm
+	make -C out/
 debug:
 	make all
 	gdb main

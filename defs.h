@@ -653,6 +653,37 @@ char *hrdt[] =
 // strict: quals must match perfectly (for multiple declarations)
 enum qualmode {QM_SUPERSET, QM_NOCARE, QM_STRICT};
 
+// esi, edi, ebp, esp are not necessary for this enum
+enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};
+
+char *gpr_ref[4][5] =
+{
+  [EAX] =
+  {
+    [1] = "AL",
+    [2] = "AX",
+    [4] = "EAX",
+  },
+  [EBX] =
+  {
+    [1] = "BL",
+    [2] = "BX",
+    [4] = "EBX",
+  },
+  [ECX] =
+  {
+    [1] = "CL",
+    [2] = "CX",
+    [4] = "ECX",
+  },
+  [EDX] =
+  {
+    [1] = "DL",
+    [2] = "DX",
+    [4] = "EDX",
+  },
+};
+
 
 link *nexttoplevel(link *start, int dir, int num, int *atoms);
 expr *parseexpr(link *start);

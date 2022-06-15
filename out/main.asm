@@ -1,7 +1,6 @@
 section .data
 
 section .bss
-ident_x resb 4
 
 section .text
 
@@ -9,8 +8,11 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov dword [esp], ident_x
-add esp, 20
+mov dword [ebp-4], 5
+sub esp, 4
+mov EAX, dword [ebp-4]
+mov dword [esp], EAX
+add esp, 4
 mov esp,ebp
 pop ebp
 ret

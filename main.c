@@ -4893,6 +4893,12 @@ char *num2str(int num)
   return s;
 }
 
+char *regstr(enum gpreg gpr, int size)
+{
+  assert(size == 1 || size == 2 || size == 4);
+  return gpr_ref[gpr][size];
+}
+
 // 4 -> "+4"
 // -4 -> "-4"
 // need the sign in front for the offset
@@ -5586,9 +5592,7 @@ char *evalexpr(expr *e)
   char *assem = malloc(assem_len);
 
   // toplevel expr decays always, as it's not the operand of something preventing it from decaying
-    putd(e->dcl->ct->gen.type);
   decay(-1, e);
-    putd(e->dcl->ct->gen.type);
 
   int ot = e->optype;
   int size = sizeoftype(e->ct);
@@ -5604,7 +5608,7 @@ char *evalexpr(expr *e)
     char *sizestr = sizenasm(size);
 
     // we know we're moving something onto the stack immediately
-    mapmac(assem, "mov ", sizestr, " [esp], ");
+    // mapmac(assem, "mov ", sizestr, " [esp], ");
 
     // type of declaration, NOT type of expr. expr already has been decayed to satisfy type checker
     int tmt = dcl->ct->gen.type;
@@ -5618,13 +5622,18 @@ char *evalexpr(expr *e)
       if(tmt == TM_ARR
           || tmt == TM_FUNC)
       {
-        mapmac(assem, dcl->locat.globloc, "\n");
+        // imm2mem
+        mapmac(assem, "mov ", sizestr, " [esp], ", dcl->locat.globloc, "\n");
       }
 
       // mapmac(assem, "mov ", sizenasm(size), " [esp], ", dcl->locat.globloc, "\n");
       else // decay to value
       {
-        mapmac(assem, "[", dcl->locat.globloc, "]", "\n");
+        // mem2reg, reg2mem
+        char *rs = regstr(EAX, size);
+        mapmac(assem, "mov ", rs, ", ", sizestr, " [", dcl->locat.globloc, "]\n");
+        mapmac(assem, "mov ", sizestr, " [esp], ", rs);
+        // mapmac(assem, "mov ", sizestr, " [esp], ", "[", dcl->locat.globloc, "]", "\n");
       }
     }
 
@@ -5633,13 +5642,22 @@ char *evalexpr(expr *e)
     {
       // no local functions
       assert(tmt != TM_FUNC);
-      putd(tmt);
 
       // array decay to pointer
       if(tmt == TM_ARR)
       {
-        mapmac(assem, "ebp\n"); // copy over base pointer
-        mapmac(assem, "add ", sizestr, " [esp], ", num2str(dcl->locat.locloc), "\n");
+        // lea2reg, reg2mem
+        mapmac(assem, "lea eax, ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
+        mapmac(assem, "mov ", sizestr, " [esp], eax\n");
+      }
+
+      // decay to value
+      else
+      {
+        char *rs = regstr(EAX, size);
+        // mem2reg, reg2mem
+        mapmac(assem, "mov ", rs, ", ", sizestr, " [ebp", getoffstr(dcl->locat.locloc), "]\n");
+        mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
       }
       
       // mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
