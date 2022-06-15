@@ -709,5 +709,10 @@ void remtonull();
 void helpputexpr(expr *e, int space);
 
 expr *tokl2expr(token *toks, int lo, int hi);
+link *tokl2ll(token *tokl, int len);
+
+char *evalexpr(expr *e);
+
+expr *tokl2expr(token *toks, int lo, int hi);
 
 #endif

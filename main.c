@@ -1369,6 +1369,18 @@ token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
   return tokl;
 }
 
+// token subarray -> linked list -> expr
+expr *tokl2expr(token *toks, int lo, int hi)
+{
+  // incnlusive
+  assert(lo <= hi); // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
+
+  link *ll = tokl2ll(toks + lo, hi - lo + 1);
+  expr *e = parseexpr(ll);
+  
+  return e;
+}
+
 link *tokl2ll(token *tokl, int len) // NOTOK-terminated token list to linked list
 {
   // int len = 0;
@@ -2588,7 +2600,7 @@ expr *makeintexpr(int x)
   return e;
 }
 
-expr *decay(int optype, expr *e)
+/*expr *decay(int optype, expr *e)
 {
   // check if fulfills decay conditions
   if(e->lval) // lvalue
@@ -2691,7 +2703,7 @@ expr *decay(int optype, expr *e)
   // otherwise not lvalue, carry on
 
   return e;
-}
+}*/
 
 expr *makeexpr(int type, int optype, int numargs, ...)
 {
@@ -2714,8 +2726,8 @@ expr *makeexpr(int type, int optype, int numargs, ...)
     {
       e = va_arg(ap, expr *);
       
-      // certain types trigger decays, which are prevented by certain optypes
-      e = decay(optype, e);
+      // // certain types trigger decays, which are prevented by certain optypes
+      // e = decay(optype, e);
       
       newe->args[i] = e;
     }
@@ -4457,8 +4469,8 @@ expr *parsearglist(link *start)
     expr *e = parseasgnexpr(start);
     if(!e) return NULL;
 
-    // decay if necessary
-    e = decay(-1, e);
+    // // decay if necessary
+    // e = decay(-1, e);
 
     newe->args[i] = e;
 
@@ -4857,6 +4869,45 @@ char *getbits(u_int32_t dat, int size)
 }
 
 
+// "sub esp, 4"
+char *stackalloc(decl *d)
+{
+  int size = sizeoftype(d->ct);
+  char *sizestr = num2str(size);
+  
+  return strnew(3, "sub esp, ", sizestr, "\n");
+}
+
+// "mov dword [ebp-4], 3"
+char *imm2stack(decl *d, int imm)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+  char *immstr = num2str(imm);
+  
+  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", immstr, "\n");
+}
+
+// "mov dword [ebp-4], eax"
+char *reg2stack(decl *d, char *reg)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+
+  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", reg, "\n");
+}
+
+// "mov eax, dword [ebp-4]
+char *stack2reg(char *reg, decl *d)
+{
+  char *offstr = getoffstr(d->locat.locloc);
+  char *sizestr = sizenasm(sizeoftype(d->ct));
+
+  return strnew(8, "mov ", reg, ", ", sizestr, " [ebp", offstr, "]", "\n");
+}
+
+
+
 //{{{1 toplevel
 
 decl *searchscope(char *ident)
@@ -5171,7 +5222,7 @@ void pushdecl(decl *d)
 }
 
 
-//{{{1 statement parser
+//{{{1 statement eval
 
 int findatom(token *toks, int i, int dir, enum atom_type t)
 {
@@ -5422,7 +5473,9 @@ char *parsestat(struct stat *stat)
     // lastly, if none of those things, expression
     else
     {
+      // find semicolon
       int end = findatom(toks, lo, 1, SEMICOLON);
+
       if(lo == end) // empty expression, move over
       {
         lo++;
@@ -5431,7 +5484,11 @@ char *parsestat(struct stat *stat)
 
       // convert expression to assembly, append
       expr *e = tokl2expr(toks, lo, end-1);
+      int size = sizeoftype(e->ct);
+      // evaluate
+      char *s = evalexpr(e);
 
+      // move over semicolon
       lo = end + 1;
     }
   }
@@ -5439,55 +5496,25 @@ char *parsestat(struct stat *stat)
   return assem;
 }
 
-// token subarray -> linked list -> expr
-expr *tokl2expr(token *toks, int lo, int hi)
-{
-  // incnlusive
-  assert(lo <= hi); // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
 
-  link *ll = tokl2ll(toks + lo, hi - lo + 1);
-  expr *e = parseexpr(ll);
+//{{{1 expr eval
+
+// expr to asm. asm calculates the value of e and puts the result on the stack
+char *evalexpr(expr *e)
+{
+  int assem_len = 100;
+  char *assem = malloc(assem_len);
+
+  int ot = e->optype;
   
-  return e;
-}
-
-
-// "sub esp, 4"
-char *stackalloc(decl *d)
-{
-  int size = sizeoftype(d->ct);
-  char *sizestr = num2str(size);
+  if(ot == IDENT_O)
+  {
+    
+  }
   
-  return strnew(3, "sub esp, ", sizestr, "\n");
+  return assem;
 }
 
-// "mov dword [ebp-4], 3"
-char *imm2stack(decl *d, int imm)
-{
-  char *offstr = getoffstr(d->locat.locloc);
-  char *sizestr = sizenasm(sizeoftype(d->ct));
-  char *immstr = num2str(imm);
-  
-  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", immstr, "\n");
-}
-
-// "mov dword [ebp-4], eax"
-char *reg2stack(decl *d, char *reg)
-{
-  char *offstr = getoffstr(d->locat.locloc);
-  char *sizestr = sizenasm(sizeoftype(d->ct));
-
-  return strnew(7, "mov ", sizestr, " [ebp", offstr, "], ", reg, "\n");
-}
-
-// "mov eax, dword [ebp-4]
-char *stack2reg(char *reg, decl *d)
-{
-  char *offstr = getoffstr(d->locat.locloc);
-  char *sizestr = sizenasm(sizeoftype(d->ct));
-
-  return strnew(8, "mov ", reg, ", ", sizestr, " [ebp", offstr, "]", "\n");
-}
 
 //{{{1 main
 int main()
