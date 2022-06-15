@@ -2600,6 +2600,70 @@ expr *makeintexpr(int x)
   return e;
 }
 
+void decay(int optype, expr *e)
+{
+  // check if fulfills decay conditions
+  if(e->lval) // lvalue
+  {
+    // array decay to pointer
+    if(e->ct && tmis(e->ct, TM_ARR) // is array
+                                    // but not operand of these things which require an array
+        && optype != SIZEOF_O
+        && optype != ADDR_O
+        // TODO strlit initializer remains array
+      )
+    {
+      // turn array into pointer
+      e->ct->gen.type == TM_PTR;
+      e->ct->ptr.isconst = 0;
+      e->ct->ptr.isvolat = 0;
+
+      // no longer lvalue
+      e->lval = 0;
+    }
+
+    // non-array decay to value
+    else if(// not array
+            // and not operand of these things which require an lvalue
+        optype != SIZEOF_O
+        && optype != ADDR_O
+        && optype != PREINC_O
+        && optype != POSTINC_O
+        && optype != PREDEC_O
+        && optype != POSTDEC_O)
+      // TODO left of .
+    {
+      // we do no ctype modifying, we just tell 2ASM to get the data out of there
+      e->ct = unqual(e->ct); // loses qualifiers
+      e->lval = 0; // no longer lvalue
+    }
+
+  // function designator
+  else if(e->ct && tmis(e->ct, TM_FUNC))
+  {
+    if(// but not operand of any of these things
+        optype != SIZEOF_O
+        && optype != ADDR_O)
+    {
+      // copy into new typemod, offset by 1 to make room for pointer
+      int len = getctlen(e->ct);
+      ctype newct = calloc(len+1, sizeof(typemod));
+      memcpy(newct+1, e->ct, len);
+
+      // turn function into pointer to function
+      newct->gen.type == TM_PTR;
+      newct->ptr.isconst = 0;
+      newct->ptr.isvolat = 0;
+
+      e->ct = newct;
+      e->lval = 0;
+    }
+  }
+  // otherwise not lvalue, carry on
+
+  }
+}
+
 /*expr *decay(int optype, expr *e)
 {
   // check if fulfills decay conditions
@@ -2726,8 +2790,8 @@ expr *makeexpr(int type, int optype, int numargs, ...)
     {
       e = va_arg(ap, expr *);
       
-      // // certain types trigger decays, which are prevented by certain optypes
-      // e = decay(optype, e);
+      // certain types trigger decays, which are prevented by certain optypes
+      decay(optype, e);
       
       newe->args[i] = e;
     }
@@ -4469,8 +4533,8 @@ expr *parsearglist(link *start)
     expr *e = parseasgnexpr(start);
     if(!e) return NULL;
 
-    // // decay if necessary
-    // e = decay(-1, e);
+    // decay if necessary
+    decay(-1, e);
 
     newe->args[i] = e;
 
@@ -5506,9 +5570,12 @@ char *evalexpr(expr *e)
   char *assem = malloc(assem_len);
 
   int ot = e->optype;
+  int size = sizeoftype(e->ct);
   
+  // ident: decay to value
   if(ot == IDENT_O)
   {
+    // extract location from decl
     
   }
   
