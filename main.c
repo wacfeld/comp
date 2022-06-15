@@ -5084,31 +5084,36 @@ void proctoplevel(token *toks)
     }
     else // no init (all tentative -> 0), put in bss
     {
-      int count = 0; // arrays have to reserve multiple. everything else only reserves one
-      int size = 0;
+      // int count = 0; // arrays have to reserve multiple. everything else only reserves one
+      // int size = 0;
 
-      if(d->ct->gen.type == TM_ARR)
-      {
-        if(d->ct->arr.len == -1)
-        {
-          d->ct->arr.len = 1; // default to 1
-        }
-        count = d->ct->arr.len;
-        size = sizeoftype(d->ct+1); // remove TM_ARR, get size
-      }
+      // if(d->ct->gen.type == TM_ARR)
+      // {
+      //   if(d->ct->arr.len == -1)
+      //   {
+      //     d->ct->arr.len = 1; // default to 1
+      //   }
+      //   count = d->ct->arr.len;
+      //   size = sizeoftype(d->ct+1); // remove TM_ARR, get size
+      // }
 
-      else // not array, get type directly
-      {
-        count = 1;
-        size = sizeoftype(d->ct);
-      }
+      // else // not array, get type directly
+      // {
+      //   count = 1;
+      //   size = sizeoftype(d->ct);
+      // }
 
-      char countstr[100]; // no way count is over 100 digits
-      sprintf(countstr, "%d", count); // write count into countstr
+      // char countstr[100]; // no way count is over 100 digits
+      // sprintf(countstr, "%d", count); // write count into countstr
 
-      char *res = resnasm(size);
-      // bssseg = multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
-      mapmac(bssseg, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+      // char *res = resnasm(size);
+      // // bssseg = multiapp(bssseg, &bs_len, 7, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+      // mapmac(bssseg, ident_pre, d->ident, " ", res, " ", countstr, "\n");
+
+      // simply reserve the number of bytes required
+      int size = sizeoftype(d->ct);
+      char *sizestr = num2str(size);
+      mapmac(bssseg, ident_pre, d->ident, " resb ", sizestr, "\n");
     }
   }
 
