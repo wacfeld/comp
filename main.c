@@ -2613,10 +2613,17 @@ void decay(int optype, expr *e)
         // TODO strlit initializer remains array
       )
     {
+      int len = getctlen(e->ct);
+      ctype newct = calloc(len, sizeof(typemod));
+      memcpy(newct, e->ct, len);
+
       // turn array into pointer
-      e->ct->gen.type = TM_PTR;
-      e->ct->ptr.isconst = 0;
-      e->ct->ptr.isvolat = 0;
+      newct->gen.type = TM_PTR;
+      newct->ptr.isconst = 0;
+      newct->ptr.isvolat = 0;
+
+      // replace
+      e->ct = newct;
 
       // no longer lvalue
       e->lval = 0;
@@ -5579,7 +5586,9 @@ char *evalexpr(expr *e)
   char *assem = malloc(assem_len);
 
   // toplevel expr decays always, as it's not the operand of something preventing it from decaying
+    putd(e->dcl->ct->gen.type);
   decay(-1, e);
+    putd(e->dcl->ct->gen.type);
 
   int ot = e->optype;
   int size = sizeoftype(e->ct);
@@ -5591,18 +5600,49 @@ char *evalexpr(expr *e)
   if(ot == IDENT_O)
   {
     decl *dcl = e->dcl;
-    // global variable, "move dword [esp], ident_x
+
+    char *sizestr = sizenasm(size);
+
+    // we know we're moving something onto the stack immediately
+    mapmac(assem, "mov ", sizestr, " [esp], ");
+
+    // type of declaration, NOT type of expr. expr already has been decayed to satisfy type checker
+    int tmt = dcl->ct->gen.type;
+    
+    // global variable
     if(dcl->locat.global)
     {
-      mapmac(assem, "mov ", sizenasm(size), " [esp], ", dcl->locat.globloc, "\n");
+
+      // array or function, decay to pointer
+      // decay to pointer simply means copy the address over
+      if(tmt == TM_ARR
+          || tmt == TM_FUNC)
+      {
+        mapmac(assem, dcl->locat.globloc, "\n");
+      }
+
+      // mapmac(assem, "mov ", sizenasm(size), " [esp], ", dcl->locat.globloc, "\n");
+      else // decay to value
+      {
+        mapmac(assem, "[", dcl->locat.globloc, "]", "\n");
+      }
     }
+
     // local variable, get base pointer offset
     else
     {
-      mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
-      // LEH pointers should put the address, not the value, on the stack
-      // we need to differentiate between the two
-      // decay may need to be reverted
+      // no local functions
+      assert(tmt != TM_FUNC);
+      putd(tmt);
+
+      // array decay to pointer
+      if(tmt == TM_ARR)
+      {
+        mapmac(assem, "ebp\n"); // copy over base pointer
+        mapmac(assem, "add ", sizestr, " [esp], ", num2str(dcl->locat.locloc), "\n");
+      }
+      
+      // mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
     }
   }
   

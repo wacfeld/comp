@@ -7,7 +7,8 @@ x resd 1
 section .text
 global _start
 _start:
-  mov eax, [x-4]
+  sub esp, 4
+  add dword [esp], +4
 
 exit:
   mov eax, 1
