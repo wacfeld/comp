@@ -2614,7 +2614,7 @@ void decay(int optype, expr *e)
       )
     {
       // turn array into pointer
-      e->ct->gen.type == TM_PTR;
+      e->ct->gen.type = TM_PTR;
       e->ct->ptr.isconst = 0;
       e->ct->ptr.isvolat = 0;
 
@@ -2651,7 +2651,7 @@ void decay(int optype, expr *e)
       memcpy(newct+1, e->ct, len);
 
       // turn function into pointer to function
-      newct->gen.type == TM_PTR;
+      newct->gen.type = TM_PTR;
       newct->ptr.isconst = 0;
       newct->ptr.isvolat = 0;
 
@@ -4934,12 +4934,19 @@ char *getbits(u_int32_t dat, int size)
 
 
 // "sub esp, 4"
-char *stackalloc(decl *d)
+char *stackalloc(int size)
 {
-  int size = sizeoftype(d->ct);
+  // int size = sizeoftype(d->ct);
   char *sizestr = num2str(size);
   
   return strnew(3, "sub esp, ", sizestr, "\n");
+}
+
+char *stackdealloc(int size)
+{
+  char *sizestr = num2str(size);
+  
+  return strnew(3, "add esp, ", sizestr, "\n");
 }
 
 // "mov dword [ebp-4], 3"
@@ -4969,8 +4976,6 @@ char *stack2reg(char *reg, decl *d)
 
   return strnew(8, "mov ", reg, ", ", sizestr, " [ebp", offstr, "]", "\n");
 }
-
-
 
 //{{{1 toplevel
 
@@ -5525,7 +5530,7 @@ char *parsestat(struct stat *stat)
           assert(!d->init->islist);
           assert(d->ct->gen.type != TM_ARR);
           
-          appmac(assem, stackalloc(d));
+          appmac(assem, stackalloc(sizeoftype(d->ct)));
           appmac(assem, imm2stack(d, d->init->e->dat));
         }
         
@@ -5548,9 +5553,13 @@ char *parsestat(struct stat *stat)
 
       // convert expression to assembly, append
       expr *e = tokl2expr(toks, lo, end-1);
-      int size = sizeoftype(e->ct);
-      // evaluate
+      // evaluate, put on stack
       char *s = evalexpr(e);
+      int size = sizeoftype(e->ct); // calculate size afterward to allow decay to happen
+      appmac(assem, s);
+      
+      // expression statement value gets thrown out
+      appmac(assem, stackdealloc(size));
 
       // move over semicolon
       lo = end + 1;
@@ -5569,14 +5578,32 @@ char *evalexpr(expr *e)
   int assem_len = 100;
   char *assem = malloc(assem_len);
 
+  // toplevel expr decays always, as it's not the operand of something preventing it from decaying
+  decay(-1, e);
+
   int ot = e->optype;
   int size = sizeoftype(e->ct);
+
+  // allocate size on stack
+  appmac(assem, stackalloc(size));
   
   // ident: decay to value
   if(ot == IDENT_O)
   {
-    // extract location from decl
-    
+    decl *dcl = e->dcl;
+    // global variable, "move dword [esp], ident_x
+    if(dcl->locat.global)
+    {
+      mapmac(assem, "mov ", sizenasm(size), " [esp], ", dcl->locat.globloc, "\n");
+    }
+    // local variable, get base pointer offset
+    else
+    {
+      mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
+      // LEH pointers should put the address, not the value, on the stack
+      // we need to differentiate between the two
+      // decay may need to be reverted
+    }
   }
   
   return assem;

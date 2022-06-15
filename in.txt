@@ -3,7 +3,6 @@
 
 int main()
 {
-  int x = 5;
-  int y[2];
-  int z = 6;
+int x[5];
+  x;
 }

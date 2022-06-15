@@ -698,10 +698,12 @@ char *parsestat(struct stat *stat);
 void pushdecl(decl *d);
 
 
-char *stackalloc(decl *d)            ;
+char *stackalloc(int size)           ;
+char *stackdealloc(int size);
 char *imm2stack(decl *d, int imm)    ;
 char *reg2stack(decl *d, char *reg)  ;
 char *stack2reg(char *reg, decl *d)  ;
+
 
 void pushnull();
 void remtonull();

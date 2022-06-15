@@ -913,7 +913,8 @@ splice	main.c	/^void splice(char *src)$/;"	f
 splice	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void splice(char *src)$/;"	f
 stack	datastruct.h	/^typedef set stack; \/\/ idem$/;"	t
 stack2reg	main.c	/^char *stack2reg(char *reg, decl *d)$/;"	f
-stackalloc	main.c	/^char *stackalloc(decl *d)$/;"	f
+stackalloc	main.c	/^char *stackalloc(int size)$/;"	f
+stackdealloc	main.c	/^char *stackdealloc(int size)$/;"	f
 startfundef	main.c	/^int startfundef = 0;$/;"	v
 stat	defs.h	/^struct stat$/;"	s
 stattype	defs.h	/^enum stattype {LAB_S, EXPR_S, COMP_S, SEL_S, ITER_S, JUMP_S};$/;"	g
