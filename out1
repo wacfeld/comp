@@ -10,7 +10,7 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov dword [ebp-4], 1
+mov dword [ebp-4], 0
 sub esp, 1
 sub esp, 4
 mov EAX, dword [ebp-4]
@@ -19,7 +19,6 @@ mov eax, [esp]
 test eax, eax
 je near error
 add esp, 4
-sub esp, 1
 mov AL, byte [eax]
 mov byte[esp], AL
 add esp, 1

@@ -1,11 +1,12 @@
 section .data
+x dd 5
 
 section .bss
 section .text
 global _start
 _start:
-  mov ax, 0xffff
-  mov al, 5
+  mov eax, x
+  mov dword eax, [eax]
   jmp exit
 
 exit:

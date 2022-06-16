@@ -5271,8 +5271,8 @@ void proctoplevel(token *toks)
       );
 
   appmac(dataseg,
-      "errmsg db \"error\"\n"
-      "errlen eq $ - errmsg\n"
+      "errmsg db \"error\", 10\n"
+      "errlen equ $ - errmsg\n"
       );
   
   
@@ -5703,24 +5703,29 @@ char *evalexpr(expr *e)
     mapmac(assem, s);
 
     // put address in eax
-    mapmac(assem, "mov eax, [esp]");
+    mapmac(assem, "mov eax, [esp]\n");
     
-    // check for null pointer
-    // mapmac(assem, "test eax, eax\nje 
+    // check for null pointer, if so, shortcircuit to error
+    mapmac(assem, "test eax, eax\nje near error\n");
     
     // deallocate address from stack
     mapmac(assem, stackdealloc(PTR_SIZE));
     
-    // allocate target data (what is pointed to)
-    mapmac(assem, stackalloc(targsize));
+    char *sizestr = sizenasm(targsize);
+    char *rs = regstr(EAX, targsize);
     
+    // mov eax, [eax] or similar
+    mapmac(assem, "mov ", rs, ", ", sizestr, " [eax]\n");
     
+    // move data onto stack
+    mapmac(assem, "mov ", sizestr, "[esp], ", rs, "\n");
   }
 
   // unary &
   else if(ot == ADDR_O)
   {
-    // argument must be lvalue
+    // special form, behaves differently based on what its argument is
+    
   }
 
   else
