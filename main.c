@@ -5848,19 +5848,41 @@ char *evalexpr(expr *e)
       // put underlying address on stack
       char *s = evalexpr(e->args[0]->args[0]);
       appmac(assem, s);
-
-      // put address in eax, deallocate
-      vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
-      sdall(PTR_SIZE);
     }
+
     // LHS identifier
     else
     {
-      assert(e->args[0]->dcl);
-      // if(
+      // check that decl exists
+      decl *dcl = e->args[0]->decl;
+      assert(dcl);
+
+      // put location (address) of decl to stack
+      char *s = pushlocat(dcl->locat);
+      appmac(assem, s);
     }
 
-    
+    // put LHS address in eax, deallocate
+    vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
+    sdall(PTR_SIZE);
+
+    // put RHS value on stack
+    char *s = evalexpr(e->args[1]);
+    appmac(assem, s);
+
+    char *rsr = regstr(EBX, size);
+    char *sizestr = sizenasm(size);
+
+    // put RHS value in ebx, deallocate
+    vspmac(assem, "mov %s, %s [esp]\n", rs, sizestr);
+    sdall(size);
+
+    // transfer RHS value to LHS address
+    vspmac(assem, "mov %s [eax], %s", sizestr, rs);
+
+    // push to stack as well
+    sall(size);
+    vspmap(assem, "mov %s [esp], %s", sizestr, rs);
   }
 
   else
