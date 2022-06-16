@@ -5719,29 +5719,73 @@ char *evalexpr(expr *e)
     mapmac(assem, s);
 
     // put address in eax
-    mapmac(assem, "mov eax, [esp]\n");
+    mapmac(assem, "mov eax, ", sizenasm(PTR_SIZE), " [esp]\n");
     
     // check for null pointer, if so, shortcircuit to error
     mapmac(assem, "test eax, eax\nje near error\n");
     
     // deallocate address from stack
     mapmac(assem, stackdealloc(PTR_SIZE));
+
+    // special case, dereferencing pointer to array of T, returns the same pointer (with type array now, which decays to poiinter to T)
+    if(e->args[0]->ct[1].gen.type == TM_ARR)
+    {
+      mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], eax\n");
+    }
     
-    char *sizestr = sizenasm(targsize);
-    char *rs = regstr(EAX, targsize);
-    
-    // mov eax, [eax] or similar
-    mapmac(assem, "mov ", rs, ", ", sizestr, " [eax]\n");
-    
-    // move data onto stack
-    mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
+    else
+    {
+      char *sizestr = sizenasm(targsize);
+      char *rs = regstr(EAX, targsize);
+      
+      // mov eax, [eax] or similar
+      mapmac(assem, "mov ", rs, ", ", sizestr, " [eax]\n");
+      
+      // move data onto stack
+      mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
+    }
   }
 
   // unary &
   else if(ot == ADDR_O)
   {
     // special form, behaves differently based on what its argument is
-    
+
+    // it might be cleaner to have every lvalue be a POINT_O of the address, and then ADDR_O just cancels that out, but this way seems to work fine
+
+    // & * cancels out
+    // ex. &*(a+5) -> a+5
+    if(e->args[0]->optype == POINT_O)
+    {
+      char *s = evalexpr(e->args[0]->args[0]);
+      mapmac(assem, s);
+    }
+
+    // ident/decl: extract location, put 
+    else if(e->args[0]->optype == IDENT_O)
+    {
+      assert(e->args[0]->dcl);
+      decl *dcl = e->args[0]->dcl;
+      
+      // global
+      if(dcl->locat.global)
+      {
+        mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], ", dcl->locat.globloc, "\n");
+      }
+
+      // local
+      else
+      {
+        mapmac(assem, "lea eax, ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
+        mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], eax\n");
+      }
+      
+    }
+
+    else
+    {
+      throw("unanticipated usage of unary &");
+    }
   }
 
   else
@@ -5806,13 +5850,20 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
-  // proctoplevel(toks);
-
-  puts("---");
-  putd(trans_unit->n);
-  link *chain = tokl2ll((token *)trans_unit->cont, -1);
-  
-  expr *e = parseexpr(chain);
-  putexpr(e);
+  // temporary, for testing
+  int testexpr = 0;
+  if(!testexpr)
+  {
+    proctoplevel(toks);
+  }
+  else
+  {
+    puts("---");
+    putd(trans_unit->n);
+    link *chain = tokl2ll((token *)trans_unit->cont, -1);
+    
+    expr *e = parseexpr(chain);
+    putexpr(e);
+  }
 
 }

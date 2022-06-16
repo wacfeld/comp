@@ -1,8 +1,8 @@
 /* vim:filetype=c
+*/
 
 int main()
 {
-  int x[5];
-  *x;
-}*/
-3[((char *)5)]
+  char x[5];
+  **&x;
+}

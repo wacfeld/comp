@@ -545,6 +545,7 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+f	test.c	/^int f()$/;"	f
 fanfare	defs.h	22;"	d
 findatom	main.c	/^int findatom(token *toks, int i, int dir, enum atom_type t)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
@@ -691,6 +692,7 @@ keywords	defs.h	/^char *keywords[] =$/;"	v
 keywords	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *keywords[] =$/;"	v
 last	datastruct.c	/^void *last(list *l)$/;"	f
 lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
+lea	out/main.asm	/^lea eax, [ebp-5]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	15;"	d	file:
@@ -761,13 +763,12 @@ mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void ma
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	43;"	d
 mov	out/main.asm	/^mov AL, byte [eax]$/;"	l
-mov	out/main.asm	/^mov EAX, dword [ebp-4]$/;"	l
-mov	out/main.asm	/^mov byte[esp], AL$/;"	l
-mov	out/main.asm	/^mov dword [ebp-4], 1$/;"	l
-mov	out/main.asm	/^mov dword [esp], EAX$/;"	l
+mov	out/main.asm	/^mov byte [esp], 97$/;"	l
+mov	out/main.asm	/^mov byte [esp], AL$/;"	l
+mov	out/main.asm	/^mov dword [esp], eax$/;"	l
 mov	out/main.asm	/^mov eax, 1$/;"	l
 mov	out/main.asm	/^mov eax, 4$/;"	l
-mov	out/main.asm	/^mov eax, [esp]$/;"	l
+mov	out/main.asm	/^mov eax, dword [esp]$/;"	l
 mov	out/main.asm	/^mov ebp,esp$/;"	l
 mov	out/main.asm	/^mov ebx, 0$/;"	l
 mov	out/main.asm	/^mov ebx, 1$/;"	l
@@ -970,6 +971,7 @@ strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 sub	out/main.asm	/^sub esp, 1$/;"	l
 sub	out/main.asm	/^sub esp, 4$/;"	l
+sub	out/main.asm	/^sub esp, 5$/;"	l
 test	out/main.asm	/^test eax, eax$/;"	l
 testerr	main.c	24;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:

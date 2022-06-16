@@ -3,10 +3,14 @@
 #include <string.h>
 #include <assert.h>
 #include <signal.h>
+
+int f()
+{
+  return 5;
+}
 int main()
 {
-  int x[5] = {0,0,0,0,0};
-  int (*y)[] = &x;
-  printf("%d\n", *y);
+  int (*x)() = &f;
+  printf("%p\n%p\n", x, f);
 }
 

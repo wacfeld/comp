@@ -9,18 +9,25 @@ section .text
 ident_main:
 push ebp
 mov ebp,esp
-sub esp, 20
+sub esp, 5
+mov byte [esp], 97
+sub esp, 1
 sub esp, 4
 sub esp, 4
-lea eax, [ebp-20]
+lea eax, [ebp-5]
 mov dword [esp], eax
-mov eax, [esp]
+mov eax, dword [esp]
 test eax, eax
 je near error
 add esp, 4
-mov EAX, dword [eax]
-mov dword[esp], EAX
+mov dword [esp], eax
+mov eax, dword [esp]
+test eax, eax
+je near error
 add esp, 4
+mov AL, byte [eax]
+mov byte [esp], AL
+add esp, 1
 mov esp,ebp
 pop ebp
 ret
