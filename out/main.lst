@@ -1,36 +1,44 @@
      1                                  section .data
-     2 00000000 0F000000                ident_x dd 00000000000000000000000000001111b
-     3 00000004 6572726F720A            errmsg db "error", 10
-     4                                  errlen equ $ - errmsg
-     5                                  
-     6                                  section .bss
-     7                                  
-     8                                  section .text
-     9                                  
-    10                                  ident_main:
-    11 00000000 55                      push ebp
-    12 00000001 89E5                    mov ebp,esp
-    13 00000003 83EC04                  sub esp, 4
-    14 00000006 A1[00000000]            mov EAX, dword [ident_x]
-    15 0000000B 890424                  mov dword [esp], EAX
-    16 0000000E 83C404                  add esp, 4
-    17 00000011 89EC                    mov esp,ebp
-    18 00000013 5D                      pop ebp
-    19 00000014 C3                      ret
-    20                                  
-    21                                  global _start
-    22                                  _start:
-    23 00000015 E8E6FFFFFF              call ident_main
-    24 0000001A E816000000              call exit
-    25                                  
-    26                                  error:
-    27 0000001F BA06000000              mov edx, errlen
-    28 00000024 B9[04000000]            mov ecx, errmsg
-    29 00000029 BB01000000              mov ebx, 1
-    30 0000002E B804000000              mov eax, 4
-    31 00000033 CD80                    int 0x80
-    32                                  exit:
-    33 00000035 B801000000              mov eax, 1
-    34 0000003A BB00000000              mov ebx, 0
-    35 0000003F CD80                    int 80h
-    36                                  
+     2 00000000 6572726F720A            errmsg db "error", 10
+     3                                  errlen equ $ - errmsg
+     4                                  
+     5                                  section .bss
+     6                                  
+     7                                  section .text
+     8                                  
+     9                                  ident_main:
+    10 00000000 55                      push ebp
+    11 00000001 89E5                    mov ebp,esp
+    12 00000003 83EC01                  sub esp, 1
+    13 00000006 C645FF0F                mov byte [ebp-1], 15
+    14 0000000A 83EC04                  sub esp, 4
+    15 0000000D 8D45FF                  lea eax, [ebp-1]
+    16 00000010 890424                  mov dword [esp], eax
+    17 00000013 8B0424                  mov eax, dword [esp]
+    18 00000016 85C0                    test eax, eax
+    19 00000018 0F841C000000            je near error
+    20 0000001E 83C404                  add esp, 4
+    21 00000021 83EC01                  sub esp, 1
+    22 00000024 8A00                    mov AL, byte [eax]
+    23 00000026 880424                  mov byte [esp], AL
+    24 00000029 83C401                  add esp, 1
+    25 0000002C 89EC                    mov esp,ebp
+    26 0000002E 5D                      pop ebp
+    27 0000002F C3                      ret
+    28                                  
+    29                                  global _start
+    30                                  _start:
+    31 00000030 E8CBFFFFFF              call ident_main
+    32 00000035 E816000000              call exit
+    33                                  
+    34                                  error:
+    35 0000003A BA06000000              mov edx, errlen
+    36 0000003F B9[00000000]            mov ecx, errmsg
+    37 00000044 BB01000000              mov ebx, 1
+    38 00000049 B804000000              mov eax, 4
+    39 0000004E CD80                    int 0x80
+    40                                  exit:
+    41 00000050 B801000000              mov eax, 1
+    42 00000055 BB00000000              mov ebx, 0
+    43 0000005A CD80                    int 80h
+    44                                  

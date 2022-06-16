@@ -868,6 +868,7 @@ ptr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	
 push	datastruct.c	/^void push(stack *s, void *m)$/;"	f
 push	out/main.asm	/^push ebp$/;"	l
 pushdecl	main.c	/^void pushdecl(decl *d)$/;"	f
+pushlocat	main.c	/^char *pushlocat(struct location locat)$/;"	f
 pushnull	main.c	/^void pushnull()$/;"	f
 putctype	main.c	/^void putctype(ctype ct)$/;"	f
 putctype	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putctype(ctype *ct)$/;"	f

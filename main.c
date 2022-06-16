@@ -5629,11 +5629,38 @@ char *parsestat(struct stat *stat)
 // safety to ensure that allocated space is properly deallocated
 int stacksize = 0;
 
+// given global or local location (label or offset from ebp), put address of location on stack
+char *pushlocat(struct location locat)
+{
+  int assem_len = 100;
+  char *assem = malloc(assem_len);
+  *assem = 0;
+  
+  sall(PTR_SIZE);
+  
+  // global, label
+  if(locat.global)
+  {
+    vspmac(assem, "mov %s [esp], %s\n", sizenasm(PTR_SIZE), locat.globloc);
+  }
+  // local
+  else
+  {
+    // lea eax, [ebp-5]
+    vspmac(assem, "lea eax, [ebp%s]\n", getoffstr(locat.locloc));
+    // mov dword [esp], eax
+    vspmac(assem, "mov %s [esp], eax\n", sizenasm(PTR_SIZE));
+  }
+
+  return assem;
+}
+
 // expr to asm. asm calculates the value of e and puts the result on the stack
 char *evalexpr(expr *e)
 {
   int assem_len = 100;
   char *assem = malloc(assem_len);
+  *assem = 0;
 
   // toplevel expr decays always, as it's not the operand of something preventing it from decaying
   decay(-1, e);
@@ -5779,27 +5806,30 @@ char *evalexpr(expr *e)
       mapmac(assem, s);
     }
 
-    // ident/decl: extract location, put 
+    // ident/decl: extract location, put on stack
     else if(e->args[0]->optype == IDENT_O)
     {
       // allocate space for address
-      sall(size);
 
       assert(e->args[0]->dcl);
       decl *dcl = e->args[0]->dcl;
       
-      // global
-      if(dcl->locat.global)
-      {
-        mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], ", dcl->locat.globloc, "\n");
-      }
+      // put address of dcl on stack
+      char *s = pushlocat(dcl->locat);
+      appmac(assem, s);
+      // sall(size);
+      // // global
+      // if(dcl->locat.global)
+      // {
+      //   mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], ", dcl->locat.globloc, "\n");
+      // }
 
-      // local
-      else
-      {
-        mapmac(assem, "lea eax, ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
-        mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], eax\n");
-      }
+      // // local
+      // else
+      // {
+      //   mapmac(assem, "lea eax, ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
+      //   mapmac(assem, "mov ", sizenasm(PTR_SIZE), " [esp], eax\n");
+      // }
       
     }
 
@@ -5820,8 +5850,17 @@ char *evalexpr(expr *e)
       appmac(assem, s);
 
       // put address in eax, deallocate
-      vspmac(assem, "mov eax, %s [esp]\n", sizestr(PTR_SIZE));
+      vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
+      sdall(PTR_SIZE);
     }
+    // LHS identifier
+    else
+    {
+      assert(e->args[0]->dcl);
+      // if(
+    }
+
+    
   }
 
   else

@@ -748,4 +748,6 @@ char *evalexpr(expr *e);
 
 expr *tokl2expr(token *toks, int lo, int hi);
 
+int asprintf(char **strp, const char *fmt, ...);
+
 #endif

@@ -1,8 +1,8 @@
 /* vim:filetype=c
 */
-char *x = 15;
 
 int main()
 {
-  &*x;
+char x = 15;
+  *&x;
 }
