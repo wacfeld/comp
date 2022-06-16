@@ -4780,7 +4780,7 @@ dword evalsimpleconstintexpr(expr *e)
 // shortcut for multiapp using COUNT_ARGS
 // supports up to 20 variadic arguments
 #define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__);}
-
+#define vspmac(dest, fmt, ...) {char *s; asprintf(&s, fmt, ##__VA_ARGS__); appmac(dest, s);}
     
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
@@ -4961,6 +4961,9 @@ char *getbits(u_int32_t dat, int size)
   return s;
 }
 
+
+#define sall(size) {appmac(assem, stackalloc(size)); stacksize += size;}
+#define sdall(size) {appmac(assem, stackdealloc(size)); stacksize -= size;}
 
 // "sub esp, 4"
 char *stackalloc(int size)
@@ -5623,6 +5626,9 @@ char *parsestat(struct stat *stat)
 
 //{{{1 expr eval
 
+// safety to ensure that allocated space is properly deallocated
+int stacksize = 0;
+
 // expr to asm. asm calculates the value of e and puts the result on the stack
 char *evalexpr(expr *e)
 {
@@ -5636,11 +5642,17 @@ char *evalexpr(expr *e)
   int size = sizeoftype(e->ct);
 
   // allocate size on stack
-  appmac(assem, stackalloc(size));
+  // appmac(assem, stackalloc(size));
+  // sall(size);
+
+  // remember current stack size
+  int curstacksize = stacksize;
   
   // identifier: get value/decay
   if(ot == IDENT_O)
   {
+    sall(size); // immediately allocate, no intermediate stack work needed
+    
     decl *dcl = e->dcl;
 
     char *sizestr = sizenasm(size);
@@ -5654,7 +5666,6 @@ char *evalexpr(expr *e)
     // global variable
     if(dcl->locat.global)
     {
-
       // array or function, decay to pointer
       // decay to pointer simply means copy the address over
       if(tmt == TM_ARR
@@ -5706,6 +5717,9 @@ char *evalexpr(expr *e)
   else if(ot == INT_O || ot == CHAR_O)
   {
     char *sizestr = sizenasm(size);
+    // allocate
+    sall(size);
+    // fill
     mapmac(assem, "mov ", sizestr, " [esp], ", getbits(e->dat, size), "\n");
   }
 
@@ -5725,7 +5739,11 @@ char *evalexpr(expr *e)
     mapmac(assem, "test eax, eax\nje near error\n");
     
     // deallocate address from stack
-    mapmac(assem, stackdealloc(PTR_SIZE));
+    // mapmac(assem, stackdealloc(PTR_SIZE));
+    sdall(PTR_SIZE);
+
+    // allocate space for target
+    sall(targsize);
 
     // special case, dereferencing pointer to array of T, returns the same pointer (with type array now, which decays to poiinter to T)
     if(e->args[0]->ct[1].gen.type == TM_ARR)
@@ -5758,16 +5776,15 @@ char *evalexpr(expr *e)
     if(e->args[0]->optype == POINT_O)
     {
       char *s = evalexpr(e->args[0]->args[0]);
-
-      // undo above allocation
-      mapmac(assem, stackdealloc(size));
-      
       mapmac(assem, s);
     }
 
     // ident/decl: extract location, put 
     else if(e->args[0]->optype == IDENT_O)
     {
+      // allocate space for address
+      sall(size);
+
       assert(e->args[0]->dcl);
       decl *dcl = e->args[0]->dcl;
       
@@ -5792,12 +5809,28 @@ char *evalexpr(expr *e)
     }
   }
 
+  // simple assignment
+  else if(ot == EQ_O)
+  {
+    // LHS derefence
+    if(e->args[0]->optype == POINT_O)
+    {
+      // put underlying address on stack
+      char *s = evalexpr(e->args[0]->args[0]);
+      appmac(assem, s);
+
+      // put address in eax, deallocate
+      vspmac(assem, "mov eax, %s [esp]\n", sizestr(PTR_SIZE));
+    }
+  }
+
   else
   {
     puts(hropt[ot]);
     throw("optype does not exist/is not supported");
   }
   
+  assert(curstacksize + size == stacksize);
   return assem;
 }
 

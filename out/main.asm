@@ -11,8 +11,6 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-add esp, 4
-sub esp, 4
 mov EAX, dword [ident_x]
 mov dword [esp], EAX
 add esp, 4
