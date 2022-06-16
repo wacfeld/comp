@@ -1,8 +1,11 @@
 /* vim:filetype=c
 */
 
+void f()
+{
+  return;
+}
 int main()
 {
-  int x = 5;
-  x;
+  f;
 }

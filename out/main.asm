@@ -7,11 +7,12 @@ section .text
 ident_main:
 push ebp
 mov ebp,esp
+sub esp, 20
 sub esp, 4
-mov dword [ebp-4], 5
+mov dword [ebp-24], 7
 sub esp, 4
-mov EAX, dword [ebp-4]
-mov dword [esp], EAX
+lea eax, [ebp-20]
+mov dword [esp], eax
 add esp, 4
 mov esp,ebp
 pop ebp

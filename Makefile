@@ -11,7 +11,6 @@ nicetest: test.c
 disas:
 	gcc -S test.c -ansi -pedantic -Wextra -Wall -fsanitize=undefined -fsanitize=address
 in:
-	make all
 	./main < in.txt
 comp:
 	./main < in.txt > out/main.asm

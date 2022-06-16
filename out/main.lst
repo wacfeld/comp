@@ -7,23 +7,24 @@
      7                                  ident_main:
      8 00000000 55                      push ebp
      9 00000001 89E5                    mov ebp,esp
-    10 00000003 83EC04                  sub esp, 4
-    11 00000006 C745FC05000000          mov dword [ebp-4], 5
-    12 0000000D 83EC04                  sub esp, 4
-    13 00000010 8B45FC                  mov EAX, dword [ebp-4]
-    14 00000013 890424                  mov dword [esp], EAX
-    15 00000016 83C404                  add esp, 4
-    16 00000019 89EC                    mov esp,ebp
-    17 0000001B 5D                      pop ebp
-    18 0000001C C3                      ret
-    19                                  
-    20                                  global _start
-    21                                  _start:
-    22 0000001D E8DEFFFFFF                call ident_main
-    23 00000022 E800000000                call exit
-    24                                  
-    25                                  exit:
-    26 00000027 B801000000                mov eax, 1
-    27 0000002C BB00000000                mov ebx, 0
-    28 00000031 CD80                      int 80h
-    29                                  
+    10 00000003 83EC14                  sub esp, 20
+    11 00000006 83EC04                  sub esp, 4
+    12 00000009 C745E807000000          mov dword [ebp-24], 7
+    13 00000010 83EC04                  sub esp, 4
+    14 00000013 8D45EC                  lea eax, [ebp-20]
+    15 00000016 890424                  mov dword [esp], eax
+    16 00000019 83C404                  add esp, 4
+    17 0000001C 89EC                    mov esp,ebp
+    18 0000001E 5D                      pop ebp
+    19 0000001F C3                      ret
+    20                                  
+    21                                  global _start
+    22                                  _start:
+    23 00000020 E8DBFFFFFF                call ident_main
+    24 00000025 E800000000                call exit
+    25                                  
+    26                                  exit:
+    27 0000002A B801000000                mov eax, 1
+    28 0000002F BB00000000                mov ebx, 0
+    29 00000034 CD80                      int 80h
+    30                                  

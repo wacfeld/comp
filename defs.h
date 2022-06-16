@@ -360,7 +360,7 @@ enum optype
   FLOAT_O,
   CHAR_O,
   ENUM_O,
-  PAREN_O, // (expression), which is a primary expression
+  // PAREN_O, // (expression), which is a primary expression
   // ^^^ expressions that return their data as-is
   
   // postfix expressions
@@ -443,23 +443,23 @@ enum optype
   OREQ_O,
 
   COMMA_O,
-  ARR2PTR_O,
-  LVAL2DAT_O,
-  FUN2PTR_O,
+  // ARR2PTR_O,
+  // LVAL2DAT_O,
+  // FUN2PTR_O,
 };
 
 char *hropt[1000] =
 {
-  [FUN2PTR_O]="FUN2PTR_O",
+  // [FUN2PTR_O]="FUN2PTR_O",
   [IDENT_O]="IDENT_O",
-  [ARR2PTR_O]="ARR2PTR_O",
-  [LVAL2DAT_O]="LVAL2DAT_O",
+  // [ARR2PTR_O]="ARR2PTR_O",
+  // [LVAL2DAT_O]="LVAL2DAT_O",
   [STRING_O]="STRING_O",
   [INT_O]="INT_O",
   [FLOAT_O]="FLOAT_O",
   [CHAR_O]="CHAR_O",
   [ENUM_O]="ENUM_O",
-  [PAREN_O]="PAREN_O",
+  // [PAREN_O]="PAREN_O",
   [ARR_O]="ARR_O",
   [FUN_O]="FUN_O",
   [STRUCT_O]="STRUCT_O",

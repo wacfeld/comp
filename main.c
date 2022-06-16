@@ -2615,7 +2615,7 @@ void decay(int optype, expr *e)
     {
       int len = getctlen(e->ct);
       ctype newct = calloc(len, sizeof(typemod));
-      memcpy(newct, e->ct, len);
+      memcpy(newct, e->ct, len * sizeof(typemod));
 
       // turn array into pointer
       newct->gen.type = TM_PTR;
@@ -2644,6 +2644,7 @@ void decay(int optype, expr *e)
       e->ct = unqual(e->ct); // loses qualifiers
       e->lval = 0; // no longer lvalue
     }
+  }
 
   // function designator
   else if(e->ct && tmis(e->ct, TM_FUNC))
@@ -2655,7 +2656,7 @@ void decay(int optype, expr *e)
       // copy into new typemod, offset by 1 to make room for pointer
       int len = getctlen(e->ct);
       ctype newct = calloc(len+1, sizeof(typemod));
-      memcpy(newct+1, e->ct, len);
+      memcpy(newct+1, e->ct, sizeof(typemod)*len);
 
       // turn function into pointer to function
       newct->gen.type = TM_PTR;
@@ -2668,7 +2669,6 @@ void decay(int optype, expr *e)
   }
   // otherwise not lvalue, carry on
 
-  }
 }
 
 /*expr *decay(int optype, expr *e)
@@ -5531,6 +5531,9 @@ char *parsestat(struct stat *stat)
         
         // push the declaration onto the scope stack
         pushdecl(d);
+
+        // allocate on stack (keep esp at top of stack)
+        appmac(assem, stackalloc(sizeoftype(d->ct)));
         
         // figure out where it goes on the real stack
         framesize += size;
@@ -5543,7 +5546,6 @@ char *parsestat(struct stat *stat)
           assert(!d->init->islist);
           assert(d->ct->gen.type != TM_ARR);
           
-          appmac(assem, stackalloc(sizeoftype(d->ct)));
           appmac(assem, imm2stack(d, d->init->e->dat));
         }
         
@@ -5632,7 +5634,7 @@ char *evalexpr(expr *e)
         // mem2reg, reg2mem
         char *rs = regstr(EAX, size);
         mapmac(assem, "mov ", rs, ", ", sizestr, " [", dcl->locat.globloc, "]\n");
-        mapmac(assem, "mov ", sizestr, " [esp], ", rs);
+        mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
         // mapmac(assem, "mov ", sizestr, " [esp], ", "[", dcl->locat.globloc, "]", "\n");
       }
     }
