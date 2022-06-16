@@ -1,4 +1,5 @@
 section .data
+ident_x dd 00000000000000000000000000001111b
 errmsg db "error", 10
 errlen equ $ - errmsg
 
@@ -9,25 +10,12 @@ section .text
 ident_main:
 push ebp
 mov ebp,esp
-sub esp, 5
-mov byte [esp], 97
-sub esp, 1
 sub esp, 4
+add esp, 4
 sub esp, 4
-lea eax, [ebp-5]
-mov dword [esp], eax
-mov eax, dword [esp]
-test eax, eax
-je near error
+mov EAX, dword [ident_x]
+mov dword [esp], EAX
 add esp, 4
-mov dword [esp], eax
-mov eax, dword [esp]
-test eax, eax
-je near error
-add esp, 4
-mov AL, byte [eax]
-mov byte [esp], AL
-add esp, 1
 mov esp,ebp
 pop ebp
 ret

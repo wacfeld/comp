@@ -613,6 +613,7 @@ ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; 
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
 ident_main	out/main.asm	/^ident_main:$/;"	l
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
+ident_x	out/main.asm	/^ident_x resb 5$/;"	l
 imm2stack	main.c	/^char *imm2stack(decl *d, int imm)$/;"	f
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	typeref:struct:decl::init
@@ -692,7 +693,6 @@ keywords	defs.h	/^char *keywords[] =$/;"	v
 keywords	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *keywords[] =$/;"	v
 last	datastruct.c	/^void *last(list *l)$/;"	f
 lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
-lea	out/main.asm	/^lea eax, [ebp-5]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	15;"	d	file:
@@ -763,9 +763,10 @@ mark_quot	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void ma
 max	datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	defs.h	43;"	d
 mov	out/main.asm	/^mov AL, byte [eax]$/;"	l
-mov	out/main.asm	/^mov byte [esp], 97$/;"	l
 mov	out/main.asm	/^mov byte [esp], AL$/;"	l
+mov	out/main.asm	/^mov byte [ident_x], 'a'$/;"	l
 mov	out/main.asm	/^mov dword [esp], eax$/;"	l
+mov	out/main.asm	/^mov dword [esp], ident_x$/;"	l
 mov	out/main.asm	/^mov eax, 1$/;"	l
 mov	out/main.asm	/^mov eax, 4$/;"	l
 mov	out/main.asm	/^mov eax, dword [esp]$/;"	l
@@ -971,7 +972,6 @@ strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 sub	out/main.asm	/^sub esp, 1$/;"	l
 sub	out/main.asm	/^sub esp, 4$/;"	l
-sub	out/main.asm	/^sub esp, 5$/;"	l
 test	out/main.asm	/^test eax, eax$/;"	l
 testerr	main.c	24;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:

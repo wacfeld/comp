@@ -5758,6 +5758,10 @@ char *evalexpr(expr *e)
     if(e->args[0]->optype == POINT_O)
     {
       char *s = evalexpr(e->args[0]->args[0]);
+
+      // undo above allocation
+      mapmac(assem, stackdealloc(size));
+      
       mapmac(assem, s);
     }
 
