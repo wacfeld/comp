@@ -2,13 +2,10 @@
 
 # unsupported features (incomplete)
 - floating point
-- array literal initializers (int a[] = {1,2,3})
-- comments
 - enums
 - structs, unions
 - typedef
 - extern, static, register, auto keywords
-- complex constant expressions (3+4 is not allowed, 3 is allowed)
 - variadic functions ('...')
 - old-style function declarations
 - the standard library, except for getchar(), putchar(), exit()
