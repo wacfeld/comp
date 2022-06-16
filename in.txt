@@ -3,5 +3,5 @@
 
 int main()
 {
-  'a';
+  int *x = 0;
 }

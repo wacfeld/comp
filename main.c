@@ -5253,7 +5253,27 @@ void proctoplevel(token *toks)
   // write _start function which calls main
   
   // codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
-  appmac(codeseg, "global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
+  appmac(codeseg,
+      "global _start\n"
+      "_start:\n"
+      "call ident_main\n"
+      "call exit\n\n"
+      "error:\n"
+      "mov edx, errlen\n"
+      "mov ecx, errmsg\n"
+      "mov ebx, 1\n"
+      "mov eax, 4\n"
+      "int 0x80\n"
+      "exit:\n"
+      "mov eax, 1\n"
+      "mov ebx, 0\n"
+      "int 80h\n"
+      );
+
+  appmac(dataseg,
+      "errmsg db \"error\"\n"
+      "errlen eq $ - errmsg\n"
+      );
   
   
   printf("section .data\n%s\nsection .bss\n%s\nsection .text\n%s\n", dataseg, bssseg, codeseg);
@@ -5602,7 +5622,7 @@ char *evalexpr(expr *e)
   // allocate size on stack
   appmac(assem, stackalloc(size));
   
-  // ident: decay to value
+  // identifier: get value/decay
   if(ot == IDENT_O)
   {
     decl *dcl = e->dcl;
@@ -5666,15 +5686,46 @@ char *evalexpr(expr *e)
     }
   }
 
-  // integral constant
+  // integral constant, 5, 'a'
   else if(ot == INT_O || ot == CHAR_O)
   {
     char *sizestr = sizenasm(size);
     mapmac(assem, "mov ", sizestr, " [esp], ", getbits(e->dat, size), "\n");
   }
 
+  // unary *
+  else if(ot == POINT_O)
+  {
+    int targsize = sizeoftype(e->ct);
+
+    // put address on stack
+    char *s = evalexpr(e->args[0]);
+    mapmac(assem, s);
+
+    // put address in eax
+    mapmac(assem, "mov eax, [esp]");
+    
+    // check for null pointer
+    // mapmac(assem, "test eax, eax\nje 
+    
+    // deallocate address from stack
+    mapmac(assem, stackdealloc(PTR_SIZE));
+    
+    // allocate target data (what is pointed to)
+    mapmac(assem, stackalloc(targsize));
+    
+    
+  }
+
+  // unary &
+  else if(ot == ADDR_O)
+  {
+    // argument must be lvalue
+  }
+
   else
   {
+    puts(hropt[ot]);
     throw("optype does not exist/is not supported");
   }
   
