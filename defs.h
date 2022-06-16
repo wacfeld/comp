@@ -364,7 +364,7 @@ enum optype
   // ^^^ expressions that return their data as-is
   
   // postfix expressions
-  ARR_O,
+  // ARR_O, // always replaced with the equivalent pointer + int expression
   FUN_O,
   STRUCT_O, // .
   PSTRUCT_O, // ->
@@ -460,7 +460,7 @@ char *hropt[1000] =
   [CHAR_O]="CHAR_O",
   [ENUM_O]="ENUM_O",
   // [PAREN_O]="PAREN_O",
-  [ARR_O]="ARR_O",
+  // [ARR_O]="ARR_O",
   [FUN_O]="FUN_O",
   [STRUCT_O]="STRUCT_O",
   [PSTRUCT_O]="PSTRUCT_O",

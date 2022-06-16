@@ -4451,18 +4451,32 @@ expr *parsepostexpr(link *start)
     expr *e2 = parseexpr(start->left);
     if(!e2) return NULL;
 
-    expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
-    e1 = newe->args[0];
-    e2 = newe->args[1];
+    // expr *newe = makeexpr(POST_E, ARR_O, 2, e1, e2);
+    // e1 = newe->args[0];
+    // e2 = newe->args[1];
 
+    // ctype ct1 = e1->ct;
+    // ctype ct2 = e2->ct;
+
+    
+    // instead of ARR_O, convert to the equivalent
+    // a[5] -> *(a+5)
+    expr *adde = makeexpr(ADD_E, ADD_O, 2, e1, e2);
+    e1 = adde->args[0];
+    e2 = adde->args[1];
     ctype ct1 = e1->ct;
     ctype ct2 = e2->ct;
 
+    expr *newe = makeexpr(UNAR_E, POINT_O, 1, adde);
+
+    // still do the type checks for array indexing
     // one pointer to object, other integral
     if(isptr(ct1) && isintegral(ct2))
     {
       // must be object type
       assert(isobject(ct1+1));
+      
+      adde->ct = ct1;
 
       newe->ct = ct1+1;
       newe->lval = 1;
@@ -4472,6 +4486,8 @@ expr *parsepostexpr(link *start)
     {
       assert(isobject(ct2+1));
 
+      adde->ct = ct2;
+      
       newe->ct = ct2+1;
       newe->lval = 1;
     }
@@ -5718,7 +5734,7 @@ char *evalexpr(expr *e)
     mapmac(assem, "mov ", rs, ", ", sizestr, " [eax]\n");
     
     // move data onto stack
-    mapmac(assem, "mov ", sizestr, "[esp], ", rs, "\n");
+    mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
   }
 
   // unary &
@@ -5790,13 +5806,13 @@ int main()
   list *trans_unit = proctokens(src, esc, quot);
   token *toks = (token *) trans_unit->cont;
 
-  proctoplevel(toks);
+  // proctoplevel(toks);
 
-  // puts("---");
-  // putd(trans_unit->n);
-  // link *chain = tokl2ll((token *)trans_unit->cont, -1);
+  puts("---");
+  putd(trans_unit->n);
+  link *chain = tokl2ll((token *)trans_unit->cont, -1);
   
-  // expr *e = parseexpr(chain);
-  // putexpr(e,0);
+  expr *e = parseexpr(chain);
+  putexpr(e);
 
 }

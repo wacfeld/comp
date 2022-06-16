@@ -20,7 +20,6 @@ ARGLIST	defs.h	/^  ARGLIST, \/\/ special case: for function calls$/;"	e	enum:exp
 ARGLIST	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ARGLIST, \/\/ special case: for function calls$/;"	e	enum:expr_type
 ARROW	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 ARROW	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
-ARR_O	defs.h	/^  ARR_O,$/;"	e	enum:optype
 ARR_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ARR_O,$/;"	e	enum:optype
 ASGN_E	defs.h	/^  ASGN_E,$/;"	e	enum:expr_type
 ASGN_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ASGN_E,$/;"	e	enum:expr_type
@@ -83,7 +82,7 @@ COND_E	defs.h	/^  COND_E,$/;"	e	enum:expr_type
 COND_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  COND_E,$/;"	e	enum:expr_type
 CONST_E	defs.h	/^  CONST_E,$/;"	e	enum:expr_type
 CONST_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  CONST_E,$/;"	e	enum:expr_type
-COUNT_ARGS	main.c	4762;"	d	file:
+COUNT_ARGS	main.c	4778;"	d	file:
 DATASTRUCT	datastruct.h	2;"	d
 DEBUG	defs.h	32;"	d
 DEBUG	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	31;"	d
@@ -107,13 +106,9 @@ DOT	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_typ
 DUB_T	defs.h	/^enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 DUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 EAX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
-EAX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
 EBX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
-EBX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
 ECX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
-ECX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
 EDX	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg
-EDX	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	e	enum:gpreg	file:
 ENUM_O	defs.h	/^  ENUM_O,$/;"	e	enum:optype
 ENUM_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  ENUM_O,$/;"	e	enum:optype
 EQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
@@ -437,7 +432,7 @@ XOR_E	defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_E	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	defs.h	/^  XOR_O,$/;"	e	enum:optype
 XOR_O	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_O,$/;"	e	enum:optype
-_GET_NTH_ARG	main.c	4761;"	d	file:
+_GET_NTH_ARG	main.c	4777;"	d	file:
 _start	asmtest/main.asm	/^_start:$/;"	l
 _start	asmtest/test.asm	/^_start:$/;"	l
 _start	out/main.asm	/^_start:$/;"	l
@@ -449,7 +444,7 @@ add	out/main.asm	/^add esp, 4$/;"	l
 alloc	defs.h	39;"	d
 alloc	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 append	datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
-appmac	main.c	4757;"	d	file:
+appmac	main.c	4773;"	d	file:
 args	defs.h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 args	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct expr **args;$/;"	m	struct:expr	typeref:struct:expr::expr
 arr	defs.h	/^  } arr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon13
@@ -591,9 +586,7 @@ global	template/main.asm	/^global _start$/;"	l
 global	template/test.asm	/^global _start$/;"	l
 globloc	defs.h	/^  char *globloc; \/\/ nasm label$/;"	m	struct:location
 gpr_ref	defs.h	/^char *gpr_ref[4][5] =$/;"	v
-gpr_ref	test.c	/^char *gpr_ref[4][5] =$/;"	v
 gpreg	defs.h	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	g
-gpreg	test.c	/^enum gpreg {EAX=0, EBX=1, ECX=2, EDX=3};$/;"	g	file:
 helpgettypemods	main.c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpgettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)$/;"	f
 helpputexpr	main.c	/^void helpputexpr(expr *e, int space)$/;"	f
@@ -760,7 +753,7 @@ makelist	datastruct.c	/^list *makelist(int size)$/;"	f
 makesametype	main.c	/^int makesametype(expr **e1, expr **e2, int dt)$/;"	f
 makeset	datastruct.c	/^set *makeset(int size)$/;"	f
 makestack	datastruct.c	/^stack *makestack(int size)$/;"	f
-mapmac	main.c	4766;"	d	file:
+mapmac	main.c	4782;"	d	file:
 mark_esc	main.c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_esc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void mark_esc(char *src, char *esc)$/;"	f
 mark_quot	main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
@@ -906,7 +899,6 @@ read	defs.h	41;"	d
 read	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	40;"	d
 reg2stack	main.c	/^char *reg2stack(decl *d, char *reg)$/;"	f
 regstr	main.c	/^char *regstr(enum gpreg gpr, int size)$/;"	f
-regstr	test.c	/^char *regstr(enum gpreg gpr, int size)$/;"	f
 rem_comments	main.c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_comments	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void rem_comments(char *src, char *esc, char *quot)$/;"	f
 rem_front	datastruct.c	/^void rem_front(list *l)$/;"	f
