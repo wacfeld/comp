@@ -1,4 +1,6 @@
 all: main.c datastruct.c
+	cc main.c datastruct.c -o main -g -pg -Wreturn-type
+san: main.c datastruct.c
 	cc main.c datastruct.c -o main -g -pg -fsanitize=undefined -Wreturn-type
 warn: main.c datastruct.c
 	cc main.c datastruct.c -o main -g -pg -Wextra -Wall -fsanitize=undefined

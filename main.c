@@ -5665,6 +5665,18 @@ char *evalexpr(expr *e)
       // mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
     }
   }
+
+  // integral constant
+  else if(ot == INT_O || ot == CHAR_O)
+  {
+    char *sizestr = sizenasm(size);
+    mapmac(assem, "mov ", sizestr, " [esp], ", getbits(e->dat, size), "\n");
+  }
+
+  else
+  {
+    throw("optype does not exist/is not supported");
+  }
   
   return assem;
 }

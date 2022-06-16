@@ -1,11 +1,7 @@
 /* vim:filetype=c
 */
 
-void f()
-{
-  return;
-}
 int main()
 {
-  f;
+  'a';
 }
