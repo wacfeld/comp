@@ -5899,7 +5899,6 @@ char *evalexpr(expr *e)
 //{{{1 main
 int main()
 {
-
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
