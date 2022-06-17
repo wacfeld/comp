@@ -10,27 +10,15 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov dword [ebp-4], 7
+mov dword [ebp-4], 15
 sub esp, 4
-sub esp, 4
-lea eax, [ebp-8]
-mov dword [esp], eax
+mov dword [ebp-8], 7
 sub esp, 4
 lea eax, [ebp-4]
 mov dword [esp], eax
-mov EBX, dword [esp]
-add esp, 4
-mov eax, dword [esp]
-add esp, 4
-mov dword [eax], EBX
-sub esp, 4
-mov dword [esp], EBX
-add esp, 4
 sub esp, 4
 mov EAX, dword [ebp-8]
 mov dword [esp], EAX
-sub esp, 4
-mov dword [esp], 00000000000000000000000000001000b
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]

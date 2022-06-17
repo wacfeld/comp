@@ -6,10 +6,9 @@
 
 int main()
 {
-  int x = 5;
-  int y[x];
-
-  
+  signed int x = -2;
+  unsigned char c = x;
+  printf("%d\n", c);
 
   return 0;
 }

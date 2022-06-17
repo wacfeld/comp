@@ -3517,7 +3517,7 @@ expr *parseasgnexpr(link *start)
 
   // TODO remember no double evaluation for compound assignments
 
-  // make implicit cast of right side left
+  // make implicit cast of right side to left type
   e2 = makecast(newe->ct, e2);
 
   newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
@@ -5676,6 +5676,31 @@ char *pushlocat(struct location locat)
   }
 
   return assem;
+}
+
+// convert one integral type to another
+// integer is assumed to be in gpr a (eax, ax, or al)
+char *evalintcast(ctype to, ctype from)
+{
+  assert(isintegral(to));
+  assert(isintegral(from));
+  
+  int sizeto = dtsize(to->dat.dt);
+  int sizefrom = dtsize(from->dat.dt);
+  int signedto = issigned(to);
+  int signedfrom = issigned(from);
+
+  // promoting or sidemoting
+  if(sizeto >= sizefrom)
+  {
+    
+  }
+  
+  // demoting
+  else
+  {
+    
+  }
 }
 
 // expr to asm. asm calculates the value of e and puts the result on the stack

@@ -3,11 +3,7 @@
 
 int main()
 {
-/*int x = 15;
+int x = 15;
 int a = 7;
-x = a;*/
-  int x = 7;
-  int *i;
-  i = &x;
-  *i = 8;
+x = a;
 }

@@ -538,6 +538,7 @@ etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
 evalexpr	main.c	/^char *evalexpr(expr *e)$/;"	f
+evalintcast	main.c	/^char *evalintcast(ctype to, ctype from)$/;"	f
 evalsimpleconstintexpr	main.c	/^dword evalsimpleconstintexpr(expr *e)$/;"	f
 exit	asmtest/main.asm	/^exit:$/;"	l
 exit	out/copy.asm	/^exit:$/;"	l
@@ -705,7 +706,6 @@ lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
 lea	out/copy.asm	/^lea eax, [ebp-4]$/;"	l
 lea	out/copy.asm	/^lea eax, [ebp-8]$/;"	l
 lea	out/main.asm	/^lea eax, [ebp-4]$/;"	l
-lea	out/main.asm	/^lea eax, [ebp-8]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	15;"	d	file:
@@ -794,8 +794,8 @@ mov	out/copy.asm	/^mov esp,ebp$/;"	l
 mov	out/main.asm	/^mov EAX, dword [ebp-8]$/;"	l
 mov	out/main.asm	/^mov EBX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov dword [eax], EBX$/;"	l
-mov	out/main.asm	/^mov dword [ebp-4], 7$/;"	l
-mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000001000b$/;"	l
+mov	out/main.asm	/^mov dword [ebp-4], 15$/;"	l
+mov	out/main.asm	/^mov dword [ebp-8], 7$/;"	l
 mov	out/main.asm	/^mov dword [esp], EAX$/;"	l
 mov	out/main.asm	/^mov dword [esp], EBX$/;"	l
 mov	out/main.asm	/^mov dword [esp], eax$/;"	l
@@ -1082,7 +1082,6 @@ usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f
 vspmac	main.c	4800;"	d	file:
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
-x	asmtest/main.asm	/^x dd 5$/;"	d
 x	template/main.asm	/^x resd 1$/;"	l
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f

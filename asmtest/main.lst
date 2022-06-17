@@ -1,16 +1,15 @@
      1                                  section .data
-     2 00000000 05000000                x dd 5
-     3                                  
-     4                                  section .bss
-     5                                  section .text
-     6                                  global _start
-     7                                  _start:
-     8 00000000 B8[00000000]              mov eax, x
-     9 00000005 8B00                      mov dword eax, [eax]
-    10 00000007 EB00                      jmp exit
-    11                                  
-    12                                  exit:
-    13 00000009 B801000000                mov eax, 1
-    14 0000000E BB00000000                mov ebx, 0
-    15 00000013 CD80                      int 80h
-    16                                  
+     2                                  
+     3                                  section .bss
+     4                                  section .text
+     5                                  global _start
+     6                                  _start:
+     7 00000000 B0FB                      mov al, -5
+     8 00000002 0FBEC0                    movsx eax, al
+     9 00000005 EB00                      jmp exit
+    10                                  
+    11                                  exit:
+    12 00000007 B801000000                mov eax, 1
+    13 0000000C BB00000000                mov ebx, 0
+    14 00000011 CD80                      int 80h
+    15                                  
