@@ -19,7 +19,7 @@
 
 #include "datastruct.h"
 
-#define fanfare(s) {puts("================");puts(s);puts("================");}
+#define ff(s) {puts("================");puts(s);puts("================");}
 
 #define putd(x) printf(#x ": %d\n", x)
 #define putp(x) printf(#x ": %p\n", x)
@@ -749,5 +749,7 @@ char *evalexpr(expr *e);
 expr *tokl2expr(token *toks, int lo, int hi);
 
 int asprintf(char **strp, const char *fmt, ...);
+
+int isasgnop(enum optype o);
 
 #endif

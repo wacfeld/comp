@@ -1094,7 +1094,7 @@ int isscalar(ctype ct)
 }
 
 int eistype(expr *e, int type);
-int isasgnop(int);
+int atomisasgnop(int);
 
 void puttypemod(typemod ts);
 
@@ -2600,7 +2600,7 @@ expr *makeintexpr(int x)
   return e;
 }
 
-void decay(int optype, expr *e)
+void decay(int optype, int argn, expr *e)
 {
   // check if fulfills decay conditions
   if(e->lval) // lvalue
@@ -2637,7 +2637,9 @@ void decay(int optype, expr *e)
         && optype != PREINC_O
         && optype != POSTINC_O
         && optype != PREDEC_O
-        && optype != POSTDEC_O)
+        && optype != POSTDEC_O
+        && !(isasgnop(optype) && argn == 0) // left argument of assignment operator
+        )
       // TODO left of .
     {
       // we do no ctype modifying, we just tell 2ASM to get the data out of there
@@ -2798,7 +2800,7 @@ expr *makeexpr(int type, int optype, int numargs, ...)
       e = va_arg(ap, expr *);
       
       // certain types trigger decays, which are prevented by certain optypes
-      decay(optype, e);
+      decay(optype, i, e);
       
       newe->args[i] = e;
     }
@@ -3349,13 +3351,28 @@ expr *parseexpr(link *start)
 
 int asgnops[] = {EQ, TIMESEQ, DIVEQ, MODEQ, PLUSEQ, MINEQ, SHLEQ, SHREQ, ANDEQ, XOREQ, OREQ};
 
-int isasgnop(int x)
+int atomisasgnop(int x)
 {
   for(int i = 0; i < sizeof(asgnops)/sizeof(int); i++)
   {
     if(asgnops[i] == x) return 1;
   }
   return 0;
+}
+
+int isasgnop(enum optype o)
+{
+  return o == EQ_O
+    || o == TIMESEQ_O
+    || o == DIVEQ_O
+    || o == MODEQ_O
+    || o == PLUSEQ_O
+    || o == MINEQ_O
+    || o == SHLEQ_O
+    || o == SHREQ_O
+    || o == ANDEQ_O
+    || o == XOREQ_O
+    || o == OREQ_O;
 }
 
 // check if ct1 = ct2 is a valid assignment expression
@@ -4557,7 +4574,7 @@ expr *parsearglist(link *start)
     if(!e) return NULL;
 
     // decay if necessary
-    decay(-1, e);
+    decay(-1, -1, e);
 
     newe->args[i] = e;
 
@@ -5607,9 +5624,15 @@ char *parsestat(struct stat *stat)
 
       // convert expression to assembly, append
       expr *e = tokl2expr(toks, lo, end-1);
+
+      // toplevel expr decays always, as it's not the operand of something preventing it from decaying
+      decay(-1, -1, e);
+
+      // get size after decay
+      int size = sizeoftype(e->ct);
+      
       // evaluate, put on stack
       char *s = evalexpr(e);
-      int size = sizeoftype(e->ct); // calculate size afterward to allow decay to happen
       appmac(assem, s);
       
       // expression statement value gets thrown out
@@ -5661,9 +5684,6 @@ char *evalexpr(expr *e)
   int assem_len = 100;
   char *assem = malloc(assem_len);
   *assem = 0;
-
-  // toplevel expr decays always, as it's not the operand of something preventing it from decaying
-  decay(-1, e);
 
   int ot = e->optype;
   int size = sizeoftype(e->ct);
@@ -5809,8 +5829,6 @@ char *evalexpr(expr *e)
     // ident/decl: extract location, put on stack
     else if(e->args[0]->optype == IDENT_O)
     {
-      // allocate space for address
-
       assert(e->args[0]->dcl);
       decl *dcl = e->args[0]->dcl;
       
@@ -5854,7 +5872,7 @@ char *evalexpr(expr *e)
     else
     {
       // check that decl exists
-      decl *dcl = e->args[0]->decl;
+      decl *dcl = e->args[0]->dcl;
       assert(dcl);
 
       // put location (address) of decl to stack
@@ -5862,27 +5880,31 @@ char *evalexpr(expr *e)
       appmac(assem, s);
     }
 
-    // put LHS address in eax, deallocate
-    vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
-    sdall(PTR_SIZE);
+    // // put LHS address in eax, deallocate
+    // vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
+    // sdall(PTR_SIZE);
 
     // put RHS value on stack
     char *s = evalexpr(e->args[1]);
     appmac(assem, s);
 
-    char *rsr = regstr(EBX, size);
+    char *rs = regstr(EBX, size);
     char *sizestr = sizenasm(size);
 
     // put RHS value in ebx, deallocate
     vspmac(assem, "mov %s, %s [esp]\n", rs, sizestr);
     sdall(size);
 
-    // transfer RHS value to LHS address
-    vspmac(assem, "mov %s [eax], %s", sizestr, rs);
+    // put LHS address in eax, deallocate
+    vspmac(assem, "mov eax, %s [esp]\n", sizenasm(PTR_SIZE));
+    sdall(PTR_SIZE);
 
-    // push to stack as well
+    // transfer RHS value to LHS address
+    vspmac(assem, "mov %s [eax], %s\n", sizestr, rs);
+
+    // put value on stack as well
     sall(size);
-    vspmap(assem, "mov %s [esp], %s", sizestr, rs);
+    vspmac(assem, "mov %s [esp], %s\n", sizestr, rs);
   }
 
   else
@@ -5891,7 +5913,14 @@ char *evalexpr(expr *e)
     throw("optype does not exist/is not supported");
   }
   
-  assert(curstacksize + size == stacksize);
+  if(curstacksize + size != stacksize)
+  {
+    putd(curstacksize);
+    putd(stacksize);
+    putd(size);
+    exit(1);
+  }
+  // assert(curstacksize + size == stacksize);
   return assem;
 }
 

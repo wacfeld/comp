@@ -1,41 +1,9 @@
 	.file	"test.c"
 	.text
-	.data
-	.align 2
-	.type	.Lubsan_type0, @object
-	.size	.Lubsan_type0, 10
-.Lubsan_type0:
-	.value	0
-	.value	11
-	.string	"'int'"
-	.align 2
-	.type	.Lubsan_type1, @object
-	.size	.Lubsan_type1, 14
-.Lubsan_type1:
-	.value	0
-	.value	11
-	.string	"'int [5]'"
-	.section	.rodata
-.LC0:
-	.string	"test.c"
-	.section	.data.rel.local,"aw"
-	.align 32
-	.type	.Lubsan_data0, @object
-	.size	.Lubsan_data0, 32
-.Lubsan_data0:
-	.quad	.LC0
-	.long	10
-	.long	18
-	.quad	.Lubsan_type1
-	.quad	.Lubsan_type0
-	.section	.rodata
-.LC1:
-	.string	"%d\n"
-	.text
 	.globl	main
 	.type	main, @function
 main:
-.LFB0:
+.LFB6:
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -47,30 +15,69 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
-	movl	$1, -32(%rbp)
-	movl	$2, -28(%rbp)
-	movl	$3, -24(%rbp)
-	movl	$4, -20(%rbp)
-	movl	$5, -16(%rbp)
-	movq	$-1, %rsi
-	leaq	.Lubsan_data0(%rip), %rdi
-	call	__ubsan_handle_out_of_bounds@PLT
-	movl	-36(%rbp), %eax
-	movl	%eax, %esi
-	leaq	.LC1(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	$0, %eax
-	movq	-8(%rbp), %rdx
-	xorq	%fs:40, %rdx
+	movq	%rsp, %rax
+	movq	%rax, %rcx
+	movl	$5, -28(%rbp)
+	movl	-28(%rbp), %eax
+	movslq	%eax, %rdx
+	subq	$1, %rdx
+	movq	%rdx, -24(%rbp)
+	movslq	%eax, %rdx
+	movq	%rdx, %r8
+	movl	$0, %r9d
+	movslq	%eax, %rdx
+	movq	%rdx, %rsi
+	movl	$0, %edi
+	cltq
+	leaq	0(,%rax,4), %rdx
+	movl	$16, %eax
+	subq	$1, %rax
+	addq	%rdx, %rax
+	movl	$16, %esi
+	movl	$0, %edx
+	divq	%rsi
+	imulq	$16, %rax, %rax
+	movq	%rax, %rdx
+	andq	$-4096, %rdx
+	movq	%rsp, %rdi
+	subq	%rdx, %rdi
+	movq	%rdi, %rdx
+.L2:
+	cmpq	%rdx, %rsp
 	je	.L3
-	call	__stack_chk_fail@PLT
+	subq	$4096, %rsp
+	orq	$0, 4088(%rsp)
+	jmp	.L2
 .L3:
+	movq	%rax, %rdx
+	andl	$4095, %edx
+	subq	%rdx, %rsp
+	movq	%rax, %rdx
+	andl	$4095, %edx
+	testq	%rdx, %rdx
+	je	.L4
+	andl	$4095, %eax
+	subq	$8, %rax
+	addq	%rsp, %rax
+	orq	$0, (%rax)
+.L4:
+	movq	%rsp, %rax
+	addq	$3, %rax
+	shrq	$2, %rax
+	salq	$2, %rax
+	movq	%rax, -16(%rbp)
+	movl	$0, %eax
+	movq	%rcx, %rsp
+	movq	-8(%rbp), %rcx
+	xorq	%fs:40, %rcx
+	je	.L6
+	call	__stack_chk_fail@PLT
+.L6:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE0:
+.LFE6:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",@progbits
