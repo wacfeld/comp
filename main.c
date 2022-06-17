@@ -37,7 +37,7 @@ int isdeclspec(token t);
 
 //{{{1 debugging
 
-#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);trace();exit(1);}
+#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);/*trace()*/;exit(1);}
 
 void trace()
 {
@@ -2002,6 +2002,15 @@ void puttypemod(typemod ts)
 }
 
 
+// return 0 if toplevel VOID_T (still gives error for void arr[3], for example)
+int safesizeoftype(ctype ct)
+{
+  if(ctisdt(ct, VOID_T))
+    return 0;
+
+  // return 
+  // LEH
+}
 
 // int helpsizeoftype(int dt, typemod *tms)
 int sizeoftype(ctype ct)
@@ -3518,9 +3527,12 @@ expr *parseasgnexpr(link *start)
   // TODO remember no double evaluation for compound assignments
 
   // make implicit cast of right side to left type
-  e2 = makecast(newe->ct, e2);
-
   newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
+  if(!iscompat(newe->ct, newe->args[1]->ct, QM_STRICT))
+  {
+    newe->args[1] = makecast(newe->ct, newe->args[1]);
+  }
+
   newe->lval = 0;
 
 
@@ -4979,12 +4991,11 @@ char *getbits(u_int32_t dat, int size)
 }
 
 
-#define sall(size) {appmac(assem, stackalloc(size)); stacksize += size;}
-#define sdall(size) {appmac(assem, stackdealloc(size)); stacksize -= size;}
-
 // "sub esp, 4"
 char *stackalloc(int size)
 {
+  if(size == 0)
+    return "";
   // int size = sizeoftype(d->ct);
   char *sizestr = num2str(size);
   
@@ -4993,6 +5004,8 @@ char *stackalloc(int size)
 
 char *stackdealloc(int size)
 {
+  if(size == 0)
+    return "";
   char *sizestr = num2str(size);
   
   return strnew(3, "add esp, ", sizestr, "\n");
@@ -5628,15 +5641,20 @@ char *parsestat(struct stat *stat)
       // toplevel expr decays always, as it's not the operand of something preventing it from decaying
       decay(-1, -1, e);
 
-      // get size after decay
-      int size = sizeoftype(e->ct);
+      putexpr(e);
       
       // evaluate, put on stack
       char *s = evalexpr(e);
       appmac(assem, s);
-      
-      // expression statement value gets thrown out
-      appmac(assem, stackdealloc(size));
+
+      // get size after decay
+      if(!eisdt(e, VOID_T)) // if not void, deallocate returned value
+      {
+        int size = sizeoftype(e->ct);
+        
+        // expression statement value gets thrown out
+        appmac(assem, stackdealloc(size));
+      }
 
       // move over semicolon
       lo = end + 1;
@@ -5648,6 +5666,9 @@ char *parsestat(struct stat *stat)
 
 
 //{{{1 expr eval
+
+#define sall(size) {appmac(assem, stackalloc(size)); stacksize += size;}
+#define sdall(size) {appmac(assem, stackdealloc(size)); stacksize -= size;}
 
 // safety to ensure that allocated space is properly deallocated
 int stacksize = 0;
@@ -5691,18 +5712,18 @@ char *evalintcast(ctype to, ctype from)
   assert(isintegral(to));
   assert(isintegral(from));
   
-  int sizeto = dtsize(to->dat.dt);
-  int sizefrom = dtsize(from->dat.dt);
+  int tosize = dtsize(to->dat.dt);
+  int fromsize = dtsize(from->dat.dt);
   int signedto = issigned(to);
   int signedfrom = issigned(from);
 
   // promoting
-  if(sizeto > sizefrom)
+  if(tosize > fromsize)
   {
     // sign extend
     if(signedfrom)
     {
-      vspmac(assem, "movsx %s, %s\n", regstr(EAX, sizeto), regstr(EAX, sizefrom));
+      vspmac(assem, "movsx %s, %s\n", regstr(EAX, tosize), regstr(EAX, fromsize));
     }
 
     // zerofill
@@ -5711,20 +5732,21 @@ char *evalintcast(ctype to, ctype from)
       // zero gpr b
       vspmac(assem, "mov ebx, 0\n");
       // put number into gpr b
-      vspmac(assem, "mov %s, %s\n", regstr(EBX, sizefrom), regstr(EAX, sizefrom));
+      vspmac(assem, "mov %s, %s\n", regstr(EBX, fromsize), regstr(EAX, fromsize));
       // put back into gpr a
       vspmac(assem, "mov eax, ebx\n");
     }
   }
 
   // sidemoting: do nothing
-  else if(sizeto == sizefrom) ;
+  else if(tosize == fromsize) ;
   
   // demoting
   else ; // truncate, i.e. do nothing
 
   return assem;
 }
+
 
 // expr to asm. asm calculates the value of e and puts the result on the stack
 char *evalexpr(expr *e)
@@ -5734,7 +5756,12 @@ char *evalexpr(expr *e)
   *assem = 0;
 
   int ot = e->optype;
-  int size = sizeoftype(e->ct);
+
+  int size;
+  if(!eisdt(e, VOID_T))
+    size = sizeoftype(e->ct);
+  else
+    size = 0; // make sure we don't allocate anything, by just passing size 0
 
   // allocate size on stack
   // appmac(assem, stackalloc(size));
@@ -5954,6 +5981,49 @@ char *evalexpr(expr *e)
     sall(size);
     vspmac(assem, "mov %s [esp], %s\n", sizestr, rs);
   }
+  // TODO rest of assignment
+
+  // casts
+  else if(ot == CAST_O)
+  {
+    ctype toct = e->ct;
+
+    // size of original
+    expr *from = e->args[0];
+    ctype fromct = from->ct;
+    int fromsize = sizeoftype(fromct);
+
+    // evaluate original, put on stack
+    char *s = evalexpr(from);
+    appmac(assem, s);
+
+    // cast to void, discard value (dealloc)
+    if(ctisdt(toct, VOID_T))
+      sdall(fromsize);
+
+    // do not discard value, go on with cast
+    else
+    {
+      // move from stack to gpr a, deallocate
+      vspmac(assem, "mov %s, %s [esp]", regstr(EAX, fromsize), sizenasm(fromsize));
+      
+      // pointer to integral
+      else if(isptr(fromct) && isintegral(toct))
+      {
+        
+      }
+      
+      // integral to pointer
+      else if(isintegral(fromct) && isptr(toct))
+      {
+        
+      }
+
+      // pointer to pointer, function pointer to function pointer
+      else if(isptr(fromct) && isptr(toct))
+        ; // just do nothing; IA-32 does not mandate alignment, i think
+    }
+  }
 
   else
   {
@@ -5966,7 +6036,7 @@ char *evalexpr(expr *e)
     putd(curstacksize);
     putd(stacksize);
     putd(size);
-    exit(1);
+    throw("allocations do not match deallocations");
   }
   // assert(curstacksize + size == stacksize);
   return assem;
@@ -6032,8 +6102,6 @@ int main()
   }
   else
   {
-    puts("---");
-    putd(trans_unit->n);
     link *chain = tokl2ll((token *)trans_unit->cont, -1);
     
     expr *e = parseexpr(chain);

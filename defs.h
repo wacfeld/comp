@@ -630,7 +630,7 @@ int canbeunary[] = {BITAND, PLUS, MIN, STAR}; // atoms that represent both unary
 int cbulen = sizeof(canbeunary)/sizeof(int);
 
 
-enum dattypes {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
+enum dattype {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
 
 char *hrdt[] =
 {

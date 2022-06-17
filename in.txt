@@ -1,6 +1,7 @@
 /* vim:filetype=c
 */
-
 int main()
 {
+  char x;
+  x = 5;
 }

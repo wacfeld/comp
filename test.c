@@ -2,7 +2,6 @@
 
 int main()
 {
-  signed int x = -256;
-  signed char a = x;
-  printf("%d\n", a);
+  1+(void) (void) (void) 3;
+  return 0;
 }
