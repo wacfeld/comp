@@ -5680,8 +5680,14 @@ char *pushlocat(struct location locat)
 
 // convert one integral type to another
 // integer is assumed to be in gpr a (eax, ax, or al)
+// result should also be in gpr a
+// modifies: eax and ebx
 char *evalintcast(ctype to, ctype from)
 {
+  int assem_len = 100;
+  char *assem = malloc(assem_len);
+  *assem = 0;
+  
   assert(isintegral(to));
   assert(isintegral(from));
   
@@ -5690,17 +5696,34 @@ char *evalintcast(ctype to, ctype from)
   int signedto = issigned(to);
   int signedfrom = issigned(from);
 
-  // promoting or sidemoting
-  if(sizeto >= sizefrom)
+  // promoting
+  if(sizeto > sizefrom)
   {
-    
+    // sign extend
+    if(signedfrom)
+    {
+      vspmac(assem, "movsx %s, %s\n", regstr(EAX, sizeto), regstr(EAX, sizefrom));
+    }
+
+    // zerofill
+    else
+    {
+      // zero gpr b
+      vspmac(assem, "mov ebx, 0\n");
+      // put number into gpr b
+      vspmac(assem, "mov %s, %s\n", regstr(EBX, sizefrom), regstr(EAX, sizefrom));
+      // put back into gpr a
+      vspmac(assem, "mov eax, ebx\n");
+    }
   }
+
+  // sidemoting: do nothing
+  else if(sizeto == sizefrom) ;
   
   // demoting
-  else
-  {
-    
-  }
+  else ; // truncate, i.e. do nothing
+
+  return assem;
 }
 
 // expr to asm. asm calculates the value of e and puts the result on the stack
