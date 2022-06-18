@@ -10,14 +10,14 @@
     10 00000000 55                      push ebp
     11 00000001 89E5                    mov ebp,esp
     12 00000003 83EC04                  sub esp, 4
-    13 00000006 C745FC0F000000          mov dword [ebp-4], 15
+    13 00000006 C745FC07000000          mov dword [ebp-4], 7
     14 0000000D 83EC04                  sub esp, 4
-    15 00000010 C745F807000000          mov dword [ebp-8], 7
+    15 00000010 C745F808000000          mov dword [ebp-8], 8
     16 00000017 83EC04                  sub esp, 4
-    17 0000001A 8D45FC                  lea eax, [ebp-4]
+    17 0000001A 8D45F8                  lea eax, [ebp-8]
     18 0000001D 890424                  mov dword [esp], eax
     19 00000020 83EC04                  sub esp, 4
-    20 00000023 8B45F8                  mov EAX, dword [ebp-8]
+    20 00000023 8B45FC                  mov EAX, dword [ebp-4]
     21 00000026 890424                  mov dword [esp], EAX
     22 00000029 8B1C24                  mov EBX, dword [esp]
     23 0000002C 83C404                  add esp, 4

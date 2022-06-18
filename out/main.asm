@@ -10,14 +10,14 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
-mov dword [ebp-4], 15
+mov dword [ebp-4], 7
 sub esp, 4
-mov dword [ebp-8], 7
+mov dword [ebp-8], 8
 sub esp, 4
-lea eax, [ebp-4]
+lea eax, [ebp-8]
 mov dword [esp], eax
 sub esp, 4
-mov EAX, dword [ebp-8]
+mov EAX, dword [ebp-4]
 mov dword [esp], EAX
 mov EBX, dword [esp]
 add esp, 4

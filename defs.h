@@ -47,6 +47,7 @@
 #define FLOAT_SIZE 4
 #define INT_SIZE 4
 #define PTR_SIZE 4
+
 // doubles and long doubles are the same size as floats
 // all int sizes are the same as int
 // this complies with the standard
@@ -632,6 +633,9 @@ int cbulen = sizeof(canbeunary)/sizeof(int);
 
 enum dattype {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};
 
+// the integer to/from which we cast pointers (unsigned, same size in memory)
+const int PTRINT = UINT_T;
+
 char *hrdt[] =
 {
   [VOID_T]="VOID_T",
@@ -751,5 +755,7 @@ expr *tokl2expr(token *toks, int lo, int hi);
 int asprintf(char **strp, const char *fmt, ...);
 
 int isasgnop(enum optype o);
+
+int sizeoftype(ctype ct);
 
 #endif

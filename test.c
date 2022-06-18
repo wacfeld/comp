@@ -2,6 +2,7 @@
 
 int main()
 {
-  1+(void) (void) (void) 3;
-  return 0;
+  int *x = 0;
+  char *y = 0;
+  y = (char *)x;
 }

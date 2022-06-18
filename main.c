@@ -2008,8 +2008,7 @@ int safesizeoftype(ctype ct)
   if(ctisdt(ct, VOID_T))
     return 0;
 
-  // return 
-  // LEH
+  return sizeoftype(ct);
 }
 
 // int helpsizeoftype(int dt, typemod *tms)
@@ -5641,7 +5640,7 @@ char *parsestat(struct stat *stat)
       // toplevel expr decays always, as it's not the operand of something preventing it from decaying
       decay(-1, -1, e);
 
-      putexpr(e);
+      // putexpr(e);
       
       // evaluate, put on stack
       char *s = evalexpr(e);
@@ -5723,18 +5722,29 @@ char *evalintcast(ctype to, ctype from)
     // sign extend
     if(signedfrom)
     {
+      // move from stack to gpr a, deallocate
+      vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, fromsize), sizenasm(fromsize));
+      sdall(fromsize);
+      
       vspmac(assem, "movsx %s, %s\n", regstr(EAX, tosize), regstr(EAX, fromsize));
+      
+      // put back on stack
+      sall(tosize);
+      vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
     }
 
-    // zerofill
+    // zero extend
     else
     {
-      // zero gpr b
-      vspmac(assem, "mov ebx, 0\n");
-      // put number into gpr b
-      vspmac(assem, "mov %s, %s\n", regstr(EBX, fromsize), regstr(EAX, fromsize));
-      // put back into gpr a
-      vspmac(assem, "mov eax, ebx\n");
+      // move from stack to gpr a, deallocate
+      vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, fromsize), sizenasm(fromsize));
+      sdall(fromsize);
+      
+      vspmac(assem, "movzx %s, %s\n", regstr(EAX, tosize), regstr(EAX, fromsize));
+
+      // put back on stack
+      sall(tosize);
+      vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
     }
   }
 
@@ -5742,7 +5752,16 @@ char *evalintcast(ctype to, ctype from)
   else if(tosize == fromsize) ;
   
   // demoting
-  else ; // truncate, i.e. do nothing
+  else // truncate: simply change size of the thing on stack
+  {
+    // move from stack to gpr a, deallocate
+    vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, fromsize), sizenasm(fromsize));
+    sdall(fromsize);
+
+    // put back on stack
+    sall(tosize);
+    vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
+  }
 
   return assem;
 }
@@ -5757,11 +5776,11 @@ char *evalexpr(expr *e)
 
   int ot = e->optype;
 
-  int size;
-  if(!eisdt(e, VOID_T))
-    size = sizeoftype(e->ct);
-  else
-    size = 0; // make sure we don't allocate anything, by just passing size 0
+  int size = safesizeoftype(e->ct);
+  // if(!eisdt(e, VOID_T))
+  //   size = sizeoftype(e->ct);
+  // else
+  //   size = 0; // make sure we don't allocate anything, by just passing size 0
 
   // allocate size on stack
   // appmac(assem, stackalloc(size));
@@ -5991,7 +6010,7 @@ char *evalexpr(expr *e)
     // size of original
     expr *from = e->args[0];
     ctype fromct = from->ct;
-    int fromsize = sizeoftype(fromct);
+    int fromsize = safesizeoftype(fromct);
 
     // evaluate original, put on stack
     char *s = evalexpr(from);
@@ -5999,29 +6018,75 @@ char *evalexpr(expr *e)
 
     // cast to void, discard value (dealloc)
     if(ctisdt(toct, VOID_T))
+    {
       sdall(fromsize);
+    }
 
     // do not discard value, go on with cast
     else
     {
-      // move from stack to gpr a, deallocate
-      vspmac(assem, "mov %s, %s [esp]", regstr(EAX, fromsize), sizenasm(fromsize));
+      int tosize = sizeoftype(toct);
+      
+      // // move from stack to gpr a, deallocate
+      // vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, fromsize), sizenasm(fromsize));
+      // sdall(fromsize);
       
       // pointer to integral
-      else if(isptr(fromct) && isintegral(toct))
+      if(isptr(fromct) && isintegral(toct))
       {
-        
+        // replace fromct with this TM_DAT ctype
+        typemod tm;
+        tm.gen.type = TM_DAT;
+        tm.dat.dt = PTRINT;
+
+        // convert
+        char *s = evalintcast(toct, &tm);
+        appmac(assem, s);
+
+        // // put on stack
+        // sall(tosize);
+        // vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
       }
       
       // integral to pointer
       else if(isintegral(fromct) && isptr(toct))
       {
+        // replace toct with this TM_DAT ctype
+        typemod tm;
+        tm.gen.type = TM_DAT;
+        tm.dat.dt = PTRINT;
+
+        // convert
+        char *s = evalintcast(&tm, fromct);
+        appmac(assem, s);
         
+        // // put on stack
+        // sall(tosize);
+        // vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
       }
 
       // pointer to pointer, function pointer to function pointer
       else if(isptr(fromct) && isptr(toct))
         ; // just do nothing; IA-32 does not mandate alignment, i think
+
+      // integral to integral
+      else if(isintegral(fromct) && isintegral(toct))
+      {
+        // convert
+        char *s = evalintcast(toct, fromct);
+        appmac(assem, s);
+
+        // // put on stack
+        // sall(tosize);
+        // vspmac(assem, "mov %s [esp], %s\n", sizenasm(tosize), regstr(EAX, tosize));
+      }
+
+      else
+      {
+        throw("unanticipated cast");
+      }
+
+      // TODO floating point
     }
   }
 
