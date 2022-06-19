@@ -5097,7 +5097,7 @@ char ident_pre[] = "ident_";
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // destray a stack frame at end of function
-char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
+char destroy_sframe[] = "dbg: mov esp,ebp\npop ebp\n";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -5519,6 +5519,8 @@ char *parsestat(struct stat *stat)
 
       // roll back scope
       remtonull();
+
+      // TODO deallocate on real stack as well
 
       // move on to next statement
       lo = end + 1;
@@ -6340,6 +6342,7 @@ char *evalexpr(expr *e)
     
     // multiply
     vspmac(assem, "mul %s\n", regstr(EBX, size));
+    // both mul and imul work here as we don't care about the upper half
     
     // put back onto stack
     sall(size);
@@ -6347,6 +6350,70 @@ char *evalexpr(expr *e)
     
     dbgstatus = "MULT_O";
   }
+  
+  // division, module
+  else if(ot == DIV_O || ot == MOD_O)
+  {
+    expr *e1 = e->args[0];
+    expr *e2 = e->args[1];
+    
+    // get size
+    assert(sizeoftype(e1->ct) == sizeoftype(e2->ct));
+    int size = sizeoftype(e1->ct);
+
+    // eval 2 subexprs
+    appmac(assem, evalexpr(e->args[0]));
+    appmac(assem, evalexpr(e->args[1]));
+    
+    // put into regs
+    appmac(assem, stack2reg(EBX, size));
+    sdall(size);
+    appmac(assem, stack2reg(EAX, size));
+
+    // if dividing, discard e1. otherwise it is needed for modulo later
+    if(ot == DIV_O)
+    {
+      sdall(size);
+    }
+
+    // the following code assumes the integers are currently 32-bit
+    
+    // if signed, sign extend into EDX
+    if(issigned(e1->ct))
+    {
+      appmac(assem, "cdq\n");
+    }
+    else // otherwise, fill EDX with 0
+    {
+      appmac(assem, "mov edx, 0\n");
+    }
+    
+    vspmac(assem, "idiv ebx\n"); // perform signed division, eax/ebx -> edx:eax. discard edx.
+    
+    // division
+    // return quotient
+    if(ot == DIV_O)
+    {
+      sall(size);
+      appmac(assem, reg2stack(EAX, size));
+
+      dbgstatus = "DIV_O";
+    }
+
+    // modulo
+    // a % b == a - (a/b)*b
+    else
+    {
+      // (a/b) * b -> gpr a
+      appmac(assem, "mul ebx\n");
+
+      // a - (a/b)*b (a is on stack already)
+      vspmac(assem, "sub %s [esp], %s\n", sizenasm(size), regstr(EAX, size));
+
+      dbgstatus = "MOD_O";
+    }
+  }
+  
 
   // unary minus
   else if(ot == UMIN_O)

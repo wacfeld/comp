@@ -2,8 +2,10 @@
 */
 int main()
 {
-  int x;
-  char c = 255;
-  char d = 1;
-  x =  c * d;
+  int c;
+  int d;
+  int a = -19;
+  char b = 3;
+  c = a % b;
+  d = a/b;
 }
