@@ -2,8 +2,12 @@
 */
 int main()
 {
-  int *x = 30;
-  int y = 6;
-  int *c;
-  c = x-y;
+  int *a;
+  int *b;
+  int c;
+  int x[30];
+
+  a = x+5;
+  b = x + 12;
+  c = a -  b;
 }

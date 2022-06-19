@@ -2610,6 +2610,8 @@ expr *makeintexpr(int x)
 
 void decay(int optype, int argn, expr *e)
 {
+  assert(e);
+
   // check if fulfills decay conditions
   if(e->lval) // lvalue
   {
@@ -3958,7 +3960,7 @@ expr *parseaddexpr(link *start)
     }
 
     // both pointer to compat object
-    else if(isptr(ct1) && isptr(ct2) && iscompat(ct1+1, ct2+2, QM_NOCARE))
+    else if(isptr(ct1) && isptr(ct2) && iscompat(ct1+1, ct2+1, QM_NOCARE))
     {
       // must be objects, not incomplete
       assert(!incomplete(ct1+1));
@@ -5615,6 +5617,9 @@ char *parsestat(struct stat *stat)
       {
         d = parsedecl(toks, &lo, &sc);
         assert(d);
+
+        // putdecl(d);
+
         ctype ct = d->ct;
         int size = sizeoftype(ct);
 
@@ -5660,6 +5665,10 @@ char *parsestat(struct stat *stat)
 
       // convert expression to assembly, append
       expr *e = tokl2expr(toks, lo, end-1);
+
+      // puts("eouoeueueueuoeue");
+      // putexpr(e);
+      // puts("eoueou");
 
       // toplevel expr decays always, as it's not the operand of something preventing it from decaying
       decay(-1, -1, e);
@@ -6245,8 +6254,9 @@ char *evalexpr(expr *e)
       vspmac(assem, "sub %s, %s\n", regstr(EAX, PTR_SIZE), regstr(EBX, PTR_SIZE));
       
       // divide eax by target size
-      vspmac(assem, "mov %s, 0\n", regstr(EDX, PTR_SIZE)); // zero EDX because division operates on EDX:EAX
-      vspmac(assem, "div %s\n", num2str(targsize)); // remainder (should be 0) goes into EDX
+      appmac(assem, "cdq\n"); // sign extend into EDX:EAX
+      vspmac(assem, "mov %s, %s\n", regstr(EBX, PTR_SIZE), num2str(targsize));
+      vspmac(assem, "idiv %s\n", regstr(EBX, PTR_SIZE)); // perform signed division, eax/ebx -> edx:eax
 
       // put back onto stack
       sall(PTR_SIZE);

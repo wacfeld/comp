@@ -14,9 +14,6 @@ disas:
 	gcc -S test.c -ansi -pedantic -Wextra -Wall -fsanitize=undefined -fsanitize=address
 in:
 	./main < in.txt
-comp:
-	./main < in.txt > out/main.asm
-	make -C out/
 debug:
 	make all
 	gdb main
