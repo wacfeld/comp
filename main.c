@@ -3238,11 +3238,13 @@ ctype makedt(int dt)
 // expr is dattype
 int eisdt(expr *e, int dt)
 {
+  assert(e);
   return tmis(e->ct, TM_DAT) && e->ct->dat.dt == dt;
 }
 
 int ctisdt(ctype ct, int dt)
 {
+  assert(ct);
   return ct->gen.type == TM_DAT && ct->dat.dt == dt;
 }
 
@@ -3386,8 +3388,9 @@ int isasgnop(enum optype o)
 }
 
 // check if ct1 = ct2 is a valid assignment expression
-void checkasgncompat(ctype ct1, ctype ct2)
+void checkasgncompat(enum optype optype, ctype ct1, ctype ct2)
 {
+  // operation-agnostic checks
   if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
 
   //else if(TODO: structures and unions);
@@ -3413,6 +3416,27 @@ void checkasgncompat(ctype ct1, ctype ct2)
   {
     throw("invalid assignment types");
   }
+
+  
+  // operation-specific checks
+  if(optype == EQ_O) ; // no extra constraints for =
+  else if(optype == PLUSEQ_O || optype == MINEQ_O)
+  {
+    // if += or -=, pointer on left implies integral on right
+    if(ct1->gen.type == TM_PTR)
+    {
+      assert(isintegral(ct2));
+    }
+  }
+
+  else // all other operators
+  {
+    // TODO type consistent with those allowed by the corresponding binary operator
+    putd(optype);
+    puts(hropt[optype]);
+    throw("other assignment types not supported yet");
+  }
+  
   
 }
 
@@ -3481,29 +3505,28 @@ expr *parseasgnexpr(link *start)
   // one of the following has to be true
 
   // we throw the below logic into a function so that FUN_O can use it to check for arg->param compatibility
-  checkasgncompat(ct1, ct2);
+  checkasgncompat(optype, ct1, ct2);
   
 
   // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
+  // TODO remember no double evaluation for compound assignments
 
   
-  if(optype == EQ_O) ; // no extra constraints for =
-  if(optype == PLUSEQ_O || optype == MINEQ_O)
-  {
-    // if += or -=, pointer on left implies integral on right
-    if(ct1->gen.type == TM_PTR)
-    {
-      assert(isintegral(ct2));
-    }
-  }
+  // if(optype == EQ_O) ; // no extra constraints for =
+  // if(optype == PLUSEQ_O || optype == MINEQ_O)
+  // {
+  //   // if += or -=, pointer on left implies integral on right
+  //   if(ct1->gen.type == TM_PTR)
+  //   {
+  //     assert(isintegral(ct2));
+  //   }
+  // }
 
-  else // all other operators
-  {
-    // TODO type consistent with those allowed by the corresponding binary operator
-    throw("other assignment types not supported yet");
-  }
-
-  // TODO remember no double evaluation for compound assignments
+  // else // all other operators
+  // {
+  //   // TODO type consistent with those allowed by the corresponding binary operator
+  //   throw("other assignment types not supported yet");
+  // }
 
   // make implicit cast of right side to left type
   newe->ct = unqual(e1->ct); // unqualified copy of left hand ct
@@ -4432,9 +4455,9 @@ expr *parsepostexpr(link *start)
         {
           decl *p = ct1[1].func.params + i;
 
-          // types must agree as if by assignment
+          // types must agree as if by simple assignment
           // assert(iscompat(p->ct, e2->args[i]->ct, QM_SUPERSET));
-          checkasgncompat(p->ct, e2->args[i]->ct);
+          checkasgncompat(EQ_O, p->ct, e2->args[i]->ct);
           e2->args[i] = makecast(p->ct, e2->args[i]);
         }
       }
@@ -5378,10 +5401,23 @@ void pushdecl(decl *d)
 
 //{{{1 statement eval
 
+#define sall(size) {appmac(assem, stackalloc(size)); stacksize += size;}
+#define sdall(size) {appmac(assem, stackdealloc(size)); stacksize -= size;}
+
+// safety to ensure that allocated space is properly deallocated
+int stacksize = 0;
+
+
 int findatom(token *toks, int i, int dir, enum atom_type t)
 {
   while(!tisatom(toks[i], t))
   {
+    if(toks[i].gen.type == NOTOK || i < 0)
+    {
+      puts(hrat[t]);
+      throw("could not find atom");
+    }
+
     i += dir;
   }
 
@@ -5582,7 +5618,7 @@ char *parsestat(struct stat *stat)
       lo = end + 1;
     }
 
-    // penultimate: declaration
+    // penultimate: indoor (local) declaration
     else if(isdeclspec(toks[lo])) // decl spec -> declaration
     {
       // find terminating semicolon, just to confirm that it exists
@@ -5608,7 +5644,8 @@ char *parsestat(struct stat *stat)
         pushdecl(d);
 
         // allocate on stack (keep esp at top of stack)
-        appmac(assem, stackalloc(sizeoftype(d->ct)));
+        // appmac(assem, stackalloc(sizeoftype(d->ct)));
+        sall(sizeoftype(d->ct));
         
         // figure out where it goes on the real stack
         framesize += size;
@@ -5621,7 +5658,32 @@ char *parsestat(struct stat *stat)
           assert(!d->init->islist);
           assert(d->ct->gen.type != TM_ARR);
           
-          appmac(assem, imm2frame(d, d->init->e->dat));
+          ctype ct1 = d->ct;
+          ctype ct2 = d->init->e->ct;
+          // make sure valid assignment
+          checkasgncompat(EQ_O, ct1, ct2);
+
+          // cast if necessary
+          if(!iscompat(ct1, ct2, QM_STRICT))
+          {
+            d->init->e = makecast(ct1, d->init->e);
+          }
+
+          // create the expressions (LHS identifier, RHS value)
+          expr *de = makeexpr(PRIM_E, IDENT_O, 0);
+          de->dcl = d;
+          de->ct = d->ct;
+          
+          // put into EQ_O assignment expression
+          expr *newe = makeexpr(ASGN_E, EQ_O, 2, de, d->init->e);
+          newe->ct = d->ct;
+          
+          // evaluate (perform assignment)
+          appmac(assem, evalexpr(newe));
+          // discard value of assignment expression
+          sdall(sizeoftype(d->ct));
+          
+          // appmac(assem, imm2frame(d, d->init->e->dat));
         }
         
       } while(!sc);
@@ -5676,12 +5738,6 @@ char *parsestat(struct stat *stat)
 
 
 //{{{1 expr eval
-
-#define sall(size) {appmac(assem, stackalloc(size)); stacksize += size;}
-#define sdall(size) {appmac(assem, stackdealloc(size)); stacksize -= size;}
-
-// safety to ensure that allocated space is properly deallocated
-int stacksize = 0;
 
 // given global or local location (label or offset from ebp), put address of location on stack
 char *pushlocat(struct location locat)

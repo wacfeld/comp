@@ -4,7 +4,5 @@
 
 int main()
 {
-  int a;
-  void *x = &a;
-  void *p = x+1;
+  int b = 5 + 6;
 }

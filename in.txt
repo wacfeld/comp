@@ -2,12 +2,7 @@
 */
 int main()
 {
-  /*int *a;
-  int *b;
-  int c;
-  int x[30];
-
-  a = x+5;
-  b = x + 12;
-  c = a -  b;*/
+  int b = 5+6;
+  int c = 12 + 11;
+  int d = 15 - 11;
 }
