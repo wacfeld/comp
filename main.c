@@ -6351,7 +6351,7 @@ char *evalexpr(expr *e)
     dbgstatus = "MULT_O";
   }
   
-  // division, module
+  // division, modulo
   else if(ot == DIV_O || ot == MOD_O)
   {
     expr *e1 = e->args[0];
@@ -6414,7 +6414,6 @@ char *evalexpr(expr *e)
     }
   }
   
-
   // unary minus
   else if(ot == UMIN_O)
   {
@@ -6462,6 +6461,92 @@ char *evalexpr(expr *e)
 
     dbgstatus = "LNOT_O";
   }
+
+  // relational operators
+  else if
+    (ot == LT_O
+     || ot == GT_O
+     || ot == LEQ_O
+     || ot == GEQ_O
+     || ot == EQEQ_O
+     || ot == NEQ_O)
+    {
+      expr *e1 = e->args[0];
+      expr *e2 = e->args[1];
+
+      // get size
+      assert(sizeoftype(e1->ct) == sizeoftype(e2->ct));
+      int argsize = sizeoftype(e1->ct);
+
+      // eval 2 subexprs
+      appmac(assem, evalexpr(e->args[0]));
+      appmac(assem, evalexpr(e->args[1]));
+
+      // put into regs
+      appmac(assem, stack2reg(EBX, argsize));
+      sdall(argsize);
+      appmac(assem, stack2reg(EAX, argsize));
+      sdall(argsize);
+
+      // compare the two
+      vspmac(assem, "cmp %s, %s\n", stack2reg(EAX, argsize), stack2reg(EBX, argsize));
+
+
+      // whether or not is signed
+      int sgnd;
+
+      // comparing two pointers (same as unsigned ints)
+      if(isptr(e1->ct) && isptr(e2->ct))
+      {
+        sgnd = 0;
+      }
+      else if(issigned(e1->ct) && issigned(e2->ct))
+      {
+        sgnd = 1;
+      }
+      else if(!issigned(e1->ct) && !issigned(e2->ct))
+      {
+        sgnd = 0;
+      }
+      else
+      {
+        throw("impossible state");
+      }
+
+      // column 0 for unsigned, column 1 for signed
+      static char *jumps[][2] = {
+        [EQEQ_O] = {"je"  , "je"}  , 
+        [NEQ_O]  = {"jne" , "jne"} , 
+        [LT_O]   = {"jb"  , "jl"}  , 
+        [GT_O]   = {"ja"  , "jg"}  , 
+        [LEQ_O]  = {"jbe" , "jle"} , 
+        [GEQ_O]  = {"jae" , "jge"} , 
+      };
+
+      // string used to jump (je, ja, jab, jge, etc.)
+      char *jmpstr = jumps[ot][sgnd];
+
+      // create 2 new labels to jump to
+      char *lab1 = newloclab();
+      char *lab2 = newloclab();
+
+      /* e.x. for (a == b)
+
+        cmp eax, ebx
+        je .lab1
+        mov dword [esp], 0
+        jmp .lab2
+        .lab1:
+        mov dword [esp], 1
+        .lab2:
+
+      */
+      vspmac(assem, "%s %s\n", jmpstr, lab1);
+      vspmac(assem, "mov %s [esp], 0\n", sizenasm(size));
+      vspmac(assem, "jmp %s\n", lab2);
+      vspmac(assem, "%s: mov %s [esp], 1\n", lab1, sizenasm(size));
+      vspmac(assem, "%s:\n", lab2);
+    }
 
   else
   {
