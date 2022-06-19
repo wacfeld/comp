@@ -1,8 +1,10 @@
 #include <stdio.h>
+#define LEN 1024
+#include <stddef.h>
 
 int main()
 {
-  int *x = 0;
-  char *y = 0;
-  y = (char *)x;
+  int a;
+  void *x = &a;
+  void *p = x+1;
 }

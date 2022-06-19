@@ -4,12 +4,16 @@
      4                                  section .text
      5                                  global _start
      6                                  _start:
-     7 00000000 B0FB                      mov al, -5
-     8 00000002 0FBEC0                    movsx eax, al
-     9 00000005 EB00                      jmp exit
+     7 00000000 B8FFFFFFFF              mov eax, -1
+     8 00000005 BB02000000              mov ebx, 2
+     9 0000000A F7EB                    imul ebx
     10                                  
-    11                                  exit:
-    12 00000007 B801000000                mov eax, 1
-    13 0000000C BB00000000                mov ebx, 0
-    14 00000011 CD80                      int 80h
-    15                                  
+    11 0000000C B8FFFFFFFF              mov eax, -1
+    12 00000011 BB02000000              mov ebx, 2
+    13 00000016 F7E3                    mul ebx
+    14                                  
+    15                                  exit:
+    16 00000018 B801000000                mov eax, 1
+    17 0000001D BB00000000                mov ebx, 0
+    18 00000022 CD80                      int 80h
+    19                                  

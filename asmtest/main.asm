@@ -4,9 +4,13 @@ section .bss
 section .text
 global _start
 _start:
-  mov al, -5
-  movsx eax, al
-  jmp exit
+mov eax, -1
+mov ebx, 2
+imul ebx
+
+mov eax, -1
+mov ebx, 2
+mul ebx
 
 exit:
   mov eax, 1

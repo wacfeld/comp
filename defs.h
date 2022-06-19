@@ -735,10 +735,11 @@ void pushdecl(decl *d);
 
 char *stackalloc(int size)           ;
 char *stackdealloc(int size);
-char *imm2stack(decl *d, int imm)    ;
-char *reg2stack(decl *d, char *reg)  ;
-char *stack2reg(char *reg, decl *d)  ;
+char *imm2frame(decl *d, int imm)    ;
+char *reg2frame(decl *d, char *reg)  ;
+char *stack2frame(char *reg, decl *d)  ;
 
+char *reg2stack(enum gpreg reg, int size);
 
 void pushnull();
 void remtonull();

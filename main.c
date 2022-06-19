@@ -4808,7 +4808,7 @@ dword evalsimpleconstintexpr(expr *e)
 // shortcut for multiapp using COUNT_ARGS
 // supports up to 20 variadic arguments
 #define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__);}
-#define vspmac(dest, fmt, ...) {char *s; asprintf(&s, fmt, ##__VA_ARGS__); appmac(dest, s);}
+#define vspmac(dest, fmt, ...) {char *s; asprintf(&s, fmt, ##__VA_ARGS__); appmac(dest, s); free(s);}
     
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
@@ -5011,7 +5011,7 @@ char *stackdealloc(int size)
 }
 
 // "mov dword [ebp-4], 3"
-char *imm2stack(decl *d, int imm)
+char *imm2frame(decl *d, int imm)
 {
   char *offstr = getoffstr(d->locat.locloc);
   char *sizestr = sizenasm(sizeoftype(d->ct));
@@ -5021,7 +5021,7 @@ char *imm2stack(decl *d, int imm)
 }
 
 // "mov dword [ebp-4], eax"
-char *reg2stack(decl *d, char *reg)
+char *reg2frame(decl *d, char *reg)
 {
   char *offstr = getoffstr(d->locat.locloc);
   char *sizestr = sizenasm(sizeoftype(d->ct));
@@ -5030,12 +5030,36 @@ char *reg2stack(decl *d, char *reg)
 }
 
 // "mov eax, dword [ebp-4]
-char *stack2reg(char *reg, decl *d)
+char *stack2frame(char *reg, decl *d)
 {
   char *offstr = getoffstr(d->locat.locloc);
   char *sizestr = sizenasm(sizeoftype(d->ct));
 
   return strnew(8, "mov ", reg, ", ", sizestr, " [ebp", offstr, "]", "\n");
+}
+
+// mov dword [esp], eax
+// move byte [esp], bl
+char *reg2stack(enum gpreg reg, int size)
+{
+  char *rs = regstr(reg, size);
+  char *ss = sizenasm(size);
+
+  char *s;
+  asprintf(&s, "mov %s [esp], %s\n", ss, rs);
+
+  return s;
+}
+
+char *stack2reg(enum gpreg reg, int size)
+{
+  char *rs = regstr(reg, size);
+  char *ss = sizenasm(size);
+
+  char *s;
+  asprintf(&s, "mov %s, %s [esp]\n", rs, ss);
+
+  return s;
 }
 
 //{{{1 toplevel
@@ -5614,7 +5638,7 @@ char *parsestat(struct stat *stat)
           assert(!d->init->islist);
           assert(d->ct->gen.type != TM_ARR);
           
-          appmac(assem, imm2stack(d, d->init->e->dat));
+          appmac(assem, imm2frame(d, d->init->e->dat));
         }
         
       } while(!sc);
@@ -6087,6 +6111,98 @@ char *evalexpr(expr *e)
       }
 
       // TODO floating point
+    }
+  }
+  
+  else if(ot == ADD_O)
+  {
+    expr *e1 = e->args[0];
+    expr *e2 = e->args[1];
+
+    // if integral + pointer, switch order (pointer + integral)
+    if(isptr(e2))
+    {
+      expr *temp = e2;
+      e2 = e1;
+      e1 = temp;
+    }
+
+    ctype ct1 = e1->ct;
+    ctype ct2 = e2->ct;
+
+    // both arithmetic, just take the sum
+    if(isarith(ct1) && isarith(ct2))
+    {
+      assert(iscompat(ct1, ct2, QM_NOCARE)); // make sure same dattype
+
+      int size = sizeoftype(ct1); // size of ints we're working with
+          
+      // both integral
+      if(isintegral(ct1) && isintegral(ct2))
+      {
+        // evaluate args, put on stack
+        appmac(assem, evalexpr(e1));
+        appmac(assem, evalexpr(e2));
+
+        char *rs = regstr(EAX, size);
+        char *ss = sizenasm(size);
+        // put e2 into gpr a. dealloc. add gpr a to e1 on the stack
+        vspmac(assem, "mov %s, %s [esp]\n", rs, ss);
+        sdall(size);
+        vspmac(assem, "add %s [esp], %s\n", ss, rs);
+      }
+
+      else
+      {
+        throw("non-integral arithmetic addition not supported yet");
+      }
+    }
+
+    // pointer (plus integral)
+    else if(isptr(e1))
+    {
+      // only integers can be added to pointers
+      assert(isintegral(e2));
+
+      // size of target
+      int targsize = sizeoftype(ct1+1);
+      // size of integer
+      int intsize = sizeoftype(ct2);
+      
+      // put integer into gpr a, dealloc
+      appmac(assem, stack2reg(EAX, intsize));
+      sdall(intsize);
+      
+      // if not proper size, sign extend/zero extend so that multiplication works
+      char *rs1 = regstr(EAX, dtsize(PTRINT));
+      char *rs2 = regstr(EAX, intsize);
+      if(signed && intsize < PTR_SIZE)
+      {
+        vspmac(assem, "movsx %s, %s\n", rs1, rs2);
+      }
+      else if(unsigned && intsize < PTR_SIZE)
+      {
+        vspmac(assem, "movzx %s, %s\n", rs1, rs2);
+      }
+
+      // multiply offset by targsize
+      char *rb = regstr(EBX, PTR_SIZE); // gpr b
+      vspmac(assem, "mov %s, %s\n", rb, num2str(targsize)); // gpr b <- targsize
+      vspmac(assem, "mul %s\n", rb); // gpr a <- gpr a * gpr b
+      // imul and mul do not matter here because we assume overflow does not occur.
+      // overflow does not occur because the difference between any two addresses fits within eax
+
+      // store scaled offset on stack
+      sall(PTR_SIZE);
+      appmac(assem, reg2stack(EAX, PTR_SIZE));
+      
+      // calculate pointer, put on stack
+      appmac(assem, evalexpr(e1));
+      // put into gpr a
+      appmac(assem, stack2reg(EAX, PTR_SIZE));
+      sdall(PTR_SIZE);
+      // add to offset
+      vspmac(assem, "add %s [esp], %s\n", sizenasm(PTR_SIZE), regtsr(EAX, PTR_SIZE));
     }
   }
 
