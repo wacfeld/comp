@@ -3483,29 +3483,6 @@ expr *parseasgnexpr(link *start)
   // we throw the below logic into a function so that FUN_O can use it to check for arg->param compatibility
   checkasgncompat(ct1, ct2);
   
-  //if(isarith(ct1) && isarith(ct2)) ; // both arithmetic
-
-  ////else if(TODO: structures and unions);
-
-  //else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)
-  //    && ((tmis(ct1+1, TM_DAT) && ct1[1].dat.dt == VOID_T)
-  //      || (tmis(ct2+1, TM_DAT) && ct2[1].dat.dt == VOID_T))) // one is pointer to any, other is pointer to void
-  //{
-  //  // make sure left hand pointed-to quals are stricter than right
-  //  if(isconst(ct2+1)) assert(isconst(ct1+1));
-  //  if(isvolat(ct2+1)) assert(isvolat(ct1+1));
-  //}
-
-  ////else if(TODO: lhs ptr, rhs constant 0);
-
-  //else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
-  //{
-  //  // check compatibility, using superset qualmode
-  //  assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
-  //}
-
-  //else
-  //  throw("invalid assignment types");
 
   // TODO see C90 6.3.16.2 for rules about +=, -=, etc. with pointers
 
@@ -3523,6 +3500,7 @@ expr *parseasgnexpr(link *start)
   else // all other operators
   {
     // TODO type consistent with those allowed by the corresponding binary operator
+    throw("other assignment types not supported yet");
   }
 
   // TODO remember no double evaluation for compound assignments
