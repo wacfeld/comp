@@ -5407,6 +5407,19 @@ void pushdecl(decl *d)
 // safety to ensure that allocated space is properly deallocated
 int stacksize = 0;
 
+// create new local (dot prefixed) label
+char *newloclab()
+{
+  static char *pre = ".lab";
+  static int num = 0;
+
+  char *s;
+  asprintf(&s, "%s%d", pre, num);
+
+  num++;
+
+  return s;
+}
 
 int findatom(token *toks, int i, int dir, enum atom_type t)
 {
@@ -6303,6 +6316,52 @@ char *evalexpr(expr *e)
     }
 
     dbgstatus = "ADD_O";
+  }
+
+  // unary minus
+  else if(ot == UMIN_O)
+  {
+    appmac(assem, evalexpr(e->args[0]));
+    vspmac(assem, "neg %s [esp]\n", sizenasm(size));
+  }
+  /// LEH ADD_O has a bug,
+  /*
+  int a = 5;
+  char c = 1;
+  int b = a + c;
+     */
+
+  // unary plus
+  else if(ot == UMIN_O)
+  {
+    // doesn't have any effect
+    appmac(assem, evalexpr(e->args[0]));
+  }
+
+  // bitwise not
+  else if(ot == BNOT_O)
+  {
+    appmac(assem, evalexpr(e->args[0]));
+    vspmac(assem, "not %s [esp]\n", sizenasm(size));
+  }
+
+  // logical not
+  else if(ot == LNOT_O)
+  {
+    // it's possible to do this without any conditionals but it's very long
+
+    appmac(assem, evalexpr(e->args[0]));
+
+    char *lab1 = newloclab();
+    char *lab2 = newloclab();
+    
+    // test if 0
+    vspmac(assem, "test %s [esp], -1\n", sizenasm(size));
+    vspmac(assem, "jz %s\n", lab1);
+    vspmac(assem, "mov %s [esp], 0\n", sizenasm(size));
+    vspmac(assem, "jmp %s\n", lab2);
+    vspmac(assem, "%s: mov %s [esp], 1\n", lab1, sizenasm(size));
+    vspmac(assem, "%s:\n", lab2);
   }
 
   else

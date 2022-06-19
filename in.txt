@@ -2,7 +2,7 @@
 */
 int main()
 {
-  int b = 5+6;
-  int c = 12 + 11;
-  int d = 15 - 11;
+  int a = 5;
+  char c = 1;
+  int b = a + c;
 }

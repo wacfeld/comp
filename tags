@@ -472,7 +472,6 @@ canbeunary	defs.h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms tha
 canbeunary	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
 cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 cbulen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
-cdq	out/main.asm	/^cdq$/;"	l
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
@@ -628,7 +627,6 @@ ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$
 ident_main	out/copy.asm	/^ident_main:$/;"	l
 ident_main	out/main.asm	/^ident_main:$/;"	l
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
-idiv	out/main.asm	/^idiv EBX$/;"	l
 imm2frame	main.c	/^char *imm2frame(decl *d, int imm)$/;"	f
 imul	asmtest/main.asm	/^imul ebx$/;"	l
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
@@ -713,8 +711,6 @@ lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
 lea	out/copy.asm	/^lea eax, [ebp-4]$/;"	l
 lea	out/copy.asm	/^lea eax, [ebp-8]$/;"	l
 lea	out/main.asm	/^lea eax, [ebp-12]$/;"	l
-lea	out/main.asm	/^lea eax, [ebp-132]$/;"	l
-lea	out/main.asm	/^lea eax, [ebp-4]$/;"	l
 lea	out/main.asm	/^lea eax, [ebp-8]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
@@ -803,15 +799,13 @@ mov	out/copy.asm	/^mov ebx, 1$/;"	l
 mov	out/copy.asm	/^mov ecx, errmsg$/;"	l
 mov	out/copy.asm	/^mov edx, errlen$/;"	l
 mov	out/copy.asm	/^mov esp,ebp$/;"	l
-mov	out/main.asm	/^mov EAX, dword [ebp-4]$/;"	l
-mov	out/main.asm	/^mov EAX, dword [ebp-8]$/;"	l
 mov	out/main.asm	/^mov EAX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov EBX, 4$/;"	l
 mov	out/main.asm	/^mov EBX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov dword [eax], EBX$/;"	l
-mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000101b$/;"	l
-mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000001100b$/;"	l
-mov	out/main.asm	/^mov dword [esp], EAX$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000000b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000011b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000010001b$/;"	l
 mov	out/main.asm	/^mov dword [esp], EBX$/;"	l
 mov	out/main.asm	/^mov dword [esp], eax$/;"	l
 mov	out/main.asm	/^mov eax, 1$/;"	l
@@ -830,6 +824,7 @@ mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
 name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon31::__anon36
+newloclab	main.c	/^char *newloclab()$/;"	f
 nexttok	main.c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttok	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^token * nexttok(char *src, char *esc, char *quot)$/;"	f
 nexttoplevel	main.c	/^link *nexttoplevel(link *start, int dir, int num, int *atoms)$/;"	f
@@ -1033,9 +1028,8 @@ strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 sub	out/copy.asm	/^sub esp, 4$/;"	l
-sub	out/main.asm	/^sub EAX, EBX$/;"	l
-sub	out/main.asm	/^sub esp, 120$/;"	l
 sub	out/main.asm	/^sub esp, 4$/;"	l
+sub	out/main.asm	/^sub esp, 8$/;"	l
 testerr	main.c	24;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 throw	main.c	40;"	d	file:
