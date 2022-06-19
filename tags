@@ -510,6 +510,7 @@ dat	defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
 dattype	defs.h	/^enum dattype {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
 dattype	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon28
 dattypes	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	g
+dbgstatus	main.c	/^char *dbgstatus = "start";$/;"	v
 dcl	dcl/main.c	/^void dcl(char *str)$/;"	f
 dcl	defs.h	/^  decl * dcl; \/\/ for objects, functions, etc. which can appear from primary expressions$/;"	m	struct:expr
 decay	main.c	/^void decay(int optype, int argn, expr *e)$/;"	f

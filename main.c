@@ -3968,7 +3968,7 @@ expr *parseaddexpr(link *start)
     }
 
     // pointer (to object) minus integral
-    else if(isptr(ct1) && isintegral(ct1))
+    else if(isptr(ct1) && isintegral(ct2))
     {
       // must be object, not incomplete
       assert(!incomplete(ct1+1));
@@ -5791,6 +5791,7 @@ char *evalintcast(ctype to, ctype from)
 }
 
 
+char *dbgstatus = "start";
 // expr to asm. asm calculates the value of e and puts the result on the stack
 char *evalexpr(expr *e)
 {
@@ -5876,6 +5877,8 @@ char *evalexpr(expr *e)
       
       // mapmac(assem, "mov ", sizenasm(size), " [esp], ", "[ebp", getoffstr(dcl->locat.locloc), "]\n");
     }
+
+    dbgstatus = "IDENT_O";
   }
 
   // integral constant, 5, 'a'
@@ -5886,6 +5889,8 @@ char *evalexpr(expr *e)
     sall(size);
     // fill
     mapmac(assem, "mov ", sizestr, " [esp], ", getbits(e->dat, size), "\n");
+
+    dbgstatus = "INT_O, CHAR_O";
   }
 
   // unary *
@@ -5927,11 +5932,14 @@ char *evalexpr(expr *e)
       // move data onto stack
       mapmac(assem, "mov ", sizestr, " [esp], ", rs, "\n");
     }
+
+    dbgstatus = "POINT_O";
   }
 
   // unary &
   else if(ot == ADDR_O)
   {
+    
     // special form, behaves differently based on what its argument is
 
     // it might be cleaner to have every lvalue be a POINT_O of the address, and then ADDR_O just cancels that out, but this way seems to work fine
@@ -5973,6 +5981,8 @@ char *evalexpr(expr *e)
     {
       throw("unanticipated usage of unary &");
     }
+
+    dbgstatus = "ADDR_O";
   }
 
   // simple assignment
@@ -6023,6 +6033,8 @@ char *evalexpr(expr *e)
     // put value on stack as well
     sall(size);
     vspmac(assem, "mov %s [esp], %s\n", sizestr, rs);
+
+    dbgstatus = "EQ_O";
   }
   // TODO rest of assignment
 
@@ -6112,15 +6124,16 @@ char *evalexpr(expr *e)
 
       // TODO floating point
     }
+    dbgstatus = "CAST_O";
   }
   
-  else if(ot == ADD_O)
+  else if(ot == ADD_O || ot == SUB_O)
   {
     expr *e1 = e->args[0];
     expr *e2 = e->args[1];
-
+    
     // if integral + pointer, switch order (pointer + integral)
-    if(isptr(e2))
+    if(isptr(e2->ct) && ot == ADD_O)
     {
       expr *temp = e2;
       e2 = e1;
@@ -6130,13 +6143,13 @@ char *evalexpr(expr *e)
     ctype ct1 = e1->ct;
     ctype ct2 = e2->ct;
 
-    // both arithmetic, just take the sum
+    // both arithmetic, just take the sum/difference
     if(isarith(ct1) && isarith(ct2))
     {
       assert(iscompat(ct1, ct2, QM_NOCARE)); // make sure same dattype
 
       int size = sizeoftype(ct1); // size of ints we're working with
-          
+
       // both integral
       if(isintegral(ct1) && isintegral(ct2))
       {
@@ -6144,12 +6157,14 @@ char *evalexpr(expr *e)
         appmac(assem, evalexpr(e1));
         appmac(assem, evalexpr(e2));
 
+        char *op = (ot == SUB_O) ? "sub" : "add";
+
         char *rs = regstr(EAX, size);
         char *ss = sizenasm(size);
-        // put e2 into gpr a. dealloc. add gpr a to e1 on the stack
+        // put e2 into gpr a. dealloc. add/subtract gpr a to e1 on the stack
         vspmac(assem, "mov %s, %s [esp]\n", rs, ss);
         sdall(size);
-        vspmac(assem, "add %s [esp], %s\n", ss, rs);
+        vspmac(assem, "%s %s [esp], %s\n", op, ss, rs);
       }
 
       else
@@ -6158,16 +6173,23 @@ char *evalexpr(expr *e)
       }
     }
 
-    // pointer (plus integral)
-    else if(isptr(e1))
+    // pointer (+- integral)
+    else if(isptr(ct1) && isintegral(ct2))
     {
       // only integers can be added to pointers
-      assert(isintegral(e2));
+      assert(isintegral(ct2));
+      assert(!ctisdt(ct1+1, VOID_T)); // can't do arithmetic on void pointers
 
       // size of target
       int targsize = sizeoftype(ct1+1);
       // size of integer
       int intsize = sizeoftype(ct2);
+
+      // calculate pointer, put on stack
+      appmac(assem, evalexpr(e1));
+
+      // evaluate integer
+      appmac(assem, evalexpr(e2));
       
       // put integer into gpr a, dealloc
       appmac(assem, stack2reg(EAX, intsize));
@@ -6176,11 +6198,11 @@ char *evalexpr(expr *e)
       // if not proper size, sign extend/zero extend so that multiplication works
       char *rs1 = regstr(EAX, dtsize(PTRINT));
       char *rs2 = regstr(EAX, intsize);
-      if(signed && intsize < PTR_SIZE)
+      if(issigned(ct2) && intsize < PTR_SIZE)
       {
         vspmac(assem, "movsx %s, %s\n", rs1, rs2);
       }
-      else if(unsigned && intsize < PTR_SIZE)
+      else if(!issigned(ct2) && intsize < PTR_SIZE)
       {
         vspmac(assem, "movzx %s, %s\n", rs1, rs2);
       }
@@ -6192,18 +6214,51 @@ char *evalexpr(expr *e)
       // imul and mul do not matter here because we assume overflow does not occur.
       // overflow does not occur because the difference between any two addresses fits within eax
 
-      // store scaled offset on stack
-      sall(PTR_SIZE);
-      appmac(assem, reg2stack(EAX, PTR_SIZE));
-      
-      // calculate pointer, put on stack
+      char *op = (ot == SUB_O) ? "sub" : "add";
+      // add offset to pointer
+      vspmac(assem, "%s %s [esp], %s\n", op, sizenasm(PTR_SIZE), regstr(EAX, PTR_SIZE));
+    }
+
+    // both pointers
+    else if(isptr(ct1) && isptr(ct2))
+    {
+      assert(ot == SUB_O); // can't add pointers to each other, only subtract
+
+      // can't subtract pointers of different types
+      assert(iscompat(ct1, ct2, QM_NOCARE));
+      assert(!ctisdt(ct1+1, VOID_T)); // can't subtract void pointers
+
+      int targsize = sizeoftype(ct1+1);
+
+      // evaluate both pointers onto stack
       appmac(assem, evalexpr(e1));
-      // put into gpr a
+      appmac(assem, evalexpr(e2));
+
+      // put second pointer into gpr b
+      appmac(assem, stack2reg(EBX, PTR_SIZE));
+      sdall(PTR_SIZE);
+      // put first pointer into gpr a
       appmac(assem, stack2reg(EAX, PTR_SIZE));
       sdall(PTR_SIZE);
-      // add to offset
-      vspmac(assem, "add %s [esp], %s\n", sizenasm(PTR_SIZE), regtsr(EAX, PTR_SIZE));
+
+      // subtract second from first
+      vspmac(assem, "sub %s, %s\n", regstr(EAX, PTR_SIZE), regstr(EBX, PTR_SIZE));
+      
+      // divide eax by target size
+      vspmac(assem, "mov %s, 0\n", regstr(EDX, PTR_SIZE)); // zero EDX because division operates on EDX:EAX
+      vspmac(assem, "div %s\n", num2str(targsize)); // remainder (should be 0) goes into EDX
+
+      // put back onto stack
+      sall(PTR_SIZE);
+      appmac(assem, reg2stack(EAX, PTR_SIZE));
     }
+
+    else
+    {
+      throw("unanticipated addition types");
+    }
+
+    dbgstatus = "ADD_O";
   }
 
   else
@@ -6211,14 +6266,16 @@ char *evalexpr(expr *e)
     puts(hropt[ot]);
     throw("optype does not exist/is not supported");
   }
-  
+
   if(curstacksize + size != stacksize)
   {
+    puts(dbgstatus);
     putd(curstacksize);
     putd(stacksize);
     putd(size);
     throw("allocations do not match deallocations");
   }
+  
   // assert(curstacksize + size == stacksize);
   return assem;
 }
