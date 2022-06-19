@@ -1073,7 +1073,7 @@ int issigned(ctype ct)
 {
   assert(isintegral(ct));
   int dt = ct->dat.dt;
-  return dt == CHAR_T == dt == INT_T == dt == SINT_T == dt == LINT_T;
+  return dt == CHAR_T || dt == INT_T || dt == SINT_T || dt == LINT_T;
 }
 
 // integral or floating
@@ -6327,7 +6327,7 @@ char *evalexpr(expr *e)
   /// LEH ADD_O has a bug,
   /*
   int a = 5;
-  char c = 1;
+  char c = -1;
   int b = a + c;
      */
 

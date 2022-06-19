@@ -3,6 +3,7 @@
 int main()
 {
   int a = 5;
-  char c = 1;
-  int b = a + c;
+  int b;
+  char c = -1;
+  b = a + c;
 }

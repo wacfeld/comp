@@ -23,12 +23,14 @@ mov dword [eax], EBX
 sub esp, 4
 mov dword [esp], EBX
 add esp, 4
+sub esp, 4
 sub esp, 1
 sub esp, 4
-lea eax, [ebp-5]
+lea eax, [ebp-9]
 mov dword [esp], eax
 sub esp, 4
 mov dword [esp], 00000000000000000000000000000001b
+neg dword [esp]
 mov EAX, dword [esp]
 add esp, 4
 sub esp, 1
@@ -42,18 +44,17 @@ sub esp, 1
 mov byte [esp], BL
 add esp, 1
 sub esp, 4
-sub esp, 4
-lea eax, [ebp-9]
+lea eax, [ebp-8]
 mov dword [esp], eax
 sub esp, 4
 mov EAX, dword [ebp-4]
 mov dword [esp], EAX
 sub esp, 1
-mov AL, byte [ebp-5]
+mov AL, byte [ebp-9]
 mov byte [esp], AL
 mov AL, byte [esp]
 add esp, 1
-movzx EAX, AL
+movsx EAX, AL
 sub esp, 4
 mov dword [esp], EAX
 mov EAX, dword [esp]
