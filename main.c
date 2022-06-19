@@ -6318,24 +6318,52 @@ char *evalexpr(expr *e)
     dbgstatus = "ADD_O";
   }
 
+  // multiply
+  else if(ot == MULT_O)
+  {
+    expr *e1 = e->args[0];
+    expr *e2 = e->args[1];
+    
+    // get size
+    assert(sizeoftype(e1->ct) == sizeoftype(e2->ct));
+    int size = sizeoftype(e1->ct);
+
+    // eval 2 subexprs
+    appmac(assem, evalexpr(e->args[0]));
+    appmac(assem, evalexpr(e->args[1]));
+
+    // put into regs
+    appmac(assem, stack2reg(EBX, size));
+    sdall(size);
+    appmac(assem, stack2reg(EAX, size));
+    sdall(size);
+    
+    // multiply
+    vspmac(assem, "mul %s\n", regstr(EBX, size));
+    
+    // put back onto stack
+    sall(size);
+    appmac(assem, reg2stack(EAX, size));
+    
+    dbgstatus = "MULT_O";
+  }
+
   // unary minus
   else if(ot == UMIN_O)
   {
     appmac(assem, evalexpr(e->args[0]));
     vspmac(assem, "neg %s [esp]\n", sizenasm(size));
+
+    dbgstatus = "UMIN_O";
   }
-  /// LEH ADD_O has a bug,
-  /*
-  int a = 5;
-  char c = -1;
-  int b = a + c;
-     */
 
   // unary plus
-  else if(ot == UMIN_O)
+  else if(ot == UPLUS_O)
   {
     // doesn't have any effect
     appmac(assem, evalexpr(e->args[0]));
+
+    dbgstatus = "UPLUS_O";
   }
 
   // bitwise not
@@ -6343,6 +6371,8 @@ char *evalexpr(expr *e)
   {
     appmac(assem, evalexpr(e->args[0]));
     vspmac(assem, "not %s [esp]\n", sizenasm(size));
+
+    dbgstatus = "BNOT_O";
   }
 
   // logical not
@@ -6362,6 +6392,8 @@ char *evalexpr(expr *e)
     vspmac(assem, "jmp %s\n", lab2);
     vspmac(assem, "%s: mov %s [esp], 1\n", lab1, sizenasm(size));
     vspmac(assem, "%s:\n", lab2);
+
+    dbgstatus = "LNOT_O";
   }
 
   else

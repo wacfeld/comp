@@ -2,8 +2,8 @@
 */
 int main()
 {
-  int a = 5;
-  int b;
-  char c = -1;
-  b = a + c;
+  int x;
+  char c = 255;
+  char d = 1;
+  x =  c * d;
 }
