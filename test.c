@@ -3,11 +3,7 @@
 #include <stddef.h>
 int main()
 {
-  int x;
+  int x = 5;
   
-  unsigned int  a = -1;
-  unsigned char b = -1;
-
-  x = (a == b);
-  printf("%d\n", x);
+  printf("%d\n", ++x);
 }

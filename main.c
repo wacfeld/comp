@@ -6550,7 +6550,57 @@ char *evalexpr(expr *e)
       vspmac(assem, "jmp %s\n", lab2);
       vspmac(assem, "%s: mov %s [esp], 1\n", lab1, sizenasm(size));
       vspmac(assem, "%s:\n", lab2);
+
+      dbgstatus = "RELAT_E";
     }
+
+  // postfix increment-decrement
+  // (return value, then increment)
+  else if(ot == POSTINC_O || ot == POSTDEC_O
+      || ot == PREINC_O || ot == PREDEC_O)
+  {
+    char *opstr = (ot == POSTINC_O || ot == PREINC_O) ? "inc" : "dec";
+    
+    // dereference
+    if(e->args[0]->optype == POINT_O)
+    {
+      // put underlying address on stack
+      char *s = evalexpr(e->args[0]->args[0]);
+      appmac(assem, s);
+    }
+
+    // identifier
+    else
+    {
+      // check that decl exists
+      decl *dcl = e->args[0]->dcl;
+      assert(dcl);
+
+      // put location (address) of decl to stack
+      char *s = pushlocat(dcl->locat);
+      appmac(assem, s);
+    }
+
+    // put address into eax
+    appmac(assem, stack2reg(EAX, PTR_SIZE));
+    sdall(PTR_SIZE);
+
+    // inc/dec original value before putting on stack
+    if(ot == PREINC_O || ot == PREDEC_O)
+      vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+      
+    // put old value onto stack
+    sall(size);
+    vspmac(assem, "mov %s, %s [%s]\n", regstr(EBX, size), sizenasm(size), regstr(EAX, PTR_SIZE)); // put into ebx
+    vspmac(assem, "mov %s [esp], %s\n", sizenasm(size), regstr(EBX, size));
+
+    // inc/dec original value after putting on stack
+    if(ot == POSTINC_O || ot == POSTDEC_O)
+      vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+
+
+    dbgstatus = "INC/DEC";
+  }
 
   else
   {

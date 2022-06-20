@@ -2,10 +2,8 @@
 */
 int main()
 {
-  int x;
+  char x = -2;
+  char b = ++x;
+  int c = 17;
   
-  unsigned int  a = -1;
-  unsigned char b = -1;
-
-  x = (a >= b);
 }
