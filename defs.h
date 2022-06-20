@@ -758,5 +758,6 @@ int asprintf(char **strp, const char *fmt, ...);
 int isasgnop(enum optype o);
 
 int sizeoftype(ctype ct);
+char *newgloblab();
 
 #endif

@@ -1,10 +1,14 @@
 /* vim:filetype=c
 */
+int globalvariable;
+
+int f(int x, char y)
+{
+  return x + y;
+}
 int main()
 {
-  int c;
-  int a;
-  int b;
-
-  c = a = b = 6;
+  int res = f(5, 'a');
+  int k = 255;
+  ++res;
 }

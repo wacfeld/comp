@@ -5097,7 +5097,8 @@ char ident_pre[] = "ident_";
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // destray a stack frame at end of function
-char destroy_sframe[] = "dbg: mov esp,ebp\npop ebp\n";
+// char destroy_sframe[] = "dbg: mov esp,ebp\npop ebp\n";
+char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
 
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
@@ -5254,6 +5255,7 @@ void proctoplevel(token *toks)
       // write assembly
       // end function (in case falls off the end)
       // codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
+      vspmac(codeseg, "%s:\n", newgloblab());
       mapmac(codeseg, destroy_sframe, "ret\n\n");
     }
     
@@ -5411,6 +5413,19 @@ int stacksize = 0;
 char *newloclab()
 {
   static char *pre = ".lab";
+  static int num = 0;
+
+  char *s;
+  asprintf(&s, "%s%d", pre, num);
+
+  num++;
+
+  return s;
+}
+
+char *newgloblab()
+{
+  static char *pre = "glob";
   static int num = 0;
 
   char *s;
@@ -5606,26 +5621,38 @@ char *parsestat(struct stat *stat)
       // find semicolon
       int end = findatom(toks, lo, 1, SEMICOLON);
 
+      assert(funret); // make sure a return type has been provided
+
       // expression is present
       if(end > lo + 1)
       {
-        // TODO
-        // evaluate exprssion, place result in eax
-        // check that type matches return type
-        throw("not supported yet");
+        // make sure not void
+        assert(!ctisdt(funret, VOID_T));
+        
+        // parse expression
+        expr *e = tokl2expr(toks, lo+1, end-1);
+
+        // check that type matches return type, as if by assignment
+        assert(iscompat(funret, e->ct, QM_SUPERSET));
+
+        int retsize = sizeoftype(funret);
+
+        // evaluate expression, place result in eax
+        appmac(assem, evalexpr(e));
+        appmac(assem, stack2reg(EAX, retsize));
+        sdall(retsize);
       }
 
       // no expression is present
       else
       {
-        assert(funret); // make sure a return type has been provided
-
         // must be void
         assert(ctisdt(funret, VOID_T));
       }
       
       // destroy stack frame, return
       // assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
+      vspmac(assem, "%s:\n", newgloblab());
       mapmac(assem, destroy_sframe, "ret\n");
       
       // move on
@@ -6764,8 +6791,42 @@ char *evalexpr(expr *e)
     // discard result
     sdall(sizeoftype(e->args[0]->ct));
 
-    // evaluate second expr
+    // evaluate second expr, leave result on stack
     appmac(assem, evalexpr(e->args[1]));
+  }
+
+  // function call!!!
+  else if(ot == FUN_O)
+  {
+    int argssize = 0; // record size of args on stack
+    
+    // eval, push args to stack in reverse order (to match up with the calculated offsets in proctoplevel())
+    expr *arglist = e->args[1];
+    for(int i = arglist->numargs - 1; i >= 0; i--)
+    {
+      appmac(assem, evalexpr(arglist->args[i]));
+      argssize += sizeoftype(arglist->args[i]->ct);
+    }
+
+    // get function pointer
+    appmac(assem, evalexpr(e->args[0]));
+    // put into eax, dealloc
+    vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, PTR_SIZE), sizenasm(PTR_SIZE));
+    sdall(PTR_SIZE);
+
+    // call function
+    vspmac(assem, "call %s\n", regstr(EAX, PTR_SIZE));
+    // function creates stack frame, runs, destroys stack frame, leaves return value in EAX
+
+    // deallocate args
+    sdall(argssize);
+
+    // if not void, put return type on stack
+    if(size != 0)
+    {
+      sall(size);
+      appmac(assem, reg2stack(EAX, size));
+    }
   }
 
   else
