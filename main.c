@@ -4820,8 +4820,8 @@ char *strapp(char *dest, int *max, char *src)
   int len = strlen(dest) + strlen(src) + 1;
   if(len > *max)
   {
-    dest = realloc(dest, len);
-    *max = len;
+    *max = (*max * 2 > len) ? (*max * 2) : len;
+    dest = realloc(dest, *max);
   }
   strcat(dest, src);
   return dest;
