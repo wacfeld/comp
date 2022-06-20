@@ -1234,10 +1234,10 @@ void helpputexpr(expr *e, int space)
     // puttok(*e->tok);
     if(e->optype == STRING_O)
     {
-      for(int i = 0; i < e->ct->arr.len; i++)
-      {
-        printf("%02x ", e->strlit[i]);
-      }
+      // for(int i = 0; i < e->ct->arr.len; i++)
+      // {
+      //   printf("%02x ", e->strlit[i]);
+      // }
     }
     else
       printf("0x%08x", e->dat);
@@ -1375,7 +1375,7 @@ token *ll2tokl(link *ll) // linked list to NOTOK-terminated token list
 // token subarray -> linked list -> expr
 expr *tokl2expr(token *toks, int lo, int hi)
 {
-  // incnlusive
+  // inclusive
   assert(lo <= hi); // make sure nonempty. empty cases should be handled by the caller (e.x. in a for loop, an empty condition evaluates to true
 
   link *ll = tokl2ll(toks + lo, hi - lo + 1);
@@ -2615,6 +2615,9 @@ void decay(int optype, int argn, expr *e)
 {
   assert(e);
 
+  // putctype(e->ct);
+  // nline();
+
   // check if fulfills decay conditions
   if(e->lval) // lvalue
   {
@@ -2813,7 +2816,17 @@ expr *makeexpr(int type, int optype, int numargs, ...)
       e = va_arg(ap, expr *);
       
       // certain types trigger decays, which are prevented by certain optypes
+      // puts("calling decay");
+      // printf("%p\n", e->label);
+      // if(e->label)
+      //   puts(e->label);
+      // putctype(e->ct);
+      // nline();
       decay(optype, i, e);
+
+      // putctype(e->ct);
+      // nline();
+      
       
       newe->args[i] = e;
     }
@@ -4495,6 +4508,7 @@ expr *parsepostexpr(link *start)
     
     // instead of ARR_O, convert to the equivalent
     // a[5] -> *(a+5)
+    // puts("calling makeexpr");
     expr *adde = makeexpr(ADD_E, ADD_O, 2, e1, e2);
     e1 = adde->args[0];
     e2 = adde->args[1];
@@ -4528,6 +4542,10 @@ expr *parsepostexpr(link *start)
 
     else
     {
+      putctype(ct1);
+      nline();
+      putctype(ct2);
+      nline();
       throw("parsepostexpr, ARR_O: bad types");
     }
     
@@ -4729,6 +4747,7 @@ expr *parseprimexpr(link *start)
     // no modifying the string literal
     ct[1].dat.isconst = 1;
     newe->ct = ct;
+    newe->lval = 1;
 
     // put string in literals (global mutable variable)
 
@@ -4744,7 +4763,9 @@ expr *parseprimexpr(link *start)
     // newline
     appmac(literals, "\n");
 
-    newe->strlit = t->strlit.cont;
+    // newe->label = glob;
+    // putctype(newe->ct);
+    // nline();
   }
 
   if(t->gen.type == FLOATING)
@@ -5571,6 +5592,33 @@ char *parsestat(struct stat *stat)
     else if(tiskeyword(toks[lo], K_IF))
     {
       assert(tiskeyword(toks[lo+1], PARENOP));
+      
+      // find matching paren
+      int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
+
+      // parse expression between parens
+      expr *e = tokl2expr(toks, lo+2, match-1);
+      assert(e);
+      int esize = sizeoftype(e->ct);
+
+      // evaluate, put result on stack
+      appmac(assem, evalexpr(e));
+
+
+      // move into eax, test 
+      appmac(assem, stack2reg(EAX, esize));
+      sdall(esize);
+      vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
+      
+      // jump to lab1 if 0
+      char *lab1 = newloclab();
+      vspmac(assem, "jz %s\n", lab1);
+      
+      // evaluate enclosed statement
+      // struct stat ifstat = {toks, match + 1, 
+        // LEH need a function that parses only one statement
+      char *s = parsestat(
+      
     }
     // TODO if-else form
 
@@ -5982,6 +6030,12 @@ char *evalexpr(expr *e)
 
     dbgstatus = "INT_O, CHAR_O";
   }
+
+  // // string literal, decay to 
+  // else if(ot == STRING_O)
+  // {
+    
+  // }
 
   // unary *
   else if(ot == POINT_O)

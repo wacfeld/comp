@@ -321,7 +321,7 @@ struct stat
 {
   token *toks;
   int lo;
-  int hi; // inlcusive
+  int hi; // inclusive
 };
 
 typedef struct decl
@@ -578,7 +578,7 @@ struct expr
   // token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 
   dword dat; // 32 bits of data, for compile-time constants
-  char *strlit; // string literals! only used occasionally
+  // char *label; // only for string literals
   decl * dcl; // for objects, functions, etc. which can appear from primary expressions
 
   // TODO ^^
