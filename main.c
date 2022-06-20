@@ -6718,7 +6718,42 @@ char *evalexpr(expr *e)
     // lab1: return short circuit result (failed a test)
     vspmac(assem, "%s: mov %s [esp], %s\n", lab1, sizenasm(size), shortres);
     vspmac(assem, "%s:\n", lab2);
+  }
 
+  else if(ot == TERN_O)
+  {
+    // evaluate 1st subexpr
+    appmac(assem, evalexpr(e->args[0]));
+    int ss1 = sizeoftype(e->args[0]->ct);
+
+    assert(sizeoftype(e->args[1]->ct) == sizeoftype(e->args[2]->ct)); // check that LHS and RHS are same size
+    int ss2 = sizeoftype(e->args[1]->ct);
+    
+    // put in eax, dealloc
+    appmac(assem, stack2reg(EAX, ss1));
+    sdall(ss1);
+
+    // create labels
+    char *lab1 = newloclab();
+    char *lab2 = newloclab();
+    
+    // test
+    vspmac(assem, "test %s, %s\n", regstr(EAX, ss1), regstr(EAX, ss1));
+
+    // if 0, go to lab1
+    vspmac(assem, "jz %s\n", lab1);
+    
+    // otherwise evaluate LHS
+    appmac(assem, evalexpr(e->args[1]));
+    vspmac(assem, "jmp %s\n", lab2);
+    
+    // lab1, evaluate LHS
+    vspmac(assem, "%s:\n", lab1);
+    appmac(assem, evalexpr(e->args[2]));
+    vspmac(assem, "%s:\n", lab2);
+
+    // each branch allocates ss2 onto the stack by evaluating, but only one runs. therefore the stacksize safety system fails here and needs to be corrected
+    stacksize -= ss2;
   }
 
   else
