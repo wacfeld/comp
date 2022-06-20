@@ -64,6 +64,9 @@ int startfundef = 0;
 ctype funret = NULL;
 int framesize = 0;
 
+int literals_len = 100;
+char *literals = NULL;
+
 
 //{{{1 lexer
 
@@ -4718,9 +4721,9 @@ expr *parseprimexpr(link *start)
     
     // array of char
     ctype ct = calloc(2, sizeof(typemod));
-    ct->gen.type == TM_ARR;
+    ct->gen.type = TM_ARR;
     ct->arr.len = t->strlit.len; // length of array, not of string
-    ct[1].gen.type == TM_DAT;
+    ct[1].gen.type = TM_DAT;
     ct[1].dat.dt = CHAR_T;
 
     // no modifying the string literal
@@ -6852,6 +6855,10 @@ char *evalexpr(expr *e)
 //{{{1 main
 int main()
 {
+  // initialize literals
+  literals = malloc(literals_len);
+  *literals = 0;
+  
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened
