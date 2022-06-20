@@ -1,19 +1,20 @@
      1                                  section .data
      2                                  
-     3                                  section .bss
-     4                                  section .text
-     5                                  global _start
-     6                                  _start:
-     7 00000000 B8FFFFFFFF              mov eax, -1
-     8 00000005 BB02000000              mov ebx, 2
-     9 0000000A F7EB                    imul ebx
-    10                                  
-    11 0000000C B8FFFFFFFF              mov eax, -1
-    12 00000011 BB02000000              mov ebx, 2
-    13 00000016 F7E3                    mul ebx
-    14                                  
-    15                                  exit:
-    16 00000018 B801000000                mov eax, 1
-    17 0000001D BB00000000                mov ebx, 0
-    18 00000022 CD80                      int 80h
-    19                                  
+     3 00000000 61620A00                msg db 97, 98, 10, 0,
+     4                                  len equ $-msg
+     5                                  
+     6                                  section .bss
+     7                                  section .text
+     8                                  global _start
+     9                                  _start:
+    10 00000000 BA04000000              mov edx,len
+    11 00000005 B9[00000000]            mov ecx,msg
+    12 0000000A BB01000000              mov ebx,1
+    13 0000000F B804000000              mov eax,4
+    14 00000014 CD80                    int 0x80
+    15                                  
+    16                                  exit:
+    17 00000016 B801000000                mov eax, 1
+    18 0000001B BB00000000                mov ebx, 0
+    19 00000020 CD80                      int 80h
+    20                                  

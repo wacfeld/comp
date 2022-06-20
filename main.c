@@ -4730,6 +4730,20 @@ expr *parseprimexpr(link *start)
     ct[1].dat.isconst = 1;
     newe->ct = ct;
 
+    // put string in literals (global mutable variable)
+
+    // label, db
+    char *glob = newgloblab();
+    vspmac(literals, "%s db ", glob);
+
+    // write string in the form of numbers
+    for(int i = 0; i < ct->arr.len; i++)
+    {
+      vspmac(literals, "%u, ", t->strlit.cont[i]);
+    }
+    // newline
+    appmac(literals, "\n");
+
     newe->strlit = t->strlit.cont;
   }
 
@@ -4803,18 +4817,6 @@ dword evalsimpleconstintexpr(expr *e)
 
 //{{{1 string operations
 
-// shortcut for strapp
-#define appmac(dest, src) {dest = strapp(dest, &dest##_len, src);}
-
-// count arguments
-// supports up to 20 arguments
-#define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, N, ...) N
-#define COUNT_ARGS(...) _GET_NTH_ARG("ignored", ##__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-
-// shortcut for multiapp using COUNT_ARGS
-// supports up to 20 variadic arguments
-#define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__);}
-#define vspmac(dest, fmt, ...) {char *s; asprintf(&s, fmt, ##__VA_ARGS__); appmac(dest, s); free(s);}
     
 // append src to dest, allocating more space as necessary
 // assumes dest can be passed to realloc()
