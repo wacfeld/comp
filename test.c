@@ -3,7 +3,10 @@
 #include <stddef.h>
 int main()
 {
-  int x = 5;
+  int c;
   
-  printf("%d\n", ++x);
+  int a = 0x123456;
+  int b = 0x00ffff;
+  c = a ^ b;
+  printf("%x\n", c);
 }

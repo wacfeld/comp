@@ -6674,6 +6674,53 @@ char *evalexpr(expr *e)
     vspmac(assem, "%s %s [esp], cl\n", opstr, sizenasm(size));
   }
 
+  // logical and/or
+  else if(ot == LAND_O || ot == LOR_O)
+  {
+    // sizes can be different
+    int ss1 = sizeoftype(e->args[0]->ct);
+    int ss2 = sizeoftype(e->args[1]->ct);
+
+    // allocate space for result at beginning
+    sall(size);
+
+    // evaluate first subexpr (don't evaluate second yet)
+    appmac(assem, evalexpr(e->args[0]));
+
+    // put into EAX
+    appmac(assem, stack2reg(EAX, ss1));
+    sdall(ss1);
+
+    char *lab1 = newloclab();
+    char *lab2 = newloclab();
+
+    // jump conditional for short circuiting
+    char *shortjmp = (ot == LOR_O) ? "jnz" : "jz";
+
+    // short-circuit result, regular result (opposites)
+    char *shortres = (ot == LOR_O) ? "1" : "0";
+    char *regres = (ot == LOR_O) ? "0" : "1";
+    
+    vspmac(assem, "test %s, %s\n", regstr(EAX, ss1), regstr(EAX, ss1));
+    vspmac(assem, "%s %s\n", shortjmp, lab1); // if nonzero, short-circuit to lab1
+
+    // else, eval and test second expr
+    appmac(assem, evalexpr(e->args[1]));
+    appmac(assem, stack2reg(EAX, ss2));
+    sdall(ss2); // the stacksize safety system still works here, because the allocation and deallocation are both in the same branch (no short circuit)
+    vspmac(assem, "test %s, %s\n", regstr(EAX, ss2), regstr(EAX, ss2));
+    vspmac(assem, "%s %s\n", shortjmp, lab1); // if nonzero, go to lab1
+
+    // return regular result (passed both tests)
+    vspmac(assem, "mov %s [esp], %s\n", sizenasm(size), regres);
+    vspmac(assem, "jmp %s\n", lab2); // go to lab2
+
+    // lab1: return short circuit result (failed a test)
+    vspmac(assem, "%s: mov %s [esp], %s\n", lab1, sizenasm(size), shortres);
+    vspmac(assem, "%s:\n", lab2);
+
+  }
+
   else
   {
     puts(hropt[ot]);
