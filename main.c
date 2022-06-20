@@ -6579,7 +6579,21 @@ char *evalexpr(expr *e)
   else if(ot == POSTINC_O || ot == POSTDEC_O
       || ot == PREINC_O || ot == PREDEC_O)
   {
-    char *opstr = (ot == POSTINC_O || ot == PREINC_O) ? "inc" : "dec";
+    int ptr = isptr(e->args[0]->ct);
+    int targsize;
+    if(ptr)
+      targsize = sizeoftype(e->args[0]->ct + 1);
+    
+    char *opstr;
+    if(ot == POSTINC_O || ot == PREINC_O)
+    {
+      opstr = ptr ? "add" : "inc";
+    }
+    else
+    {
+      opstr = ptr ? "sub" : "dec";
+    }
+
     
     // dereference
     if(e->args[0]->optype == POINT_O)
@@ -6607,7 +6621,17 @@ char *evalexpr(expr *e)
 
     // inc/dec original value before putting on stack
     if(ot == PREINC_O || ot == PREDEC_O)
-      vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+    {
+      if(isptr(e->args[0]->ct))
+      {
+        char *sizestr = num2str(targsize);
+        vspmac(assem, "%s %s [%s], %s\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE), sizestr);
+      }
+      else
+      {
+        vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+      }
+    }
       
     // put old value onto stack
     sall(size);
@@ -6616,7 +6640,17 @@ char *evalexpr(expr *e)
 
     // inc/dec original value after putting on stack
     if(ot == POSTINC_O || ot == POSTDEC_O)
-      vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+    {
+      if(isptr(e->args[0]->ct))
+      {
+        char *sizestr = num2str(targsize);
+        vspmac(assem, "%s %s [%s], %s\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE), sizestr);
+      }
+      else
+      {
+        vspmac(assem, "%s %s [%s]\n", opstr, sizenasm(size), regstr(EAX, PTR_SIZE));
+      }
+    }
 
 
     dbgstatus = "INC/DEC";

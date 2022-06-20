@@ -34,16 +34,6 @@ sub esp, 4
 mov dword [esp], EBX
 add esp, 4
 sub esp, 4
-lea eax, [ebp-28]
-mov dword [esp], eax
-mov EAX, dword [esp]
-add esp, 4
-sub esp, 4
-mov EBX, dword [EAX]
-mov dword [esp], EBX
-inc dword [EAX]
-add esp, 4
-sub esp, 4
 sub esp, 4
 lea eax, [ebp-32]
 mov dword [esp], eax
