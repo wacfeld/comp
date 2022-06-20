@@ -6441,6 +6441,26 @@ char *evalexpr(expr *e)
     dbgstatus = "BNOT_O";
   }
 
+  // bitwise binary operators
+  else if(ot == BAND_O || ot == XOR_O || ot == BOR_O)
+  {
+    char *opstr;
+    if(ot == BAND_O) opstr = "and";
+    if(ot == XOR_O) opstr = "xor";
+    if(ot == BOR_O) opstr = "or";
+
+    // eval 2 subexprs, put on stack
+    appmac(assem, evalexpr(e->args[0]));
+    appmac(assem, evalexpr(e->args[1]));
+
+    // put 2nd subexpr into eax, deallocate
+    vspmac(assem, "mov %s, %s [esp]\n", regstr(EAX, size), sizenasm(size));
+    sdall(size);
+    
+    // combine two operands on stack
+    vspmac(assem, "%s %s [esp], %s\n", opstr, sizenasm(size), regstr(EAX, size));
+  }
+
   // logical not
   else if(ot == LNOT_O)
   {

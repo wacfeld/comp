@@ -10,11 +10,21 @@ ident_main:
 push ebp
 mov ebp,esp
 sub esp, 4
+sub esp, 20
 sub esp, 4
-lea eax, [ebp-4]
+sub esp, 4
+lea eax, [ebp-28]
 mov dword [esp], eax
 sub esp, 4
-mov dword [esp], 00000000000011111111000011110000b
+lea eax, [ebp-24]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000001b
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]
@@ -24,17 +34,57 @@ sub esp, 4
 mov dword [esp], EBX
 add esp, 4
 sub esp, 4
+lea eax, [ebp-28]
+mov dword [esp], eax
+mov EAX, dword [esp]
+add esp, 4
 sub esp, 4
-lea eax, [ebp-8]
+mov EBX, dword [EAX]
+mov dword [esp], EBX
+inc dword [EAX]
+add esp, 4
+sub esp, 4
+sub esp, 4
+lea eax, [ebp-32]
 mov dword [esp], eax
 sub esp, 4
-mov EAX, dword [ebp-4]
+lea eax, [ebp-24]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000010b
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+sub esp, 4
+lea eax, [ebp-4]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ebp-28]
 mov dword [esp], EAX
 sub esp, 4
-mov dword [esp], 00000000000000000000000000001000b
-mov cl, byte [esp]
+mov EAX, dword [ebp-32]
+mov dword [esp], EAX
+mov EBX, dword [esp]
 add esp, 4
-shr dword [esp], cl
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+cmp EAX, EBX
+je .lab0
+mov dword [esp], 0
+jmp .lab1
+.lab0: mov dword [esp], 1
+.lab1:
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]

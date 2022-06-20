@@ -2,7 +2,11 @@
 */
 int main()
 {
-  int x = 0xff0f0;
-  int y = x >> 8;
+  int c;
+  int x[5];
+  int *a = x+1;
+  a++;
+  int *b = x + 2;
+  c = (a == b);
   
 }
