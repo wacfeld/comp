@@ -12,11 +12,10 @@ mov ebp,esp
 sub esp, 4
 sub esp, 4
 sub esp, 4
-sub esp, 4
-lea eax, [ebp-12]
+lea eax, [ebp-8]
 mov dword [esp], eax
 sub esp, 4
-mov dword [esp], 00000000000000000000000000010011b
+mov dword [esp], 00000000000000000000000000000001b
 neg dword [esp]
 mov EBX, dword [esp]
 add esp, 4
@@ -28,10 +27,11 @@ mov dword [esp], EBX
 add esp, 4
 sub esp, 1
 sub esp, 4
-lea eax, [ebp-13]
+lea eax, [ebp-9]
 mov dword [esp], eax
 sub esp, 4
-mov dword [esp], 00000000000000000000000000000011b
+mov dword [esp], 00000000000000000000000000000001b
+neg dword [esp]
 mov EAX, dword [esp]
 add esp, 4
 sub esp, 1
@@ -48,53 +48,27 @@ sub esp, 4
 lea eax, [ebp-4]
 mov dword [esp], eax
 sub esp, 4
-mov EAX, dword [ebp-12]
+mov EAX, dword [ebp-8]
 mov dword [esp], EAX
 sub esp, 1
-mov AL, byte [ebp-13]
+mov AL, byte [ebp-9]
 mov byte [esp], AL
 mov AL, byte [esp]
 add esp, 1
-movsx EAX, AL
-sub esp, 4
-mov dword [esp], EAX
-mov EBX, dword [esp]
-add esp, 4
-mov EAX, dword [esp]
-cdq
-idiv ebx
-mul ebx
-sub dword [esp], EAX
-mov EBX, dword [esp]
-add esp, 4
-mov eax, dword [esp]
-add esp, 4
-mov dword [eax], EBX
-sub esp, 4
-mov dword [esp], EBX
-add esp, 4
-sub esp, 4
-lea eax, [ebp-8]
-mov dword [esp], eax
-sub esp, 4
-mov EAX, dword [ebp-12]
-mov dword [esp], EAX
-sub esp, 1
-mov AL, byte [ebp-13]
-mov byte [esp], AL
-mov AL, byte [esp]
-add esp, 1
-movsx EAX, AL
+movzx EAX, AL
 sub esp, 4
 mov dword [esp], EAX
 mov EBX, dword [esp]
 add esp, 4
 mov EAX, dword [esp]
 add esp, 4
-cdq
-idiv ebx
 sub esp, 4
-mov dword [esp], EAX
+cmp EAX, EBX
+jae .lab0
+mov dword [esp], 0
+jmp .lab1
+.lab0: mov dword [esp], 1
+.lab1:
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]

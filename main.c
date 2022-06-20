@@ -6488,9 +6488,6 @@ char *evalexpr(expr *e)
       appmac(assem, stack2reg(EAX, argsize));
       sdall(argsize);
 
-      // compare the two
-      vspmac(assem, "cmp %s, %s\n", stack2reg(EAX, argsize), stack2reg(EBX, argsize));
-
 
       // whether or not is signed
       int sgnd;
@@ -6526,6 +6523,7 @@ char *evalexpr(expr *e)
       // string used to jump (je, ja, jab, jge, etc.)
       char *jmpstr = jumps[ot][sgnd];
 
+      // ff(jmpstr);
       // create 2 new labels to jump to
       char *lab1 = newloclab();
       char *lab2 = newloclab();
@@ -6541,6 +6539,12 @@ char *evalexpr(expr *e)
         .lab2:
 
       */
+      // allocate space
+      sall(size);
+
+      // compare the two
+      vspmac(assem, "cmp %s, %s\n", regstr(EAX, argsize), regstr(EBX, argsize));
+
       vspmac(assem, "%s %s\n", jmpstr, lab1);
       vspmac(assem, "mov %s [esp], 0\n", sizenasm(size));
       vspmac(assem, "jmp %s\n", lab2);

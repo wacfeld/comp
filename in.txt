@@ -2,10 +2,10 @@
 */
 int main()
 {
-  int c;
-  int d;
-  int a = -19;
-  char b = 3;
-  c = a % b;
-  d = a/b;
+  int x;
+  
+  unsigned int  a = -1;
+  unsigned char b = -1;
+
+  x = (a >= b);
 }
