@@ -6602,6 +6602,24 @@ char *evalexpr(expr *e)
     dbgstatus = "INC/DEC";
   }
 
+  // shifts
+  else if(ot == SHL_O || ot == SHR_O)
+  {
+    char *opstr = (ot == SHL_O) ? "shl" : "shr";
+
+    // evaluate lhs, put on stack
+    appmac(assem, evalexpr(e->args[0]));
+
+    // evaluate rhs, put on stack
+    appmac(assem, evalexpr(e->args[1]));
+    
+    // put rhs into cl (truncate if necessary)
+    appmac(assem, "mov cl, byte [esp]\n");
+    sdall(sizeoftype(e->args[1]->ct)); // deallocate
+
+    vspmac(assem, "%s %s [esp], cl\n", opstr, sizenasm(size));
+  }
+
   else
   {
     puts(hropt[ot]);

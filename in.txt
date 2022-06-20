@@ -2,8 +2,7 @@
 */
 int main()
 {
-  char x = -2;
-  char b = ++x;
-  int c = 17;
+  int x = 0xff0f0;
+  int y = x >> 8;
   
 }
