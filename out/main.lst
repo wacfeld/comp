@@ -16,63 +16,52 @@
     16 0000000F 8D45FC                  lea eax, [ebp-4]
     17 00000012 890424                  mov dword [esp], eax
     18 00000015 83EC04                  sub esp, 4
-    19 00000018 C7042400000000          mov dword [esp], 00000000000000000000000000000000b
-    20 0000001F 8B0424                  mov EAX, dword [esp]
-    21 00000022 83C404                  add esp, 4
-    22 00000025 85C0                    test EAX, EAX
-    23 00000027 7429                    jz .lab0
-    24 00000029 83EC04                  sub esp, 4
-    25 0000002C 8D45F8                  lea eax, [ebp-8]
-    26 0000002F 890424                  mov dword [esp], eax
-    27 00000032 83EC04                  sub esp, 4
-    28 00000035 C70424FF000000          mov dword [esp], 00000000000000000000000011111111b
-    29 0000003C 8B1C24                  mov EBX, dword [esp]
-    30 0000003F 83C404                  add esp, 4
-    31 00000042 8B0424                  mov eax, dword [esp]
-    32 00000045 83C404                  add esp, 4
-    33 00000048 8918                    mov dword [eax], EBX
-    34 0000004A 83EC04                  sub esp, 4
-    35 0000004D 891C24                  mov dword [esp], EBX
-    36 00000050 EB27                    jmp .lab1
-    37                                  .lab0:
-    38 00000052 83EC04                  sub esp, 4
-    39 00000055 8D45F4                  lea eax, [ebp-12]
-    40 00000058 890424                  mov dword [esp], eax
-    41 0000005B 83EC04                  sub esp, 4
-    42 0000005E C704240F000000          mov dword [esp], 00000000000000000000000000001111b
-    43 00000065 8B1C24                  mov EBX, dword [esp]
-    44 00000068 83C404                  add esp, 4
-    45 0000006B 8B0424                  mov eax, dword [esp]
-    46 0000006E 83C404                  add esp, 4
-    47 00000071 8918                    mov dword [eax], EBX
-    48 00000073 83EC04                  sub esp, 4
-    49 00000076 891C24                  mov dword [esp], EBX
-    50                                  .lab1:
-    51 00000079 8B1C24                  mov EBX, dword [esp]
-    52 0000007C 83C404                  add esp, 4
-    53 0000007F 8B0424                  mov eax, dword [esp]
-    54 00000082 83C404                  add esp, 4
-    55 00000085 8918                    mov dword [eax], EBX
-    56 00000087 83EC04                  sub esp, 4
-    57 0000008A 891C24                  mov dword [esp], EBX
-    58 0000008D 83C404                  add esp, 4
-    59 00000090 89EC                    dbg: mov esp,ebp
-    60 00000092 5D                      pop ebp
-    61 00000093 C3                      ret
-    62                                  
-    63                                  global _start
-    64                                  _start:
-    65 00000094 E867FFFFFF              call ident_main
-    66 00000099 E816000000              call exit
+    19 00000018 8D45F8                  lea eax, [ebp-8]
+    20 0000001B 890424                  mov dword [esp], eax
+    21 0000001E 83EC04                  sub esp, 4
+    22 00000021 8D45F4                  lea eax, [ebp-12]
+    23 00000024 890424                  mov dword [esp], eax
+    24 00000027 83EC04                  sub esp, 4
+    25 0000002A C7042406000000          mov dword [esp], 00000000000000000000000000000110b
+    26 00000031 8B1C24                  mov EBX, dword [esp]
+    27 00000034 83C404                  add esp, 4
+    28 00000037 8B0424                  mov eax, dword [esp]
+    29 0000003A 83C404                  add esp, 4
+    30 0000003D 8918                    mov dword [eax], EBX
+    31 0000003F 83EC04                  sub esp, 4
+    32 00000042 891C24                  mov dword [esp], EBX
+    33 00000045 8B1C24                  mov EBX, dword [esp]
+    34 00000048 83C404                  add esp, 4
+    35 0000004B 8B0424                  mov eax, dword [esp]
+    36 0000004E 83C404                  add esp, 4
+    37 00000051 8918                    mov dword [eax], EBX
+    38 00000053 83EC04                  sub esp, 4
+    39 00000056 891C24                  mov dword [esp], EBX
+    40 00000059 8B1C24                  mov EBX, dword [esp]
+    41 0000005C 83C404                  add esp, 4
+    42 0000005F 8B0424                  mov eax, dword [esp]
+    43 00000062 83C404                  add esp, 4
+    44 00000065 8918                    mov dword [eax], EBX
+    45 00000067 83EC04                  sub esp, 4
+    46 0000006A 891C24                  mov dword [esp], EBX
+    47 0000006D 83C404                  add esp, 4
+    48 00000070 89EC                    dbg: mov esp,ebp
+    49 00000072 5D                      pop ebp
+    50 00000073 C3                      ret
+    51                                  
+    52                                  global _start
+    53                                  _start:
+    54 00000074 E887FFFFFF              call ident_main
+    55 00000079 E816000000              call exit
+    56                                  
+    57                                  error:
+    58 0000007E BA06000000              mov edx, errlen
+    59 00000083 B9[00000000]            mov ecx, errmsg
+    60 00000088 BB01000000              mov ebx, 1
+    61 0000008D B804000000              mov eax, 4
+    62 00000092 CD80                    int 0x80
+    63                                  exit:
+    64 00000094 B801000000              mov eax, 1
+    65 00000099 BB00000000              mov ebx, 0
+    66 0000009E CD80                    int 80h
     67                                  
-    68                                  error:
-    69 0000009E BA06000000              mov edx, errlen
-    70 000000A3 B9[00000000]            mov ecx, errmsg
-    71 000000A8 BB01000000              mov ebx, 1
-    72 000000AD B804000000              mov eax, 4
-    73 000000B2 CD80                    int 0x80
-    74                                  exit:
-    75 000000B4 B801000000              mov eax, 1
-    76 000000B9 BB00000000              mov ebx, 0
-    77 000000BE CD80                    int 80h
-    78                                  

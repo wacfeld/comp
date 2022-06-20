@@ -6752,8 +6752,20 @@ char *evalexpr(expr *e)
     appmac(assem, evalexpr(e->args[2]));
     vspmac(assem, "%s:\n", lab2);
 
-    // each branch allocates ss2 onto the stack by evaluating, but only one runs. therefore the stacksize safety system fails here and needs to be corrected
+    // each branch allocates ss2 onto the stack by evaluating, but only one runs in reality. therefore the stacksize safety system fails here and needs to be corrected
     stacksize -= ss2;
+  }
+
+  // comma operator
+  else if(ot == COMMA_O)
+  {
+    // evaluate first expr (order matters)
+    appmac(assem, evalexpr(e->args[0]));
+    // discard result
+    sdall(sizeoftype(e->args[0]->ct));
+
+    // evaluate second expr
+    appmac(assem, evalexpr(e->args[1]));
   }
 
   else
