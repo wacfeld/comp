@@ -63,7 +63,7 @@ stack *contstack = NULL;
 stack *breakstack = NULL;
 
 // 1 when we just entered a fundef's block statement, to indicate that a separator should not be created
-int startfundef = 0;
+// int startfundef = 0;
 ctype funret = NULL;
 int framesize = 0;
 
@@ -5272,15 +5272,12 @@ void proctoplevel(token *toks)
       mapmac(codeseg, "\n", d->locat.globloc, ":\n", create_sframe);
       
       // indicate that a function is just starting (must be block statement, no pushing another separator
-      startfundef = 1;
+      // startfundef = 1;
       // indicate desired return type
       funret = ct+1;
 
-      // indicate start of new stack frame
-      framesize = 0;
-
       // convert function body to assembly
-      char *s = parsestats(d->fundef);
+      char *s = parsestat(d->fundef, 1, 1);
 
       funret = NULL; // not necessary, but safer
 
@@ -5521,7 +5518,7 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
 }
 
 // parses one statement, moves lo forward accordingly
-char *parsestat(struct stat *stat, int nodecl)
+char *parsestat(struct stat *stat, int nodecl, int startfundef)
 {
   int lo = stat->lo;
   int hi = stat->hi;
@@ -5546,7 +5543,8 @@ char *parsestat(struct stat *stat, int nodecl)
     // push separator to scope if not at start of function definition block
     if(startfundef)
     {
-      startfundef = 0;
+      // indicate start of new stack frame (for declarations)
+      framesize = 0;
     }
     else
     {
@@ -5562,14 +5560,23 @@ char *parsestat(struct stat *stat, int nodecl)
     struct stat newstat = {toks, lo+1, end-1};
     char *newassem = parsestats(&newstat);
 
+    if(startfundef)
+    {
+      // allocate the framesize onto the stack, based on all the declarations encountered within the block statement above
+      appmac(assem, stackalloc(framesize));
+
+      // deallocation is done by destroy_sframe at the end
+    }
+    
     // append newassem to assem
     // assem = strapp(assem, &assem_len, newassem);
     appmac(assem, newassem);
 
     // roll back scope
     int size = remtonull();
+
     // deallocate all of them
-    sdall(size);
+    // sdall(size);
 
     // TODO deallocate on real stack as well
 
@@ -5631,7 +5638,7 @@ char *parsestat(struct stat *stat, int nodecl)
 
     // evaluate the next statement (the one that runs if the condition is true
     struct stat ifstat = {toks, match + 1, hi};
-    appmac(assem, parsestat(&ifstat, 1));
+    appmac(assem, parsestat(&ifstat, 1, 0));
     lo = ifstat.lo; // move over
 
     // jump past else clause (if else clause exists) if if clause executes
@@ -5646,7 +5653,7 @@ char *parsestat(struct stat *stat, int nodecl)
     {
       struct stat elsestat = {toks, lo+1, hi};
       // evaluate
-      appmac(assem, parsestat(&elsestat, 1));
+      appmac(assem, parsestat(&elsestat, 1, 0));
       lo = elsestat.lo; // move over
     }
 
@@ -5705,7 +5712,7 @@ char *parsestat(struct stat *stat, int nodecl)
 
     // evaluate next statement
     struct stat whilestat = {toks, match + 1, hi};
-    appmac(assem, parsestat(&whilestat, 1));
+    appmac(assem, parsestat(&whilestat, 1, 0));
     lo = whilestat.lo; // move over
 
     // pop continue and break targets
@@ -5735,7 +5742,7 @@ char *parsestat(struct stat *stat, int nodecl)
 
     // evaluate next statement
     struct stat dostat = {toks, lo+1, hi};
-    appmac(assem, parsestat(&dostat, 1));
+    appmac(assem, parsestat(&dostat, 1, 0));
     lo = dostat.lo; // move over
 
     pop(contstack, NULL);
@@ -5822,7 +5829,7 @@ char *parsestat(struct stat *stat, int nodecl)
     
     // eval enclosed statement
     struct stat forstat = {toks, pend+1, hi};
-    appmac(assem, parsestat(&forstat, 1));
+    appmac(assem, parsestat(&forstat, 1, 0));
     lo = forstat.lo; // move over
 
     pop(breakstack, NULL);
@@ -5865,13 +5872,33 @@ char *parsestat(struct stat *stat, int nodecl)
   // continue
   else if(tiskeyword(toks[lo], K_CONTINUE))
   {
-
+    // check semicolon
+    assert(tisatom(toks[lo+1], SEMICOLON));
+    // move over
+    lo += 2;
+    
+    // get top of contstack
+    char *lab;
+    pop(contstack, &lab);
+    
+    // jump there
+    vspmac(assem, "jmp %s\n", lab);
   }
 
   // break
   else if(tiskeyword(toks[lo], K_BREAK))
   {
+    // check semicolon
+    assert(tisatom(toks[lo+1], SEMICOLON));
+    // move over
+    lo += 2;
 
+    // get top of breakstack
+    char *lab;
+    pop(breakstack, &lab);
+
+    // jump there
+    vspmac(assem, "jmp %s\n", lab);
   }
 
   // return
@@ -5951,8 +5978,8 @@ char *parsestat(struct stat *stat, int nodecl)
       pushdecl(d);
 
       // allocate on stack (keep esp at top of stack)
-      // appmac(assem, stackalloc(sizeoftype(d->ct)));
-      sall(sizeoftype(d->ct));
+      appmac(assem, stackalloc(sizeoftype(d->ct)));
+      // sall(sizeoftype(d->ct));
 
       // figure out where it goes on the real stack
       framesize += size;
@@ -6071,7 +6098,7 @@ char *parsestats(struct stat *stat)
 
   while(stat->lo <= stat->hi) // while there are tokens left in the given range
   {
-    appmac(assem, parsestat(stat, 0));
+    appmac(assem, parsestat(stat, 0, 0));
   }
 
   return assem;

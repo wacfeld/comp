@@ -728,7 +728,7 @@ int getctlen(ctype ct);
 
 ctype unqual(ctype ct);
 
-char *parsestat(struct stat *stat, int nodecl);
+char *parsestat(struct stat *stat, int nodecl, int startfundef);
 
 void pushdecl(decl *d);
 
