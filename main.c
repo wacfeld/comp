@@ -5573,7 +5573,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     appmac(assem, newassem);
 
     // roll back scope
-    int size = remtonull();
+    remtonull();
 
     // deallocate all of them
     // sdall(size);
@@ -5604,8 +5604,14 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     vspmac(assem, "%s%s:\n", goto_pre, toks[lo].ident.cont);
 
     lo += 2;
-    // although this makes no sense the expression following the label is required
+
+    // the expression following the label is required
     assert(lo <= hi);
+    struct stat labstat = {toks, lo, hi};
+    
+    // gcc without options still forbids labelled declarations for some reason, so nodecl is 1
+    appmac(assem, parsestat(&labstat, 1, 0));
+    lo = labstat.lo;
   }
 
   // selection statements
