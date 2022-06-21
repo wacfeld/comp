@@ -244,7 +244,6 @@ LDUB_T	defs.h	/^enum dattype {NONE_T = 0, VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T
 LDUB_T	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum dattypes {VOID_T, CHAR_T, UCHAR_T, INT_T, UINT_T, SINT_T, LINT_T, USINT_T, ULINT_T, FLOAT_T, DUB_T, LDUB_T};$/;"	e	enum:dattypes
 LEFT	main.c	34;"	d	file:
 LEFT	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	28;"	d	file:
-LEN	test.c	2;"	d	file:
 LEQ	defs.h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^enum atom_type {\/*FCALL, ARRIND,*\/ ARROW, DOT, LOGNOT, BITNOT, INC, DEC, UNPLUS, UNMIN, DEREF, CAST, SIZEOF, TIMES, DIV, MOD, BINPLUS, BINMIN, SHL, SHR, LESS, LEQ, GREAT, GEQ, EQEQ, NOTEQ, BITAND, BITXOR, BITOR, LOGAND, LOGOR, TERNARY, EQ, PLUSEQ, MINEQ, TIMESEQ, DIVEQ, MODEQ, ANDEQ, XOREQ, OREQ, SHLEQ, SHREQ, COMMA, PLUS, MIN, STAR, COLON, QUESTION, SEMICOLON, PARENOP, PARENCL, BRACEOP, BRACECL, BRACKOP, BRACKCL};$/;"	e	enum:atom_type
 LEQ_O	defs.h	/^  LEQ_O,$/;"	e	enum:optype
@@ -465,12 +464,14 @@ b	template/main.asm	/^b db 'a'$/;"	d
 bool	fixedlithier.c	/^typedef int bool;$/;"	t	file:
 call	out/copy.asm	/^call exit$/;"	l
 call	out/copy.asm	/^call ident_main$/;"	l
+call	out/main.asm	/^call EAX$/;"	l
 call	out/main.asm	/^call exit$/;"	l
 call	out/main.asm	/^call ident_main$/;"	l
 canbeunary	defs.h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
 canbeunary	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int canbeunary[] = {BITAND, PLUS, MIN, STAR}; \/\/ atoms that represent both unary and binary operators$/;"	v
 cbulen	defs.h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
 cbulen	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^int cbulen = sizeof(canbeunary)\/sizeof(int);$/;"	v
+cdq	out/main.asm	/^cdq$/;"	l
 character	defs.h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon1	typeref:struct:__anon1::__anon6
 character	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } character; \/\/ char is reserved$/;"	m	union:__anon19	typeref:struct:__anon19::__anon24
 check_stray	main.c	/^void check_stray(char *src, char *esc, char *quot, char *banned)$/;"	f
@@ -478,6 +479,7 @@ check_stray	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void 
 checkasgncompat	main.c	/^void checkasgncompat(enum optype optype, ctype ct1, ctype ct2)$/;"	f
 checkours	main.c	28;"	d	file:
 clear	datastruct.c	/^void clear(list *l) \/\/ don't free() anything, just make length 0 again$/;"	f
+cmp	out/main.asm	/^cmp EAX, EBX$/;"	l
 cont	datastruct.h	/^  char *cont; \/\/ content$/;"	m	struct:__anon18
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon4
 cont	defs.h	/^    char *cont;$/;"	m	struct:__anon1::__anon5
@@ -557,7 +559,6 @@ expr_type	defs.h	/^typedef enum expr_type$/;"	g
 expr_type	defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typedef enum expr_type$/;"	g
 expr_type	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
-f	test.c	/^const int *f()$/;"	f
 ff	defs.h	22;"	d
 findatom	main.c	/^int findatom(token *toks, int i, int dir, enum atom_type t)$/;"	f
 findmatch	main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
@@ -591,7 +592,9 @@ gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char 
 gettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+glob0	out/main.asm	/^glob0:$/;"	l
 glob1	out/main.asm	/^glob1:$/;"	l
+glob2	out/main.asm	/^glob2:$/;"	l
 global	asmtest/main.asm	/^global _start$/;"	l
 global	asmtest/test.asm	/^global _start$/;"	l
 global	defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data) or local (stack)$/;"	m	struct:location
@@ -608,6 +611,8 @@ helpputexpr	main.c	/^void helpputexpr(expr *e, int space)$/;"	f
 helpsizeofdecl	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int helpsizeofdecl(int dt, typemod *tms)$/;"	f
 here	defs.h	33;"	d
 here	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	32;"	d
+heuootueu	out/main.asm	/^heuootueu$/;"	l
+hey	out/main.asm	/^hey$/;"	l
 hi	defs.h	/^  int hi; \/\/ inclusive$/;"	m	struct:stat
 hr_expr	defs.h	/^char *hr_expr[100] = $/;"	v
 hr_expr	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *hr_expr[100] = $/;"	v
@@ -625,9 +630,11 @@ ident	defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  char *ident;$/;"	m	struct:__anon29
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon31	typeref:struct:__anon31::__anon36
 ident	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ident;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon22
+ident_iseven	out/main.asm	/^ident_iseven:$/;"	l
 ident_main	out/copy.asm	/^ident_main:$/;"	l
 ident_main	out/main.asm	/^ident_main:$/;"	l
 ident_pre	main.c	/^char ident_pre[] = "ident_";$/;"	v
+idiv	out/main.asm	/^idiv ebx$/;"	l
 imm2frame	main.c	/^char *imm2frame(decl *d, int imm)$/;"	f
 incomplete	main.c	/^int incomplete(ctype ct)$/;"	f
 init	defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:decl	typeref:struct:decl::init
@@ -701,6 +708,10 @@ isvolat	defs.h	/^    int isvolat;$/;"	m	struct:__anon10::__anon16
 isvolat	main.c	/^int isvolat(ctype ct)$/;"	f
 isvolat	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int isvolat;$/;"	m	struct:__anon28
 isvolatile	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    int isvolatile;$/;"	m	struct:__anon31::__anon33
+je	out/main.asm	/^je .lab0$/;"	l
+jmp	out/main.asm	/^jmp .lab1$/;"	l
+jmp	out/main.asm	/^jmp .lab3$/;"	l
+jz	out/main.asm	/^jz .lab2$/;"	l
 keyword	defs.h	/^  } keyword;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon3
 keyword	defs.h	/^enum keyword { K_NONE = 0, K_AUTO, K_BREAK, K_CASE, K_CHAR, K_CONST, K_CONTINUE, K_DEFAULT, K_DO, K_DOUBLE, K_ELSE, K_ENUM, K_EXTERN, K_FLOAT, K_FOR, K_GOTO, K_IF, K_INT, K_LONG, K_REGISTER, K_RETURN, K_SHORT, K_SIGNED, K_STATIC, K_STRUCT, K_SWITCH, K_TYPEDEF, K_UNION, K_UNSIGNED, K_VOID, K_VOLATILE, K_WHILE}; \/\/ sizeof not here because it's an operator$/;"	g
 keyword	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } keyword;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon21
@@ -712,6 +723,7 @@ lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
 lea	out/copy.asm	/^lea eax, [ebp-4]$/;"	l
 lea	out/copy.asm	/^lea eax, [ebp-8]$/;"	l
 lea	out/main.asm	/^lea eax, [ebp-4]$/;"	l
+lea	out/main.asm	/^lea eax, [ebp-8]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 left	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
 leftend	main.c	15;"	d	file:
@@ -761,7 +773,6 @@ main	fixedlithier.c	/^int main(void) {$/;"	f
 main	main.c	/^int main()$/;"	f
 main	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
-main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	unused/test.s	/^main:$/;"	l
 main	unused/test2.s	/^main:$/;"	l
@@ -804,11 +815,21 @@ mov	out/copy.asm	/^mov ebx, 1$/;"	l
 mov	out/copy.asm	/^mov ecx, errmsg$/;"	l
 mov	out/copy.asm	/^mov edx, errlen$/;"	l
 mov	out/copy.asm	/^mov esp,ebp$/;"	l
+mov	out/main.asm	/^mov EAX, dword [ebp+8]$/;"	l
+mov	out/main.asm	/^mov EAX, dword [ebp-8]$/;"	l
+mov	out/main.asm	/^mov EAX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov EBX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov dword [eax], EBX$/;"	l
+mov	out/main.asm	/^mov dword [esp], 0$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000000b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000010b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000011b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000101b$/;"	l
 mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000110b$/;"	l
+mov	out/main.asm	/^mov dword [esp], EAX$/;"	l
 mov	out/main.asm	/^mov dword [esp], EBX$/;"	l
 mov	out/main.asm	/^mov dword [esp], eax$/;"	l
+mov	out/main.asm	/^mov dword [esp], ident_iseven$/;"	l
 mov	out/main.asm	/^mov eax, 1$/;"	l
 mov	out/main.asm	/^mov eax, 4$/;"	l
 mov	out/main.asm	/^mov eax, dword [esp]$/;"	l
@@ -819,6 +840,7 @@ mov	out/main.asm	/^mov ecx, errmsg$/;"	l
 mov	out/main.asm	/^mov edx, errlen$/;"	l
 mov	out/main.asm	/^mov esp,ebp$/;"	l
 msg	asmtest/main.asm	/^msg db 97, 98, 10, 0,$/;"	d
+mul	out/main.asm	/^mul ebx$/;"	l
 multiapp	main.c	/^char *multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
@@ -1029,7 +1051,9 @@ strlit	defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strlit	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 strnew	main.c	/^char *strnew(int n, ...)$/;"	f
 sub	out/copy.asm	/^sub esp, 4$/;"	l
+sub	out/main.asm	/^sub dword [esp], EAX$/;"	l
 sub	out/main.asm	/^sub esp, 4$/;"	l
+test	out/main.asm	/^test EAX, EAX$/;"	l
 testerr	main.c	24;"	d	file:
 testerr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 throw	main.c	40;"	d	file:

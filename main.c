@@ -5581,7 +5581,8 @@ char *parsestat(struct stat *stat)
   // if
   else if(tiskeyword(toks[lo], K_IF))
   {
-    assert(tiskeyword(toks[lo+1], PARENOP));
+    // assert(tiskeyword(toks[lo+1], PARENOP));
+    assert(tisatom(toks[lo+1], PARENOP));
 
     // find matching paren
     int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
@@ -5600,17 +5601,35 @@ char *parsestat(struct stat *stat)
     sdall(esize);
     vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
 
-    // jump to lab1 if 0
+    // jump to lab1 (don't run next statement) if 0
     char *lab1 = newloclab();
     vspmac(assem, "jz %s\n", lab1);
 
-    // evaluate enclosed statement
-    // struct stat ifstat = {toks, match + 1, }
-    // LEH need a function that parses only one statement
-    // char *s = parsestats();
+    // evaluate the next statement (the one that runs if the condition is true
+    struct stat ifstat = {toks, match + 1, hi};
+    appmac(assem, parsestat(&ifstat));
+    lo = ifstat.lo; // move over
+
+    // jump past else clause (if else clause exists) if if clause executes
+    char *lab2 = newloclab();
+    vspmac(assem, "jmp %s\n", lab2);
+
+    // lab1, where we jump if the condition is false
+    vspmac(assem, "%s:\n", lab1);
+
+    // check for else clause
+    if(tiskeyword(toks[lo], K_ELSE))
+    {
+      struct stat elsestat = {toks, lo+1, hi};
+      // evaluate
+      appmac(assem, parsestat(&elsestat));
+      lo = elsestat.lo; // move over
+    }
+
+    // where to jump to skip else clause (if it exists)
+    vspmac(assem, "%s:\n", lab2);
 
   }
-  // TODO if-else form
 
   // switch
   else if(tiskeyword(toks[lo], K_SWITCH))
