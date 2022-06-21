@@ -4811,6 +4811,90 @@ dword evalsimpleconstintexpr(expr *e)
   return dat;
 }
 
+// limited support for constant integral expressions (not standard compliant)
+// all constants are 4 byte ints, and sign does not matter
+dword evalconstintexpr(expr *e)
+{
+  // alias
+  dword (*ecie)(expr *) = evalconstintexpr;
+
+  assert(isintegral(e->ct));
+  int ot = e->optype;
+
+  expr **a = e->args;
+
+  if(ot == INT_O || ot == CHAR_O)
+    return e->dat;
+  else if(ot == CAST_O);
+    // do nothing
+
+  else if(ot == ADD_O)
+    return ecie(a[0]) + ecie(a[1]);
+  else if(ot == SUB_O)
+    return ecie(a[0]) - ecie(a[1]);
+
+  else if(ot == UPLUS_O)
+    return ecie(a[0]);
+  else if(ot == UMIN_O)
+    return -ecie(a[0]);
+  else if(ot == BNOT_O)
+    return ~ecie(a[0]);
+  else if(ot == LNOT_O)
+    return !ecie(a[0]);
+
+  else if(ot == MULT_O)
+    return ecie(a[0]) * ecie(a[1]);
+  else if(ot == DIV_O)
+    return ecie(a[0]) / ecie(a[1]);
+  else if(ot == MOD_O)
+    return ecie(a[0]) % ecie(a[1]);
+
+  else if(ot == LT_O)
+    return ecie(a[0]) < ecie(a[1]);
+  else if(ot == GT_O)
+    return ecie(a[0]) > ecie(a[1]);
+  else if(ot == LEQ_O)
+    return ecie(a[0]) <= ecie(a[1]);
+  else if(ot == GEQ_O)
+    return ecie(a[0]) >= ecie(a[1]);
+  else if(ot == EQEQ_O)
+    return ecie(a[0]) == ecie(a[1]);
+  else if(ot == NEQ_O)
+    return ecie(a[0]) != ecie(a[1]);
+
+  else if(ot == SHL_O)
+    return ecie(a[0]) << ecie(a[1]);
+  else if(ot == SHR_O)
+    return ecie(a[0]) >> ecie(a[1]);
+
+  else if(ot == BAND_O)
+    return ecie(a[0]) & ecie(a[1]);
+  else if(ot == XOR_O)
+    return ecie(a[0]) ^ ecie(a[1]);
+  else if(ot == BOR_O)
+    return ecie(a[0]) | ecie(a[1]);
+
+  else if(ot == LOR_O)
+    return ecie(a[0]) || ecie(a[1]);
+  else if(ot == LAND_O)
+    return ecie(a[0]) && ecie(a[1]);
+
+  else if(ot == TERN_O)
+  {
+    if(ecie(a[0]))
+      return ecie(a[1]);
+    else
+      return ecie(a[2]);
+  }
+  else
+  {
+    puts(hropt[ot]);
+    throw("unsupported operator");
+  }
+
+  return 0;
+}
+
 // evaluate a constant expression at compile time
 // returns NULL if invalid operators, operands, etc.
 // expr *evalconstexpr(expr *e, int integral)
@@ -5588,6 +5672,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
   // case label
   else if(tiskeyword(toks[lo], K_CASE))
   {
+    throw("switch-case not supported");
     // TODO only in switch. need to pass information downward.
     // find matching colon, isolate constant expression
   }
@@ -5672,6 +5757,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
   else if(tiskeyword(toks[lo], K_SWITCH))
   {
     assert(tisatom(toks[lo+1], PARENOP));
+    throw("switch-case not supported");
   }
 
 

@@ -541,6 +541,7 @@ error	out/main.asm	/^error:$/;"	l
 etypeadd	main.c	/^void etypeadd(expr *e, int type)$/;"	f
 etypeadd	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void etypeadd(expr *e, int type)$/;"	f
 evalconstexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void evalconstexpr(expr *e)$/;"	f
+evalconstintexpr	main.c	/^dword evalconstintexpr(expr *e)$/;"	f
 evalexpr	main.c	/^char *evalexpr(expr *e)$/;"	f
 evalintcast	main.c	/^char *evalintcast(ctype to, ctype from)$/;"	f
 evalsimpleconstintexpr	main.c	/^dword evalsimpleconstintexpr(expr *e)$/;"	f
@@ -961,9 +962,9 @@ right	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct li
 rightend	main.c	13;"	d	file:
 rightend	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
 safesizeoftype	main.c	/^int safesizeoftype(ctype ct)$/;"	f
-sall	main.c	5447;"	d	file:
+sall	main.c	5531;"	d	file:
 scope	main.c	/^stack *scope = NULL;$/;"	v
-sdall	main.c	5448;"	d	file:
+sdall	main.c	5532;"	d	file:
 searchscope	main.c	/^decl *searchscope(char *ident)$/;"	f
 section	asmtest/main.asm	/^section .bss$/;"	l
 section	asmtest/main.asm	/^section .data$/;"	l
@@ -1095,7 +1096,9 @@ validct	main.c	/^int validct(ctype ct)$/;"	f
 vspmac	defs.h	778;"	d
 wrapper	dcl/main.c	/^void wrapper(char *str)$/;"	f
 x	template/main.asm	/^x resd 1$/;"	l
+x	test.c	/^int x;$/;"	v
 x	unused/test.s	/^x:$/;"	l
 xtod	main.c	/^int xtod(char c)$/;"	f
 xtod	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int xtod(char c)$/;"	f
+y	test.c	/^int *y = &x;$/;"	v
 y	unused/test.s	/^y:$/;"	l

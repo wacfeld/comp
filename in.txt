@@ -4,12 +4,7 @@
 
 int main()
 {
-  int i;
-  int x = 5;
-hi: i = 60;
-
-  int k = 6;
-  k++;
+nowhere:
 }
 
 

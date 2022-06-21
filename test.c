@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 
+int x;
+int *y = &x;
 int main()
 {
-hello: int x = 0;
-
-       printf("%d\n", x);
+  
   
 }
