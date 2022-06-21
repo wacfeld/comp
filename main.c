@@ -5745,6 +5745,20 @@ char *parsestat(struct stat *stat, int nodecl)
   else if(tiskeyword(toks[lo], K_FOR))
   {
     assert(tisatom(toks[lo+1], PARENOP));
+    int pstart = lo+1;
+
+    // find matching paren
+    int pend = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
+
+    // find two separating semicolons
+    int sc1 = findatom(toks, lo+2, 1, SEMICOLON);
+    int sc2 = findatom(toks, sc1+1, 1, SEMICOLON);
+
+    // parse & evaluate first expression
+    // only if not empty
+    // if(pstart+1 < 
+    // LEH
+    expr *e1 = tokl2expr(toks, pstart+1, 
   }
 
   // jump statements
@@ -5778,7 +5792,7 @@ char *parsestat(struct stat *stat, int nodecl)
   else if(tiskeyword(toks[lo], K_RETURN))
   {
     // find semicolon
-    puts("heuootueu");
+    // puts("heuootueu");
     int end = findatom(toks, lo, 1, SEMICOLON);
 
     assert(funret); // make sure a return type has been provided
