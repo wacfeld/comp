@@ -5116,9 +5116,13 @@ decl *searchscope(char *ident)
 }
 
 
-// prefix for act as namespaces to avoid conflicting with each other and builtin features of nasm
+// prefixes which act as namespaces to avoid conflicting with each other and builtin features of nasm
+
+// identifiers (variables, functions)
 char ident_pre[] = "ident_";
-// char function_pre[] = "fun_";
+
+// goto targets
+char goto_pre[] = "goto_";
 
 // create a new stack frame at start of function
 char create_sframe[] = "push ebp\nmov ebp,esp\n";
@@ -5568,13 +5572,17 @@ char *parsestat(struct stat *stat)
   // default label
   else if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
   {
-
+    
   }
 
   // regular label
   else if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
   {
+    vspmac(assem, "%s%s:\n", goto_pre, toks[lo].ident.cont);
 
+    lo += 2;
+    // although this makes no sense the expression following the label is required
+    assert(lo <= hi);
   }
 
   // selection statements
@@ -5662,7 +5670,15 @@ char *parsestat(struct stat *stat)
   // goto
   else if(tiskeyword(toks[lo], K_GOTO))
   {
+    // goto identifier;
+    assert(toks[lo+1].gen.type == IDENT);
+    assert(tisatom(toks[lo+2], SEMICOLON));
 
+    // prepend namespace, jump to identifier
+    vspmac(assem, "jmp %s%s\n", goto_pre, toks[lo+1].ident.cont);
+
+    // move over
+    lo += 3;
   }
 
   // continue
@@ -5727,7 +5743,7 @@ char *parsestat(struct stat *stat)
   else if(isdeclspec(toks[lo])) // decl spec -> declaration
   {
     // find terminating semicolon, just to confirm that it exists
-    puts("hey");
+    // puts("hey");
     int end = findatom(toks, lo, 1, SEMICOLON);
 
     // while no semicolon reached, parse declarations

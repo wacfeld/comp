@@ -7,14 +7,21 @@
      7                                  section .text
      8                                  global _start
      9                                  _start:
-    10 00000000 BA04000000              mov edx,len
-    11 00000005 B9[00000000]            mov ecx,msg
-    12 0000000A BB01000000              mov ebx,1
-    13 0000000F B804000000              mov eax,4
-    14 00000014 CD80                    int 0x80
+    10                                  
+    11 00000000 85C0                    test eax, eax
+    12 00000002 7432                    jz .here
+    13                                  
+    14 00000004 90<rept>                times 50 nop
     15                                  
-    16                                  exit:
-    17 00000016 B801000000                mov eax, 1
-    18 0000001B BB00000000                mov ebx, 0
-    19 00000020 CD80                      int 80h
-    20                                  
+    16                                  .here:
+    17 00000036 BA04000000              mov edx,len
+    18 0000003B B9[00000000]            mov ecx,msg
+    19 00000040 BB01000000              mov ebx,1
+    20 00000045 B804000000              mov eax,4
+    21 0000004A CD80                    int 0x80
+    22                                  
+    23                                  exit:
+    24 0000004C B801000000                mov eax, 1
+    25 00000051 BB00000000                mov ebx, 0
+    26 00000056 CD80                      int 80h
+    27                                  

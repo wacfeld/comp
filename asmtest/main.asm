@@ -7,6 +7,13 @@ section .bss
 section .text
 global _start
 _start:
+
+test eax, eax
+jz .here
+
+times 50 nop
+
+.here:
 mov edx,len
 mov ecx,msg
 mov ebx,1

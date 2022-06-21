@@ -5,18 +5,10 @@
 int main()
 {
   int x;
-  int y = 3;
   
-  if(y == -1)
-    x = 1;
-  else if(y == -2)
-    x = 2;
-  else if(y == -3)
-    x = 3;
-  else if(y == -4)
-  {
-    x = 4;
-  }
-  else
-    x = 1531;
+  goto thing;
+thing:
+  x++;
+
+  goto thing;
 }
