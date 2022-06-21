@@ -9,8 +9,68 @@ section .text
 ident_main:
 push ebp
 mov ebp,esp
-sub esp, 20
-add esp, 20
+sub esp, 4
+sub esp, 4
+lea eax, [ebp-4]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000000b
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+.lab0:
+sub esp, 4
+mov EAX, dword [ebp-4]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000001010b
+mov EBX, dword [esp]
+add esp, 4
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+cmp EAX, EBX
+jle .lab2
+mov dword [esp], 0
+jmp .lab3
+.lab2: mov dword [esp], 1
+.lab3:
+mov EAX, dword [esp]
+add esp, 4
+test EAX, EAX
+jz .lab1
+sub esp, 4
+lea eax, [ebp-4]
+mov dword [esp], eax
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+mov EBX, dword [EAX]
+mov dword [esp], EBX
+inc dword [EAX]
+add esp, 4
+jmp .lab0
+.lab1:
+sub esp, 4
+sub esp, 4
+lea eax, [ebp-8]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000001111b
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+add esp, 8
 glob0:
 mov esp,ebp
 pop ebp

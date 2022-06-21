@@ -9,4 +9,5 @@ int main()
   {
     i++;
   }
+  int x = 15;
 }

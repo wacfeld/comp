@@ -5707,7 +5707,38 @@ char *parsestat(struct stat *stat, int nodecl)
   // do/while
   else if(tiskeyword(toks[lo], K_DO))
   {
+    // do stat while(expr);
+    char *lab1 = newloclab();
 
+    // jump here when test passes
+    vspmac(assem, "%s:\n", lab1);
+
+    // evaluate next statement
+    struct stat dostat = {toks, lo+1, hi};
+    appmac(assem, parsestat(&dostat, 1));
+    lo = dostat.lo; // move over
+    
+    // check `while(expr);` format
+    assert(tiskeyword(toks[lo], K_WHILE));
+    assert(tisatom(toks[lo+1], PARENOP));
+    int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
+    assert(tisatom(toks[match+1], SEMICOLON));
+
+    // parse expr
+    expr *e = tokl2expr(toks, lo+2, match-1);
+    assert(e);
+    int esize = sizeoftype(e->ct);
+    
+    // evaluate expr
+    appmac(assem, evalexpr(e));
+    appmac(assem, stack2reg(EAX, esize));
+    sdall(esize);
+    
+    // test
+    vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
+    // jump back if nonzero
+    vspmac(assem, "jnz %s\n", lab1);
+    // otherwise keep going (no other jumps, must execute at least once)
   }
 
   // for
