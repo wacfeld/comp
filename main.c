@@ -5270,7 +5270,7 @@ void proctoplevel(token *toks)
       framesize = 0;
 
       // convert function body to assembly
-      char *s = parsestat(d->fundef);
+      char *s = parsestats(d->fundef);
 
       funret = NULL; // not necessary, but safer
 
@@ -5502,9 +5502,335 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
   return i - dir;
 }
 
-// take in 1 or more statements strung together, parse first one, modify stat accordingly, return assembly code
-// also deals with internal declarations, which can appear mixed with statements
+// parses one statement, moves lo forward accordingly
 char *parsestat(struct stat *stat)
+{
+  int lo = stat->lo;
+  int hi = stat->hi;
+  token *toks = stat->toks;
+  int toklen = hi - lo + 1;
+
+  // all assembly code from the statements to be parsed will be appended to this buffer
+  int assem_len = 100;
+  char *assem = malloc(assem_len);
+  *assem = 0;
+
+
+  // TODO declarations mixed in with statements
+
+  // if starting fundef, next statement MUST be block statement
+  if(startfundef)
+    assert(tisatom(toks[lo], BRACEOP));
+
+  // block statements
+  if(tisatom(toks[lo], BRACEOP))
+  {
+    // push separator to scope if not at start of function definition block
+    if(startfundef)
+    {
+      startfundef = 0;
+    }
+    else
+    {
+      pushnull();
+    }
+
+    // find matching brace
+    int end = tokmatch(toks, lo, 1, BRACEOP, BRACECL);
+
+    // we do not confine this implementation to disallowing mixed declarations and statements. it adds no complexity to allow mixing
+
+    // run through statements
+    struct stat newstat = {toks, lo+1, end-1};
+    char *newassem = parsestats(&newstat);
+
+    // append newassem to assem
+    // assem = strapp(assem, &assem_len, newassem);
+    appmac(assem, newassem);
+
+    // roll back scope
+    remtonull();
+
+    // TODO deallocate on real stack as well
+
+    // move on to next statement
+    lo = end + 1;
+  }
+
+  // labeled statements
+  // case label
+  else if(tiskeyword(toks[lo], K_CASE))
+  {
+    // TODO only in switch. need to pass information downward.
+    // find matching colon, isolate constant expression
+  }
+
+  // default label
+  else if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
+  {
+
+  }
+
+  // regular label
+  else if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
+  {
+
+  }
+
+  // selection statements
+  // if
+  else if(tiskeyword(toks[lo], K_IF))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+
+    // find matching paren
+    int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
+
+    // parse expression between parens
+    expr *e = tokl2expr(toks, lo+2, match-1);
+    assert(e);
+    int esize = sizeoftype(e->ct);
+
+    // evaluate, put result on stack
+    appmac(assem, evalexpr(e));
+
+
+    // move into eax, test 
+    appmac(assem, stack2reg(EAX, esize));
+    sdall(esize);
+    vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
+
+    // jump to lab1 if 0
+    char *lab1 = newloclab();
+    vspmac(assem, "jz %s\n", lab1);
+
+    // evaluate enclosed statement
+    // struct stat ifstat = {toks, match + 1, }
+    // LEH need a function that parses only one statement
+    // char *s = parsestats();
+
+  }
+  // TODO if-else form
+
+  // switch
+  else if(tiskeyword(toks[lo], K_SWITCH))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
+
+  // iteration statements
+  // while
+  else if(tiskeyword(toks[lo], K_WHILE))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
+  // do/while
+  else if(tiskeyword(toks[lo], K_DO))
+  {
+
+  }
+
+  // for
+  else if(tiskeyword(toks[lo], K_FOR))
+  {
+    assert(tiskeyword(toks[lo+1], PARENOP));
+  }
+
+
+  // jump statements
+  // goto
+  else if(tiskeyword(toks[lo], K_GOTO))
+  {
+
+  }
+
+  // continue
+  else if(tiskeyword(toks[lo], K_CONTINUE))
+  {
+
+  }
+
+  // break
+  else if(tiskeyword(toks[lo], K_BREAK))
+  {
+
+  }
+
+  // return
+  else if(tiskeyword(toks[lo], K_RETURN))
+  {
+    // find semicolon
+    puts("heuootueu");
+    int end = findatom(toks, lo, 1, SEMICOLON);
+
+    assert(funret); // make sure a return type has been provided
+
+    // expression is present
+    if(end > lo + 1)
+    {
+      // make sure not void
+      assert(!ctisdt(funret, VOID_T));
+
+      // parse expression
+      expr *e = tokl2expr(toks, lo+1, end-1);
+
+      // check that type matches return type, as if by assignment
+      assert(iscompat(funret, e->ct, QM_SUPERSET));
+
+      int retsize = sizeoftype(funret);
+
+      // evaluate expression, place result in eax
+      appmac(assem, evalexpr(e));
+      appmac(assem, stack2reg(EAX, retsize));
+      sdall(retsize);
+    }
+
+    // no expression is present
+    else
+    {
+      // must be void
+      assert(ctisdt(funret, VOID_T));
+    }
+
+    // destroy stack frame, return
+    // assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
+    vspmac(assem, "%s:\n", newgloblab());
+    mapmac(assem, destroy_sframe, "ret\n");
+
+    // move on
+    // we CANNOT ignore stuff after a return, because of gotos, etc.
+    lo = end + 1;
+  }
+
+  // penultimate: indoor (local) declaration
+  else if(isdeclspec(toks[lo])) // decl spec -> declaration
+  {
+    // find terminating semicolon, just to confirm that it exists
+    puts("hey");
+    int end = findatom(toks, lo, 1, SEMICOLON);
+
+    // while no semicolon reached, parse declarations
+    int sc = 0;
+    decl *d;
+    do
+    {
+      d = parsedecl(toks, &lo, &sc);
+      assert(d);
+
+      // putdecl(d);
+
+      ctype ct = d->ct;
+      int size = sizeoftype(ct);
+
+      // no fundefs indoors
+      assert(!d->fundef);
+
+      // push the declaration onto the scope stack
+      pushdecl(d);
+
+      // allocate on stack (keep esp at top of stack)
+      // appmac(assem, stackalloc(sizeoftype(d->ct)));
+      sall(sizeoftype(d->ct));
+
+      // figure out where it goes on the real stack
+      framesize += size;
+      d->locat = (struct location) {.global = 0, .locloc = -framesize}; // give local location, offset from base pointer
+
+      // initialize if necessary
+      if(d->init)
+      {
+        // no lists for now
+        assert(!d->init->islist);
+        assert(d->ct->gen.type != TM_ARR);
+
+        ctype ct1 = d->ct;
+        ctype ct2 = d->init->e->ct;
+        // make sure valid assignment
+        checkasgncompat(EQ_O, ct1, ct2);
+
+        // cast if necessary
+        if(!iscompat(ct1, ct2, QM_STRICT))
+        {
+          d->init->e = makecast(ct1, d->init->e);
+        }
+
+        // create the expressions (LHS identifier, RHS value)
+        expr *de = makeexpr(PRIM_E, IDENT_O, 0);
+        de->dcl = d;
+        de->ct = d->ct;
+
+        // put into EQ_O assignment expression
+        expr *newe = makeexpr(ASGN_E, EQ_O, 2, de, d->init->e);
+        newe->ct = d->ct;
+
+        // evaluate (perform assignment)
+        appmac(assem, evalexpr(newe));
+        // discard value of assignment expression
+        sdall(sizeoftype(d->ct));
+
+        // appmac(assem, imm2frame(d, d->init->e->dat));
+      }
+
+    } while(!sc);
+
+    // lo is automatically moved over the semicolon by parsedecl()
+  }
+
+  // lastly, if none of those things, expression
+  else
+  {
+    // find semicolon
+    int end = findatom(toks, lo, 1, SEMICOLON);
+
+    if(lo == end) // empty expression, move over
+    {
+      lo++;
+    }
+
+    else
+    {
+      // convert expression to assembly, append
+      expr *e = tokl2expr(toks, lo, end-1);
+
+      // puts("eouoeueueueuoeue");
+      // putexpr(e);
+      // puts("eoueou");
+
+      // toplevel expr decays always, as it's not the operand of something preventing it from decaying
+      decay(-1, -1, e);
+
+      // putexpr(e);
+
+      // evaluate, put on stack
+      char *s = evalexpr(e);
+      appmac(assem, s);
+
+      // get size after decay
+      if(!eisdt(e, VOID_T)) // if not void, deallocate returned value
+      {
+        int size = sizeoftype(e->ct);
+
+        // expression statement value gets thrown out
+        appmac(assem, stackdealloc(size));
+      }
+
+      // move over semicolon
+      lo = end + 1;
+    }
+  }
+  
+  // pack back into stat
+  stat->lo = lo;
+  stat->hi = hi;
+
+  return assem;
+}
+
+// take in 1 or more statements strung together, all of them, modify stat accordingly, return assembly code
+// also deals with internal declarations, which can appear mixed with statements
+char *parsestats(struct stat *stat)
 {
   int lo = stat->lo;
   int hi = stat->hi;
@@ -5523,309 +5849,9 @@ char *parsestat(struct stat *stat)
   // e.x. empty block statement, can start empty
 
 
-  while(lo <= hi) // while there are tokens left in the given range
+  while(stat->lo <= stat->hi) // while there are tokens left in the given range
   {
-
-    // TODO declarations mixed in with statements
-    
-    // if starting fundef, next statement MUST be block statement
-    if(startfundef)
-      assert(tisatom(toks[lo], BRACEOP));
-
-    // block statements
-    if(tisatom(toks[lo], BRACEOP))
-    {
-      // push separator to scope if not at start of function definition block
-      if(startfundef)
-      {
-        startfundef = 0;
-      }
-      else
-      {
-        pushnull();
-      }
-
-      // find matching brace
-      int end = tokmatch(toks, lo, 1, BRACEOP, BRACECL);
-
-      // we do not confine this implementation to disallowing mixed declarations and statements. it adds no complexity to allow mixing
-
-      // run through statements
-      struct stat newstat = {toks, lo+1, end-1};
-      char *newassem = parsestat(&newstat);
-
-      // append newassem to assem
-      // assem = strapp(assem, &assem_len, newassem);
-      appmac(assem, newassem);
-
-      // roll back scope
-      remtonull();
-
-      // TODO deallocate on real stack as well
-
-      // move on to next statement
-      lo = end + 1;
-    }
-
-    // labeled statements
-    // case label
-    else if(tiskeyword(toks[lo], K_CASE))
-    {
-      // TODO only in switch. need to pass information downward.
-      // find matching colon, isolate constant expression
-    }
-
-    // default label
-    else if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
-    {
-
-    }
-
-    // regular label
-    else if(toklen >= 2 && toks[lo].gen.type == IDENT && tisatom(toks[lo+1], COLON))
-    {
-
-    }
-
-    // selection statements
-    // if
-    else if(tiskeyword(toks[lo], K_IF))
-    {
-      assert(tiskeyword(toks[lo+1], PARENOP));
-      
-      // find matching paren
-      int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
-
-      // parse expression between parens
-      expr *e = tokl2expr(toks, lo+2, match-1);
-      assert(e);
-      int esize = sizeoftype(e->ct);
-
-      // evaluate, put result on stack
-      appmac(assem, evalexpr(e));
-
-
-      // move into eax, test 
-      appmac(assem, stack2reg(EAX, esize));
-      sdall(esize);
-      vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
-      
-      // jump to lab1 if 0
-      char *lab1 = newloclab();
-      vspmac(assem, "jz %s\n", lab1);
-      
-      // evaluate enclosed statement
-      // struct stat ifstat = {toks, match + 1, 
-        // LEH need a function that parses only one statement
-      char *s = parsestat(
-      
-    }
-    // TODO if-else form
-
-    // switch
-    else if(tiskeyword(toks[lo], K_SWITCH))
-    {
-      assert(tiskeyword(toks[lo+1], PARENOP));
-    }
-
-
-    // iteration statements
-    // while
-    else if(tiskeyword(toks[lo], K_WHILE))
-    {
-      assert(tiskeyword(toks[lo+1], PARENOP));
-    }
-
-    // do/while
-    else if(tiskeyword(toks[lo], K_DO))
-    {
-
-    }
-
-    // for
-    else if(tiskeyword(toks[lo], K_FOR))
-    {
-      assert(tiskeyword(toks[lo+1], PARENOP));
-    }
-
-
-    // jump statements
-    // goto
-    else if(tiskeyword(toks[lo], K_GOTO))
-    {
-
-    }
-
-    // continue
-    else if(tiskeyword(toks[lo], K_CONTINUE))
-    {
-
-    }
-
-    // break
-    else if(tiskeyword(toks[lo], K_BREAK))
-    {
-
-    }
-
-    // return
-    else if(tiskeyword(toks[lo], K_RETURN))
-    {
-      // find semicolon
-      int end = findatom(toks, lo, 1, SEMICOLON);
-
-      assert(funret); // make sure a return type has been provided
-
-      // expression is present
-      if(end > lo + 1)
-      {
-        // make sure not void
-        assert(!ctisdt(funret, VOID_T));
-        
-        // parse expression
-        expr *e = tokl2expr(toks, lo+1, end-1);
-
-        // check that type matches return type, as if by assignment
-        assert(iscompat(funret, e->ct, QM_SUPERSET));
-
-        int retsize = sizeoftype(funret);
-
-        // evaluate expression, place result in eax
-        appmac(assem, evalexpr(e));
-        appmac(assem, stack2reg(EAX, retsize));
-        sdall(retsize);
-      }
-
-      // no expression is present
-      else
-      {
-        // must be void
-        assert(ctisdt(funret, VOID_T));
-      }
-      
-      // destroy stack frame, return
-      // assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
-      vspmac(assem, "%s:\n", newgloblab());
-      mapmac(assem, destroy_sframe, "ret\n");
-      
-      // move on
-      // we CANNOT ignore stuff after a return, because of gotos, etc.
-      lo = end + 1;
-    }
-
-    // penultimate: indoor (local) declaration
-    else if(isdeclspec(toks[lo])) // decl spec -> declaration
-    {
-      // find terminating semicolon, just to confirm that it exists
-      int end = findatom(toks, lo, 1, SEMICOLON);
-
-      // while no semicolon reached, parse declarations
-      int sc = 0;
-      decl *d;
-      do
-      {
-        d = parsedecl(toks, &lo, &sc);
-        assert(d);
-
-        // putdecl(d);
-
-        ctype ct = d->ct;
-        int size = sizeoftype(ct);
-
-        // no fundefs indoors
-        assert(!d->fundef);
-        
-        // push the declaration onto the scope stack
-        pushdecl(d);
-
-        // allocate on stack (keep esp at top of stack)
-        // appmac(assem, stackalloc(sizeoftype(d->ct)));
-        sall(sizeoftype(d->ct));
-        
-        // figure out where it goes on the real stack
-        framesize += size;
-        d->locat = (struct location) {.global = 0, .locloc = -framesize}; // give local location, offset from base pointer
-
-        // initialize if necessary
-        if(d->init)
-        {
-          // no lists for now
-          assert(!d->init->islist);
-          assert(d->ct->gen.type != TM_ARR);
-          
-          ctype ct1 = d->ct;
-          ctype ct2 = d->init->e->ct;
-          // make sure valid assignment
-          checkasgncompat(EQ_O, ct1, ct2);
-
-          // cast if necessary
-          if(!iscompat(ct1, ct2, QM_STRICT))
-          {
-            d->init->e = makecast(ct1, d->init->e);
-          }
-
-          // create the expressions (LHS identifier, RHS value)
-          expr *de = makeexpr(PRIM_E, IDENT_O, 0);
-          de->dcl = d;
-          de->ct = d->ct;
-          
-          // put into EQ_O assignment expression
-          expr *newe = makeexpr(ASGN_E, EQ_O, 2, de, d->init->e);
-          newe->ct = d->ct;
-          
-          // evaluate (perform assignment)
-          appmac(assem, evalexpr(newe));
-          // discard value of assignment expression
-          sdall(sizeoftype(d->ct));
-          
-          // appmac(assem, imm2frame(d, d->init->e->dat));
-        }
-        
-      } while(!sc);
-
-      // lo is automatically moved over the semicolon by parsedecl()
-    }
-
-    // lastly, if none of those things, expression
-    else
-    {
-      // find semicolon
-      int end = findatom(toks, lo, 1, SEMICOLON);
-
-      if(lo == end) // empty expression, move over
-      {
-        lo++;
-        continue;
-      }
-
-      // convert expression to assembly, append
-      expr *e = tokl2expr(toks, lo, end-1);
-
-      // puts("eouoeueueueuoeue");
-      // putexpr(e);
-      // puts("eoueou");
-
-      // toplevel expr decays always, as it's not the operand of something preventing it from decaying
-      decay(-1, -1, e);
-
-      // putexpr(e);
-      
-      // evaluate, put on stack
-      char *s = evalexpr(e);
-      appmac(assem, s);
-
-      // get size after decay
-      if(!eisdt(e, VOID_T)) // if not void, deallocate returned value
-      {
-        int size = sizeoftype(e->ct);
-        
-        // expression statement value gets thrown out
-        appmac(assem, stackdealloc(size));
-      }
-
-      // move over semicolon
-      lo = end + 1;
-    }
+    appmac(assem, parsestat(stat));
   }
 
   return assem;

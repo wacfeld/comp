@@ -777,5 +777,7 @@ char *multiapp(char *dest, int *max, int n, ...);
 #define mapmac(dest, ...) {dest = multiapp(dest, &dest##_len, COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__);}
 #define vspmac(dest, fmt, ...) {char *s; asprintf(&s, fmt, ##__VA_ARGS__); appmac(dest, s); free(s);}
 
+char *parsestats(struct stat *stat);
+
 
 #endif

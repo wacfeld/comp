@@ -591,7 +591,7 @@ gettypemods	main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char 
 gettypemods	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypemods(token *toks, int lo, int hi, list *l, int abs, char **s)$/;"	f
 gettypequal	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
-glob0	out/main.asm	/^glob0:$/;"	l
+glob1	out/main.asm	/^glob1:$/;"	l
 global	asmtest/main.asm	/^global _start$/;"	l
 global	asmtest/test.asm	/^global _start$/;"	l
 global	defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data) or local (stack)$/;"	m	struct:location
@@ -806,7 +806,7 @@ mov	out/copy.asm	/^mov edx, errlen$/;"	l
 mov	out/copy.asm	/^mov esp,ebp$/;"	l
 mov	out/main.asm	/^mov EBX, dword [esp]$/;"	l
 mov	out/main.asm	/^mov dword [eax], EBX$/;"	l
-mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000100b$/;"	l
+mov	out/main.asm	/^mov dword [esp], 00000000000000000000000000000110b$/;"	l
 mov	out/main.asm	/^mov dword [esp], EBX$/;"	l
 mov	out/main.asm	/^mov dword [esp], eax$/;"	l
 mov	out/main.asm	/^mov eax, 1$/;"	l
@@ -896,6 +896,7 @@ parseshiftexpr	main.c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	unused/oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
 parsestat	main.c	/^char *parsestat(struct stat *stat)$/;"	f
+parsestats	main.c	/^char *parsestats(struct stat *stat)$/;"	f
 parsetypename	main.c	/^ctype parsetypename(link *start)$/;"	f
 parsetypename	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsetypename(link *start)$/;"	f
 parseunaryexpr	main.c	/^expr *parseunaryexpr(link *start)$/;"	f

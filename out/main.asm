@@ -1,3 +1,4 @@
+hey
 section .data
 errmsg db "error", 10
 errlen equ $ - errmsg

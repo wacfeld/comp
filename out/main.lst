@@ -1,46 +1,48 @@
-     1                                  section .data
-     2 00000000 6572726F720A            errmsg db "error", 10
-     3                                  errlen equ $ - errmsg
-     4                                  
-     5                                  section .bss
-     6                                  
-     7                                  section .text
-     8                                  
-     9                                  ident_main:
-    10 00000000 55                      push ebp
-    11 00000001 89E5                    mov ebp,esp
-    12 00000003 83EC04                  sub esp, 4
-    13 00000006 83EC04                  sub esp, 4
-    14 00000009 8D45FC                  lea eax, [ebp-4]
-    15 0000000C 890424                  mov dword [esp], eax
-    16 0000000F 83EC04                  sub esp, 4
-    17 00000012 C7042406000000          mov dword [esp], 00000000000000000000000000000110b
-    18 00000019 8B1C24                  mov EBX, dword [esp]
-    19 0000001C 83C404                  add esp, 4
-    20 0000001F 8B0424                  mov eax, dword [esp]
-    21 00000022 83C404                  add esp, 4
-    22 00000025 8918                    mov dword [eax], EBX
-    23 00000027 83EC04                  sub esp, 4
-    24 0000002A 891C24                  mov dword [esp], EBX
-    25 0000002D 83C404                  add esp, 4
-    26                                  glob1:
-    27 00000030 89EC                    mov esp,ebp
-    28 00000032 5D                      pop ebp
-    29 00000033 C3                      ret
-    30                                  
-    31                                  global _start
-    32                                  _start:
-    33 00000034 E8C7FFFFFF              call ident_main
-    34 00000039 E816000000              call exit
-    35                                  
-    36                                  error:
-    37 0000003E BA06000000              mov edx, errlen
-    38 00000043 B9[00000000]            mov ecx, errmsg
-    39 00000048 BB01000000              mov ebx, 1
-    40 0000004D B804000000              mov eax, 4
-    41 00000052 CD80                    int 0x80
-    42                                  exit:
-    43 00000054 B801000000              mov eax, 1
-    44 00000059 BB00000000              mov ebx, 0
-    45 0000005E CD80                    int 80h
-    46                                  
+     1                                  hey
+     1          ******************       warning: label alone on a line without a colon might be in error [-w+orphan-labels]
+     2                                  section .data
+     3 00000000 6572726F720A            errmsg db "error", 10
+     4                                  errlen equ $ - errmsg
+     5                                  
+     6                                  section .bss
+     7                                  
+     8                                  section .text
+     9                                  
+    10                                  ident_main:
+    11 00000000 55                      push ebp
+    12 00000001 89E5                    mov ebp,esp
+    13 00000003 83EC04                  sub esp, 4
+    14 00000006 83EC04                  sub esp, 4
+    15 00000009 8D45FC                  lea eax, [ebp-4]
+    16 0000000C 890424                  mov dword [esp], eax
+    17 0000000F 83EC04                  sub esp, 4
+    18 00000012 C7042406000000          mov dword [esp], 00000000000000000000000000000110b
+    19 00000019 8B1C24                  mov EBX, dword [esp]
+    20 0000001C 83C404                  add esp, 4
+    21 0000001F 8B0424                  mov eax, dword [esp]
+    22 00000022 83C404                  add esp, 4
+    23 00000025 8918                    mov dword [eax], EBX
+    24 00000027 83EC04                  sub esp, 4
+    25 0000002A 891C24                  mov dword [esp], EBX
+    26 0000002D 83C404                  add esp, 4
+    27                                  glob1:
+    28 00000030 89EC                    mov esp,ebp
+    29 00000032 5D                      pop ebp
+    30 00000033 C3                      ret
+    31                                  
+    32                                  global _start
+    33                                  _start:
+    34 00000034 E8C7FFFFFF              call ident_main
+    35 00000039 E816000000              call exit
+    36                                  
+    37                                  error:
+    38 0000003E BA06000000              mov edx, errlen
+    39 00000043 B9[00000000]            mov ecx, errmsg
+    40 00000048 BB01000000              mov ebx, 1
+    41 0000004D B804000000              mov eax, 4
+    42 00000052 CD80                    int 0x80
+    43                                  exit:
+    44 00000054 B801000000              mov eax, 1
+    45 00000059 BB00000000              mov ebx, 0
+    46 0000005E CD80                    int 80h
+    47                                  
