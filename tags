@@ -896,7 +896,7 @@ parserelexpr	unused/oldparser.c	/^link *parserelexpr(link *chain)$/;"	f
 parseshiftexpr	main.c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parseshiftexpr(link *start)$/;"	f
 parseshiftexpr	unused/oldparser.c	/^link *parseshiftexpr(link *chain)$/;"	f
-parsestat	main.c	/^char *parsestat(struct stat *stat)$/;"	f
+parsestat	main.c	/^char *parsestat(struct stat *stat, int nodecl)$/;"	f
 parsestats	main.c	/^char *parsestats(struct stat *stat)$/;"	f
 parsetypename	main.c	/^ctype parsetypename(link *start)$/;"	f
 parsetypename	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^expr *parsetypename(link *start)$/;"	f

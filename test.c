@@ -3,6 +3,6 @@
 
 int main()
 {
-  int x = 0;
-label:;
+  while(1)
+    int x = 0;
 }

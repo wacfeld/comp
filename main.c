@@ -5515,7 +5515,7 @@ int tokmatch(token *toks, int i, int dir, enum atom_type beg, enum atom_type end
 }
 
 // parses one statement, moves lo forward accordingly
-char *parsestat(struct stat *stat)
+char *parsestat(struct stat *stat, int nodecl)
 {
   int lo = stat->lo;
   int hi = stat->hi;
@@ -5625,7 +5625,7 @@ char *parsestat(struct stat *stat)
 
     // evaluate the next statement (the one that runs if the condition is true
     struct stat ifstat = {toks, match + 1, hi};
-    appmac(assem, parsestat(&ifstat));
+    appmac(assem, parsestat(&ifstat, 1));
     lo = ifstat.lo; // move over
 
     // jump past else clause (if else clause exists) if if clause executes
@@ -5640,7 +5640,7 @@ char *parsestat(struct stat *stat)
     {
       struct stat elsestat = {toks, lo+1, hi};
       // evaluate
-      appmac(assem, parsestat(&elsestat));
+      appmac(assem, parsestat(&elsestat, 1));
       lo = elsestat.lo; // move over
     }
 
@@ -5661,6 +5661,47 @@ char *parsestat(struct stat *stat)
   else if(tiskeyword(toks[lo], K_WHILE))
   {
     assert(tiskeyword(toks[lo+1], PARENOP));
+
+    /*
+       .lab1
+       [eval condition]
+       test eax, eax
+       jz .lab2
+       [statement]
+       jmp .lab1
+    */
+
+    char *lab1 = newloclab();
+    char *lab2 = newloclab();
+
+    // find matching paren
+    int match = tokmatch(toks, lo+1, 1, PARENOP, PARENCL);
+    
+    // parse expression between parens
+    expr *e = tokl2expr(toks, lo+2, match-1);
+    assert(e);
+    int esize = sizeoftype(e->ct);
+
+    // lab1, to jump back to at bottom of loop
+    vspmac(assem, "%s:\n", lab1);
+
+    appmac(assem, evalexpr(e));
+    appmac(assem, stack2reg(EAX, esize));
+    sdall(esize);
+    vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
+
+    // jump past loop if result is zero
+    vspmac(assem, "jz %s\n", lab2);
+    
+    // evaluate next statement
+    struct stat whilestat = {toks, match + 1, hi};
+    appmac(assem, parsestat(&whilestat, 1));
+    lo = whilestat.lo; // move over
+
+    // jump back to top
+    vspmac(assem, "jmp %s\n", lab1);
+    // where to jump when ending the loop
+    vspmac(assem, "%s:\n", lab2);
   }
 
   // do/while
@@ -5751,6 +5792,10 @@ char *parsestat(struct stat *stat)
   // penultimate: indoor (local) declaration
   else if(isdeclspec(toks[lo])) // decl spec -> declaration
   {
+    // strict C forbids mixing declarations with expressions, but it is not hard to implement anyway, so we allow it.
+    // however some cases (e.x. `if(1) int x;`) where it is not directly inside a block statement, this is not good, because block statements handle the deallocation of declarations, therefore they have to be disallowed there
+    assert(!nodecl);
+
     // find terminating semicolon, just to confirm that it exists
     // puts("hey");
     int end = findatom(toks, lo, 1, SEMICOLON);
@@ -5895,7 +5940,7 @@ char *parsestats(struct stat *stat)
 
   while(stat->lo <= stat->hi) // while there are tokens left in the given range
   {
-    appmac(assem, parsestat(stat));
+    appmac(assem, parsestat(stat, 0));
   }
 
   return assem;
