@@ -5599,7 +5599,7 @@ char *parsestat(struct stat *stat, int nodecl)
   // if
   else if(tiskeyword(toks[lo], K_IF))
   {
-    // assert(tiskeyword(toks[lo+1], PARENOP));
+    // assert(tisatom(toks[lo+1], PARENOP));
     assert(tisatom(toks[lo+1], PARENOP));
 
     // find matching paren
@@ -5652,7 +5652,7 @@ char *parsestat(struct stat *stat, int nodecl)
   // switch
   else if(tiskeyword(toks[lo], K_SWITCH))
   {
-    assert(tiskeyword(toks[lo+1], PARENOP));
+    assert(tisatom(toks[lo+1], PARENOP));
   }
 
 
@@ -5660,7 +5660,7 @@ char *parsestat(struct stat *stat, int nodecl)
   // while
   else if(tiskeyword(toks[lo], K_WHILE))
   {
-    assert(tiskeyword(toks[lo+1], PARENOP));
+    assert(tisatom(toks[lo+1], PARENOP));
 
     /*
        .lab1
@@ -5713,7 +5713,7 @@ char *parsestat(struct stat *stat, int nodecl)
   // for
   else if(tiskeyword(toks[lo], K_FOR))
   {
-    assert(tiskeyword(toks[lo+1], PARENOP));
+    assert(tisatom(toks[lo+1], PARENOP));
   }
 
   // jump statements
