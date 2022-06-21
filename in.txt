@@ -4,11 +4,9 @@
 
 int main()
 {
-  int x;
-  
-  goto thing;
-thing:
-  x++;
-
-  goto thing;
+  int x = 1;
+  if(x)
+  {
+    int y = 6;
+  }
 }

@@ -13,7 +13,8 @@
 - wide characters
 - multiple files (only one file with main() in it)
 - implicit function declaration (calling a function before it's declared)
-- `#define`, `#include`, `#if`, etc.
+- preprocessor directives (`#define`, `#include`, `#if`, etc.)
+- string literals
 - string literal concatenation ("hello " "world" -> "hello world")
 - anything introduced after C90 (variable length arrays, long long int, etc.)
 

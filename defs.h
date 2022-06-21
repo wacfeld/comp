@@ -742,7 +742,7 @@ char *stack2frame(char *reg, decl *d)  ;
 char *reg2stack(enum gpreg reg, int size);
 
 void pushnull();
-void remtonull();
+int remtonull();
 
 void helpputexpr(expr *e, int space);
 

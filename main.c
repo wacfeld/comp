@@ -5398,15 +5398,23 @@ void pushnull()
 }
 
 // delete everything up to and including next NULL separator on scope stack
-void remtonull()
+// return the sum of the sizes of the popped decls
+int remtonull()
 {
   decl *d;
+  int size = 0;
 
   // pop until NULL is popped
   do
   {
     pop(scope, &d);
+    if(d)
+    {
+      size += sizeoftype(d->ct);
+    }
   } while(d != NULL);
+
+  return size;
 }
 
 // push declaration to stack, search until separator for identifier collisions
@@ -5553,7 +5561,9 @@ char *parsestat(struct stat *stat)
     appmac(assem, newassem);
 
     // roll back scope
-    remtonull();
+    int size = remtonull();
+    // deallocate all of them
+    sdall(size);
 
     // TODO deallocate on real stack as well
 
@@ -5664,7 +5674,6 @@ char *parsestat(struct stat *stat)
   {
     assert(tiskeyword(toks[lo+1], PARENOP));
   }
-
 
   // jump statements
   // goto
