@@ -5,6 +5,9 @@
 int main()
 {
   int i;
-  ;;;;
   int x;
+  for(i = 0, x=1; i < 5; i++)
+  {
+    x = x + i;
+  }
 }

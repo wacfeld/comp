@@ -5756,9 +5756,62 @@ char *parsestat(struct stat *stat, int nodecl)
 
     // parse & evaluate first expression
     // only if not empty
-    // if(pstart+1 < 
-    // LEH
-    expr *e1 = tokl2expr(toks, pstart+1, 
+    if(pstart+1 <= sc1-1)
+    {
+      expr *e1 = tokl2expr(toks, pstart+1, sc1-1);
+      int esize = sizeoftype(e1->ct);
+      appmac(assem, evalexpr(e1));
+
+      // discard result
+      sdall(esize);
+    }
+
+    char *lab1 = newloclab(); // start of loop
+    char *lab2 = newloclab(); // right before expression 3
+    char *lab3 = newloclab(); // end
+
+    vspmac(assem, "%s:\n", lab1);
+
+    // if second expression nonempty, evaluate
+    if(sc1+1 <= sc2-1)
+    {
+      // eval condition
+      expr *e2 = tokl2expr(toks, sc1+1, sc2-1);
+      int esize = sizeoftype(e2->ct);
+      appmac(assem, evalexpr(e2));
+
+      // test condition
+      appmac(assem, stack2reg(EAX, esize));
+      sdall(esize);
+      vspmac(assem, "test %s, %s\n", regstr(EAX, esize), regstr(EAX, esize));
+
+      // jump to end if zero
+      vspmac(assem, "jz %s\n", lab3);
+    }
+    // otherwise condition is always true, don't test anything
+    
+    // eval enclosed statement
+    struct stat forstat = {toks, pend+1, hi};
+    appmac(assem, parsestat(&forstat, 1));
+    lo = forstat.lo; // move over
+
+    // evaluate 3rd expression
+    vspmac(assem, "%s:\n", lab2);
+
+    if(sc2+1 <= pend-1)
+    {
+      expr *e3 = tokl2expr(toks, sc2+1, pend-1);
+      int esize = sizeoftype(e3->ct);
+      appmac(assem, evalexpr(e3));
+
+      // discard result
+      sdall(esize);
+    }
+
+    // jump back to top
+    vspmac(assem, "jmp %s\n", lab1);
+    // where to jump when ending the loop
+    vspmac(assem, "%s:\n", lab3);
   }
 
   // jump statements

@@ -11,25 +11,105 @@
     11 00000001 89E5                    mov ebp,esp
     12 00000003 83EC04                  sub esp, 4
     13 00000006 83EC04                  sub esp, 4
-    14 00000009 83C408                  add esp, 8
-    15                                  glob0:
-    16 0000000C 89EC                    mov esp,ebp
-    17 0000000E 5D                      pop ebp
-    18 0000000F C3                      ret
-    19                                  
-    20                                  global _start
-    21                                  _start:
-    22 00000010 E8EBFFFFFF              call ident_main
-    23 00000015 E816000000              call exit
-    24                                  
-    25                                  error:
-    26 0000001A BA06000000              mov edx, errlen
-    27 0000001F B9[00000000]            mov ecx, errmsg
-    28 00000024 BB01000000              mov ebx, 1
-    29 00000029 B804000000              mov eax, 4
-    30 0000002E CD80                    int 0x80
-    31                                  exit:
-    32 00000030 B801000000              mov eax, 1
-    33 00000035 BB00000000              mov ebx, 0
-    34 0000003A CD80                    int 80h
-    35                                  
+    14 00000009 83EC04                  sub esp, 4
+    15 0000000C 8D45FC                  lea eax, [ebp-4]
+    16 0000000F 890424                  mov dword [esp], eax
+    17 00000012 83EC04                  sub esp, 4
+    18 00000015 C7042400000000          mov dword [esp], 00000000000000000000000000000000b
+    19 0000001C 8B1C24                  mov EBX, dword [esp]
+    20 0000001F 83C404                  add esp, 4
+    21 00000022 8B0424                  mov eax, dword [esp]
+    22 00000025 83C404                  add esp, 4
+    23 00000028 8918                    mov dword [eax], EBX
+    24 0000002A 83EC04                  sub esp, 4
+    25 0000002D 891C24                  mov dword [esp], EBX
+    26 00000030 83C404                  add esp, 4
+    27 00000033 83EC04                  sub esp, 4
+    28 00000036 8D45F8                  lea eax, [ebp-8]
+    29 00000039 890424                  mov dword [esp], eax
+    30 0000003C 83EC04                  sub esp, 4
+    31 0000003F C7042401000000          mov dword [esp], 00000000000000000000000000000001b
+    32 00000046 8B1C24                  mov EBX, dword [esp]
+    33 00000049 83C404                  add esp, 4
+    34 0000004C 8B0424                  mov eax, dword [esp]
+    35 0000004F 83C404                  add esp, 4
+    36 00000052 8918                    mov dword [eax], EBX
+    37 00000054 83EC04                  sub esp, 4
+    38 00000057 891C24                  mov dword [esp], EBX
+    39 0000005A 83C404                  add esp, 4
+    40                                  .lab0:
+    41 0000005D 83EC04                  sub esp, 4
+    42 00000060 8B45FC                  mov EAX, dword [ebp-4]
+    43 00000063 890424                  mov dword [esp], EAX
+    44 00000066 83EC04                  sub esp, 4
+    45 00000069 C7042405000000          mov dword [esp], 00000000000000000000000000000101b
+    46 00000070 8B1C24                  mov EBX, dword [esp]
+    47 00000073 83C404                  add esp, 4
+    48 00000076 8B0424                  mov EAX, dword [esp]
+    49 00000079 83C404                  add esp, 4
+    50 0000007C 83EC04                  sub esp, 4
+    51 0000007F 39D8                    cmp EAX, EBX
+    52 00000081 7C09                    jl .lab3
+    53 00000083 C7042400000000          mov dword [esp], 0
+    54 0000008A EB07                    jmp .lab4
+    55 0000008C C7042401000000          .lab3: mov dword [esp], 1
+    56                                  .lab4:
+    57 00000093 8B0424                  mov EAX, dword [esp]
+    58 00000096 83C404                  add esp, 4
+    59 00000099 85C0                    test EAX, EAX
+    60 0000009B 745C                    jz .lab2
+    61 0000009D 83EC04                  sub esp, 4
+    62 000000A0 8D45F8                  lea eax, [ebp-8]
+    63 000000A3 890424                  mov dword [esp], eax
+    64 000000A6 83EC04                  sub esp, 4
+    65 000000A9 8B45F8                  mov EAX, dword [ebp-8]
+    66 000000AC 890424                  mov dword [esp], EAX
+    67 000000AF 83EC04                  sub esp, 4
+    68 000000B2 8B45FC                  mov EAX, dword [ebp-4]
+    69 000000B5 890424                  mov dword [esp], EAX
+    70 000000B8 8B0424                  mov EAX, dword [esp]
+    71 000000BB 83C404                  add esp, 4
+    72 000000BE 010424                  add dword [esp], EAX
+    73 000000C1 8B1C24                  mov EBX, dword [esp]
+    74 000000C4 83C404                  add esp, 4
+    75 000000C7 8B0424                  mov eax, dword [esp]
+    76 000000CA 83C404                  add esp, 4
+    77 000000CD 8918                    mov dword [eax], EBX
+    78 000000CF 83EC04                  sub esp, 4
+    79 000000D2 891C24                  mov dword [esp], EBX
+    80 000000D5 83C404                  add esp, 4
+    81                                  .lab1:
+    82 000000D8 83EC04                  sub esp, 4
+    83 000000DB 8D45FC                  lea eax, [ebp-4]
+    84 000000DE 890424                  mov dword [esp], eax
+    85 000000E1 8B0424                  mov EAX, dword [esp]
+    86 000000E4 83C404                  add esp, 4
+    87 000000E7 83EC04                  sub esp, 4
+    88 000000EA 8B18                    mov EBX, dword [EAX]
+    89 000000EC 891C24                  mov dword [esp], EBX
+    90 000000EF FF00                    inc dword [EAX]
+    91 000000F1 83C404                  add esp, 4
+    92 000000F4 E964FFFFFF              jmp .lab0
+    93                                  .lab2:
+    94 000000F9 83C408                  add esp, 8
+    95                                  glob0:
+    96 000000FC 89EC                    mov esp,ebp
+    97 000000FE 5D                      pop ebp
+    98 000000FF C3                      ret
+    99                                  
+   100                                  global _start
+   101                                  _start:
+   102 00000100 E8FBFEFFFF              call ident_main
+   103 00000105 E816000000              call exit
+   104                                  
+   105                                  error:
+   106 0000010A BA06000000              mov edx, errlen
+   107 0000010F B9[00000000]            mov ecx, errmsg
+   108 00000114 BB01000000              mov ebx, 1
+   109 00000119 B804000000              mov eax, 4
+   110 0000011E CD80                    int 0x80
+   111                                  exit:
+   112 00000120 B801000000              mov eax, 1
+   113 00000125 BB00000000              mov ebx, 0
+   114 0000012A CD80                    int 80h
+   115                                  
