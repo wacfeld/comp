@@ -59,6 +59,9 @@ void trace()
 // gets initialized in proctoplevel
 stack *scope = NULL;
 
+stack *contstack = NULL;
+stack *breakstack = NULL;
+
 // 1 when we just entered a fundef's block statement, to indicate that a separator should not be created
 int startfundef = 0;
 ctype funret = NULL;
@@ -5140,6 +5143,9 @@ void proctoplevel(token *toks)
   // create a stack of decls to be in scope
   scope = makestack(sizeof(decl *));
 
+  contstack = makestack(sizeof(char *));
+  breakstack = makestack(sizeof(char *));
+
   // NULL is a scope separator. it tells us where blocks start, which allows inner identifiers to cover 'hide' outer ones
   // this initial NULL is there for convenience
   pushnull();
@@ -5693,10 +5699,18 @@ char *parsestat(struct stat *stat, int nodecl)
     // jump past loop if result is zero
     vspmac(assem, "jz %s\n", lab2);
     
+    // push continue and break targets to stacks
+    push(contstack, &lab1);
+    push(breakstack, &lab2);
+
     // evaluate next statement
     struct stat whilestat = {toks, match + 1, hi};
     appmac(assem, parsestat(&whilestat, 1));
     lo = whilestat.lo; // move over
+
+    // pop continue and break targets
+    pop(contstack, NULL);
+    pop(breakstack, NULL);
 
     // jump back to top
     vspmac(assem, "jmp %s\n", lab1);
@@ -5709,14 +5723,23 @@ char *parsestat(struct stat *stat, int nodecl)
   {
     // do stat while(expr);
     char *lab1 = newloclab();
+    char *lab2 = newloclab(); // needed for continue keyword
+    char *lab3 = newloclab(); // needed for break keyword
 
     // jump here when test passes
     vspmac(assem, "%s:\n", lab1);
+
+    // push continue and break statements
+    push(contstack, &lab2);
+    push(breakstack, &lab3);
 
     // evaluate next statement
     struct stat dostat = {toks, lo+1, hi};
     appmac(assem, parsestat(&dostat, 1));
     lo = dostat.lo; // move over
+
+    pop(contstack, NULL);
+    pop(contstack, NULL);
     
     // check `while(expr);` format
     assert(tiskeyword(toks[lo], K_WHILE));
@@ -5728,6 +5751,8 @@ char *parsestat(struct stat *stat, int nodecl)
     expr *e = tokl2expr(toks, lo+2, match-1);
     assert(e);
     int esize = sizeoftype(e->ct);
+
+    vspmac(assem, "%s:\n", lab2);
     
     // evaluate expr
     appmac(assem, evalexpr(e));
@@ -5739,6 +5764,7 @@ char *parsestat(struct stat *stat, int nodecl)
     // jump back if nonzero
     vspmac(assem, "jnz %s\n", lab1);
     // otherwise keep going (no other jumps, must execute at least once)
+    vspmac(assem, "%s:\n", lab3);
   }
 
   // for
@@ -5789,11 +5815,18 @@ char *parsestat(struct stat *stat, int nodecl)
       vspmac(assem, "jz %s\n", lab3);
     }
     // otherwise condition is always true, don't test anything
+
+    // push continue and break statements
+    push(breakstack, &lab3);
+    push(contstack, &lab2);
     
     // eval enclosed statement
     struct stat forstat = {toks, pend+1, hi};
     appmac(assem, parsestat(&forstat, 1));
     lo = forstat.lo; // move over
+
+    pop(breakstack, NULL);
+    pop(contstack, NULL);
 
     // evaluate 3rd expression
     vspmac(assem, "%s:\n", lab2);
