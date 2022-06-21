@@ -5978,7 +5978,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
       pushdecl(d);
 
       // allocate on stack (keep esp at top of stack)
-      appmac(assem, stackalloc(sizeoftype(d->ct)));
+      // appmac(assem, stackalloc(sizeoftype(d->ct)));
       // sall(sizeoftype(d->ct));
 
       // figure out where it goes on the real stack
