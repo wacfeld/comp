@@ -4,7 +4,7 @@
 
 int main()
 {
-nowhere:
+  int x[5-6];
 }
 
 

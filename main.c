@@ -1915,10 +1915,12 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
         tmod->arr.len = -1;
       else // otherwise calculate type now
       {
-        expr *e = tokl2expr(toks, i+1, i+1);
-        assert(e->type == PRIM_E); // for now only trivial expressions allowed
+        expr *e = tokl2expr(toks, i+1, hi-1);
         assert(isintegral(e->ct));
-        tmod->arr.len = e->dat;
+        sdword len = evalconstintexpr(e);
+        assert(len >= 1);
+        putd(len);
+        tmod->arr.len = len;
       }
       
       // tmod->arr.len = -1; // signify incomplete type for now
@@ -4796,20 +4798,20 @@ expr *parseprimexpr(link *start)
 
 //{{{1 constant expressions
 
-// special case, for our limited implementation: all integral constants must be a single primary expression
-dword evalsimpleconstintexpr(expr *e)
-{
-  assert(isintegral(e->ct)); // i.e. INT_O or CHAR_O
+// // special case, for our limited implementation: all integral constants must be a single primary expression
+// dword evalsimpleconstintexpr(expr *e)
+// {
+//   assert(isintegral(e->ct)); // i.e. INT_O or CHAR_O
 
-  dword dat = e->dat;
+//   dword dat = e->dat;
 
-  // sign extension has already been performed automatically if necessary
+//   // sign extension has already been performed automatically if necessary
 
-  // get size of the integral type it is (short, long, char, etc.)
-  int size = sizeoftype(e->ct);
+//   // get size of the integral type it is (short, long, char, etc.)
+//   int size = sizeoftype(e->ct);
   
-  return dat;
-}
+//   return dat;
+// }
 
 // limited support for constant integral expressions (not standard compliant)
 // all constants are 4 byte ints, and sign does not matter
@@ -4847,16 +4849,16 @@ dword evalconstintexpr(expr *e)
   else if(ot == DIV_O)
     return ecie(a[0]) / ecie(a[1]);
   else if(ot == MOD_O)
-    return ecie(a[0]) % ecie(a[1]);
+    return ((sdword) ecie(a[0])) % (sdword) ecie(a[1]);
 
   else if(ot == LT_O)
-    return ecie(a[0]) < ecie(a[1]);
+    return ((sdword) ecie(a[0])) < (sdword) ecie(a[1]);
   else if(ot == GT_O)
-    return ecie(a[0]) > ecie(a[1]);
+    return ((sdword) ecie(a[0])) > (sdword) ecie(a[1]);
   else if(ot == LEQ_O)
-    return ecie(a[0]) <= ecie(a[1]);
+    return ((sdword) ecie(a[0])) <= (sdword) ecie(a[1]);
   else if(ot == GEQ_O)
-    return ecie(a[0]) >= ecie(a[1]);
+    return ((sdword) ecie(a[0])) >= (sdword) ecie(a[1]);
   else if(ot == EQEQ_O)
     return ecie(a[0]) == ecie(a[1]);
   else if(ot == NEQ_O)
@@ -7339,7 +7341,9 @@ int main()
     link *chain = tokl2ll((token *)trans_unit->cont, -1);
     
     expr *e = parseexpr(chain);
-    putexpr(e);
+    dword d = evalconstintexpr(e);
+    // putexpr(e);
+    printf("%d\n", d);
   }
 
 }
