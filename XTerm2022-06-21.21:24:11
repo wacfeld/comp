@@ -1,0 +1,1066 @@
+
+error:
+mov edx, errlen
+mov ecx, errmsg
+mov ebx, 1
+mov eax, 4
+int 0x80
+exit:
+mov eax, 1
+mov ebx, 0
+int 80h
+
+wacfeld@susasus ~/D/m/comp (master)> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+wacfeld@susasus ~/D/m/comp (master)> m in
+./main < in.txt
+section .data
+glob0 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
+errmsg db "error", 10
+errlen equ $ - errmsg
+
+section .bss
+ident_s resb 4
+
+section .text
+
+ident_main:
+push ebp
+mov ebp,esp
+sub esp, 1
+sub esp, 4
+mov dword [esp], ident_s
+sub esp, 4
+mov dword [esp], glob0
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+sub esp, 4
+lea eax, [ebp-1]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ident_s]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000000b
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 1
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 1
+mov AL, byte [eax]
+mov byte [esp], AL
+mov BL, byte [esp]
+add esp, 1
+mov eax, dword [esp]
+add esp, 4
+mov byte [eax], BL
+sub esp, 1
+mov byte [esp], BL
+add esp, 1
+glob1:
+mov esp,ebp
+pop ebp
+ret
+
+global _start
+_start:
+call ident_main
+call exit
+
+error:
+mov edx, errlen
+mov ecx, errmsg
+mov ebx, 1
+mov eax, 4
+int 0x80
+exit:
+mov eax, 1
+mov ebx, 0
+int 80h
+
+wacfeld@susasus ~/D/m/comp (master)> m comp
+make -C out/ comp
+make[1]: Entering directory '/home/wacfeld/Dropbox/matrix/comp/out'
+../main < ../in.txt > main.asm
+make
+make[2]: Entering directory '/home/wacfeld/Dropbox/matrix/comp/out'
+nasm -f elf -g -F dwarf main.asm -l main.lst
+ld -m elf_i386 -o main main.o
+make[2]: Leaving directory '/home/wacfeld/Dropbox/matrix/comp/out'
+make[1]: Leaving directory '/home/wacfeld/Dropbox/matrix/comp/out'
+xterm -e "cd out; gdb main"
+wacfeld@susasus ~/D/m/comp (master)> gist
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+        modified:   defs.h
+        modified:   gmon.out
+        modified:   in.txt
+        modified:   main.c
+        modified:   out/main.asm
+        modified:   out/main.lst
+        modified:   tags
+        modified:   test
+        modified:   test.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+add? y
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+        modified:   defs.h
+        modified:   gmon.out
+        modified:   in.txt
+        modified:   main.c
+        modified:   out/main.asm
+        modified:   out/main.lst
+        modified:   tags
+        modified:   test
+        modified:   test.c
+
+10afcfb toplevel const int init now works
+7d36af6 fixed evalconstintexpr()
+d297a1d evalconstintexpr()y
+3eca38a made labels absorb the following statement like they're supposed to (necessary for switch-case)
+39b29c8 fixed bug
+6a77986 made startfundef argument, made stack frame fixed size, done break/continue
+b39a44e added break and continue stacks
+ebe2e9d done for loop
+e92c000 working on for loop
+693be17 do-while loop done
+commit? y
+read> STRING_O char * done
+[master f3d8efe] STRING_O char * done
+ 10 files changed, 155 insertions(+), 146 deletions(-)
+ rewrite out/main.lst (97%)
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+push? y
+Enumerating objects: 25, done.
+Counting objects: 100% (25/25), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 5.62 KiB | 5.62 MiB/s, done.
+Total 13 (delta 10), reused 0 (delta 0)
+remote: Resolving deltas: 100% (10/10), completed with 10 local objects.
+To https://github.com/wacfeld/comp.git
+   10afcfb..f3d8efe  master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+wacfeld@susasus ~/D/m/comp (master)> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+wacfeld@susasus ~/D/m/comp (master)> make in
+./main < in.txt
+ 
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+ 
+wacfeld@susasus ~/D/m/comp (master)> make in
+./main < in.txt
+ 
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hell/*o world";
+  c = s[0];
+}
+
+
+ 
+wacfeld@susasus ~/D/m/comp (master)> make in
+./main < in.txt
+ 
+
+
+char *s;
+int main()
+{
+  char c;
+  s =  
+wacfeld@susasus ~/D/m/comp (master)> make in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> make in
+./main < in.txt
+ 
+
+ 
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+wacfeld@susasus ~/D/m/comp (master)> make in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> make in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> make in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> make in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+wacfeld@susasus ~/D/m/comp (master)> m in
+./main < in.txt
+main: main.c:1041: check_stray: Assertion `strchr(banned, src[i]) == NULL || quot[i]' failed.
+Aborted (core dumped)
+make: *** [Makefile:16: in] Error 134
+wacfeld@susasus ~/D/m/comp (master) [2]> m in
+./main < in.txt
+section .data
+glob0 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
+errmsg db "error", 10
+errlen equ $ - errmsg
+
+section .bss
+ident_s resb 4
+
+section .text
+
+ident_main:
+push ebp
+mov ebp,esp
+sub esp, 1
+sub esp, 4
+mov dword [esp], ident_s
+sub esp, 4
+mov dword [esp], glob0
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+sub esp, 4
+lea eax, [ebp-1]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ident_s]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000000b
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 1
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 1
+mov AL, byte [eax]
+mov byte [esp], AL
+mov BL, byte [esp]
+add esp, 1
+mov eax, dword [esp]
+add esp, 4
+mov byte [eax], BL
+sub esp, 1
+mov byte [esp], BL
+add esp, 1
+glob1:
+mov esp,ebp
+pop ebp
+ret
+
+global _start
+_start:
+call ident_main
+call exit
+
+error:
+mov edx, errlen
+mov ecx, errmsg
+mov ebx, 1
+mov eax, 4
+int 0x80
+exit:
+mov eax, 1
+mov ebx, 0
+int 80h
+
+wacfeld@susasus ~/D/m/comp (master)> gist
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   in.txt
+        modified:   main.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+add? 
+wacfeld@susasus ~/D/m/comp (master) [1]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+main.c: In function ‘main’:
+main.c:7338:10: error: ‘c’ undeclared (first use in this function)
+ 7338 |   while((c = getchar()) != EOF) // read in src
+      |          ^
+main.c:7338:10: note: each undeclared identifier is reported only once for each function it appears in
+main.c:7340:5: error: ‘src’ undeclared (first use in this function)
+ 7340 |     src[i++] = c;
+      |     ^~~
+main.c:7340:9: error: ‘i’ undeclared (first use in this function)
+ 7340 |     src[i++] = c;
+      |         ^
+In file included from main.c:2:
+main.c:7341:17: error: ‘srcsize’ undeclared (first use in this function); did you mean ‘resize’?
+ 7341 |     resize(src, srcsize, i);
+      |                 ^~~~~~~
+defs.h:37:33: note: in definition of macro ‘resize’
+   37 | #define resize(p, s, c) if(c >= s) {s *= 2; p = realloc(p, s*sizeof(p[0]));}
+      |                                 ^
+main.c:7367:20: error: ‘esc’ undeclared (first use in this function); did you mean ‘unesc’?
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                    ^~~
+      |                    unesc
+main.c:7367:25: error: ‘quot’ undeclared (first use in this function)
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                         ^~~~
+make: *** [Makefile:2: all] Error 1
+wacfeld@susasus ~/D/m/comp (master) [2]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+main.c: In function ‘main’:
+main.c:7338:10: error: ‘c’ undeclared (first use in this function)
+ 7338 |   while((c = getchar()) != EOF) // read in src
+      |          ^
+main.c:7338:10: note: each undeclared identifier is reported only once for each function it appears in
+main.c:7367:20: error: ‘esc’ undeclared (first use in this function)
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                    ^~~
+main.c:7367:25: error: ‘quot’ undeclared (first use in this function)
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                         ^~~~
+make: *** [Makefile:2: all] Error 1
+wacfeld@susasus ~/D/m/comp (master) [2]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+main.c: In function ‘main’:
+main.c:7367:20: error: ‘esc’ undeclared (first use in this function)
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                    ^~~
+main.c:7367:20: note: each undeclared identifier is reported only once for each function it appears in
+main.c:7367:25: error: ‘quot’ undeclared (first use in this function)
+ 7367 |   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+      |                         ^~~~
+make: *** [Makefile:2: all] Error 1
+wacfeld@susasus ~/D/m/comp (master) [2]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+wacfeld@susasus ~/D/m/comp (master)> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+main.c: In function ‘rem_comments’:
+main.c:311:10: error: ‘c’ undeclared (first use in this function)
+  311 |   while((c = mygetchar()) != EOF) {
+      |          ^
+main.c:311:10: note: each undeclared identifier is reported only once for each function it appears in
+main.c:317:20: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+  317 |             return 0;
+      |                    ^
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c:326:22: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+  326 |               return 0;
+      |                      ^
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c:337:20: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+  337 |             return 0;
+      |                    ^
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c:355:20: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+  355 |             return 0;
+      |                    ^
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c:365:16: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+  365 |         return 0;
+      |                ^
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c: In function ‘main’:
+main.c:7439:3: error: too many arguments to function ‘rem_comments’
+ 7439 |   rem_comments(src, esc, quot); // replace multiline comments with single space
+      |   ^~~~~~~~~~~~
+main.c:307:6: note: declared here
+  307 | void rem_comments(void)
+      |      ^~~~~~~~~~~~
+main.c: In function ‘ungetchar’:
+main.c:304:1: warning: control reaches end of non-void function [-Wreturn-type]
+  304 | }
+      | ^
+make: *** [Makefile:2: all] Error 1
+wacfeld@susasus ~/D/m/comp (master) [2]> make
+cc main.c datastruct.c -o main -g -pg -Wreturn-type
+wacfeld@susasus ~/D/m/comp (master)> mv fixedlithier.c  preproc.c
+wacfeld@susasus ~/D/m/comp (master)> gist
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    fixedlithier.c
+        modified:   in.txt
+        modified:   main.c
+        modified:   tags
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        preproc.c
+
+no changes added to commit (use "git add" and/or "git commit -a")
+add? y
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   in.txt
+        modified:   main.c
+        renamed:    fixedlithier.c -> preproc.c
+        modified:   tags
+
+f3d8efe STRING_O char * done
+10afcfb toplevel const int init now works
+7d36af6 fixed evalconstintexpr()
+d297a1d evalconstintexpr()y
+3eca38a made labels absorb the following statement like they're supposed to (necessary for switch-case)
+39b29c8 fixed bug
+6a77986 made startfundef argument, made stack frame fixed size, done break/continue
+b39a44e added break and continue stacks
+ebe2e9d done for loop
+e92c000 working on for loop
+commit? y
+read> preproc.c
+[master 30699ba] preproc.c
+ 4 files changed, 11 insertions(+), 5 deletions(-)
+ rename fixedlithier.c => preproc.c (96%)
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+push? y
+Enumerating objects: 10, done.
+Counting objects: 100% (10/10), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 1002 bytes | 1002.00 KiB/s, done.
+Total 6 (delta 4), reused 0 (delta 0)
+remote: Resolving deltas: 100% (4/4), completed with 4 local objects.
+To https://github.com/wacfeld/comp.git
+   f3d8efe..30699ba  master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+wacfeld@susasus ~/D/m/comp (master)> cc preproc.c
+wacfeld@susasus ~/D/m/comp (master)> ./a.out
+hello /* hi */
+hello 
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt 
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '"';
+  char c;
+  s = ""hello world";
+  c = s[0];
+}
+
+
+/*
+#include <stdio.h>
+
+
+int main()
+{
+  int zzz = (25*26 + 25)*26 + 25;
+  printf(""%dn", zzz);
+  
+  int cur = 0;
+  while(cur <= zzz)
+  {
+    int d1 = cur /26 /26;
+    int d2 = cur /26 %26;
+    int d3 = cur %26;
+
+    printf(""%c%c%cn", d1+'A', d2+'A', d3+'A');
+    
+    cur++;
+  }
+}
+
+*/
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '"';
+  char c;
+  s = ""hello world";
+  c = s[0];
+}
+
+
+/*
+#include <stdio.h>
+
+
+int main()
+{
+  int zzz = (25*26 + 25)*26 + 25;
+  printf(""%dn", zzz);
+  
+  int cur = 0;
+  while(cur <= zzz)
+  {
+    int d1 = cur /26 /26;
+    int d2 = cur /26 %26;
+    int d3 = cur %26;
+
+    printf(""%c%c%cn", d1+'A', d2+'A', d3+'A');
+    
+    cur++;
+  }
+}
+
+*/
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\'';
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  "'"";
+  char c;
+  s = "hello world"";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> cc preproc.c
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  "'";
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> cc preproc.c
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '"';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\'';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\n\\';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\n\';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+/*
+#include <stdio.h>
+
+
+int main()
+{
+  int zzz = (25*26 + 25)*26 + 25;
+  printf("%dn", zzz);
+  
+  int cur = 0;
+  while(cur <= zzz)
+  {
+    int d1 = cur /26 /26;
+    int d2 = cur /26 %26;
+    int d3 = cur %26;
+
+    printf("%c%c%cn", d1+'A', d2+'A', d3+'A');
+    
+    cur++;
+  }
+}
+
+*/
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\n\\';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  '\n\\';
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  "\"";
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  "\"\";
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+/*
+#include <stdio.h>
+
+
+int main()
+{
+  int zzz = (25*26 + 25)*26 + 25;
+  printf("%dn", zzz);
+  
+  int cur = 0;
+  while(cur <= zzz)
+  {
+    int d1 = cur /26 /26;
+    int d2 = cur /26 %26;
+    int d3 = cur %26;
+
+    printf("%c%c%cn", d1+'A', d2+'A', d3+'A');
+    
+    cur++;
+  }
+}
+
+*/
+wacfeld@susasus ~/D/m/comp (master)> ./a.out < in.txt
+
+
+
+
+char *s;
+int main()
+{
+  "\"\\";
+  char c;
+  s = "hello world";
+  c = s[0];
+}
+
+
+
+wacfeld@susasus ~/D/m/comp (master)> gist
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   in.txt
+        modified:   preproc.c
+        modified:   tags
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        xterm.2022.06.21.21.23.16.xhtml
+
+no changes added to commit (use "git add" and/or "git commit -a")
+add? y
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   in.txt
+        modified:   preproc.c
+        modified:   tags
+        new file:   xterm.2022.06.21.21.23.16.xhtml
+
+30699ba preproc.c
+f3d8efe STRING_O char * done
+10afcfb toplevel const int init now works
+7d36af6 fixed evalconstintexpr()
+d297a1d evalconstintexpr()y
+3eca38a made labels absorb the following statement like they're supposed to (necessary for switch-case)
+39b29c8 fixed bug
+6a77986 made startfundef argument, made stack frame fixed size, done break/continue
+b39a44e added break and continue stacks
+ebe2e9d done for loop
+commit? y
+read> fixed bug in preproc
+wacfeld@susasus ~/D/m/comp (master) [1]> cat xterm.2022.06.21.21.23.16.xhtml 
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' lang='en' xml:lang='en'>
+ <head>
+  <meta name='generator' content='XTerm(353)'/>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+  <link rel='Stylesheet' type='text/css' href='xterm.css'/>
+  <title>Xterm</title>
+  <style type='text/css'>
+  body, pre { margin: 0 }
+  #vt100 {
+    float: left;
+    font-size: 12pt;
+    border: 0px solid rgb(0.00%, 0.00%, 0.00%);
+    padding: 2px;
+    background: rgb(0.00%, 0.00%, 0.00%)
+  }
+  .ul { text-decoration: underline }
+  .bd { font-weight: bold }
+  .it { font-style: italic }
+  .st { text-decoration: line-through }
+  .lu { text-decoration: line-through underline }
+  </style>
+ </head>
+ <body>
+  <div id='vt100'>
+   <pre><span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                        
+                                                                                                               </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(32.94%, 98.82%, 32.94%); background: rgb(0.00%, 0.00%, 0.00%)'>wacfeld</span><span class=' ev ' style='color: rgb(
+100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>@susasus </span><span class=' ev ' style='color: rgb(0.00%, 93.33%, 0.00%); backgroun
+d: rgb(0.00%, 0.00%, 0.00%)'>~/D/m/comp</span><span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'> (
+master)&gt; </span><span class=' ev ' style='color: rgb(0.00%, 37.25%, 84.31%); background: rgb(0.00%, 0.00%, 0.00%)'>./a.out</span><span class=' ev ' 
+style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'> </span><span class=' ev ' style='color: rgb(0.00%, 68.63%, 100.00%
+); background: rgb(0.00%, 0.00%, 0.00%)'>&lt;</span><span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00
+%)'> </span><span class=' ev ' style='color: rgb(0.00%, 68.63%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>in.txt</span><span class=' ev ' style='
+color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                                          
+                        </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>char *s;                                        
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>int main()                                      
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>{                                               
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  '\n\';                                        
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  char c;                                       
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  s = "hello world";                            
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  c = s[0];                                     
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>}                                               
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>/*                                              
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>#include &lt;stdio.h&gt;                        
+                                                                                                             </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>int main()                                      
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>{                                               
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  int zzz = (25*26 + 25)*26 + 25;               
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  printf("%dn", zzz);                           
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  int cur = 0;                                  
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  while(cur &lt;= zzz)                          
+                                                                                                          </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  {                                             
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>    int d1 = cur /26 /26;                       
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>    int d2 = cur /26 %26;                       
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>    int d3 = cur %26;                           
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>    printf("%c%c%cn", d1+'A', d2+'A', d3+'A');  
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>    cur++;                                      
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>  }                                             
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>}                                               
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                
+                                                                                                       </span>
+<span class=' od ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>*/                                              
+                                                                                                       </span>
+<span class=' ev ' style='color: rgb(32.94%, 98.82%, 32.94%); background: rgb(0.00%, 0.00%, 0.00%)'>wacfeld</span><span class=' ev ' style='color: rgb(
+100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>@susasus </span><span class=' ev ' style='color: rgb(0.00%, 93.33%, 0.00%); backgroun
+d: rgb(0.00%, 0.00%, 0.00%)'>~/D/m/comp</span><span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'> (
+master)&gt; </span><span class=' ev ' style='color: rgb(0.00%, 37.25%, 84.31%); background: rgb(0.00%, 0.00%, 0.00%)'>./a.out</span><span class=' ev ' 
+style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'> </span><span class=' ev ' style='color: rgb(0.00%, 68.63%, 100.00%
+); background: rgb(0.00%, 0.00%, 0.00%)'>&lt;</span><span class=' ev ' style='color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00
+%)'> </span><span class=' ev ' style='color: rgb(0.00%, 68.63%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>in.txt</span><span class=' ev ' style='
+color: rgb(100.00%, 100.00%, 100.00%); background: rgb(0.00%, 0.00%, 0.00%)'>                                                                          
+                        </span>
+</pre>
+  </div>
+ </body>
+</html>
+wacfeld@susasus ~/D/m/comp (master)> 
