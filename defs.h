@@ -579,7 +579,7 @@ struct expr
   // token *tok; // probably only for constants // temporary solution, may need more general/specific way to encode the relevant data
 
   dword dat; // 32 bits of data, for compile-time constants
-  // char *label; // only for string literals
+  char *label; // only for string literals
   decl * dcl; // for objects, functions, etc. which can appear from primary expressions
 
   // TODO ^^

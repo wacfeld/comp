@@ -4744,13 +4744,16 @@ expr *parseprimexpr(link *start)
     
     // array of char
     ctype ct = calloc(2, sizeof(typemod));
-    ct->gen.type = TM_ARR;
-    ct->arr.len = t->strlit.len; // length of array, not of string
+    // ct->gen.type = TM_ARR;
+    // ct->arr.len = t->strlit.len; // length of array, not of string
+    // ct[1].gen.type = TM_DAT;
+    // ct[1].dat.dt = CHAR_T;
+    ct->gen.type = TM_PTR;
     ct[1].gen.type = TM_DAT;
     ct[1].dat.dt = CHAR_T;
 
     // no modifying the string literal
-    ct[1].dat.isconst = 1;
+    // ct[1].dat.isconst = 1;
     newe->ct = ct;
     newe->lval = 1;
 
@@ -4761,14 +4764,15 @@ expr *parseprimexpr(link *start)
     vspmac(literals, "%s db ", glob);
 
     // write string in the form of numbers
-    for(int i = 0; i < ct->arr.len; i++)
+    for(int i = 0; i < t->strlit.len; i++)
     {
       vspmac(literals, "%u, ", t->strlit.cont[i]);
     }
     // newline
     appmac(literals, "\n");
+    // puts(glob);
 
-    // newe->label = glob;
+    newe->label = glob;
     // putctype(newe->ct);
     // nline();
   }
@@ -5226,6 +5230,10 @@ void proctoplevel(token *toks)
   // allocate list of decls
   // alloc(decl *, alldecls, dsize, dn);
 
+  // initialize literals
+  literals = malloc(literals_len);
+  *literals = 0;
+
   // create a stack of decls to be in scope
   scope = makestack(sizeof(decl *));
 
@@ -5410,7 +5418,10 @@ void proctoplevel(token *toks)
       {
         assert(d->init->islist);
 
-        throw("toplevel array init not supported yet");
+        // if(!ctisdt(d->ct+1, CHAR_T))
+        // {
+          throw("toplevel array init not supported yet");
+        // }
       }
       
       else if(isintegral(d->ct))
@@ -5419,6 +5430,11 @@ void proctoplevel(token *toks)
 
         sdword num = evalconstintexpr(e);
         value = getbits(num, size);
+      }
+
+      else
+      {
+        throw("unsupported toplevel initializer");
       }
 
       // char *value = getbits(e->dat, size);
@@ -5461,6 +5477,9 @@ void proctoplevel(token *toks)
       mapmac(bssseg, ident_pre, d->ident, " resb ", sizestr, "\n");
     }
   }
+
+  // append string literal definitions to data segment
+  appmac(dataseg, literals);
 
   // write _start function which calls main
   
@@ -5699,6 +5718,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
   else if(toklen >= 2 && tiskeyword(toks[lo], K_DEFAULT) && tisatom(toks[lo+1], COLON))
   {
     
+    throw("switch-case not supported");
   }
 
   // regular label
@@ -6414,11 +6434,14 @@ char *evalexpr(expr *e)
     dbgstatus = "INT_O, CHAR_O";
   }
 
-  // // string literal, decay to 
-  // else if(ot == STRING_O)
-  // {
-    
-  // }
+  // string literal, which we treat as char *. put label on stack
+  else if(ot == STRING_O)
+  {
+    // need a label to access string literal
+    assert(e->label);
+    sall(PTR_SIZE);
+    vspmac(assem, "mov %s [esp], %s\n", sizenasm(PTR_SIZE), e->label);
+  }
 
   // unary *
   else if(ot == POINT_O)
@@ -7294,10 +7317,6 @@ char *evalexpr(expr *e)
 //{{{1 main
 int main()
 {
-  // initialize literals
-  literals = malloc(literals_len);
-  *literals = 0;
-  
   // TODO fix the literary hierarchy, it's still broken
   // should be doable with 1 run-through
   // TODO constantly print to stderr what token is being read, what line number, etc. so that when asserts fail it's immediately clear where it happened

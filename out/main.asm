@@ -1,34 +1,21 @@
 section .data
+glob0 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
 errmsg db "error", 10
 errlen equ $ - errmsg
 
 section .bss
+ident_s resb 4
 
 section .text
 
 ident_main:
 push ebp
 mov ebp,esp
-sub esp, 12
+sub esp, 1
 sub esp, 4
-lea eax, [ebp-8]
-mov dword [esp], eax
+mov dword [esp], ident_s
 sub esp, 4
-mov dword [esp], 00000000000000000000000000000101b
-mov EBX, dword [esp]
-add esp, 4
-mov eax, dword [esp]
-add esp, 4
-mov dword [eax], EBX
-sub esp, 4
-mov dword [esp], EBX
-add esp, 4
-goto_hi:
-sub esp, 4
-lea eax, [ebp-4]
-mov dword [esp], eax
-sub esp, 4
-mov dword [esp], 00000000000000000000000000111100b
+mov dword [esp], glob0
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]
@@ -38,29 +25,34 @@ sub esp, 4
 mov dword [esp], EBX
 add esp, 4
 sub esp, 4
-lea eax, [ebp-12]
+lea eax, [ebp-1]
 mov dword [esp], eax
 sub esp, 4
-mov dword [esp], 00000000000000000000000000000110b
-mov EBX, dword [esp]
-add esp, 4
-mov eax, dword [esp]
-add esp, 4
-mov dword [eax], EBX
+mov EAX, dword [ident_s]
+mov dword [esp], EAX
 sub esp, 4
-mov dword [esp], EBX
-add esp, 4
-sub esp, 4
-lea eax, [ebp-12]
-mov dword [esp], eax
+mov dword [esp], 00000000000000000000000000000000b
 mov EAX, dword [esp]
 add esp, 4
-sub esp, 4
-mov EBX, dword [EAX]
-mov dword [esp], EBX
-inc dword [EAX]
+mov EBX, 1
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
 add esp, 4
-glob0:
+sub esp, 1
+mov AL, byte [eax]
+mov byte [esp], AL
+mov BL, byte [esp]
+add esp, 1
+mov eax, dword [esp]
+add esp, 4
+mov byte [eax], BL
+sub esp, 1
+mov byte [esp], BL
+add esp, 1
+glob1:
 mov esp,ebp
 pop ebp
 ret

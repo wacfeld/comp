@@ -2,9 +2,12 @@
 */
 
 
-int x = 2-1;
+char *s;
 int main()
 {
+  char c;
+  s = "hello world";
+  c = s[0];
 }
 
 
