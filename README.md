@@ -38,21 +38,14 @@
 
 # build
 ```
-mkdir -p build
-gcc src/main.c src/datastruct.c -o build/comp
+make
 ```
 
 # usage
 ## compile
 type your C code in `main.c`
 ```
-build/comp main.c main.asm
-```
-
-## assemble
-```
-nasm -f elf -g -F dwarf main.asm -l main.lst
-ld -m elf_i386 -o main main.o
+./comp main.c main
 ```
 
 ## run

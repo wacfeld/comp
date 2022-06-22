@@ -84,7 +84,6 @@ mov EAX, dword [esp]
 add esp, 4
 call EAX
 add esp, 1
-glob0:
 mov esp,ebp
 pop ebp
 ret
@@ -257,7 +256,6 @@ dec dword [EAX]
 add esp, 4
 jmp .lab10
 .lab12:
-glob1:
 mov esp,ebp
 pop ebp
 ret
@@ -753,6 +751,38 @@ mov EAX, dword [esp]
 add esp, 4
 test EAX, EAX
 jz .lab31
+sub esp, 4
+lea eax, [ebp-40]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ebp-44]
+mov dword [esp], EAX
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 4
+mov EAX, dword [eax]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], ident_putint
+mov EAX, dword [esp]
+add esp, 4
+call EAX
+add esp, 4
+sub esp, 1
+mov byte [esp], 00001010b
+sub esp, 4
+mov dword [esp], ident_putchar
+mov EAX, dword [esp]
+add esp, 4
+call EAX
+add esp, 1
 .lab30:
 sub esp, 4
 lea eax, [ebp-44]
@@ -766,7 +796,6 @@ inc dword [EAX]
 add esp, 4
 jmp .lab29
 .lab31:
-glob2:
 mov esp,ebp
 pop ebp
 ret

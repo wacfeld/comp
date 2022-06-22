@@ -5382,7 +5382,7 @@ void proctoplevel(token *toks)
       // write assembly
       // end function (in case falls off the end)
       // codeseg = multiapp(codeseg, &cs_len, 2, destroy_sframe, "ret\n");
-      vspmac(codeseg, "%s:\n", newgloblab());
+      // vspmac(codeseg, "%s:\n", newgloblab());
       mapmac(codeseg, destroy_sframe, "ret\n\n");
     }
     
@@ -6071,7 +6071,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
 
     // destroy stack frame, return
     // assem = multiapp(assem, &assem_len, 2, destroy_sframe, "ret\n");
-    vspmac(assem, "%s:\n", newgloblab());
+    // vspmac(assem, "%s:\n", newgloblab());
     mapmac(assem, destroy_sframe, "ret\n");
 
     // move on
