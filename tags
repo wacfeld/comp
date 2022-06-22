@@ -448,6 +448,7 @@ add	old/planning/out/copy.asm	/^add esp, 4$/;"	l
 add	old/planning/out/main.asm	/^add dword [esp], EAX$/;"	l
 add	old/planning/out/main.asm	/^add esp, 1$/;"	l
 add	old/planning/out/main.asm	/^add esp, 4$/;"	l
+add1	example/example.c	/^int add1(int n)$/;"	f
 alloc	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	38;"	d
 alloc	src/defs.h	39;"	d
 append	src/datastruct.c	/^void append(list *l, void * m) \/\/ list append$/;"	f
@@ -997,6 +998,7 @@ putll	src/main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	24;"	d
 putp	old/oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	4;"	d	file:
 putp	src/defs.h	25;"	d
+putparams	src/main.c	/^int putparams(ctype ct)$/;"	f
 puttok	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttok(token t)$/;"	f
 puttok	src/main.c	/^void puttok(token t)$/;"	f
 puttypemod	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttypemod(typemod ts)$/;"	f
@@ -1024,9 +1026,9 @@ right	src/defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::
 rightend	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
 rightend	src/main.c	13;"	d	file:
 safesizeoftype	src/main.c	/^int safesizeoftype(ctype ct)$/;"	f
-sall	src/main.c	5571;"	d	file:
+sall	src/main.c	5638;"	d	file:
 scope	src/main.c	/^stack *scope = NULL;$/;"	v
-sdall	src/main.c	5572;"	d	file:
+sdall	src/main.c	5639;"	d	file:
 sdword	src/defs.h	/^typedef int32_t sdword; \/\/ signed version of the above$/;"	t
 searchscope	src/main.c	/^decl *searchscope(char *ident)$/;"	f
 section	code/example.asm	/^section .bss$/;"	l
@@ -1057,7 +1059,7 @@ seteq	src/datastruct.c	/^int seteq(set *s1, set *s2)$/;"	f
 setins	src/datastruct.c	/^int setins(set *s, void* m) \/\/ set insert, returns 1 if already in set$/;"	f
 setrem	src/datastruct.c	/^int setrem(set *s, void *m)$/;"	f
 sever	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	1161;"	d	file:
-sever	src/main.c	1291;"	d	file:
+sever	src/main.c	1304;"	d	file:
 shift_front	src/datastruct.c	/^void shift_front(list *l)$/;"	f
 showlithier	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
 showlithier	src/main.c	/^void showlithier(char *src, char *esc, char *quot)$/;"	f
@@ -1100,6 +1102,7 @@ test	old/planning/asmtest/main.asm	/^test eax, eax$/;"	l
 test	old/planning/out/main.asm	/^test eax, eax$/;"	l
 testerr	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 testerr	src/main.c	24;"	d	file:
+thing	example/example.c	/^int thing(int x, char y)$/;"	f
 throw	src/main.c	40;"	d	file:
 times	old/planning/asmtest/main.asm	/^times 50 nop$/;"	l
 tisatom	src/main.c	/^int tisatom(token t, enum atom_type a)$/;"	f

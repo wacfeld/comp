@@ -1,4 +1,4 @@
-void putchar();
+void putchar(int x);
 
 int getchar();
 void exit();
@@ -34,7 +34,12 @@ void putint(int x)
 }
 
 void fib(int n);
-int factorial(int);
+int factorial(int x);
+
+int thing(int x, char y)
+{
+  return x + y;
+}
 
 int main()
 {
@@ -73,7 +78,7 @@ int main()
   putchar('\n');
   fib(15);
 
-  // putint(factorial(6));
+  putint(factorial(6));
 }
 
 void fib(int n)
@@ -92,13 +97,18 @@ void fib(int n)
   }
 }
 
+int add1(int n)
+{
+  return n + 1;
+}
+
 int factorial(int n)
 {
   if(n == 0)
     return 1;
   else
   {
-    int f = 1;
+    int f = factorial(n-1);
     return f * n;
   }
 }

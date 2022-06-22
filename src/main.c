@@ -1198,6 +1198,19 @@ void putdecl(decl *dcl)
   // }
 }
 
+int putparams(ctype ct)
+{
+  assert(ct->gen.type == TM_FUNC);
+  putd(ct->func.np);
+  for(int i = 0; i < ct->func.np; i++)
+  {
+    putctype(ct->func.params[i].ct);
+    printf(", ");
+  }
+  nline();
+  nline();
+}
+
 void putexpr(expr *e)
 {
   helpputexpr(e, 0);
@@ -1871,6 +1884,16 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
           int np = plist->n;
           tmod->func.np = np;
 
+    // for(int i = 0 ; i <np; i++)
+    // {
+    //   putctype(params[i].ct);
+    //   nline();
+    // }
+    // nline();
+    // nline();
+    // nline();
+    // nline();
+
           // check for void
           for(int j = 0; j < np; j++)
           {
@@ -2429,6 +2452,11 @@ decl * parsedecl(token *toks, int *i, int *sc)
   dcl->ident = ident;
 
   int tmlen = getctlen(dcl->ct);
+
+// if(dcl->ct->gen.type == TM_FUNC)
+// {
+//   putparams(dcl->ct);
+// }
 
   if(isatom(toks+ *i, BRACEOP)) // function definition
   {
@@ -3435,6 +3463,14 @@ void checkasgncompat(enum optype optype, ctype ct1, ctype ct2)
 
   else
   {
+    // fprintf(stderr, "%p %p\n", ct1, ct2);
+    // putctype(ct1);
+    // nline();
+    // putctype(ct2);
+    // nline();
+    // printf("%d %d\n", ct1->gen.type, ct2->gen.type);
+    // printf("%d %d\n", ct1->dat.dt, ct2->dat.dt);
+    // putd(isarith(ct1));
     throw("invalid assignment types");
   }
 
@@ -3526,6 +3562,7 @@ expr *parseasgnexpr(link *start)
   // one of the following has to be true
 
   // we throw the below logic into a function so that FUN_O can use it to check for arg->param compatibility
+  // fputs("hi\n", stderr);
   checkasgncompat(optype, ct1, ct2);
   
 
@@ -4478,6 +4515,11 @@ expr *parsepostexpr(link *start)
 
           // types must agree as if by simple assignment
           // assert(iscompat(p->ct, e2->args[i]->ct, QM_SUPERSET));
+  // fputs("mi\n", stderr);
+  // putctype(p->ct);
+  // nline();
+  // putctype(e2->args[i]->ct);
+  // nline();
           checkasgncompat(EQ_O, p->ct, e2->args[i]->ct);
           e2->args[i] = makecast(p->ct, e2->args[i]);
         }
@@ -4695,6 +4737,11 @@ expr *parseprimexpr(link *start)
 
     // ident must exist in scope
     assert(d);
+    // if(streq(d->ident, "factorial"))
+    // {
+    //   puts("hi");
+    //   putparams(d->ct);
+    // }
 
     newe->ct = d->ct;
     newe->dcl = d;
@@ -4704,7 +4751,7 @@ expr *parseprimexpr(link *start)
 
     if(newe->ct->gen.type != TM_FUNC)
     {
-      newe->lval  = 1;
+      newe->lval = 1;
     }
   }
 
@@ -5200,6 +5247,7 @@ decl *searchscope(char *ident)
     // found same ident
     if(streq(dcls[i]->ident, ident))
     {
+      // putd(i);
       return dcls[i];
     }
   }
@@ -5257,6 +5305,14 @@ void proctoplevel(token *toks)
   int tokind = 0;
   while((d = parsedecl(toks, &tokind, NULL)) != NULL) // parse until NOTOK
   {
+    // puts("hi");
+    // if(d->ct->gen.type == TM_FUNC)
+    // {
+    //   puts("ok");
+    //   puts(d->ident);
+    //   putparams(d->ct);
+    // }
+    
     // putdecl(d);
     // putd(tokind);
 
@@ -5332,6 +5388,17 @@ void proctoplevel(token *toks)
       // resize(alldecls, dsize, scope->n);
       // alldecls[scope->n++] = d;
       push(scope, &d);
+
+      // fputs("hi",stderr);
+      // fprintf(stderr, "%s\n", d->ident);
+      // for(int i = 0; i < d->ct->func.np; i++)
+      // {
+      //   putctype(d->ct->func.params[i].ct);
+      //   printf(", ");
+      // }
+      // putctype(d->ct);
+      // nline();
+      // nline();
     }
 
     // fundefs are parsed after their declaration is considered above, so that recursion is possible (the function is in its own scope)
@@ -6128,6 +6195,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
         ctype ct1 = d->ct;
         ctype ct2 = d->init->e->ct;
         // make sure valid assignment
+  // fputs("oi\n", stderr);
         checkasgncompat(EQ_O, ct1, ct2);
 
         // cast if necessary
