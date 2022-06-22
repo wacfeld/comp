@@ -1,4 +1,4 @@
-// have to declare these functions before using them
+
 void putchar(int x);
 int getchar();
 void exit();
@@ -8,7 +8,6 @@ void putstring(char *s)
   while(*s)
   {
     putchar(*s);
-    s++;
   }
 }
 
@@ -33,7 +32,7 @@ void putint(int x)
   while(x)
   {
     arr[i++] = x%10 + '0';
-    x = x / 10; // compound assignment not supported
+    x = x / 10; 
   }
   
   for(i--; i >= 0; i--)
@@ -50,12 +49,9 @@ int global_var = 5;
 int main()
 {
   putint(++global_var);
-  putchar('\n');
   putint(++global_var);
-  putchar('\n');
-  putchar('\n');
   
-  // array initializers not supported
+  
   int x[10];
   x[6] = 11;
   x[2] = 7;
@@ -68,7 +64,7 @@ int main()
   x[3] = 1;
   x[7] = -2;
 
-  // bubble sort array
+  
   int i, j;
   for(i = 0; i < 10; i++)
   {
@@ -83,7 +79,7 @@ int main()
     }
   }
 
-  // print sorted array
+  
   for(i = 0; i < 10; i++)
   {
     putint(x[i]);
@@ -97,26 +93,9 @@ int main()
   putint(factorial(6));
 
   char *s;
-  s = "press enter to continue (getchar())";
-  putchar('\n');
-  putstring(s);
-  getchar();
+  s = "hi";
+  
 
-  int k = 0;
-  for(i = 0; i < 10; i++)
-  {
-    for(j = 0; j < 10; j++)
-    {
-      k++;
-      putint(k);
-
-      if(k == 27)
-        goto endloop;
-    }
-  }
-
-endloop:
-  puts("hi");
 }
 
 void fib(int n)

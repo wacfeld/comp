@@ -1587,12 +1587,17 @@ list *parseparamlist(link *start)
     int i = 0;
     decl *dcl = getdeclspecs(toks, &i);
     ctype ct = dcl->ct;
+
+
     // param->typemods = makelist(sizeof(typemod));
     // list *l = makelist(sizeof(typemod));
     gettypemods(toks, i, -1, -1, &dcl->ident, &ct);
     // ct->tms = (typemod *) l->cont;
 
-    // dcl->ct = ct;
+    // puts("huei");
+    // putctype(ct);nline();
+
+    dcl->ct = ct;
     // the only reason we use decls is to store the possible ident
 
     // // if not abstract, remove the identifier
@@ -1877,12 +1882,18 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
         else
         {
           link *ll = tokl2ll(toks+i+1, hi-i-1);
+    // puts("hi");
+    // putll(ll);
+    // nline();
+    // nline();
           list *plist = parseparamlist(ll);
 
           decl *params = (decl *) plist->cont;
           tmod->func.params = params;
           int np = plist->n;
           tmod->func.np = np;
+
+    // putparams(tmod);
 
     // for(int i = 0 ; i <np; i++)
     // {
@@ -4243,6 +4254,7 @@ expr *parseunaryexpr(link *start)
         throw("not pointer");
       }
       // assert(isptr(ct));
+      // LEH something's making it a char instead of char *
       
       // assert(tmis(ct+1, TM_FUNC) || incomplete(ct+1));
       
@@ -4749,7 +4761,6 @@ expr *parseprimexpr(link *start)
     //   puts("hi");
     //   putparams(d->ct);
     // }
-    // LEH it's something to do with the ct on the stack. it gets modified at some point between calling factorial in main() and calling it in recursively, destroying the INT_T.
 
     newe->ct = d->ct;
     newe->dcl = d;
@@ -5332,10 +5343,12 @@ void proctoplevel(token *toks)
     // putdecl(d);
     // putd(tokind);
 
-    // if(thththth && streq(d->ident, "factorial"))
+    // if(streq(d->ident, "putstring"))
     // {
-    //   thththth = 0;
-    //   factd = d;
+    //   // thththth = 0;
+    //   // factd = d;
+    //   puts("hi");
+    //   putparams(d->ct);
     // }
 
     assert(d->ident); // probably not necessary but good to check that it exists

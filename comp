@@ -1,5 +1,5 @@
 #!/bin/bash
 mkdir -p out
-./compile $1 out/out.asm
-./assemble out/out.asm out/out.o
+./compile $1 out/out.asm && 
+./assemble out/out.asm out/out.o && 
 ./link out/out.o $2
