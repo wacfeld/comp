@@ -1,2 +1,2 @@
 #!/bin/bash
-cat $1 | .build/preproc | .build/main > $2
+cat $1 | ./build/preproc | ./build/main > $2

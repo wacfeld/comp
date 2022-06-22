@@ -75,6 +75,7 @@ int main(void)
       else
       {
         putchar('/');
+        putchar(c);
       }
     }
 

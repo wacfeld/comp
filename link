@@ -1,2 +1,2 @@
 #!/bin/bash
-ld -m elf_i386 $1
+ld -m elf_i386 ./build/stdio.o $1 -o $2

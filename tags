@@ -434,6 +434,7 @@ XOR_E	src/defs.h	/^  XOR_E,$/;"	e	enum:expr_type
 XOR_O	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  XOR_O,$/;"	e	enum:optype
 XOR_O	src/defs.h	/^  XOR_O,$/;"	e	enum:optype
 _GET_NTH_ARG	src/defs.h	773;"	d
+_start	code/example.asm	/^_start:$/;"	l
 _start	old/planning/asmtest/main.asm	/^_start:$/;"	l
 _start	old/planning/asmtest/test.asm	/^_start:$/;"	l
 _start	old/planning/out/copy.asm	/^_start:$/;"	l
@@ -441,6 +442,8 @@ _start	old/planning/out/main.asm	/^_start:$/;"	l
 _start	old/template/main.asm	/^_start:$/;"	l
 _start	old/template/test.asm	/^_start:$/;"	l
 a	old/template/main.asm	/^a dd 5$/;"	d
+add	code/example.asm	/^add esp, 1$/;"	l
+add	code/example.asm	/^add esp, 4$/;"	l
 add	old/planning/out/copy.asm	/^add esp, 4$/;"	l
 add	old/planning/out/main.asm	/^add dword [esp], EAX$/;"	l
 add	old/planning/out/main.asm	/^add esp, 1$/;"	l
@@ -465,6 +468,9 @@ attach	src/main.c	9;"	d	file:
 b	old/template/main.asm	/^b db 'a'$/;"	d
 bool	src/preproc.c	/^typedef int bool;$/;"	t	file:
 breakstack	src/main.c	/^stack *breakstack = NULL;$/;"	v
+call	code/example.asm	/^call EAX$/;"	l
+call	code/example.asm	/^call exit$/;"	l
+call	code/example.asm	/^call ident_main$/;"	l
 call	old/planning/out/copy.asm	/^call exit$/;"	l
 call	old/planning/out/copy.asm	/^call ident_main$/;"	l
 call	old/planning/out/main.asm	/^call exit$/;"	l
@@ -508,6 +514,7 @@ ct	src/defs.h	/^  ctype ct;$/;"	m	struct:decl
 ctisdt	src/main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon28
 ctype	src/defs.h	/^typedef typemod *ctype;$/;"	t
+d2	code/example.c	/^  int d2 = 100\/10;$/;"	v
 dat	src/defs.h	/^  dword dat; \/\/ 32 bits of data, for compile-time constants$/;"	m	struct:expr
 dat	src/defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
 dattype	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon28
@@ -532,10 +539,13 @@ eisdt	src/main.c	/^int eisdt(expr *e, int dt)$/;"	f
 eistm	src/main.c	/^int eistm(expr *e, int t)$/;"	f
 eistype	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int eistype(expr *e, int type)$/;"	f
 eistype	src/main.c	/^int eistype(expr *e, int type)$/;"	f
+errlen	code/example.asm	/^errlen equ $ - errmsg$/;"	d
 errlen	old/planning/out/copy.asm	/^errlen equ $ - errmsg$/;"	d
 errlen	old/planning/out/main.asm	/^errlen equ $ - errmsg$/;"	d
+errmsg	code/example.asm	/^errmsg db "error", 10$/;"	d
 errmsg	old/planning/out/copy.asm	/^errmsg db "error", 10$/;"	d
 errmsg	old/planning/out/main.asm	/^errmsg db "error", 10$/;"	d
+error	code/example.asm	/^error:$/;"	l
 error	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^char *error;$/;"	v
 error	old/planning/out/copy.asm	/^error:$/;"	l
 error	old/planning/out/main.asm	/^error:$/;"	l
@@ -546,6 +556,7 @@ evalconstexpr	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/
 evalconstintexpr	src/main.c	/^dword evalconstintexpr(expr *e)$/;"	f
 evalexpr	src/main.c	/^char *evalexpr(expr *e)$/;"	f
 evalintcast	src/main.c	/^char *evalintcast(ctype to, ctype from)$/;"	f
+exit	code/example.asm	/^exit:$/;"	l
 exit	old/planning/asmtest/main.asm	/^exit:$/;"	l
 exit	old/planning/out/copy.asm	/^exit:$/;"	l
 exit	old/planning/out/main.asm	/^exit:$/;"	l
@@ -560,6 +571,8 @@ expr_type	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^typ
 expr_type	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 expr_type	src/defs.h	/^typedef enum expr_type$/;"	g
 expr_type	src/defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
+extern	code/example.asm	/^extern ident_getchar$/;"	l
+extern	code/example.asm	/^extern ident_putchar$/;"	l
 ff	src/defs.h	22;"	d
 findatom	src/main.c	/^int findatom(token *toks, int i, int dir, enum atom_type t)$/;"	f
 findmatch	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
@@ -588,9 +601,11 @@ gettypemods	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^i
 gettypemods	src/main.c	/^int gettypemods(token *toks, int lo, int hi, int abs, char **s, ctype *dat)$/;"	f
 gettypequal	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypequal(token t) \/\/ get type qualifier$/;"	f
 gettypespec	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int gettypespec(token t) \/\/ get type specifier$/;"	f
+glob0	code/example.asm	/^glob0:$/;"	l
 glob0	old/planning/out/main.asm	/^glob0 db 34, 92, 0, 92, 0, $/;"	d
 glob1	old/planning/out/main.asm	/^glob1 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, $/;"	d
 glob2	old/planning/out/main.asm	/^glob2:$/;"	l
+global	code/example.asm	/^global _start$/;"	l
 global	old/planning/asmtest/main.asm	/^global _start$/;"	l
 global	old/planning/asmtest/test.asm	/^global _start$/;"	l
 global	old/planning/out/copy.asm	/^global _start$/;"	l
@@ -628,6 +643,7 @@ ident	src/defs.h	/^  char *ident;$/;"	m	struct:decl
 ident	src/defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon10	typeref:struct:__anon10::__anon15
 ident	src/defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
 ident_getchar	src/stdio.asm	/^ident_getchar:$/;"	l
+ident_main	code/example.asm	/^ident_main:$/;"	l
 ident_main	old/planning/out/copy.asm	/^ident_main:$/;"	l
 ident_main	old/planning/out/main.asm	/^ident_main:$/;"	l
 ident_pre	src/main.c	/^char ident_pre[] = "ident_";$/;"	v
@@ -641,6 +657,8 @@ init	src/defs.h	/^  struct init *init; \/\/ e.g. {1,2, {3,4,5}}$/;"	m	struct:dec
 init	src/defs.h	/^struct init$/;"	s
 initnasm	src/main.c	/^char *initnasm(int size)$/;"	f
 inset	src/datastruct.c	/^int inset(set *s, void *m)$/;"	f
+int	code/example.asm	/^int 0x80$/;"	l
+int	code/example.asm	/^int 80h$/;"	l
 int	old/planning/asmtest/main.asm	/^int 0x80$/;"	l
 int	old/planning/out/copy.asm	/^int 0x80$/;"	l
 int	old/planning/out/copy.asm	/^int 80h$/;"	l
@@ -764,6 +782,7 @@ locloc	src/defs.h	/^  int locloc; \/\/ offset from ebp$/;"	m	struct:location
 lst	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lst	src/defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lval	src/defs.h	/^  int lval;$/;"	m	struct:expr
+main	code/example.c	/^int main()$/;"	f
 main	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	old/oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	old/planning/dcl/main.c	/^int main()$/;"	f
@@ -792,6 +811,17 @@ mark_quot	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^voi
 mark_quot	src/main.c	/^void mark_quot(char *src, char *esc, char *quot)$/;"	f
 max	src/datastruct.h	/^  int max; \/\/ maximum length (currently allocated)$/;"	m	struct:__anon18
 max	src/defs.h	43;"	d
+mov	code/example.asm	/^mov EAX, dword [esp]$/;"	l
+mov	code/example.asm	/^mov byte [esp], 01101000b$/;"	l
+mov	code/example.asm	/^mov dword [esp], ident_putchar$/;"	l
+mov	code/example.asm	/^mov eax, 1$/;"	l
+mov	code/example.asm	/^mov eax, 4$/;"	l
+mov	code/example.asm	/^mov ebp,esp$/;"	l
+mov	code/example.asm	/^mov ebx, 0$/;"	l
+mov	code/example.asm	/^mov ebx, 1$/;"	l
+mov	code/example.asm	/^mov ecx, errmsg$/;"	l
+mov	code/example.asm	/^mov edx, errlen$/;"	l
+mov	code/example.asm	/^mov esp,ebp$/;"	l
 mov	old/planning/asmtest/main.asm	/^mov eax,4$/;"	l
 mov	old/planning/asmtest/main.asm	/^mov ebx,1$/;"	l
 mov	old/planning/asmtest/main.asm	/^mov ecx,msg$/;"	l
@@ -926,6 +956,7 @@ parsexorexpr	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^
 parsexorexpr	old/unused/oldparser.c	/^link *parsexorexpr(link *chain)$/;"	f
 parsexorexpr	src/main.c	/^expr *parsexorexpr(link *start)$/;"	f
 peek	src/datastruct.c	/^void peek(stack *s, void *m)$/;"	f
+pop	code/example.asm	/^pop ebp$/;"	l
 pop	old/planning/out/copy.asm	/^pop ebp$/;"	l
 pop	old/planning/out/main.asm	/^pop ebp$/;"	l
 pop	src/datastruct.c	/^void pop(stack *s, void *m)$/;"	f
@@ -936,6 +967,7 @@ proctypespecs	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/
 proctypespecs	src/main.c	/^int proctypespecs(set *ts)$/;"	f
 ptr	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ptr;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon33
 ptr	src/defs.h	/^  } ptr;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon12
+push	code/example.asm	/^push ebp$/;"	l
 push	old/planning/out/copy.asm	/^push ebp$/;"	l
 push	old/planning/out/main.asm	/^push ebp$/;"	l
 push	src/datastruct.c	/^void push(stack *s, void *m)$/;"	f
@@ -979,6 +1011,7 @@ remtonull	src/main.c	/^int remtonull()$/;"	f
 resize	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	36;"	d
 resize	src/defs.h	37;"	d
 resnasm	src/main.c	/^char *resnasm(int size)$/;"	f
+ret	code/example.asm	/^ret$/;"	l
 ret	old/planning/out/copy.asm	/^ret$/;"	l
 ret	old/planning/out/main.asm	/^ret$/;"	l
 reverse	src/datastruct.c	/^void reverse(list *l)$/;"	f
@@ -992,6 +1025,9 @@ scope	src/main.c	/^stack *scope = NULL;$/;"	v
 sdall	src/main.c	5571;"	d	file:
 sdword	src/defs.h	/^typedef int32_t sdword; \/\/ signed version of the above$/;"	t
 searchscope	src/main.c	/^decl *searchscope(char *ident)$/;"	f
+section	code/example.asm	/^section .bss$/;"	l
+section	code/example.asm	/^section .data$/;"	l
+section	code/example.asm	/^section .text$/;"	l
 section	old/planning/asmtest/main.asm	/^section .bss$/;"	l
 section	old/planning/asmtest/main.asm	/^section .data$/;"	l
 section	old/planning/asmtest/main.asm	/^section .text$/;"	l
@@ -1051,6 +1087,8 @@ striskeyword	src/main.c	/^int striskeyword(char *s)$/;"	f
 strlit	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } strlit;$/;"	m	union:__anon19	typeref:struct:__anon19::__anon23
 strlit	src/defs.h	/^  } strlit;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon5
 strnew	src/main.c	/^char *strnew(int n, ...)$/;"	f
+sub	code/example.asm	/^sub esp, 1$/;"	l
+sub	code/example.asm	/^sub esp, 4$/;"	l
 sub	old/planning/out/copy.asm	/^sub esp, 4$/;"	l
 sub	old/planning/out/main.asm	/^sub esp, 1$/;"	l
 sub	old/planning/out/main.asm	/^sub esp, 4$/;"	l
