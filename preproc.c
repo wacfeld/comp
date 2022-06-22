@@ -1,5 +1,6 @@
-// NOT ACTUALLY FIXED, DOESN'T ACCOUNT FOR '"' for example
+// limited preprocessor, only removes comments
 
+// NOT ACTUALLY FIXED, DOESN'T ACCOUNT FOR '"' for example
 #include <assert.h>
 typedef int bool;
 #include <stdio.h>

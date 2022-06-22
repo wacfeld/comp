@@ -1,7 +1,6 @@
 /* vim:filetype=c
 */
 
-
 char *s;
 int main()
 {
@@ -18,7 +17,7 @@ int main()
 int main()
 {
   int zzz = (25*26 + 25)*26 + 25;
-  printf("%d\n", zzz);
+  printf("%dn", zzz);
   
   int cur = 0;
   while(cur <= zzz)
@@ -27,7 +26,7 @@ int main()
     int d2 = cur /26 %26;
     int d3 = cur %26;
 
-    printf("%c%c%c\n", d1+'A', d2+'A', d3+'A');
+    printf("%c%c%cn", d1+'A', d2+'A', d3+'A');
     
     cur++;
   }

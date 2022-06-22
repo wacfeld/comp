@@ -462,6 +462,7 @@ attach	main.c	9;"	d	file:
 attach	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	7;"	d	file:
 b	template/main.asm	/^b db 'a'$/;"	d
 bool	fixedlithier.c	/^typedef int bool;$/;"	t	file:
+bool	preproc.c	/^typedef int bool;$/;"	t	file:
 breakstack	main.c	/^stack *breakstack = NULL;$/;"	v
 call	out/copy.asm	/^call exit$/;"	l
 call	out/copy.asm	/^call ident_main$/;"	l
@@ -712,6 +713,7 @@ keywords	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^char *ke
 label	defs.h	/^  char *label; \/\/ only for string literals$/;"	m	struct:expr
 last	datastruct.c	/^void *last(list *l)$/;"	f
 lastc	fixedlithier.c	/^int lastc = 0;$/;"	v
+lastc	preproc.c	/^int lastc = 0;$/;"	v
 lea	out/copy.asm	/^lea eax, [ebp-4]$/;"	l
 lea	out/copy.asm	/^lea eax, [ebp-8]$/;"	l
 left	defs.h	/^  struct link *left;$/;"	m	struct:link	typeref:struct:link::link
@@ -763,6 +765,7 @@ main	fixedlithier.c	/^int main(void) {$/;"	f
 main	main.c	/^int main()$/;"	f
 main	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
+main	preproc.c	/^int main(void) {$/;"	f
 main	test.c	/^int main()$/;"	f
 main	test.s	/^main:$/;"	l
 main	unused/test.s	/^main:$/;"	l
@@ -817,6 +820,7 @@ mov	out/main.asm	/^mov esp,ebp$/;"	l
 msg	asmtest/main.asm	/^msg db 97, 98, 10, 0,$/;"	d
 multiapp	main.c	/^char *multiapp(char *dest, int *max, int n, ...)$/;"	f
 mygetchar	fixedlithier.c	/^int mygetchar() {$/;"	f
+mygetchar	preproc.c	/^int mygetchar() {$/;"	f
 n	datastruct.h	/^  int n; \/\/ current length$/;"	m	struct:__anon18
 name	defs.h	/^    char *name;$/;"	m	struct:__anon10::__anon15
 name	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^    char *name;$/;"	m	struct:__anon31::__anon36
@@ -1091,6 +1095,7 @@ typemod	oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} typemod
 unesc	main.c	/^void unesc(char *src)$/;"	f
 unesc	oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void unesc(char *src)$/;"	f
 ungetchar	fixedlithier.c	/^int ungetchar(int c) {$/;"	f
+ungetchar	preproc.c	/^int ungetchar(int c) {$/;"	f
 unqual	main.c	/^ctype unqual(ctype ct)$/;"	f
 usualarith	main.c	/^void usualarith(expr **e1, expr **e2)$/;"	f
 validct	main.c	/^int validct(ctype ct)$/;"	f

@@ -7325,7 +7325,7 @@ int main()
 
   // TODO
   // assert(sizeof(float) == 4); // there is no int32_t analog for floats. we rely on the system the compiler is running on to make sure floats work
-  assert(sizeof(int) >= 4); // similar but less strict because longer ints are easy to convert to shorter
+  // assert(sizeof(int) >= 4); // similar but less strict because longer ints are easy to convert to shorter
 
   // for marking quoted and escaped sections
   // char src[1000], quot[1000], esc[1000];
@@ -7358,6 +7358,7 @@ int main()
 
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so
+
 
   // showlithier(src, esc, quot);
 
