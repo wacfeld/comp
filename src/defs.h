@@ -21,9 +21,9 @@
 
 #define ff(s) {puts("================");puts(s);puts("================");}
 
-#define putd(x) printf(#x ": %d\n", x)
-#define putp(x) printf(#x ": %p\n", x)
-#define putf(x) printf(#x ": %f\n", x)
+#define putd(x) fprintf(stderr, #x ": %d\n", x)
+#define putp(x) fprintf(stderr,#x ": %p\n", x)
+#define putf(x) fprintf(stderr,#x ": %f\n", x)
 
 #define streq(a, b) (!strcmp((a), (b)))
 

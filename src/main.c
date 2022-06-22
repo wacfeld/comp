@@ -3470,7 +3470,15 @@ void checkasgncompat(enum optype optype, ctype ct1, ctype ct2)
   else if(tmis(ct1, TM_PTR) && tmis(ct2, TM_PTR)) // both pointers to functions or objects
   {
     // check compatibility, using superset qualmode
-    assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
+    // assert(iscompat(ct1+1, ct2+1, QM_SUPERSET));
+    if(!iscompat(ct1+1, ct2+1, QM_SUPERSET))
+    {
+      putctype(ct1);
+      nline();
+      putctype(ct2);
+      nline();
+      throw("not compatible");
+    }
   }
 
   else
@@ -4755,7 +4763,12 @@ expr *parseprimexpr(link *start)
     decl *d = searchscope(t->ident.cont);
 
     // ident must exist in scope
-    assert(d);
+    // assert(d);
+    if(!d)
+    {
+      fprintf(stderr, "%s\n", t->ident.cont);
+      throw("could not find identifier in scope");
+    }
     // if(streq(d->ident, "factorial"))
     // {
     //   puts("hi");
@@ -5310,6 +5323,8 @@ void proctoplevel(token *toks)
 
   contstack = makestack(sizeof(char *));
   breakstack = makestack(sizeof(char *));
+  // putp(contstack);
+  // putp(breakstack);
 
   // NULL is a scope separator. it tells us where blocks start, which allows inner identifiers to cover 'hide' outer ones
   // this initial NULL is there for convenience
@@ -5997,7 +6012,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     lo = dostat.lo; // move over
 
     pop(contstack, NULL);
-    pop(contstack, NULL);
+    pop(breakstack, NULL);
     
     // check `while(expr);` format
     assert(tiskeyword(toks[lo], K_WHILE));
@@ -6075,7 +6090,9 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     // otherwise condition is always true, don't test anything
 
     // push continue and break statements
+    // putd(breakstack->n);
     push(breakstack, &lab3);
+    // putd(contstack->n);
     push(contstack, &lab2);
     
     // eval enclosed statement
@@ -6083,7 +6100,9 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     appmac(assem, parsestat(&forstat, 1, 0));
     lo = forstat.lo; // move over
 
+    // putd(breakstack->n);
     pop(breakstack, NULL);
+    // putd(contstack->n);
     pop(contstack, NULL);
 
     // evaluate 3rd expression
@@ -6130,7 +6149,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
     
     // get top of contstack
     char *lab;
-    pop(contstack, &lab);
+    peek(contstack, &lab);
     
     // jump there
     vspmac(assem, "jmp %s\n", lab);
@@ -6146,7 +6165,7 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
 
     // get top of breakstack
     char *lab;
-    pop(breakstack, &lab);
+    peek(breakstack, &lab);
 
     // jump there
     vspmac(assem, "jmp %s\n", lab);
@@ -6244,6 +6263,8 @@ char *parsestat(struct stat *stat, int nodecl, int startfundef)
         assert(d->ct->gen.type != TM_ARR);
 
         ctype ct1 = d->ct;
+
+        decay(-1, -1, d->init->e);
         ctype ct2 = d->init->e->ct;
         // make sure valid assignment
   // fputs("oi\n", stderr);

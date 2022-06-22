@@ -603,6 +603,8 @@ floating	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } 
 floating	src/defs.h	/^  } floating;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon8
 framesize	src/main.c	/^int framesize = 0;$/;"	v
 freeset	src/datastruct.c	/^void freeset(set *s)$/;"	f
+fsanitize	makefile	/^	cc src\/main.c src\/datastruct.c -o build\/main -g -pg -fsanitize=undefined$/;"	m
+fsanitize	makefile	/^	cc src\/preproc.c -o build\/preproc -fsanitize=undefined$/;"	m
 func	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } func;$/;"	m	union:__anon31	typeref:struct:__anon31::__anon35
 func	src/defs.h	/^  } func;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon14
 fundef	src/defs.h	/^  struct stat *fundef; \/\/ TODO$/;"	m	struct:decl	typeref:struct:decl::stat
@@ -638,7 +640,6 @@ global	src/defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data
 global	src/stdio.asm	/^global ident_exit$/;"	l
 global	src/stdio.asm	/^global ident_getchar$/;"	l
 global	src/stdio.asm	/^global ident_putchar$/;"	l
-global_var	example/example.c	/^int global_var = 5;$/;"	v
 global_var	example/p.c	/^int global_var = 5;$/;"	v
 globloc	src/defs.h	/^  char *globloc; \/\/ nasm label$/;"	m	struct:location
 goto_pre	src/main.c	/^char goto_pre[] = "goto_";$/;"	v
@@ -680,6 +681,7 @@ ident_pre	src/main.c	/^char ident_pre[] = "ident_";$/;"	v
 ident_putchar	src/stdio.asm	/^ident_putchar:$/;"	l
 ident_putint	out.asm	/^ident_putint:$/;"	l
 ident_s	old/planning/out/main.asm	/^ident_s resb 4$/;"	l
+identifier	example/example.c	/^int identifier = 5;$/;"	v
 idiv	out.asm	/^idiv ebx$/;"	l
 imm2frame	src/main.c	/^char *imm2frame(decl *d, int imm)$/;"	f
 inc	out.asm	/^inc dword [EAX]$/;"	l
@@ -1155,13 +1157,15 @@ putinit	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void 
 putinit	src/main.c	/^void putinit(struct init *init, int space)$/;"	f
 putint	example/example.c	/^void putint(int x)$/;"	f
 putint	example/p.c	/^void putint(int x)$/;"	f
+putintarr	example/example.c	/^void putintarr(int *x, int len)$/;"	f
 putll	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putll	src/main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	24;"	d
 putp	old/oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	4;"	d	file:
 putp	src/defs.h	25;"	d
 putparams	src/main.c	/^int putparams(ctype ct)$/;"	f
-putstring	example/example.c	/^void putstring(char *s)$/;"	f
+puts	example/example.c	/^void puts(char *s)$/;"	f
+putstr	example/example.c	/^void putstr(char *s)$/;"	f
 putstring	example/p.c	/^void putstring(char *s)$/;"	f
 puttok	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void puttok(token t)$/;"	f
 puttok	src/main.c	/^void puttok(token t)$/;"	f
@@ -1191,9 +1195,9 @@ right	src/defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::
 rightend	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
 rightend	src/main.c	13;"	d	file:
 safesizeoftype	src/main.c	/^int safesizeoftype(ctype ct)$/;"	f
-sall	src/main.c	5689;"	d	file:
+sall	src/main.c	5704;"	d	file:
 scope	src/main.c	/^stack *scope = NULL;$/;"	v
-sdall	src/main.c	5690;"	d	file:
+sdall	src/main.c	5705;"	d	file:
 sdword	src/defs.h	/^typedef int32_t sdword; \/\/ signed version of the above$/;"	t
 searchscope	src/main.c	/^decl *searchscope(char *ident)$/;"	f
 section	old/planning/asmtest/main.asm	/^section .bss$/;"	l
@@ -1279,6 +1283,7 @@ test	out.asm	/^test eax, eax$/;"	l
 test	out/example.asm	/^test EAX, EAX$/;"	l
 testerr	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	22;"	d	file:
 testerr	src/main.c	24;"	d	file:
+throw	src/datastruct.c	226;"	d	file:
 throw	src/main.c	40;"	d	file:
 times	old/planning/asmtest/main.asm	/^times 50 nop$/;"	l
 tisatom	src/main.c	/^int tisatom(token t, enum atom_type a)$/;"	f

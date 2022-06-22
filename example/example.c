@@ -3,7 +3,7 @@ void putchar(int x);
 int getchar();
 void exit();
 
-void putstring(char *s)
+void putstr(char *s)
 {
   while(*s)
   {
@@ -12,6 +12,11 @@ void putstring(char *s)
   }
 }
 
+void puts(char *s)
+{
+  putstr(s);
+  putchar('\n');
+}
 
 void putint(int x)
 {
@@ -21,20 +26,15 @@ void putint(int x)
     x = -x;
   }
 
-  if(x == 0)
-  {
-    putchar('0');
-    return;
-  }
 
   char arr[100];
   int i = 0;
   
-  while(x)
+  do
   {
     arr[i++] = x%10 + '0';
     x = x / 10; // compound assignment not supported
-  }
+  } while(x);
   
   for(i--; i >= 0; i--)
   {
@@ -42,20 +42,49 @@ void putint(int x)
   }
 }
 
+void putintarr(int *x, int len)
+{
+  int i;
+  putstr("[");
+  for(i = 0; i < len; i++)
+  {
+    putint(x[i]);
+    if(i != len-1)
+    {
+      putstr(", ");
+    }
+  }
+  putstr("]\n");
+}
+
 void fib(int n);
 int factorial(int x);
 
-int global_var = 5;
+int identifier = 5;
 
 int main()
 {
-  putint(++global_var);
+  // identifier masking
+  puts("identifier (global):");
+  putint(identifier);
   putchar('\n');
-  putint(++global_var);
-  putchar('\n');
+
+  {
+    int identifier = 10;
+    puts("identifier (local):");
+    putint(identifier);
+    putchar('\n');
+    identifier++;
+    putint(identifier);
+    putchar('\n');
+  }
+
+  puts("identifier (global):");
+  putint(identifier);
   putchar('\n');
   
   // array initializers not supported
+  int len = 10;
   int x[10];
   x[6] = 11;
   x[2] = 7;
@@ -69,6 +98,9 @@ int main()
   x[7] = -2;
 
   // bubble sort array
+  putstr("bubble sort:\n");
+  putintarr(x, len);
+  
   int i, j;
   for(i = 0; i < 10; i++)
   {
@@ -83,40 +115,95 @@ int main()
     }
   }
 
-  // print sorted array
-  for(i = 0; i < 10; i++)
-  {
-    putint(x[i]);
-    putchar('\n');
-  }
-
+  putintarr(x,len);
   putchar('\n');
+
+  puts("fibonacci sequence:");
   fib(15);
-
   putchar('\n');
+
+  puts("factorial (recursion)");
   putint(factorial(6));
 
   char *s;
-  s = "press enter to continue (getchar())";
+  s = "press any key to continue (getchar()) ";
   putchar('\n');
-  putstring(s);
-  getchar();
+  putstr(s);
+  int c = getchar();
+  putstr("you inputted the character with value ");
+  putint(c);
+  putchar('\n');
+  putchar('\n');
 
+
+  puts("demonstration of goto:");
   int k = 0;
+  for(i = 0; i < 5; i++)
+  {
+    for(j = 0; j < 5; j++)
+    {
+      k++;
+      putint(k);
+      putchar('\n');
+
+      if(k == 13)
+      {
+        puts("exiting nested loop");
+        goto endloop;
+      }
+    }
+  }
+endloop:
+  puts("hi");
+
+  puts("print every number not divisible by 6 (continue):");
+  int f, g;
+  for(f = 1; f < 30; f++)
+  {
+    if(f % 6 == 0)
+    {
+      continue;
+    }
+    putint(f);
+    putchar(' ');
+  }
+  putchar('\n');
+
+
+  puts("count from n*10 to (n+1)*10, but stop when a multiple of 7 is reached (break):");
+  for(f = 0; f < 10; f++)
+  {
+    for(g = 0; g < 10; g++)
+    {
+      int n = f*10 + g;
+      if(n % 7 == 0)
+        break;
+      putint(n);
+      putchar(' ');
+    }
+
+    putchar('\n');
+  }
+  putchar('\n');
+
+  puts("multidimensional arrays:");
+  int y[10][10];
+
   for(i = 0; i < 10; i++)
   {
     for(j = 0; j < 10; j++)
     {
-      k++;
-      putint(k);
-
-      if(k == 27)
-        goto endloop;
+      y[i][j] = j;
     }
   }
+  int *p = *y;
+  while(p - *y < 100)
+  {
+    putint(*p);
+    p++;
+  }
 
-endloop:
-  puts("hi");
+  
 }
 
 void fib(int n)

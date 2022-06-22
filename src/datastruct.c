@@ -211,6 +211,7 @@ stack *makestack(int size)
 
 void push(stack *s, void *m)
 {
+  // printf("pushing %p, %d -> %d\n", s, s->n, s->n+1);
   // resize if necessary
   if(s->n >= s->max)
   {
@@ -222,9 +223,19 @@ void push(stack *s, void *m)
   s->n += 1;
 }
 
+#define throw(msg) {fprintf(stderr, "%s %d: %s\n", __func__, __LINE__, msg);/*trace()*/;exit(1);}
 void pop(stack *s, void *m)
 {
+  void trace();
+  // assert(s->n > 0);
+  // printf("popping %p, %d -> %d\n", s, s->n, s->n-1);
+  if(s->n <= 0)
+  {
+    trace();
+    throw("popping empty stack");
+  }
   s->n -= 1;
+
 
   // if passed NULL for m, don't write the value out
   if(m)
