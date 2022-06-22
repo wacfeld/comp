@@ -21,7 +21,8 @@
 
 # partially supported features
 - string literals are treated as pointers to characters. therefore sizeof("any string") is always 4 (the size of a pointer) and strings should be declared as 'char *s = ...' instead of 'char s[] = ...'
-- getchar(), putchar(), exit() are builtin. the rest of the standard library is not supported.
+- `int getchar(void)`, `void putchar(int)`, `void exit(void)` are builtin. the rest of the standard library is not supported. 
+  - however, you have to declare these functions before using them (see example/example.c)
 - constant integral expressions are supported but may be buggy
 
 # system

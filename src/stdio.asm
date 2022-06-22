@@ -4,6 +4,14 @@ section .text
 
 global ident_putchar
 global ident_getchar
+global ident_exit
+
+; exits
+ident_exit:
+  mov ebx, 0
+  mov eax, 1
+  int 0x80
+  ret
 
 ; prints a char to stdout
 ident_putchar:

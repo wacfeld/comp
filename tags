@@ -572,7 +572,9 @@ expr_type	src/defs.h	/^typedef enum expr_type$/;"	g
 expr_type	src/defs.h	/^} expr_type;$/;"	t	typeref:enum:expr_type
 extern	code/example.asm	/^extern ident_getchar$/;"	l
 extern	code/example.asm	/^extern ident_putchar$/;"	l
+factorial	example/example.c	/^int factorial(int n)$/;"	f
 ff	src/defs.h	22;"	d
+fib	example/example.c	/^void fib(int n)$/;"	f
 findatom	src/main.c	/^int findatom(token *toks, int i, int dir, enum atom_type t)$/;"	f
 findmatch	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
 findmatch	src/main.c	/^link *findmatch(link *start, int dir, int inc, int dec)$/;"	f
@@ -612,6 +614,7 @@ global	old/planning/out/main.asm	/^global _start$/;"	l
 global	old/template/main.asm	/^global _start$/;"	l
 global	old/template/test.asm	/^global _start$/;"	l
 global	src/defs.h	/^  int global; \/\/ whether it's global (top level, bss\/data) or local (stack)$/;"	m	struct:location
+global	src/stdio.asm	/^global ident_exit$/;"	l
 global	src/stdio.asm	/^global ident_getchar$/;"	l
 global	src/stdio.asm	/^global ident_putchar$/;"	l
 globloc	src/defs.h	/^  char *globloc; \/\/ nasm label$/;"	m	struct:location
@@ -641,6 +644,7 @@ ident	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  } ide
 ident	src/defs.h	/^  char *ident;$/;"	m	struct:decl
 ident	src/defs.h	/^  } ident; \/\/ we pretend the identifier is a typemod for convenience (e.x. this makes gettypemods() a little cleaner)$/;"	m	union:__anon10	typeref:struct:__anon10::__anon15
 ident	src/defs.h	/^  } ident;$/;"	m	union:__anon1	typeref:struct:__anon1::__anon4
+ident_exit	src/stdio.asm	/^ident_exit:$/;"	l
 ident_getchar	src/stdio.asm	/^ident_getchar:$/;"	l
 ident_main	code/example.asm	/^ident_main:$/;"	l
 ident_main	old/planning/out/copy.asm	/^ident_main:$/;"	l
@@ -781,7 +785,7 @@ locloc	src/defs.h	/^  int locloc; \/\/ offset from ebp$/;"	m	struct:location
 lst	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lst	src/defs.h	/^  struct init **lst;$/;"	m	struct:init	typeref:struct:init::init
 lval	src/defs.h	/^  int lval;$/;"	m	struct:expr
-main	code/example.c	/^int main()$/;"	f
+main	example/example.c	/^int main()$/;"	f
 main	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	old/oldconflicts/test (swelldell's conflicted copy 2022-05-16).c	/^int main()$/;"	f
 main	old/planning/dcl/main.c	/^int main()$/;"	f
@@ -987,7 +991,7 @@ putf	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	25;"	d
 putf	src/defs.h	26;"	d
 putinit	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putinit(struct init *init, int space)$/;"	f
 putinit	src/main.c	/^void putinit(struct init *init, int space)$/;"	f
-putint	code/example.c	/^void putint(int x)$/;"	f
+putint	example/example.c	/^void putint(int x)$/;"	f
 putll	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putll	src/main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	24;"	d
@@ -1020,9 +1024,9 @@ right	src/defs.h	/^  struct link *right;$/;"	m	struct:link	typeref:struct:link::
 rightend	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	11;"	d	file:
 rightend	src/main.c	13;"	d	file:
 safesizeoftype	src/main.c	/^int safesizeoftype(ctype ct)$/;"	f
-sall	src/main.c	5570;"	d	file:
+sall	src/main.c	5571;"	d	file:
 scope	src/main.c	/^stack *scope = NULL;$/;"	v
-sdall	src/main.c	5571;"	d	file:
+sdall	src/main.c	5572;"	d	file:
 sdword	src/defs.h	/^typedef int32_t sdword; \/\/ signed version of the above$/;"	t
 searchscope	src/main.c	/^decl *searchscope(char *ident)$/;"	f
 section	code/example.asm	/^section .bss$/;"	l

@@ -1,6 +1,7 @@
 void putchar();
 
 int getchar();
+void exit();
 
 
 void putint(int x)
@@ -31,6 +32,9 @@ void putint(int x)
     putchar(arr[i]);
   }
 }
+
+void fib(int n);
+int factorial(int);
 
 int main()
 {
@@ -64,5 +68,37 @@ int main()
   {
     putint(x[i]);
     putchar('\n');
+  }
+
+  putchar('\n');
+  fib(15);
+
+  // putint(factorial(6));
+}
+
+void fib(int n)
+{
+  int i;
+  int a = 1;
+  int b = 1;
+  int temp;
+  for(i = 0; i < n; i++)
+  {
+    putint(a);
+    temp = b;
+    b = a + b;
+    a = temp;
+    putchar('\n');
+  }
+}
+
+int factorial(int n)
+{
+  if(n == 0)
+    return 1;
+  else
+  {
+    int f = 1;
+    return f * n;
   }
 }

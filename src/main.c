@@ -37,7 +37,7 @@ int isdeclspec(token t);
 
 //{{{1 debugging
 
-#define throw(msg) {printf("%s %d: %s\n", __func__, __LINE__, msg);/*trace()*/;exit(1);}
+#define throw(msg) {fprintf(stderr, "%s %d: %s\n", __func__, __LINE__, msg);/*trace()*/;exit(1);}
 
 void trace()
 {
@@ -5487,6 +5487,7 @@ void proctoplevel(token *toks)
   appmac(codeseg,
       "extern ident_putchar\n"
       "extern ident_getchar\n"
+      "extern ident_exit\n"
       "global _start\n"
       "_start:\n"
       "call ident_main\n"
