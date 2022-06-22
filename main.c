@@ -5485,6 +5485,8 @@ void proctoplevel(token *toks)
   
   // codeseg = strapp(codeseg, &cs_len,"global _start\n_start:\n  call ident_main\n  call exit\n\nexit:\n  mov eax, 1\n  mov ebx, 0\n  int 80h\n");
   appmac(codeseg,
+      "extern ident_putchar\n"
+      "extern ident_getchar\n"
       "global _start\n"
       "_start:\n"
       "call ident_main\n"
@@ -7350,11 +7352,11 @@ int main()
   mark_esc(src, esc); // mark backslash escape sequences
   mark_quot(src, esc, quot); // mark single and double quoted regions
 
-  rem_comments(src, esc, quot); // replace multiline comments with single space
+  // rem_comments(src, esc, quot); // replace multiline comments with single space
 
-  // mark AGAIN now that comments are gone (stray quotes will break things
-  mark_esc(src, esc); // mark backslash escape sequences
-  mark_quot(src, esc, quot); // mark single and double quoted regions
+  // // mark AGAIN now that comments are gone (stray quotes will break things
+  // mark_esc(src, esc); // mark backslash escape sequences
+  // mark_quot(src, esc, quot); // mark single and double quoted regions
 
   // stray_backslash(src, esc, quot); // check for stray backslashes, throw a tantrum if so
   check_stray(src, esc, quot, "#$@\\`"); // check for stray characters, throw a tantrum if so

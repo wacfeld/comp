@@ -1,5 +1,6 @@
 section .data
-glob0 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
+glob0 db 34, 92, 0, 92, 0, 
+glob1 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
 errmsg db "error", 10
 errlen equ $ - errmsg
 
@@ -13,9 +14,12 @@ push ebp
 mov ebp,esp
 sub esp, 1
 sub esp, 4
+mov dword [esp], glob0
+add esp, 4
+sub esp, 4
 mov dword [esp], ident_s
 sub esp, 4
-mov dword [esp], glob0
+mov dword [esp], glob1
 mov EBX, dword [esp]
 add esp, 4
 mov eax, dword [esp]
@@ -52,7 +56,7 @@ mov byte [eax], BL
 sub esp, 1
 mov byte [esp], BL
 add esp, 1
-glob1:
+glob2:
 mov esp,ebp
 pop ebp
 ret

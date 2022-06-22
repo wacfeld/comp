@@ -1,76 +1,80 @@
      1                                  section .data
-     2 00000000 68656C6C6F20776F72-     glob0 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
-     2 00000009 6C6400             
-     3 0000000C 6572726F720A            errmsg db "error", 10
-     4                                  errlen equ $ - errmsg
-     5                                  
-     6                                  section .bss
-     7 00000000 <res 00000004>          ident_s resb 4
-     8                                  
-     9                                  section .text
-    10                                  
-    11                                  ident_main:
-    12 00000000 55                      push ebp
-    13 00000001 89E5                    mov ebp,esp
-    14 00000003 83EC01                  sub esp, 1
-    15 00000006 83EC04                  sub esp, 4
-    16 00000009 C70424[00000000]        mov dword [esp], ident_s
-    17 00000010 83EC04                  sub esp, 4
-    18 00000013 C70424[00000000]        mov dword [esp], glob0
-    19 0000001A 8B1C24                  mov EBX, dword [esp]
-    20 0000001D 83C404                  add esp, 4
-    21 00000020 8B0424                  mov eax, dword [esp]
-    22 00000023 83C404                  add esp, 4
-    23 00000026 8918                    mov dword [eax], EBX
-    24 00000028 83EC04                  sub esp, 4
-    25 0000002B 891C24                  mov dword [esp], EBX
-    26 0000002E 83C404                  add esp, 4
-    27 00000031 83EC04                  sub esp, 4
-    28 00000034 8D45FF                  lea eax, [ebp-1]
-    29 00000037 890424                  mov dword [esp], eax
-    30 0000003A 83EC04                  sub esp, 4
-    31 0000003D A1[00000000]            mov EAX, dword [ident_s]
-    32 00000042 890424                  mov dword [esp], EAX
-    33 00000045 83EC04                  sub esp, 4
-    34 00000048 C7042400000000          mov dword [esp], 00000000000000000000000000000000b
-    35 0000004F 8B0424                  mov EAX, dword [esp]
-    36 00000052 83C404                  add esp, 4
-    37 00000055 BB01000000              mov EBX, 1
-    38 0000005A F7E3                    mul EBX
-    39 0000005C 010424                  add dword [esp], EAX
-    40 0000005F 8B0424                  mov eax, dword [esp]
-    41 00000062 85C0                    test eax, eax
-    42 00000064 0F8430000000            je near error
-    43 0000006A 83C404                  add esp, 4
-    44 0000006D 83EC01                  sub esp, 1
-    45 00000070 8A00                    mov AL, byte [eax]
-    46 00000072 880424                  mov byte [esp], AL
-    47 00000075 8A1C24                  mov BL, byte [esp]
-    48 00000078 83C401                  add esp, 1
-    49 0000007B 8B0424                  mov eax, dword [esp]
-    50 0000007E 83C404                  add esp, 4
-    51 00000081 8818                    mov byte [eax], BL
-    52 00000083 83EC01                  sub esp, 1
-    53 00000086 881C24                  mov byte [esp], BL
-    54 00000089 83C401                  add esp, 1
-    55                                  glob1:
-    56 0000008C 89EC                    mov esp,ebp
-    57 0000008E 5D                      pop ebp
-    58 0000008F C3                      ret
-    59                                  
-    60                                  global _start
-    61                                  _start:
-    62 00000090 E86BFFFFFF              call ident_main
-    63 00000095 E816000000              call exit
-    64                                  
-    65                                  error:
-    66 0000009A BA06000000              mov edx, errlen
-    67 0000009F B9[0C000000]            mov ecx, errmsg
-    68 000000A4 BB01000000              mov ebx, 1
-    69 000000A9 B804000000              mov eax, 4
-    70 000000AE CD80                    int 0x80
-    71                                  exit:
-    72 000000B0 B801000000              mov eax, 1
-    73 000000B5 BB00000000              mov ebx, 0
-    74 000000BA CD80                    int 80h
-    75                                  
+     2 00000000 225C005C00              glob0 db 34, 92, 0, 92, 0, 
+     3 00000005 68656C6C6F20776F72-     glob1 db 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0, 
+     3 0000000E 6C6400             
+     4 00000011 6572726F720A            errmsg db "error", 10
+     5                                  errlen equ $ - errmsg
+     6                                  
+     7                                  section .bss
+     8 00000000 <res 00000004>          ident_s resb 4
+     9                                  
+    10                                  section .text
+    11                                  
+    12                                  ident_main:
+    13 00000000 55                      push ebp
+    14 00000001 89E5                    mov ebp,esp
+    15 00000003 83EC01                  sub esp, 1
+    16 00000006 83EC04                  sub esp, 4
+    17 00000009 C70424[00000000]        mov dword [esp], glob0
+    18 00000010 83C404                  add esp, 4
+    19 00000013 83EC04                  sub esp, 4
+    20 00000016 C70424[00000000]        mov dword [esp], ident_s
+    21 0000001D 83EC04                  sub esp, 4
+    22 00000020 C70424[05000000]        mov dword [esp], glob1
+    23 00000027 8B1C24                  mov EBX, dword [esp]
+    24 0000002A 83C404                  add esp, 4
+    25 0000002D 8B0424                  mov eax, dword [esp]
+    26 00000030 83C404                  add esp, 4
+    27 00000033 8918                    mov dword [eax], EBX
+    28 00000035 83EC04                  sub esp, 4
+    29 00000038 891C24                  mov dword [esp], EBX
+    30 0000003B 83C404                  add esp, 4
+    31 0000003E 83EC04                  sub esp, 4
+    32 00000041 8D45FF                  lea eax, [ebp-1]
+    33 00000044 890424                  mov dword [esp], eax
+    34 00000047 83EC04                  sub esp, 4
+    35 0000004A A1[00000000]            mov EAX, dword [ident_s]
+    36 0000004F 890424                  mov dword [esp], EAX
+    37 00000052 83EC04                  sub esp, 4
+    38 00000055 C7042400000000          mov dword [esp], 00000000000000000000000000000000b
+    39 0000005C 8B0424                  mov EAX, dword [esp]
+    40 0000005F 83C404                  add esp, 4
+    41 00000062 BB01000000              mov EBX, 1
+    42 00000067 F7E3                    mul EBX
+    43 00000069 010424                  add dword [esp], EAX
+    44 0000006C 8B0424                  mov eax, dword [esp]
+    45 0000006F 85C0                    test eax, eax
+    46 00000071 0F8430000000            je near error
+    47 00000077 83C404                  add esp, 4
+    48 0000007A 83EC01                  sub esp, 1
+    49 0000007D 8A00                    mov AL, byte [eax]
+    50 0000007F 880424                  mov byte [esp], AL
+    51 00000082 8A1C24                  mov BL, byte [esp]
+    52 00000085 83C401                  add esp, 1
+    53 00000088 8B0424                  mov eax, dword [esp]
+    54 0000008B 83C404                  add esp, 4
+    55 0000008E 8818                    mov byte [eax], BL
+    56 00000090 83EC01                  sub esp, 1
+    57 00000093 881C24                  mov byte [esp], BL
+    58 00000096 83C401                  add esp, 1
+    59                                  glob2:
+    60 00000099 89EC                    mov esp,ebp
+    61 0000009B 5D                      pop ebp
+    62 0000009C C3                      ret
+    63                                  
+    64                                  global _start
+    65                                  _start:
+    66 0000009D E85EFFFFFF              call ident_main
+    67 000000A2 E816000000              call exit
+    68                                  
+    69                                  error:
+    70 000000A7 BA06000000              mov edx, errlen
+    71 000000AC B9[11000000]            mov ecx, errmsg
+    72 000000B1 BB01000000              mov ebx, 1
+    73 000000B6 B804000000              mov eax, 4
+    74 000000BB CD80                    int 0x80
+    75                                  exit:
+    76 000000BD B801000000              mov eax, 1
+    77 000000C2 BB00000000              mov ebx, 0
+    78 000000C7 CD80                    int 80h
+    79                                  

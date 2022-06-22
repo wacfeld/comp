@@ -1,0 +1,30 @@
+     1                                  
+     2                                  section .data
+     3                                  section .text
+     4                                  
+     5                                  global ident_putchar
+     6                                  global ident_getchar
+     7                                  
+     8                                  ; prints a char to stdout
+     9                                  ident_putchar:
+    10 00000000 BA01000000                mov edx, 1 ; len 1
+    11 00000005 8D4C2404                  lea ecx, [esp+4] ; passed on stack, above eip (no ebp pushed, no stack frame)
+    12 00000009 BB01000000                mov ebx, 1 ; stdout
+    13 0000000E B804000000                mov eax, 4 ; write syscall
+    14 00000013 CD80                      int 0x80
+    15                                  
+    16 00000015 C3                        ret ; bye
+    17                                    
+    18                                  
+    19                                  ; reads a char from stdin
+    20                                  ident_getchar:
+    21 00000016 BA01000000                mov edx, 1 ; len 1
+    22 0000001B 8D4C24FF                  lea ecx, [esp-1] ; push onto stack
+    23 0000001F BB00000000                mov ebx, 0 ; stdin
+    24 00000024 B803000000                mov eax, 3 ; read syscall
+    25 00000029 CD80                      int 0x80
+    26                                  
+    27 0000002B 31C0                      xor eax, eax ; zero eax
+    28 0000002D 8A4424FF                  mov al, byte [esp-1] ; put into eax
+    29                                  
+    30 00000031 C3                        ret ; bye
