@@ -488,7 +488,7 @@ ret
 ident_main:
 push ebp
 mov ebp,esp
-sub esp, 488
+sub esp, 528
 sub esp, 4
 mov dword [esp], glob3
 sub esp, 4
@@ -2032,6 +2032,187 @@ add dword [EAX], 4
 add esp, 4
 jmp .lab86
 .lab87:
+sub esp, 1
+mov byte [esp], 00001010b
+mov AL, byte [esp]
+add esp, 1
+movsx EAX, AL
+sub esp, 4
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], ident_putchar
+mov EAX, dword [esp]
+add esp, 4
+call EAX
+add esp, 4
+sub esp, 4
+lea eax, [ebp-52]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000000b
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+.lab90:
+sub esp, 4
+mov EAX, dword [ebp-52]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000001010b
+mov EBX, dword [esp]
+add esp, 4
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+cmp EAX, EBX
+jl .lab93
+mov dword [esp], 0
+jmp .lab94
+.lab93: mov dword [esp], 1
+.lab94:
+mov EAX, dword [esp]
+add esp, 4
+test EAX, EAX
+jz .lab92
+sub esp, 4
+lea eax, [ebp-528]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ebp-52]
+mov dword [esp], EAX
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
+sub esp, 4
+lea eax, [ebp-484]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ebp-52]
+mov dword [esp], EAX
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 40
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 4
+mov dword [esp], eax
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+.lab91:
+sub esp, 4
+lea eax, [ebp-52]
+mov dword [esp], eax
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+mov EBX, dword [EAX]
+mov dword [esp], EBX
+inc dword [EAX]
+add esp, 4
+jmp .lab90
+.lab92:
+sub esp, 4
+lea eax, [ebp-52]
+mov dword [esp], eax
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000000b
+mov EBX, dword [esp]
+add esp, 4
+mov eax, dword [esp]
+add esp, 4
+mov dword [eax], EBX
+sub esp, 4
+mov dword [esp], EBX
+add esp, 4
+.lab95:
+sub esp, 4
+mov EAX, dword [ebp-52]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000001010b
+mov EBX, dword [esp]
+add esp, 4
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+cmp EAX, EBX
+jl .lab98
+mov dword [esp], 0
+jmp .lab99
+.lab98: mov dword [esp], 1
+.lab99:
+mov EAX, dword [esp]
+add esp, 4
+test EAX, EAX
+jz .lab97
+sub esp, 4
+lea eax, [ebp-528]
+mov dword [esp], eax
+sub esp, 4
+mov EAX, dword [ebp-52]
+mov dword [esp], EAX
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 4
+mov EAX, dword [eax]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], 00000000000000000000000000000101b
+mov EAX, dword [esp]
+add esp, 4
+mov EBX, 4
+mul EBX
+add dword [esp], EAX
+mov eax, dword [esp]
+test eax, eax
+je near error
+add esp, 4
+sub esp, 4
+mov EAX, dword [eax]
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], ident_putint
+mov EAX, dword [esp]
+add esp, 4
+call EAX
+add esp, 4
+.lab96:
+sub esp, 4
+lea eax, [ebp-52]
+mov dword [esp], eax
+mov EAX, dword [esp]
+add esp, 4
+sub esp, 4
+mov EBX, dword [EAX]
+mov dword [esp], EBX
+inc dword [EAX]
+add esp, 4
+jmp .lab95
+.lab97:
 mov esp,ebp
 pop ebp
 ret
@@ -2080,7 +2261,7 @@ mov dword [eax], EBX
 sub esp, 4
 mov dword [esp], EBX
 add esp, 4
-.lab90:
+.lab100:
 sub esp, 4
 mov EAX, dword [ebp-4]
 mov dword [esp], EAX
@@ -2093,15 +2274,15 @@ mov EAX, dword [esp]
 add esp, 4
 sub esp, 4
 cmp EAX, EBX
-jl .lab93
+jl .lab103
 mov dword [esp], 0
-jmp .lab94
-.lab93: mov dword [esp], 1
-.lab94:
+jmp .lab104
+.lab103: mov dword [esp], 1
+.lab104:
 mov EAX, dword [esp]
 add esp, 4
 test EAX, EAX
-jz .lab92
+jz .lab102
 sub esp, 4
 mov EAX, dword [ebp-8]
 mov dword [esp], EAX
@@ -2172,7 +2353,7 @@ mov EAX, dword [esp]
 add esp, 4
 call EAX
 add esp, 4
-.lab91:
+.lab101:
 sub esp, 4
 lea eax, [ebp-4]
 mov dword [esp], eax
@@ -2183,8 +2364,8 @@ mov EBX, dword [EAX]
 mov dword [esp], EBX
 inc dword [EAX]
 add esp, 4
-jmp .lab90
-.lab92:
+jmp .lab100
+.lab102:
 mov esp,ebp
 pop ebp
 ret
@@ -2204,15 +2385,15 @@ mov EAX, dword [esp]
 add esp, 4
 sub esp, 4
 cmp EAX, EBX
-je .lab95
+je .lab105
 mov dword [esp], 0
-jmp .lab96
-.lab95: mov dword [esp], 1
-.lab96:
+jmp .lab106
+.lab105: mov dword [esp], 1
+.lab106:
 mov EAX, dword [esp]
 add esp, 4
 test EAX, EAX
-jz .lab97
+jz .lab107
 sub esp, 4
 mov dword [esp], 00000000000000000000000000000001b
 mov EAX, dword [esp]
@@ -2220,8 +2401,8 @@ add esp, 4
 mov esp,ebp
 pop ebp
 ret
-jmp .lab98
-.lab97:
+jmp .lab108
+.lab107:
 sub esp, 4
 mov EAX, dword [ebp+8]
 mov dword [esp], EAX
@@ -2253,7 +2434,7 @@ add esp, 4
 mov esp,ebp
 pop ebp
 ret
-.lab98:
+.lab108:
 mov esp,ebp
 pop ebp
 ret

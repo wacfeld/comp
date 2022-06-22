@@ -202,8 +202,18 @@ endloop:
     putint(*p);
     p++;
   }
-
+  putchar('\n');
   
+  int *q[10];
+  for(i = 0; i < 10; i++)
+  {
+    q[i] = y[i];
+  }
+  
+  for(i = 0; i < 10; i++)
+  {
+    putint(q[i][5]);
+  }
 }
 
 void fib(int n)
