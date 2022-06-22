@@ -514,7 +514,6 @@ ct	src/defs.h	/^  ctype ct;$/;"	m	struct:decl
 ctisdt	src/main.c	/^int ctisdt(ctype ct, int dt)$/;"	f
 ctype	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^} ctype; \/\/ type, ALWAYS ABSTRACT.$/;"	t	typeref:struct:__anon28
 ctype	src/defs.h	/^typedef typemod *ctype;$/;"	t
-d2	code/example.c	/^  int d2 = 100\/10;$/;"	v
 dat	src/defs.h	/^  dword dat; \/\/ 32 bits of data, for compile-time constants$/;"	m	struct:expr
 dat	src/defs.h	/^  } dat;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon16
 dattype	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	/^  int dattype; \/\/ e.g. INT_T, SHORT_T, VOID_T, etc.$/;"	m	struct:__anon28
@@ -988,6 +987,7 @@ putf	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	25;"	d
 putf	src/defs.h	26;"	d
 putinit	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putinit(struct init *init, int space)$/;"	f
 putinit	src/main.c	/^void putinit(struct init *init, int space)$/;"	f
+putint	code/example.c	/^void putint(int x)$/;"	f
 putll	old/oldconflicts/main (swelldell's conflicted copy 2022-05-16).c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putll	src/main.c	/^void putll(link *l) \/\/ put linked list$/;"	f
 putp	old/oldconflicts/defs (swelldell's conflicted copy 2022-05-16).h	24;"	d

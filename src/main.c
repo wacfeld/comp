@@ -1919,7 +1919,7 @@ int helpgettypemods(token *toks, int lo, int hi, list *l, int abs)
         assert(isintegral(e->ct));
         sdword len = evalconstintexpr(e);
         assert(len >= 1);
-        putd(len);
+        // putd(len);
         tmod->arr.len = len;
       }
       
