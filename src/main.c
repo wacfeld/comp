@@ -2330,13 +2330,13 @@ struct init *parseinit(link *start)
     init->islist = 1;
     init->e = NULL;
     // we will initialize init->lst and init->len once we know the length
-    here();
+    // here();
 
     link *end = start;
     rightend(end);
     assert(lisatom(end, BRACECL)); // opening brace needs closing brace
     assert(start->right != end); // no empty initializer braces under ISO C
-    here();
+    // here();
     
     // remove surrounding braces
     start = start->right;
@@ -2344,7 +2344,7 @@ struct init *parseinit(link *start)
     end = end->left;
     end->right = NULL;
 
-    here();
+    // here();
     if(lisatom(end, COMMA)) // optional ending comma: remove
     {
       assert(start != end); // comma must not be alone; something must precede it
@@ -2364,7 +2364,7 @@ struct init *parseinit(link *start)
       temp = temp->right;
     }
 
-    here();
+    // here();
     // complete initialization
     init->len = len;
     init->lst = malloc(sizeof(struct init *) * len);
@@ -3096,6 +3096,7 @@ ctype makecompos(ctype ct1, ctype ct2, int qualmode)
     {
       newct[i].dat.isconst = ct1[i].dat.isconst || ct2[i].dat.isconst;
       newct[i].dat.isvolat = ct1[i].dat.isvolat || ct2[i].dat.isvolat;
+      newct[i].dat.dt = ct1[i].dat.dt;
     }
   }
 
@@ -3390,7 +3391,7 @@ expr *parseexpr(link *start)
   // comma->right->left = NULL;
   // comma->left->right = NULL;
   // putd(1);
-  here();
+  // here();
   sever(comma);
 
   expr *e1 = parseexpr(comma->left);
@@ -3531,7 +3532,7 @@ expr *parseasgnexpr(link *start)
   // op->left->right = NULL;
 
   // putd(2);
-  here();
+  // here();
   sever(op);
 
   expr *e1 = parseunaryexpr(start);
@@ -3623,9 +3624,9 @@ expr *parsecondexpr(link *start)
   // assert(quest + 1 != colon);
   testerr(quest + 1 != colon, "parsecondexpr: empty left branch");
   // putd(3);
-  here();
+  // here();
   sever(quest);
-  here();
+  // here();
   sever(colon);
 
   expr *e1 = parselorexpr(quest->left);
@@ -3807,7 +3808,7 @@ expr * parseltrbinexpr(link *start, int etype, int num, int *atoms, int *optypes
 
 expr *parselorexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {LOGOR};
   static int op[] = {LOR_O};
 
@@ -3822,7 +3823,7 @@ expr *parselorexpr(link *start)
 
 expr *parselandexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {LOGAND};
   static int op[] = {LAND_O};
   expr *newe = parseltrbinexpr(start, LAND_E, 1, at, op, parseorexpr, parselandexpr);
@@ -3836,7 +3837,7 @@ expr *parselandexpr(link *start)
 
 expr *parseorexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {BITOR};
   static int op[] = {BOR_O};
 
@@ -3857,7 +3858,7 @@ expr *parseorexpr(link *start)
 
 expr *parsexorexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {BITXOR};
   static int op[] = {XOR_O};
 
@@ -3875,7 +3876,7 @@ expr *parsexorexpr(link *start)
 
 expr *parseandexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {BITAND};
   static int op[] = {BAND_O};
   expr *newe = parseltrbinexpr(start, AND_E, 1, at, op, parseeqexpr, parseandexpr);
@@ -3892,7 +3893,7 @@ expr *parseandexpr(link *start)
 
 expr *parseeqexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {EQEQ, NOTEQ};
   static int op[] = {EQEQ_O, NEQ_O};
   expr *newe = parseltrbinexpr(start, EQUAL_E, 2, at, op, parserelexpr, parseeqexpr);
@@ -3936,7 +3937,7 @@ expr *parseeqexpr(link *start)
 
 expr *parserelexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {LESS, GREAT, LEQ, GEQ};
   static int op[] = {LT_O, GT_O, LEQ_O, GEQ_O};
   expr *newe = parseltrbinexpr(start, RELAT_E, 4, at, op, parseshiftexpr, parserelexpr);
@@ -3969,7 +3970,7 @@ expr *parserelexpr(link *start)
 
 expr *parseshiftexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {SHL, SHR};
   static int op[] = {SHL_O, SHR_O};
   expr *newe = parseltrbinexpr(start, SHIFT_E, 2, at, op, parseaddexpr, parseshiftexpr);
@@ -3994,7 +3995,7 @@ expr *parseshiftexpr(link *start)
 
 expr *parseaddexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {PLUS, MIN};
   static int op[] = {ADD_O, SUB_O};
   expr *newe = parseltrbinexpr(start, ADD_E, 2, at, op, parsemultexpr, parseaddexpr);
@@ -4081,7 +4082,7 @@ expr *parseaddexpr(link *start)
 
 expr *parsemultexpr(link *start)
 {
-  here();
+  // here();
   static int at[] = {STAR, DIV, MOD};
   static int op[] = {MULT_O, DIV_O, MOD_O};
   expr *newe = parseltrbinexpr(start, MULT_E, 3, at, op, parsecastexpr, parsemultexpr);
@@ -4115,7 +4116,7 @@ expr *parsemultexpr(link *start)
 
 expr *parsecastexpr(link *start)
 {
-  here();
+  // here();
   // assert(start);
   testerr(start, "parsecastexpr: empty start");
 
@@ -4137,7 +4138,7 @@ expr *parsecastexpr(link *start)
 
     start->right->left = NULL;
     // putd(5);
-    here();
+    // here();
     sever(cl);
     // cl->left->right = NULL;
     
@@ -4170,7 +4171,7 @@ expr *parsecastexpr(link *start)
 
 expr *parseunaryexpr(link *start)
 {
-  here();
+  // here();
   // assert(start);
   testerr(start, "parseunaryexpr: empty start");
   leftend(start);
@@ -4378,7 +4379,7 @@ expr *parseunaryexpr(link *start)
 
 ctype parsetypename(link *start)
 {
-  here();
+  // here();
   // assert(start);
 
   testerr(start, "parsetypename: empty start");
@@ -4406,7 +4407,7 @@ ctype parsetypename(link *start)
 
 expr *parsepostexpr(link *start)
 {
-  here();
+  // here();
   // assert(start);
   testerr(start, "parsepostexpr: empty start");
   rightend(start);
@@ -4480,7 +4481,7 @@ expr *parsepostexpr(link *start)
     if(op->left != NULL) // if NULL, it's a (primary-expression)
     {
       // putd(6);
-      here();
+      // here();
       sever(op);
       // printf("%p\n", start->left);
       if(start->left) start->left->right = NULL; // could possibly be set NULL by the above sever()
@@ -4536,7 +4537,7 @@ expr *parsepostexpr(link *start)
     link *op = findmatch(start, LEFT, BRACKCL, BRACKOP);
 
     // putd(7);
-    here();
+    // here();
     sever(op);
     start->left->right = NULL;
 
@@ -4607,7 +4608,7 @@ expr *parsepostexpr(link *start)
 
 expr *parsearglist(link *start)
 {
-  here();
+  // here();
     // puts("hi");
     // printf("%p\n", start);
   if(!start) // when severing the parens, this gets set to NULL if the parens are side by side (0 args)
@@ -4647,7 +4648,7 @@ expr *parsearglist(link *start)
     if(comma) // if comma == NULL, last arg only severs on left
     {
       // putd(8);
-      here();
+      // here();
       sever(comma);
     }
     start->left = NULL;
@@ -4693,7 +4694,7 @@ void showlithier(char *src, char *esc, char *quot)
 
 expr *parseprimexpr(link *start)
 {
-  here();
+  // here();
   // assert(start);
   testerr(start, "parseprimexpr: empty start");
   leftend(start);
@@ -4742,6 +4743,7 @@ expr *parseprimexpr(link *start)
     //   puts("hi");
     //   putparams(d->ct);
     // }
+    // LEH it's something to do with the ct on the stack. it gets modified at some point between calling factorial in main() and calling it in recursively, destroying the INT_T.
 
     newe->ct = d->ct;
     newe->dcl = d;
@@ -5271,6 +5273,10 @@ char create_sframe[] = "push ebp\nmov ebp,esp\n";
 // char destroy_sframe[] = "dbg: mov esp,ebp\npop ebp\n";
 char destroy_sframe[] = "mov esp,ebp\npop ebp\n";
 
+
+// decl *factd = NULL;
+// int thththth = 1;
+
 // read top-level decls, process function definitions
 // i.e. convert tokens to assembly
 void proctoplevel(token *toks)
@@ -5305,6 +5311,10 @@ void proctoplevel(token *toks)
   int tokind = 0;
   while((d = parsedecl(toks, &tokind, NULL)) != NULL) // parse until NOTOK
   {
+    // puts(d->ident);
+    // putctype(d->ct);
+    // nline();
+    // putparams(d->ct);
     // puts("hi");
     // if(d->ct->gen.type == TM_FUNC)
     // {
@@ -5315,6 +5325,12 @@ void proctoplevel(token *toks)
     
     // putdecl(d);
     // putd(tokind);
+
+    // if(thththth && streq(d->ident, "factorial"))
+    // {
+    //   thththth = 0;
+    //   factd = d;
+    // }
 
     assert(d->ident); // probably not necessary but good to check that it exists
 
@@ -5333,7 +5349,6 @@ void proctoplevel(token *toks)
       throw("typedef isn't supported yet");
     }
     
-    
     assert(!d->fundef || !d->init); // can't have both
 
 
@@ -5349,10 +5364,12 @@ void proctoplevel(token *toks)
     decl *scopedcl;
     for(int i = 0; i < listlen(scope); i++)
     {
+    // here(5, putparams(factd->ct));
       listget(scope, i, &scopedcl);
       if(!scopedcl) // skip separators
         continue;
 
+    // here(5, putparams(factd->ct));
       if(streq(scopedcl->ident, d->ident)) // same ident
       {
         // check same type
@@ -5372,16 +5389,22 @@ void proctoplevel(token *toks)
           scopedcl->init = d->init;
         }
 
+    // here(5, putparams(factd->ct));
         // merge types
         ctype newct = makecompos(scopedcl->ct, d->ct, QM_STRICT); // write into alldecls[i] the composite type
+    // here(5, putparams(factd->ct));
         scopedcl->ct = newct;
         
+    // here(5, putparams(factd->ct));
         // indicate the decl already exists
         merged = 1;
         break;
       }
 
     }
+    // here(5);
+    // putparams(factd->ct);
+    // here(5, putparams(factd->ct));
 
     if(!merged) // it's the first occurrence, write into alldecls
     {
@@ -5389,6 +5412,8 @@ void proctoplevel(token *toks)
       // alldecls[scope->n++] = d;
       push(scope, &d);
 
+      // puts(d->ident);
+      // putparams(d->ct);
       // fputs("hi",stderr);
       // fprintf(stderr, "%s\n", d->ident);
       // for(int i = 0; i < d->ct->func.np; i++)
@@ -5401,6 +5426,9 @@ void proctoplevel(token *toks)
       // nline();
     }
 
+    // here(5);
+    // putparams(factd->ct);
+    
     // fundefs are parsed after their declaration is considered above, so that recursion is possible (the function is in its own scope)
     if(d->fundef) // if fundef, parse now
     {
@@ -5439,6 +5467,8 @@ void proctoplevel(token *toks)
 
       // convert function body to assembly
       char *s = parsestat(d->fundef, 1, 1);
+    // here(5);
+    // putparams(factd->ct);
 
       funret = NULL; // not necessary, but safer
 
@@ -5453,6 +5483,8 @@ void proctoplevel(token *toks)
       mapmac(codeseg, destroy_sframe, "ret\n\n");
     }
     
+    // here(5);
+    // putparams(factd->ct);
   }
 
   // decl **scopearr = (decl **) scope->cont; // extract list from scope stack

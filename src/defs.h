@@ -29,8 +29,8 @@
 
 
 // when debug is on all here() calls activate
-#define DEBUG 0
-#define here() {if(DEBUG) {printf("%d %s\n", __LINE__, __func__);}}
+#define DEBUG 5
+#define here(arg, thing) {if(DEBUG == arg) {printf("%d %s\n", __LINE__, __func__); thing;}}
 #define nline() puts("")
 
 // use realloc when necessary to expand a dynamically allocated array
