@@ -4236,7 +4236,13 @@ expr *parseunaryexpr(link *start)
     // *
     else if(optype == POINT_O)
     {
-      assert(isptr(ct));
+      if(!isptr(ct))
+      {
+        putctype(ct);
+        nline();
+        throw("not pointer");
+      }
+      // assert(isptr(ct));
       
       // assert(tmis(ct+1, TM_FUNC) || incomplete(ct+1));
       

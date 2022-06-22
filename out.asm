@@ -276,33 +276,6 @@ pop ebp
 ret
 
 
-ident_thing:
-push ebp
-mov ebp,esp
-sub esp, 4
-mov EAX, dword [ebp+8]
-mov dword [esp], EAX
-sub esp, 1
-mov AL, byte [ebp+12]
-mov byte [esp], AL
-mov AL, byte [esp]
-add esp, 1
-movsx EAX, AL
-sub esp, 4
-mov dword [esp], EAX
-mov EAX, dword [esp]
-add esp, 4
-add dword [esp], EAX
-mov EAX, dword [esp]
-add esp, 4
-mov esp,ebp
-pop ebp
-ret
-mov esp,ebp
-pop ebp
-ret
-
-
 ident_main:
 push ebp
 mov ebp,esp
@@ -864,6 +837,19 @@ mov EAX, dword [esp]
 add esp, 4
 call EAX
 add esp, 4
+sub esp, 1
+mov byte [esp], 00001010b
+mov AL, byte [esp]
+add esp, 1
+movsx EAX, AL
+sub esp, 4
+mov dword [esp], EAX
+sub esp, 4
+mov dword [esp], ident_putchar
+mov EAX, dword [esp]
+add esp, 4
+call EAX
+add esp, 4
 sub esp, 4
 mov dword [esp], 00000000000000000000000000000110b
 sub esp, 4
@@ -1038,31 +1024,9 @@ pop ebp
 ret
 
 
-ident_add1:
-push ebp
-mov ebp,esp
-sub esp, 4
-mov EAX, dword [ebp+8]
-mov dword [esp], EAX
-sub esp, 4
-mov dword [esp], 00000000000000000000000000000001b
-mov EAX, dword [esp]
-add esp, 4
-add dword [esp], EAX
-mov EAX, dword [esp]
-add esp, 4
-mov esp,ebp
-pop ebp
-ret
-mov esp,ebp
-pop ebp
-ret
-
-
 ident_factorial:
 push ebp
 mov ebp,esp
-sub esp, 4
 sub esp, 4
 mov EAX, dword [ebp+8]
 mov dword [esp], EAX
@@ -1093,9 +1057,6 @@ ret
 jmp .lab42
 .lab41:
 sub esp, 4
-lea eax, [ebp-4]
-mov dword [esp], eax
-sub esp, 4
 mov EAX, dword [ebp+8]
 mov dword [esp], EAX
 sub esp, 4
@@ -1110,17 +1071,6 @@ add esp, 4
 call EAX
 add esp, 4
 sub esp, 4
-mov dword [esp], EAX
-mov EBX, dword [esp]
-add esp, 4
-mov eax, dword [esp]
-add esp, 4
-mov dword [eax], EBX
-sub esp, 4
-mov dword [esp], EBX
-add esp, 4
-sub esp, 4
-mov EAX, dword [ebp-4]
 mov dword [esp], EAX
 sub esp, 4
 mov EAX, dword [ebp+8]

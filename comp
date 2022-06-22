@@ -1,4 +1,5 @@
 #!/bin/bash
-./compile $1 out.asm
-./assemble out.asm out.o
-./link out.o $2
+mkdir -p out
+./compile $1 out/out.asm
+./assemble out/out.asm out/out.o
+./link out/out.o $2

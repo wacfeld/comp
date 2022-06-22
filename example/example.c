@@ -1,7 +1,15 @@
+// have to declare these functions before using them
 void putchar(int x);
-
 int getchar();
 void exit();
+
+void putstring(char *s)
+{
+  while(*s)
+  {
+    putchar(*s);
+  }
+}
 
 
 void putint(int x)
@@ -24,7 +32,7 @@ void putint(int x)
   while(x)
   {
     arr[i++] = x%10 + '0';
-    x = x / 10;
+    x = x / 10; // compound assignment not supported
   }
   
   for(i--; i >= 0; i--)
@@ -36,13 +44,14 @@ void putint(int x)
 void fib(int n);
 int factorial(int x);
 
-int thing(int x, char y)
-{
-  return x + y;
-}
+int global_var = 5;
 
 int main()
 {
+  putint(++global_var);
+  putint(++global_var);
+  
+  // array initializers not supported
   int x[10];
   x[6] = 11;
   x[2] = 7;
@@ -55,6 +64,7 @@ int main()
   x[3] = 1;
   x[7] = -2;
 
+  // bubble sort array
   int i, j;
   for(i = 0; i < 10; i++)
   {
@@ -69,6 +79,7 @@ int main()
     }
   }
 
+  // print sorted array
   for(i = 0; i < 10; i++)
   {
     putint(x[i]);
@@ -78,7 +89,13 @@ int main()
   putchar('\n');
   fib(15);
 
+  putchar('\n');
   putint(factorial(6));
+
+  char *s;
+  s = "hi";
+  // putstring(s);
+
 }
 
 void fib(int n)
@@ -97,18 +114,12 @@ void fib(int n)
   }
 }
 
-int add1(int n)
-{
-  return n + 1;
-}
-
 int factorial(int n)
 {
   if(n == 0)
     return 1;
   else
   {
-    int f = factorial(n-1);
-    return f * n;
+    return factorial(n-1) * n;
   }
 }
