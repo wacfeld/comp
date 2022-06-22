@@ -5397,15 +5397,31 @@ void proctoplevel(token *toks)
 
     if(d->init) // evaluate initializer, put in data
     {
-      assert(!d->init->islist); // list initializers not supported yet
-      assert(d->ct->gen.type != TM_ARR); // lists not supported, therefore arrays with init not supported
+      // assert(!d->init->islist); // list initializers not supported yet
+
+      // assert(d->ct->gen.type != TM_ARR); // lists not supported, therefore arrays with init not supported
       // this also saves us the problem of more complicated memory reservations
 
-      // TODO evaluate constant expr init
-
+      char *value = NULL;
       int size = sizeoftype(d->ct);
       expr *e = d->init->e;
-      char *value = getbits(e->dat, size);
+
+      if(d->ct->gen.type  == TM_ARR)
+      {
+        assert(d->init->islist);
+
+        throw("toplevel array init not supported yet");
+      }
+      
+      else if(isintegral(d->ct))
+      {
+        assert(!d->init->islist);
+
+        sdword num = evalconstintexpr(e);
+        value = getbits(num, size);
+      }
+
+      // char *value = getbits(e->dat, size);
 
       char *def = initnasm(size); // db, dw, etc.
       // dataseg = multiapp(dataseg, &ds_len, 6, d->locat.globloc, " ", def, " ", value, "\n"); // TODO replace "1" with actual init value
