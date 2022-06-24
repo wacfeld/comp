@@ -1,5 +1,3 @@
-# WORK IN PROGRESS
-
 # unsupported features
 - floating point
 - enums
