@@ -9,6 +9,9 @@ touch main.c
 ./main
 ```
 
+## examples
+`example/` contains various source files with example code that can be compiled.
+
 # Code overview
 - `src/main.c`:
   - If you use vim, you can `:set foldmethod=marker` to make navigating this file easier. Otherwise, you can simply search for `{{{1` headings
