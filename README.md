@@ -1,5 +1,5 @@
 # Description
-A C compiler written that I wrote between March and June 2022. It was written entirely from scratch in C, and compiles to x86 assembly. I spent approximately 100-200 hours on this project.
+A C compiler that I (Daniel Yu) wrote between March and June 2022. It was written entirely from scratch in C, and compiles to x86 assembly. I spent approximately 100-200 hours on this project.
 
 # usage
 ```
